@@ -1,0 +1,121 @@
+/**
+ * This ruleset enforces a strict user-ownership security model for the HikmaClips app.
+ *
+ * Core Philosophy:
+ * A user has complete control over their own data, and no access to anyone else's. All data is
+ * strictly segregated by user, ensuring privacy and preventing unauthorized access or data leakage
+ * between accounts. The default security posture is to deny all access unless explicitly granted.
+ *
+ * Data Structure:
+ * The data is organized hierarchically. A top-level 'users' collection holds individual user
+ * profile documents. All user-generated content, such as 'videos', is stored in subcollections
+ * directly under that user's document (e.g., /users/{userId}/videos/{videoId}). This structure
+ * simplifies security rules by leveraging path-based authorization.
+ *
+ * Key Security Decisions:
+ * - User Isolation: Rules are written so a user's operations are confined entirely within their
+ *   own data tree (/users/{their_own_userId}/...).
+ * - No User Listing: It is not possible to query the top-level '/users' collection, preventing
+ *   any potential enumeration of the application's user base.
+ * - Ownership Integrity: When new documents are created, rules enforce that any internal
+ *   ownership fields (like 'userId' on a video) must match the authenticated user creating it.
+ *   These ownership fields are immutable and cannot be changed on update.
+ *
+ * Denormalization for Authorization:
+ * The 'Video' documents contain a denormalized 'userId' field. This is a critical design choice
+ * that allows security rules to validate video ownership directly from the document's data
+ * during writes, without needing a slow and costly `get()` call to the parent user document.
+ * This results in simpler, faster, and more secure rules.
+ */
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper functions to promote reusable and readable rules.
+
+    /**
+     * Checks if the current request is from an authenticated user.
+     */
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    /**
+     * Validates if the requesting user is the owner of the document based on the userId in the path.
+     */
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    /**
+     * Validates if the requesting user is the owner of an EXISTING document.
+     * Used for update and delete operations to prevent acting on non-existent data.
+     */
+    function isExistingOwner(userId) {
+      return isOwner(userId) && resource != null;
+    }
+
+    /**
+     * Validates the creation of a user's own profile document.
+     * Ensures the document ID in the path matches the internal 'id' field for relational integrity.
+     */
+    function isCreatingOwnUserDoc(userId) {
+      return isOwner(userId) && request.resource.data.id == userId;
+    }
+
+    /**
+     * Validates the update of a user's own profile document.
+     * Ensures the internal 'id' field is immutable.
+     */
+    function isUpdatingOwnUserDoc(userId) {
+      return isExistingOwner(userId) && request.resource.data.id == resource.data.id;
+    }
+
+    /**
+     * Validates the creation of a user's own video document.
+     * Enforces that the denormalized `userId` field in the new document matches the owner.
+     */
+    function isCreatingOwnVideo(userId) {
+      return isOwner(userId) && request.resource.data.userId == userId;
+    }
+
+    /**
+     * Validates the update of a user's own video document.
+     * Ensures the denormalized `userId` ownership field is immutable.
+     */
+    function isUpdatingOwnVideo(userId) {
+      return isExistingOwner(userId) && request.resource.data.userId == resource.data.userId;
+    }
+
+
+    /**
+     * @description Controls access to a user's own profile document.
+     * @path /users/{userId}
+     * @allow A logged-in user (auth.uid='user123') can (create) their own document at /users/user123.
+     * @deny A logged-in user (auth.uid='user456') cannot (get) a document at /users/user123.
+     * @principle Restricts access to a user's own data tree and prevents user enumeration.
+     */
+    match /users/{userId} {
+      allow get: if isOwner(userId);
+      allow list: if false;
+      allow create: if isCreatingOwnUserDoc(userId);
+      allow update: if isUpdatingOwnUserDoc(userId);
+      allow delete: if isExistingOwner(userId);
+    }
+
+    /**
+     * @description Controls access to videos, which are stored in a subcollection under the owner's user document.
+     * @path /users/{userId}/videos/{videoId}
+     * @allow A logged-in user (auth.uid='user123') can (list) videos from /users/user123/videos.
+     * @deny A logged-in user (auth.uid='user456') cannot (delete) a document at /users/user123/videos/vid999.
+     * @principle Enforces document ownership for all operations based on the path hierarchy.
+     */
+    match /users/{userId}/videos/{videoId} {
+      allow get: if isOwner(userId);
+      allow list: if isOwner(userId);
+      allow create: if isCreatingOwnVideo(userId);
+      allow update: if isUpdatingOwnVideo(userId);
+      allow delete: if isExistingOwner(userId);
+    }
+  }
+}

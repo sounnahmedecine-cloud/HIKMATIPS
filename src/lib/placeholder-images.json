@@ -1,0 +1,52 @@
+{
+  "placeholderImages": [
+    {
+      "id": "nature-1",
+      "description": "A serene forest path.",
+      "imageUrl": "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=1080",
+      "imageHint": "nature forest"
+    },
+    {
+      "id": "islamic-1",
+      "description": "Architectural detail of a mosque.",
+      "imageUrl": "https://images.unsplash.com/photo-1532664022384-26c74d93d5f3?w=1080",
+      "imageHint": "islamic architecture"
+    },
+    {
+      "id": "nature-2",
+      "description": "Sunlight filtering through trees.",
+      "imageUrl": "https://images.unsplash.com/photo-1426604966848-d7adac402bff?w=1080",
+      "imageHint": "nature sun"
+    },
+    {
+      "id": "islamic-2",
+      "description": "A beautiful mosque at sunset.",
+      "imageUrl": "https://images.unsplash.com/photo-1570115602146-5d24c7f0775d?w=1080",
+      "imageHint": "islamic mosque"
+    },
+    {
+      "id": "health-1",
+      "description": "Fresh fruits and vegetables.",
+      "imageUrl": "https://images.unsplash.com/photo-1542838132-92c53300491e?w=1080",
+      "imageHint": "health food"
+    },
+    {
+      "id": "fitness-1",
+      "description": "Someone tying their running shoes.",
+      "imageUrl": "https://images.unsplash.com/photo-1476480862126-209bfaa8edc8?w=1080",
+      "imageHint": "fitness sport"
+    },
+    {
+      "id": "abstract-1",
+      "description": "Abstract colorful background.",
+      "imageUrl": "https://images.unsplash.com/photo-1607791330831-d3dcf312e2d1?w=1080",
+      "imageHint": "abstract serene"
+    },
+    {
+      "id": "serene-1",
+      "description": "Calm lake at dawn.",
+      "imageUrl": "https://images.unsplash.com/photo-1470252649378-9c29740c9fa8?w=1080",
+      "imageHint": "serene nature"
+    }
+  ]
+}

@@ -1,0 +1,135 @@
+{
+  "entities": {
+    "User": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "User",
+      "type": "object",
+      "description": "Represents a user of the HikmaClips application.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the user entity."
+        },
+        "googleId": {
+          "type": "string",
+          "description": "The Google ID of the user for authentication purposes."
+        },
+        "email": {
+          "type": "string",
+          "description": "The email address of the user.",
+          "format": "email"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "The timestamp indicating when the user account was created.",
+          "format": "date-time"
+        },
+        "lastLogin": {
+          "type": "string",
+          "description": "The timestamp indicating the last time the user logged in.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "googleId",
+        "email",
+        "createdAt",
+        "lastLogin"
+      ]
+    },
+    "Video": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Video",
+      "type": "object",
+      "description": "Represents a generated Hadith video.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the video entity."
+        },
+        "userId": {
+          "type": "string",
+          "description": "Reference to User. (Relationship: User 1:N Video)"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "The timestamp indicating when the video was generated.",
+          "format": "date-time"
+        },
+        "storageUsedBytes": {
+          "type": "number",
+          "description": "The number of bytes used to store this video."
+        },
+        "backgroundImageUrl": {
+          "type": "string",
+          "description": "URL of the background image used in the video.",
+          "format": "uri"
+        },
+        "hadithText": {
+          "type": "string",
+          "description": "The Hadith text displayed in the video."
+        },
+        "source": {
+          "type": "string",
+          "description": "Source of the Hadith."
+        }
+      },
+      "required": [
+        "id",
+        "userId",
+        "createdAt",
+        "storageUsedBytes",
+        "backgroundImageUrl",
+        "hadithText",
+        "source"
+      ]
+    }
+  },
+  "auth": {
+    "providers": [
+      "google.com"
+    ]
+  },
+  "firestore": {
+    "structure": [
+      {
+        "path": "/users/{userId}",
+        "definition": {
+          "entityName": "User",
+          "schema": {
+            "$ref": "#/backend/entities/User"
+          },
+          "description": "Stores user profile data. The 'userId' parameter corresponds to the Firebase Auth UID.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The Firebase Auth UID of the user."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/users/{userId}/videos/{videoId}",
+        "definition": {
+          "entityName": "Video",
+          "schema": {
+            "$ref": "#/backend/entities/Video"
+          },
+          "description": "Stores video data for a specific user. Includes denormalized 'userId' for authorization independence.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The Firebase Auth UID of the user who owns the video."
+            },
+            {
+              "name": "videoId",
+              "description": "Unique identifier for the video."
+            }
+          ]
+        }
+      }
+    ],
+    "reasoning": "The Firestore structure is designed to manage users and their generated Hadith videos. It prioritizes authorization independence and supports secure list operations (QAPs). User data is stored under `/users/{userId}`. Each user's videos are stored in a subcollection `/users/{userId}/videos/{videoId}`. This structure leverages path-based ownership for simplified security rules.\n\n**Authorization Independence:** The `Video` documents contain a `userId` field, which is a denormalized copy of the parent user's ID. This eliminates the need for `get()` calls to the parent `user` document to verify ownership when creating or modifying `Video` documents. The security rules can directly validate `request.auth.uid == resource.data.userId`.\n\n**QAPs Support:** Segregating videos into user-specific subcollections enables secure list operations. Rules can allow a user to list only their own videos by checking `request.auth.uid == userId` on the `/users/{userId}/videos` collection. Since all videos in a user's subcollection are owned by that user, no further filtering is needed in the rules, supporting the principle that rules are not filters."
+  }
+}
