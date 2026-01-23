@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import Image from 'next/image';
 import {
   Sparkles,
@@ -16,10 +16,14 @@ import {
   BookMarked,
   LogIn,
   LogOut,
-  User,
   Share2,
   AtSign,
+  Play,
+  Type,
+  User,
+  Check
 } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -77,20 +81,42 @@ export default function Home() {
   const [background, setBackground] = useState<string>(
     PlaceHolderImages[0]?.imageUrl || 'https://picsum.photos/seed/1/1080/1920'
   );
+  const [animationKey, setAnimationKey] = useState(0);
   const [isGenerating, setIsGenerating] = useState(false);
   const [topic, setTopic] = useState('');
-  const [creatorSignature, setCreatorSignature] = useState('');
+  const [creatorSignature, setCreatorSignature] = useState('@habibi_muslim');
   const [generationCount, setGenerationCount] = useState(0);
   const [showSignInPopup, setShowSignInPopup] = useState(false);
+  const [showWelcomePopup, setShowWelcomePopup] = useState(false);
+
+  useEffect(() => {
+    const hasSeenWelcome = localStorage.getItem('hasSeenWelcome');
+    if (!hasSeenWelcome) {
+      const timer = setTimeout(() => {
+        setShowWelcomePopup(true);
+      }, 1500); // Petit délai pour laisser l'animation d'entrée se faire
+      return () => clearTimeout(timer);
+    }
+  }, []);
+
+  const handleCloseWelcome = () => {
+    localStorage.setItem('hasSeenWelcome', 'true');
+    setShowWelcomePopup(false);
+  };
 
   const previewRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
   const { user, isUserLoading } = useUser();
   const auth = useAuth();
 
+  const [isConnecting, setIsConnecting] = useState(false);
+
   const handleSignIn = async () => {
-    if (!auth) return;
+    if (!auth || isConnecting) return;
+
+    setIsConnecting(true);
     const provider = new GoogleAuthProvider();
+
     try {
       await signInWithPopup(auth, provider);
       toast({
@@ -99,7 +125,13 @@ export default function Home() {
       });
       setShowSignInPopup(false);
       setGenerationCount(0);
-    } catch (error) {
+    } catch (error: any) {
+      // Ignorer l'erreur si l'utilisateur a juste fermé la popup ou s'il y a un doublon de requête
+      if (error.code === 'auth/cancelled-popup-request' || error.code === 'auth/popup-closed-by-user') {
+        console.log('Authentification annulée ou fermée par l\'utilisateur');
+        return;
+      }
+
       console.error('Erreur de connexion:', error);
       toast({
         variant: 'destructive',
@@ -107,6 +139,8 @@ export default function Home() {
         description: "Une erreur s'est produite lors de la connexion.",
       });
       setShowSignInPopup(false);
+    } finally {
+      setIsConnecting(false);
     }
   };
 
@@ -272,8 +306,13 @@ export default function Home() {
       await Share.share({
         title: 'Ma Hikma du jour',
         text: `Découvrez cette sagesse sur HikmaTips : "${content.content}" - ${content.source}`,
-        url: savedFile.uri,
+        files: [savedFile.uri],
         dialogTitle: 'Partager avec...',
+      });
+
+      toast({
+        title: 'Partage ouvert',
+        description: 'Choisissez une application pour partager votre Hikma.',
       });
 
     } catch (error) {
@@ -438,20 +477,26 @@ export default function Home() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <AtSign className="text-primary" />
-                  Signature du créateur
+                  Signature
                 </CardTitle>
                 <CardDescription>
                   Ajoutez votre @pseudo ou nom sur l'image.
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="flex gap-2">
+                <div className="flex flex-col gap-2">
                   <Input
                     placeholder="Ex: @votre_pseudo"
                     value={creatorSignature}
                     onChange={(e) => setCreatorSignature(e.target.value)}
+                    disabled={!user}
                     className="flex-grow"
                   />
+                  {!user && (
+                    <p className="text-xs text-muted-foreground">
+                      Connectez-vous pour personnaliser votre propre signature.
+                    </p>
+                  )}
                 </div>
               </CardContent>
             </Card>
@@ -530,13 +575,56 @@ export default function Home() {
                   <div
                     className="absolute inset-0 flex items-center justify-center p-8"
                   >
-                    <div className="text-center text-white">
-                      <p className="text-3xl sm:text-4xl font-bold leading-tight shadow-black [text-shadow:0_2px_8px_var(--tw-shadow-color)] drop-shadow-lg">
-                        "{content.content}"
-                      </p>
-                      <p className="mt-6 text-xl sm:text-2xl font-semibold text-tiktok-cyan/90 italic shadow-black [text-shadow:0_1px_4px_var(--tw-shadow-color)]">
-                        - {content.source}
-                      </p>
+                    <div className="text-center w-full max-w-4xl">
+                      <div className="text-2xl sm:text-4xl font-extrabold leading-tight tracking-tight px-4">
+                        <AnimatePresence mode="wait">
+                          <motion.div
+                            key={animationKey + content.content}
+                            initial="hidden"
+                            animate="visible"
+                            variants={{
+                              visible: { transition: { staggerChildren: 0.08 } },
+                            }}
+                            className="text-white"
+                          >
+                            "
+                            {content.content.split(' ').map((word, i) => (
+                              <motion.span
+                                key={i}
+                                variants={{
+                                  hidden: { opacity: 0, y: 20, filter: 'blur(5px)' },
+                                  visible: {
+                                    opacity: 1,
+                                    y: 0,
+                                    filter: 'blur(0px)',
+                                    transition: { type: 'spring', damping: 12, stiffness: 100 }
+                                  },
+                                }}
+                                className={cn(
+                                  "inline-block mr-2",
+                                  user ? "text-tiktok-gradient" : "text-white"
+                                )}
+                              >
+                                {word}
+                              </motion.span>
+                            ))}
+                            "
+                          </motion.div>
+                        </AnimatePresence>
+                      </div>
+                      <motion.p
+                        key={animationKey + content.source}
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{
+                          delay: content.content.split(' ').length * 0.08 + 0.5,
+                          duration: 0.8,
+                          ease: "easeOut"
+                        }}
+                        className="mt-6 text-lg sm:text-xl font-bold text-white/90 italic tracking-widest uppercase opacity-70"
+                      >
+                        — {content.source} —
+                      </motion.p>
                     </div>
                   </div>
                 )}
@@ -609,6 +697,15 @@ export default function Home() {
                   <Share2 className="mr-2 h-4 w-4" />
                   Partager maintenant
                 </Button>
+                <Button
+                  onClick={() => setAnimationKey(prev => prev + 1)}
+                  disabled={!content || isGenerating}
+                  variant="ghost"
+                  className="w-full h-8 text-xs text-muted-foreground"
+                >
+                  <Play className="mr-1 h-3 w-3" />
+                  Revoir l'animation
+                </Button>
               </CardContent>
             </Card>
           </div>
@@ -651,6 +748,54 @@ export default function Home() {
             <AlertDialogAction onClick={handleSignIn}>
               <LogIn className="mr-2 h-4 w-4" />
               Se connecter avec Google
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+      <AlertDialog open={showWelcomePopup} onOpenChange={setShowWelcomePopup}>
+        <AlertDialogContent className="max-w-md border-none bg-gradient-to-b from-card to-background shadow-2xl">
+          <AlertDialogHeader>
+            <div className="mx-auto bg-primary/20 p-3 rounded-full mb-2 w-fit">
+              <Sparkles className="h-8 w-8 text-primary animate-pulse" />
+            </div>
+            <AlertDialogTitle className="text-2xl text-center font-bold">
+              Bienvenue sur <span className="text-tiktok-gradient italic">HikmaTips</span> ! 🎨
+            </AlertDialogTitle>
+            <AlertDialogDescription className="text-center pt-2">
+              Prêt à créer des images inspirantes pour vos réseaux sociaux ?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+
+          <div className="py-6 space-y-4">
+            <p className="font-semibold text-foreground text-center mb-4">
+              🎁 Pourquoi créer un compte (Gratuit) ?
+            </p>
+            <div className="grid gap-3">
+              {[
+                { title: "Générations Illimitées", desc: "Plus aucune limite quotidienne !" },
+                { title: "Styles Premium", desc: "Accès aux dégradés TikTok exclusifs" },
+                { title: "Signature Perso", desc: "Votre propre @pseudo sur l'image" },
+                { title: "C'est 100% Gratuit", desc: "Et ça le restera toujours InshaAllah" },
+              ].map((benefit, i) => (
+                <div key={i} className="flex items-start gap-3 p-3 rounded-lg bg-accent/50 border border-border/50">
+                  <div className="mt-1 bg-primary/20 p-1 rounded-full">
+                    <Check className="h-4 w-4 text-primary" />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-sm">{benefit.title}</h4>
+                    <p className="text-xs text-muted-foreground">{benefit.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <AlertDialogFooter>
+            <AlertDialogAction
+              onClick={handleCloseWelcome}
+              className="w-full bg-gradient-to-r from-tiktok-pink to-tiktok-cyan hover:opacity-90 font-bold py-6 text-lg"
+            >
+              C'est parti ! 🚀
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

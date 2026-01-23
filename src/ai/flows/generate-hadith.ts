@@ -1,15 +1,4 @@
-// 'use server'; // Disabled for static export
-/**
- * @fileOverview Un flux Genkit pour générer du contenu inspirant.
- *
- * - generateHadith - Une fonction qui génère une citation et sa source en fonction d'une catégorie et d'un sujet.
- * - GenerateHadithInput - Le type d'entrée pour la fonction generateHadith.
- * - GenerateHadithOutput - Le type de retour pour la fonction generateHadith.
- */
-
-import { z } from 'zod'; // Changed from 'genkit' to 'zod' if possible or keep using 'zod' directly if 'genkit' exports it.
-// Actually 'genkit' likely exports z from zod. But to be safe and avoid genkit dep, I should import z from 'zod' if installed.
-// Checking package.json... zod is installed: "zod": "^3.24.2"
+import { z } from 'zod';
 
 const categoryLabels = {
   hadith: 'Hadith',
@@ -19,53 +8,86 @@ const categoryLabels = {
 };
 
 export const GenerateHadithInputSchema = z.object({
-  category: z
-    .string()
-    .describe(
-      `La catégorie du contenu à générer. Peut être 'hadith', 'sante', 'sport', ou 'coran'.`
-    ),
-  topic: z
-    .string()
-    .optional()
-    .describe('Le sujet ou thème spécifique pour la citation. Ex: "patience", "nutrition".'),
+  category: z.string(),
+  topic: z.string().optional(),
 });
 export type GenerateHadithInput = z.infer<typeof GenerateHadithInputSchema>;
 
 export const GenerateHadithOutputSchema = z.object({
-  content: z.string().describe('La citation ou le conseil généré.'),
-  source: z.string().describe('La source de la citation (ex: "Boukhari", "Sourate Al-Baqarah, 286").'),
+  content: z.string(),
+  source: z.string(),
 });
 export type GenerateHadithOutput = z.infer<typeof GenerateHadithOutputSchema>;
 
 export async function generateHadith(
   input: GenerateHadithInput
 ): Promise<GenerateHadithOutput> {
-  // Mock implementation for static export / Capacitor
-  console.log("Generating hadith (mock) for:", input);
+  const { category, topic } = input;
+  const label = categoryLabels[category as keyof typeof categoryLabels] || category;
 
-  // Simulate network delay
-  await new Promise(resolve => setTimeout(resolve, 1000));
+  // Use NEXT_PUBLIC_ for client-side access in static export
+  const apiKey = process.env.NEXT_PUBLIC_GOOGLE_GENAI_API_KEY || process.env.GOOGLE_GENAI_API_KEY;
 
-  const mocks: Record<string, GenerateHadithOutput[]> = {
-    hadith: [
-      { content: "La richesse n'est pas la quantité de biens, mais la richesse est la richesse de l'âme.", source: "Boukhari" },
-      { content: "Celui qui ne remercie pas les gens ne remercie pas Allah.", source: "Tirmidhi" }
-    ],
-    coran: [
-      { content: "Et avec la difficulté, il y a certes une facilité.", source: "Sourate Ash-Sharh, 5-6" },
-      { content: "Allah n'impose à aucune âme une charge supérieure à sa capacité.", source: "Sourate Al-Baqarah, 286" }
-    ],
-    sante: [
-      { content: "Votre corps a des droits sur vous.", source: "Hadith (Boukhari)" },
-      { content: "Mangez et buvez, mais ne commettez pas d'excès.", source: "Sourate Al-Araf, 31" }
-    ],
-    sport: [
-      { content: "Le croyant fort est meilleur et plus aimé d'Allah que le croyant faible.", source: "Mouslim" }
-    ]
-  };
+  if (!apiKey || apiKey === 'VOTRE_CLE_API_ICI') {
+    throw new Error("Clé API Gemini manquante. Veuillez configurer NEXT_PUBLIC_GOOGLE_GENAI_API_KEY.");
+  }
 
-  const cat = input.category as keyof typeof mocks;
-  const list = mocks[cat] || mocks.hadith;
-  return list[Math.floor(Math.random() * list.length)];
+  const prompt = `Tu es un expert rigoureux en spiritualité et bien-être. 
+Ton objectif est de fournir une citation ou un conseil court pour la catégorie : ${label}.
+${topic ? `Thème : ${topic}.` : 'Choisis un thème inspirant.'}
+
+### CONSIGNES DE SÉCURITÉ CRITIQUES :
+1. **ZÉRO COMMENTAIRE** : Si la catégorie est "Hadith" ou "Verset du Coran", tu dois renvoyer UNIQUEMENT le texte original. Interdiction formelle d'ajouter des phrases comme "Cultive ta force..." ou des conseils personnels à l'intérieur du champ "content".
+2. **AUTHENTICITÉ** : Ne cite que des sources dont tu es sûr. Pour les Hadiths, privilégie Sahih Boukhari ou Sahih Muslim.
+3. **SÉPARATION** : Le champ "content" contient la citation exacte. Le champ "source" contient uniquement la référence (Auteur, Recueil, Chapitre/Verset).
+4. **LANGUE** : Tout doit être en Français.
+
+Réponds EXCLUSIVEMENT en JSON sous ce format :
+{
+  "content": "Le texte exact et authentique de la citation.",
+  "source": "La source précise (ex: Rapporté par Muslim, 2664)"
+}`;
+
+  try {
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${apiKey}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: prompt }] }],
+          generationConfig: {
+            response_mime_type: 'application/json',
+            temperature: 1
+          }
+        }),
+      }
+    );
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error("Détails erreur Gemini:", errorData);
+      throw new Error(errorData.error?.message || "Erreur lors de l'appel à Gemini");
+    }
+
+    const data = await response.json();
+    let text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+
+    if (!text) throw new Error("Réponse vide de Gemini");
+
+    // Nettoyage au cas où l'IA retourne des backticks markdown (```json ... ```)
+    text = text.replace(/```json/g, '').replace(/```/g, '').trim();
+
+    try {
+      const parsed = JSON.parse(text);
+      return GenerateHadithOutputSchema.parse(parsed);
+    } catch (parseError) {
+      console.error("Erreur de parsing JSON. Texte reçu:", text);
+      throw new Error("Le format de réponse de l'IA est invalide.");
+    }
+  } catch (error) {
+    console.error("Erreur AI détaillée:", error);
+    throw error;
+  }
 }
 
