@@ -708,7 +708,12 @@ export default function Home() {
                 </Button>
 
                 <div className="pt-4 border-t mt-2">
-                  <a href="/hikmatips.apk" download className="w-full block">
+                  <a
+                    href="https://drive.google.com/file/d/1HHslql3aWMhbQ-VsbCC7zJWvCgc0vek0/view?usp=drive_link"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full block"
+                  >
                     <Button variant="secondary" className="w-full gap-2">
                       <img src="https://upload.wikimedia.org/wikipedia/commons/d/d7/Android_robot.svg" alt="Android" className="w-4 h-4" />
                       Télécharger l'application Android
