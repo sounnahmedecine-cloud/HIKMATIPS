@@ -811,7 +811,7 @@ export default function Home() {
 
                 <div className="pt-4 border-t mt-2">
                   <a
-                    href="https://drive.google.com/file/d/1HHslql3aWMhbQ-VsbCC7zJWvCgc0vek0/view?usp=drive_link"
+                    href="https://drive.google.com/file/d/1yRERvrTGsIJJXCL7q31vI8G4VW-lgkfu/view?usp=drive_link"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="w-full block"
