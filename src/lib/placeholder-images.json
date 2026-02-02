@@ -25,18 +25,6 @@
       "imageHint": "islamic mosque"
     },
     {
-      "id": "health-1",
-      "description": "Fresh fruits and vegetables.",
-      "imageUrl": "https://images.unsplash.com/photo-1542838132-92c53300491e?w=1080",
-      "imageHint": "health food"
-    },
-    {
-      "id": "fitness-1",
-      "description": "Someone tying their running shoes.",
-      "imageUrl": "https://images.unsplash.com/photo-1476480862126-209bfaa8edc8?w=1080",
-      "imageHint": "fitness sport"
-    },
-    {
       "id": "abstract-1",
       "description": "Abstract colorful background.",
       "imageUrl": "https://images.unsplash.com/photo-1607791330831-d3dcf312e2d1?w=1080",
@@ -47,6 +35,126 @@
       "description": "Calm lake at dawn.",
       "imageUrl": "https://images.unsplash.com/photo-1470252649378-9c29740c9fa8?w=1080",
       "imageHint": "serene nature"
+    },
+    {
+      "id": "ramadan-1",
+      "description": "Ramadan lantern and mosque.",
+      "imageUrl": "https://res.cloudinary.com/dzagwz94z/image/upload/v1769534516/1691b6e8168bef087cb436438c63774b_z8sqmt.jpg",
+      "imageHint": "ramadan lantern islamic"
+    },
+    {
+      "id": "ramadan-2",
+      "description": "Ramadan night scene.",
+      "imageUrl": "https://res.cloudinary.com/dzagwz94z/image/upload/v1769534516/e68772ad621969d67c820f0e3a32629b_wznflq.jpg",
+      "imageHint": "ramadan islamic night"
+    },
+    {
+      "id": "ramadan-3",
+      "description": "Ramadan mosque atmosphere.",
+      "imageUrl": "https://res.cloudinary.com/dzagwz94z/image/upload/v1769534516/photo-1537181534458-45dcee76ae90_txclt0.jpg",
+      "imageHint": "ramadan mosque serene"
+    },
+    {
+      "id": "ramadan-4",
+      "description": "Ramadan crescent moon.",
+      "imageUrl": "https://res.cloudinary.com/dzagwz94z/image/upload/v1769534516/7c497dc7ce68b24404990213d4f9b486_wjy0dm.jpg",
+      "imageHint": "ramadan islamic moon"
+    },
+    {
+      "id": "ramadan-5",
+      "description": "Ramadan decorations.",
+      "imageUrl": "https://res.cloudinary.com/dzagwz94z/image/upload/v1769534517/cbc0540ac2bb47feb9539416b2c53063_r0lv4k.jpg",
+      "imageHint": "ramadan lantern islamic"
+    },
+    {
+      "id": "ramadan-logo",
+      "description": "HikmaTips Ramadan logo.",
+      "imageUrl": "https://res.cloudinary.com/dzagwz94z/image/upload/v1769534517/1769532729770_sthc6q.png",
+      "imageHint": "ramadan logo hikmatips"
+    },
+    {
+      "id": "islamic-3",
+      "description": "Islamic calligraphy scene.",
+      "imageUrl": "https://res.cloudinary.com/dhjwimevi/image/upload/v1769553925/grok_image_1769553710241_i3mabz.jpg",
+      "imageHint": "islamic calligraphy serene"
+    },
+    {
+      "id": "nature-3",
+      "description": "Mountain landscape.",
+      "imageUrl": "https://res.cloudinary.com/db2ljqpdt/image/upload/v1769944787/simon-infanger-ECctP9oPtio-unsplash_knxrgc.jpg",
+      "imageHint": "nature mountain serene"
+    },
+    {
+      "id": "islamic-4",
+      "description": "Islamic art background.",
+      "imageUrl": "https://res.cloudinary.com/db2ljqpdt/image/upload/v1769944784/grok_image_1769332087344_mgthkt.jpg",
+      "imageHint": "islamic art abstract"
+    },
+    {
+      "id": "islamic-5",
+      "description": "Islamic pattern background.",
+      "imageUrl": "https://res.cloudinary.com/db2ljqpdt/image/upload/v1769944784/grok_image_1769332080495_cnuvb5.jpg",
+      "imageHint": "islamic abstract serene"
+    },
+    {
+      "id": "islamic-6",
+      "description": "Islamic architecture detail.",
+      "imageUrl": "https://res.cloudinary.com/db2ljqpdt/image/upload/v1769944784/grok_image_1769332119631_zn0kew.jpg",
+      "imageHint": "islamic mosque architecture"
+    },
+    {
+      "id": "islamic-7",
+      "description": "Islamic scene.",
+      "imageUrl": "https://res.cloudinary.com/db2ljqpdt/image/upload/v1769944784/grok_image_1769332098250_efh9ns.jpg",
+      "imageHint": "islamic nature serene"
+    },
+    {
+      "id": "islamic-8",
+      "description": "Islamic landscape.",
+      "imageUrl": "https://res.cloudinary.com/db2ljqpdt/image/upload/v1769944784/grok_image_1769332066008_fuacjp.jpg",
+      "imageHint": "islamic nature abstract"
+    },
+    {
+      "id": "islamic-9",
+      "description": "Islamic golden hour.",
+      "imageUrl": "https://res.cloudinary.com/db2ljqpdt/image/upload/v1769944783/grok_image_1769332241909_uzfva7.jpg",
+      "imageHint": "islamic serene nature"
+    },
+    {
+      "id": "islamic-10",
+      "description": "Islamic night sky.",
+      "imageUrl": "https://res.cloudinary.com/db2ljqpdt/image/upload/v1769944783/grok_image_1769332420725_pghcnr.jpg",
+      "imageHint": "islamic night abstract"
+    },
+    {
+      "id": "islamic-11",
+      "description": "Islamic serene scene.",
+      "imageUrl": "https://res.cloudinary.com/db2ljqpdt/image/upload/v1769944783/grok_image_1769332250175_gsrsnm.jpg",
+      "imageHint": "islamic serene abstract"
+    },
+    {
+      "id": "islamic-12",
+      "description": "Islamic spiritual scene.",
+      "imageUrl": "https://res.cloudinary.com/db2ljqpdt/image/upload/v1769944783/grok_image_1769332435547_rcbu7q.jpg",
+      "imageHint": "islamic abstract nature"
+    },
+    {
+      "id": "islamic-13",
+      "description": "Islamic decorative scene.",
+      "imageUrl": "https://res.cloudinary.com/db2ljqpdt/image/upload/v1769944783/grok_image_1769332458334_mgyyl8.jpg",
+      "imageHint": "islamic mosque serene"
+    },
+    {
+      "id": "islamic-14",
+      "description": "Islamic contemplation.",
+      "imageUrl": "https://res.cloudinary.com/db2ljqpdt/image/upload/v1769945662/grok_image_1769945608753_yhwglq.jpg",
+      "imageHint": "islamic nature serene"
+    },
+    {
+      "id": "islamic-15",
+      "description": "Islamic peaceful landscape.",
+      "imageUrl": "https://res.cloudinary.com/db2ljqpdt/image/upload/v1769945662/grok_image_1769945546779_lrbmbq.jpg",
+      "imageHint": "islamic serene nature"
     }
   ]
 }

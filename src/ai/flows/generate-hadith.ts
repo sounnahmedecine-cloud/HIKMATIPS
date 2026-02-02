@@ -2,8 +2,8 @@ import { z } from 'zod';
 
 const categoryLabels = {
   hadith: 'Hadith',
-  sante: 'Conseil de Santé',
-  sport: 'Conseil de Sport et Bien-être',
+  ramadan: 'Conseil ou invocation du Ramadan',
+  'recherche-ia': 'Verset coranique recherché par IA',
   coran: 'Verset du Coran',
 };
 
@@ -32,20 +32,28 @@ export async function generateHadith(
     throw new Error("Clé API Gemini manquante. Veuillez configurer NEXT_PUBLIC_GOOGLE_GENAI_API_KEY.");
   }
 
-  const prompt = `Tu es un expert rigoureux en spiritualité et bien-être. 
+  const prompt = `Tu es un expert rigoureux en sciences islamiques et en spiritualité musulmane.
 Ton objectif est de fournir une citation ou un conseil court pour la catégorie : ${label}.
 ${topic ? `Thème : ${topic}.` : 'Choisis un thème inspirant.'}
 
+### CONVENTIONS ISLAMIQUES OBLIGATOIRES :
+- Utilise TOUJOURS le nom "Allah" (jamais "Dieu" seul).
+- Après toute mention du Prophète Muhammad, ajoute TOUJOURS "(ﷺ)" (Salla Allahou Alayhi wa Sallam).
+- Après toute mention d'un autre prophète, ajoute "(عليه السلام)".
+- Pour les compagnons, ajoute "(رضي الله عنه)" la première fois.
+
 ### CONSIGNES DE SÉCURITÉ CRITIQUES :
-1. **ZÉRO COMMENTAIRE** : Si la catégorie est "Hadith" ou "Verset du Coran", tu dois renvoyer UNIQUEMENT le texte original. Interdiction formelle d'ajouter des phrases comme "Cultive ta force..." ou des conseils personnels à l'intérieur du champ "content".
-2. **AUTHENTICITÉ** : Ne cite que des sources dont tu es sûr. Pour les Hadiths, privilégie Sahih Boukhari ou Sahih Muslim.
+1. **ZÉRO COMMENTAIRE** : Si la catégorie est "Hadith", "Verset du Coran" ou "Verset coranique recherché par IA", tu dois renvoyer UNIQUEMENT le texte original. Interdiction formelle d'ajouter des phrases personnelles dans le champ "content".
+2. **AUTHENTICITÉ** : Ne cite que des sources dont tu es sûr. Pour les Hadiths, privilégie Sahih Boukhari ou Sahih Muslim. Pour le Coran, indique toujours la sourate et le numéro du verset.
 3. **SÉPARATION** : Le champ "content" contient la citation exacte. Le champ "source" contient uniquement la référence (Auteur, Recueil, Chapitre/Verset).
 4. **LANGUE** : Tout doit être en Français.
+5. **RAMADAN** : Si la catégorie est "Ramadan", fournis des invocations (douas), des conseils spirituels ou des hadiths authentiques liés au jeûne, à la prière nocturne (Tarawih), à la générosité et à la piété pendant le Ramadan.
+6. **RECHERCHE IA** : Si la catégorie est "Verset coranique recherché par IA", recherche un verset du Coran correspondant au thème demandé. Fournis le texte traduit en français avec la référence exacte (Sourate, verset).
 
 Réponds EXCLUSIVEMENT en JSON sous ce format :
 {
   "content": "Le texte exact et authentique de la citation.",
-  "source": "La source précise (ex: Rapporté par Muslim, 2664)"
+  "source": "La source précise (ex: Rapporté par Muslim, 2664 ou Sourate Al-Baqara, verset 183)"
 }`;
 
   try {

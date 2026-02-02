@@ -8,9 +8,9 @@ import {
   Image as ImageIcon,
   Download,
   Loader2,
-  HeartPulse,
+  Moon,
   BookOpen,
-  Bike,
+  Search,
   RectangleVertical,
   RectangleHorizontal,
   BookMarked,
@@ -19,7 +19,6 @@ import {
   Share2,
   AtSign,
   Play,
-  Type,
   User,
   Check
 } from 'lucide-react';
@@ -71,7 +70,7 @@ type Content = {
   source: string;
 };
 
-type Category = 'hadith' | 'sante' | 'sport' | 'coran';
+type Category = 'hadith' | 'ramadan' | 'recherche-ia' | 'coran';
 type Format = 'story' | 'square';
 
 export default function Home() {
@@ -202,14 +201,11 @@ export default function Home() {
   const handleRandomBackground = () => {
     const relevantImages = PlaceHolderImages.filter(img => {
       const hint = img.imageHint.toLowerCase();
-      if (category === 'hadith' || category === 'coran') {
+      if (category === 'hadith' || category === 'coran' || category === 'recherche-ia') {
         return hint.includes('islamic') || hint.includes('nature') || hint.includes('serene') || hint.includes('abstract');
       }
-      if (category === 'sante') {
-        return hint.includes('health') || hint.includes('nature');
-      }
-      if (category === 'sport') {
-        return hint.includes('fitness') || hint.includes('sport');
+      if (category === 'ramadan') {
+        return hint.includes('ramadan') || hint.includes('islamic') || hint.includes('mosque') || hint.includes('lantern');
       }
       return true;
     });
@@ -413,23 +409,23 @@ export default function Home() {
                     </Label>
                   </div>
                   <div>
-                    <RadioGroupItem value="sante" id="sante" className="peer sr-only" />
+                    <RadioGroupItem value="ramadan" id="ramadan" className="peer sr-only" />
                     <Label
-                      htmlFor="sante"
+                      htmlFor="ramadan"
                       className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-primary/10 hover:text-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary peer-data-[state=checked]:bg-primary peer-data-[state=checked]:text-primary-foreground transition-smooth"
                     >
-                      <HeartPulse className="mb-3 h-6 w-6" />
-                      Santé
+                      <Moon className="mb-3 h-6 w-6" />
+                      Ramadan
                     </Label>
                   </div>
                   <div>
-                    <RadioGroupItem value="sport" id="sport" className="peer sr-only" />
+                    <RadioGroupItem value="recherche-ia" id="recherche-ia" className="peer sr-only" />
                     <Label
-                      htmlFor="sport"
+                      htmlFor="recherche-ia"
                       className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-primary/10 hover:text-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary peer-data-[state=checked]:bg-primary peer-data-[state=checked]:text-primary-foreground transition-smooth"
                     >
-                      <Bike className="mb-3 h-6 w-6" />
-                      Sport
+                      <Search className="mb-3 h-6 w-6" />
+                      Recherche IA
                     </Label>
                   </div>
                 </RadioGroup>
@@ -691,7 +687,7 @@ export default function Home() {
                 <Button
                   onClick={handleShareImage}
                   disabled={!content || isGenerating}
-                  className="w-full bg-gradient-to-r from-primary to-secondary hover:opacity-90"
+                  className="w-full bg-gradient-to-r from-primary to-accent hover:opacity-90"
                   size="lg"
                 >
                   <Share2 className="mr-2 h-4 w-4" />
@@ -807,7 +803,7 @@ export default function Home() {
           <AlertDialogFooter>
             <AlertDialogAction
               onClick={handleCloseWelcome}
-              className="w-full bg-gradient-to-r from-primary to-secondary hover:opacity-90 font-bold py-6 text-lg"
+              className="w-full bg-gradient-to-r from-primary to-accent hover:opacity-90 font-bold py-6 text-lg"
             >
               C'est parti ! 🚀
             </AlertDialogAction>

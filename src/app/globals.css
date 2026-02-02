@@ -4,74 +4,68 @@
 
 @layer base {
   :root {
-    /* 🎨 Apple-inspired Color System - Premium Dark */
-    /* Background: #0F172A (Deep blue-black, not pure black) */
-    --background: 222 47% 11%;
-    /* Foreground: #F8FAFC (Off-white) */
-    --foreground: 210 40% 98%;
-    /* Card: #1E293B (Slightly lighter) */
-    --card: 217 33% 17%;
-    --card-foreground: 210 40% 98%;
-    /* Popover */
-    --popover: 222 47% 11%;
-    --popover-foreground: 210 40% 98%;
+    /* 🎨 HikmaTips Color System - Rose + Cyan */
+    --background: 0 0% 100%;
+    --foreground: 0 0% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 3.9%;
 
-    /* Primary - Apple Blue #3B82F6 */
-    --primary: 217 91% 60%;
-    --primary-foreground: 210 40% 98%;
+    /* Primary - Rose #ff0050 */
+    --primary: 348 99% 58%;
+    --primary-foreground: 0 0% 98%;
 
-    /* Secondary - Apple Purple #7C3AED */
-    --secondary: 263 70% 58%;
-    --secondary-foreground: 210 40% 98%;
+    /* Secondary */
+    --secondary: 0 0% 96.1%;
+    --secondary-foreground: 0 0% 9%;
 
-    /* Accent - Apple Red #EF4444 */
-    --accent: 0 84% 60%;
-    --accent-foreground: 210 40% 98%;
+    /* Accent - Cyan #00f2ea */
+    --accent: 178 90% 55%;
+    --accent-foreground: 0 0% 9%;
 
-    /* Muted: #334155 / Muted text: #64748B */
-    --muted: 215 25% 27%;
-    --muted-foreground: 215 16% 47%;
+    /* Muted */
+    --muted: 0 0% 96.1%;
+    --muted-foreground: 0 0% 45.1%;
 
     /* Destructive */
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
 
-    /* Border: #334155 / Input */
-    --border: 215 25% 27%;
-    --input: 215 25% 27%;
-    --ring: 217 91% 60%;
+    /* Border & Input */
+    --border: 0 0% 89.8%;
+    --input: 0 0% 89.8%;
+    --ring: 348 99% 58%;
 
-    /* Border Radius - More rounded */
     --radius: 1rem;
 
-    /* Chart Colors */
-    --chart-1: 217 91% 60%;
-    --chart-2: 0 84% 60%;
-    --chart-3: 263 70% 58%;
+    --chart-1: 348 99% 58%;
+    --chart-2: 178 90% 55%;
+    --chart-3: 250 84% 54%;
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
   }
 
   .dark {
-    --background: 222 47% 11%;
-    --foreground: 210 40% 98%;
-    --card: 217 33% 17%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222 47% 11%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 217 91% 60%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 263 70% 58%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 215 25% 27%;
-    --muted-foreground: 215 16% 47%;
-    --accent: 0 84% 60%;
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 63% 31%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 215 25% 27%;
-    --input: 215 25% 27%;
-    --ring: 217 91% 60%;
+    --background: 0 0% 7%;
+    --foreground: 0 0% 98%;
+    --card: 0 0% 10%;
+    --card-foreground: 0 0% 98%;
+    --popover: 0 0% 8%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 348 99% 58%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 0 0% 14.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 0 0% 14.9%;
+    --muted-foreground: 0 0% 63.9%;
+    --accent: 178 90% 55%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 18%;
+    --input: 0 0% 18%;
+    --ring: 348 99% 58%;
     --radius: 1rem;
   }
 }
@@ -248,9 +242,9 @@
   display: inline-block;
 }
 
-/* New Apple-inspired brand gradient (Blue → Purple) */
+/* HikmaTips brand gradient (Rose → Cyan) */
 .text-hikma-gradient {
-  background: linear-gradient(135deg, #3B82F6, #7C3AED);
+  background: linear-gradient(135deg, #ff0050, #00f2ea);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
