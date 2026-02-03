@@ -15,7 +15,7 @@ export default function PrivacyPolicy() {
       <main className="container mx-auto p-4 sm:p-8">
         <div className="prose prose-invert max-w-4xl mx-auto">
           <h1>Politique de Confidentialité</h1>
-          <p>Dernière mise à jour: 24 Juillet 2024</p>
+          <p>Dernière mise à jour: 3 Février 2026</p>
           
           <h2>1. Introduction</h2>
           <p>
@@ -51,7 +51,35 @@ export default function PrivacyPolicy() {
             Nous utilisons des mesures de sécurité administratives, techniques et physiques pour aider à protéger vos informations personnelles. Bien que nous ayons pris des mesures raisonnables pour sécuriser les informations personnelles que vous nous fournissez, sachez que malgré nos efforts, aucune mesure de sécurité n'est parfaite ou impénétrable.
           </p>
 
-          <h2>5. Nous contacter</h2>
+          <h2>5. Suppression de votre compte et de vos données</h2>
+          <p>
+            Vous pouvez demander la suppression de votre compte et de toutes les données associées à tout moment. Pour ce faire :
+          </p>
+          <ul>
+            <li>
+              <strong>Par e-mail :</strong> Envoyez un e-mail à <a href="mailto:contact@hikmaclips.com" className="text-islamic-green hover:underline">contact@hikmaclips.com</a> avec l'objet "Demande de suppression de compte" en précisant l'adresse e-mail associée à votre compte.
+            </li>
+            <li>
+              <strong>Par téléphone :</strong> Contactez-nous au +212 699 24 55 42.
+            </li>
+          </ul>
+          <p>
+            <strong>Données supprimées :</strong>
+          </p>
+          <ul>
+            <li>Votre nom et adresse e-mail</li>
+            <li>Votre photo de profil</li>
+            <li>Votre identifiant utilisateur</li>
+            <li>Toutes les préférences liées à votre compte</li>
+          </ul>
+          <p>
+            <strong>Délai de traitement :</strong> Votre demande sera traitée dans un délai maximum de 7 jours ouvrables. Vous recevrez une confirmation par e-mail une fois la suppression effectuée.
+          </p>
+          <p>
+            <strong>Note :</strong> Les contenus que vous avez générés et téléchargés sur votre appareil ne sont pas stockés sur nos serveurs et ne seront donc pas affectés par la suppression de votre compte.
+          </p>
+
+          <h2>6. Nous contacter</h2>
           <p>
             Si vous avez des questions ou des commentaires sur cette politique de confidentialité, veuillez nous contacter à :
           </p>
