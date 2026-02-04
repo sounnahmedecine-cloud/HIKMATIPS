@@ -1,0 +1,628 @@
+{
+  "hadiths": [
+    {
+      "id": 1,
+      "content": "Les actions ne valent que par les intentions, et chaque homme n'aura que ce qu'il a eu l'intention de faire.",
+      "source": "Sahih al-Bukhari, 1",
+      "category": "intentions",
+      "narrator": "Omar ibn al-Khattab"
+    },
+    {
+      "id": 2,
+      "content": "Le musulman est celui dont les musulmans sont à l'abri de sa langue et de sa main.",
+      "source": "Sahih al-Bukhari, 10",
+      "category": "comportement",
+      "narrator": "Abdullah ibn Amr"
+    },
+    {
+      "id": 3,
+      "content": "Aucun d'entre vous n'est vraiment croyant tant qu'il n'aime pas pour son frère ce qu'il aime pour lui-même.",
+      "source": "Sahih al-Bukhari, 13",
+      "category": "fraternite",
+      "narrator": "Anas ibn Malik"
+    },
+    {
+      "id": 4,
+      "content": "Celui qui croit en Allah et au Jour Dernier, qu'il dise du bien ou qu'il se taise.",
+      "source": "Sahih al-Bukhari, 6018",
+      "category": "parole",
+      "narrator": "Abu Hurayra"
+    },
+    {
+      "id": 5,
+      "content": "La pudeur fait partie de la foi.",
+      "source": "Sahih al-Bukhari, 24",
+      "category": "foi",
+      "narrator": "Ibn Omar"
+    },
+    {
+      "id": 6,
+      "content": "Le fort n'est pas celui qui terrasse les gens, mais le fort est celui qui maîtrise sa colère.",
+      "source": "Sahih al-Bukhari, 6114",
+      "category": "caractere",
+      "narrator": "Abu Hurayra"
+    },
+    {
+      "id": 7,
+      "content": "Fait partie du bel islam de l'homme de délaisser ce qui ne le concerne pas.",
+      "source": "Tirmidhi, 2317",
+      "category": "comportement",
+      "narrator": "Abu Hurayra"
+    },
+    {
+      "id": 8,
+      "content": "Celui qui emprunte un chemin à la recherche d'une science, Allah lui facilite un chemin vers le Paradis.",
+      "source": "Sahih Muslim, 2699",
+      "category": "science",
+      "narrator": "Abu Hurayra"
+    },
+    {
+      "id": 9,
+      "content": "Allah est beau et Il aime la beauté.",
+      "source": "Sahih Muslim, 91",
+      "category": "attributs",
+      "narrator": "Abdullah ibn Mas'ud"
+    },
+    {
+      "id": 10,
+      "content": "La propreté fait partie de la foi.",
+      "source": "Sahih Muslim, 223",
+      "category": "foi",
+      "narrator": "Abu Malik al-Ash'ari"
+    },
+    {
+      "id": 11,
+      "content": "L'invocation est l'essence de l'adoration.",
+      "source": "Tirmidhi, 3371",
+      "category": "adoration",
+      "narrator": "Nu'man ibn Bashir"
+    },
+    {
+      "id": 12,
+      "content": "Le meilleur d'entre vous est celui qui apprend le Coran et l'enseigne.",
+      "source": "Sahih al-Bukhari, 5027",
+      "category": "coran",
+      "narrator": "Othman ibn Affan"
+    },
+    {
+      "id": 13,
+      "content": "Sourire à ton frère est une aumône.",
+      "source": "Tirmidhi, 1956",
+      "category": "charite",
+      "narrator": "Abu Dharr"
+    },
+    {
+      "id": 14,
+      "content": "Le Paradis se trouve sous les pieds des mères.",
+      "source": "Sunan an-Nasa'i, 3104",
+      "category": "parents",
+      "narrator": "Mu'awiyah ibn Jahimah"
+    },
+    {
+      "id": 15,
+      "content": "La religion c'est le conseil sincère.",
+      "source": "Sahih Muslim, 55",
+      "category": "conseil",
+      "narrator": "Tamim ad-Dari"
+    },
+    {
+      "id": 16,
+      "content": "Celui qui n'est pas reconnaissant envers les gens n'est pas reconnaissant envers Allah.",
+      "source": "Tirmidhi, 1954",
+      "category": "gratitude",
+      "narrator": "Abu Hurayra"
+    },
+    {
+      "id": 17,
+      "content": "Le croyant est le miroir du croyant.",
+      "source": "Abu Dawud, 4918",
+      "category": "fraternite",
+      "narrator": "Abu Hurayra"
+    },
+    {
+      "id": 18,
+      "content": "Ne soyez pas envieux les uns des autres, ne vous haïssez pas et soyez des serviteurs d'Allah, frères.",
+      "source": "Sahih Muslim, 2564",
+      "category": "fraternite",
+      "narrator": "Anas ibn Malik"
+    },
+    {
+      "id": 19,
+      "content": "Celui qui facilite les choses à quelqu'un en difficulté, Allah lui facilitera les choses dans ce monde et dans l'au-delà.",
+      "source": "Sahih Muslim, 2699",
+      "category": "entraide",
+      "narrator": "Abu Hurayra"
+    },
+    {
+      "id": 20,
+      "content": "Le monde est une prison pour le croyant et un paradis pour le mécréant.",
+      "source": "Sahih Muslim, 2956",
+      "category": "sagesse",
+      "narrator": "Abu Hurayra"
+    },
+    {
+      "id": 21,
+      "content": "Attachez-vous à la véracité car la véracité mène à la piété et la piété mène au Paradis.",
+      "source": "Sahih al-Bukhari, 6094",
+      "category": "veracite",
+      "narrator": "Abdullah ibn Mas'ud"
+    },
+    {
+      "id": 22,
+      "content": "Le meilleur des biens est une langue qui invoque Allah, un cœur reconnaissant et une épouse croyante qui t'aide dans ta foi.",
+      "source": "Tirmidhi, 3094",
+      "category": "bienfaits",
+      "narrator": "Thawban"
+    },
+    {
+      "id": 23,
+      "content": "Allah ne regarde pas vos corps ni vos apparences, mais Il regarde vos cœurs.",
+      "source": "Sahih Muslim, 2564",
+      "category": "coeur",
+      "narrator": "Abu Hurayra"
+    },
+    {
+      "id": 24,
+      "content": "Certes dans le corps il y a un morceau de chair, s'il est sain, tout le corps est sain, et s'il est corrompu, tout le corps est corrompu. Certes, c'est le cœur.",
+      "source": "Sahih al-Bukhari, 52",
+      "category": "coeur",
+      "narrator": "Nu'man ibn Bashir"
+    },
+    {
+      "id": 25,
+      "content": "Quiconque croit en Allah et au Jour Dernier, qu'il honore son voisin.",
+      "source": "Sahih al-Bukhari, 6019",
+      "category": "voisinage",
+      "narrator": "Abu Hurayra"
+    },
+    {
+      "id": 26,
+      "content": "Le croyant n'est pas piqué deux fois du même trou.",
+      "source": "Sahih al-Bukhari, 6133",
+      "category": "sagesse",
+      "narrator": "Abu Hurayra"
+    },
+    {
+      "id": 27,
+      "content": "Fais preuve de bon comportement envers les gens.",
+      "source": "Tirmidhi, 1987",
+      "category": "comportement",
+      "narrator": "Abu Dharr"
+    },
+    {
+      "id": 28,
+      "content": "Le meilleur d'entre vous est celui qui est le meilleur avec sa famille.",
+      "source": "Tirmidhi, 3895",
+      "category": "famille",
+      "narrator": "Aisha"
+    },
+    {
+      "id": 29,
+      "content": "Les meilleurs des gens sont les plus utiles aux gens.",
+      "source": "Al-Mu'jam al-Awsat, 5787",
+      "category": "utilite",
+      "narrator": "Jabir"
+    },
+    {
+      "id": 30,
+      "content": "Chaque bienfait nécessite une gratitude.",
+      "source": "Al-Bayhaqi",
+      "category": "gratitude",
+      "narrator": "Prophète Muhammad ﷺ"
+    },
+    {
+      "id": 31,
+      "content": "La patience est une lumière.",
+      "source": "Sahih Muslim, 223",
+      "category": "patience",
+      "narrator": "Abu Malik al-Ash'ari"
+    },
+    {
+      "id": 32,
+      "content": "Sois dans ce monde comme un étranger ou un voyageur.",
+      "source": "Sahih al-Bukhari, 6416",
+      "category": "detachement",
+      "narrator": "Ibn Omar"
+    },
+    {
+      "id": 33,
+      "content": "Profite de cinq choses avant cinq autres : ta jeunesse avant ta vieillesse, ta santé avant ta maladie, ta richesse avant ta pauvreté, ton temps libre avant ton occupation et ta vie avant ta mort.",
+      "source": "Al-Hakim, 7846",
+      "category": "temps",
+      "narrator": "Ibn Abbas"
+    },
+    {
+      "id": 34,
+      "content": "La meilleure invocation est celle du jour d'Arafat.",
+      "source": "Tirmidhi, 3585",
+      "category": "invocation",
+      "narrator": "Amr ibn Shu'ayb"
+    },
+    {
+      "id": 35,
+      "content": "Celui qui jeûne le mois de Ramadan avec foi et en espérant la récompense, ses péchés passés lui seront pardonnés.",
+      "source": "Sahih al-Bukhari, 38",
+      "category": "ramadan",
+      "narrator": "Abu Hurayra"
+    },
+    {
+      "id": 36,
+      "content": "Le jeûne est un bouclier.",
+      "source": "Sahih al-Bukhari, 1894",
+      "category": "jeune",
+      "narrator": "Abu Hurayra"
+    },
+    {
+      "id": 37,
+      "content": "La générosité est un arbre du Paradis.",
+      "source": "Al-Bayhaqi",
+      "category": "generosite",
+      "narrator": "Prophète Muhammad ﷺ"
+    },
+    {
+      "id": 38,
+      "content": "L'aumône n'a jamais diminué une richesse.",
+      "source": "Sahih Muslim, 2588",
+      "category": "charite",
+      "narrator": "Abu Hurayra"
+    },
+    {
+      "id": 39,
+      "content": "L'amour du monde est à l'origine de toute faute.",
+      "source": "Al-Bayhaqi",
+      "category": "detachement",
+      "narrator": "Prophète Muhammad ﷺ"
+    },
+    {
+      "id": 40,
+      "content": "Allah aime que lorsque l'un de vous fait une chose, il la perfectionne.",
+      "source": "Al-Bayhaqi",
+      "category": "excellence",
+      "narrator": "Aisha"
+    },
+    {
+      "id": 41,
+      "content": "Les liens de parenté sont accrochés au Trône d'Allah.",
+      "source": "Sahih al-Bukhari, 5988",
+      "category": "famille",
+      "narrator": "Abu Hurayra"
+    },
+    {
+      "id": 42,
+      "content": "Le bon comportement est la moitié de la religion.",
+      "source": "Al-Bayhaqi",
+      "category": "comportement",
+      "narrator": "Prophète Muhammad ﷺ"
+    },
+    {
+      "id": 43,
+      "content": "L'humble est élevé et l'orgueilleux est rabaissé.",
+      "source": "Al-Tabarani",
+      "category": "humilite",
+      "narrator": "Prophète Muhammad ﷺ"
+    },
+    {
+      "id": 44,
+      "content": "Prends soin de ta langue.",
+      "source": "Tirmidhi, 2406",
+      "category": "parole",
+      "narrator": "Mu'adh ibn Jabal"
+    },
+    {
+      "id": 45,
+      "content": "Répands le salam, nourris les gens, maintiens les liens de parenté et prie la nuit pendant que les gens dorment, tu entreras au Paradis en paix.",
+      "source": "Tirmidhi, 2485",
+      "category": "paradis",
+      "narrator": "Abdullah ibn Salam"
+    },
+    {
+      "id": 46,
+      "content": "Le croyant qui se mélange aux gens et supporte leur nuisance est meilleur que celui qui ne se mélange pas aux gens et ne supporte pas leur nuisance.",
+      "source": "Ibn Majah, 4032",
+      "category": "patience",
+      "narrator": "Ibn Omar"
+    },
+    {
+      "id": 47,
+      "content": "Quiconque préserve ce qui est entre ses deux mâchoires et ce qui est entre ses deux jambes, je lui garantis le Paradis.",
+      "source": "Sahih al-Bukhari, 6474",
+      "category": "preservation",
+      "narrator": "Sahl ibn Sa'd"
+    },
+    {
+      "id": 48,
+      "content": "L'envie consume les bonnes actions comme le feu consume le bois.",
+      "source": "Abu Dawud, 4903",
+      "category": "envie",
+      "narrator": "Abu Hurayra"
+    },
+    {
+      "id": 49,
+      "content": "N'entrera pas au Paradis celui qui a dans son cœur le poids d'un atome d'orgueil.",
+      "source": "Sahih Muslim, 91",
+      "category": "orgueil",
+      "narrator": "Abdullah ibn Mas'ud"
+    },
+    {
+      "id": 50,
+      "content": "Celui qui n'a pas de miséricorde envers les gens, Allah n'aura pas de miséricorde envers lui.",
+      "source": "Sahih al-Bukhari, 7376",
+      "category": "misericorde",
+      "narrator": "Jarir ibn Abdullah"
+    }
+  ],
+  "quran_verses": [
+    {
+      "id": 1,
+      "content": "Certes, avec la difficulté il y a une facilité.",
+      "source": "Sourate Al-Sharh, 94:6",
+      "category": "esperance"
+    },
+    {
+      "id": 2,
+      "content": "Et quiconque craint Allah, Il lui donnera une issue favorable.",
+      "source": "Sourate At-Talaq, 65:2",
+      "category": "taqwa"
+    },
+    {
+      "id": 3,
+      "content": "Allah n'impose à aucune âme une charge supérieure à sa capacité.",
+      "source": "Sourate Al-Baqara, 2:286",
+      "category": "epreuve"
+    },
+    {
+      "id": 4,
+      "content": "Et rappelle, car le rappel profite aux croyants.",
+      "source": "Sourate Adh-Dhariyat, 51:55",
+      "category": "rappel"
+    },
+    {
+      "id": 5,
+      "content": "Invoquez-Moi, Je vous répondrai.",
+      "source": "Sourate Ghafir, 40:60",
+      "category": "invocation"
+    },
+    {
+      "id": 6,
+      "content": "En vérité, c'est dans l'évocation d'Allah que les cœurs se tranquillisent.",
+      "source": "Sourate Ar-Ra'd, 13:28",
+      "category": "dhikr"
+    },
+    {
+      "id": 7,
+      "content": "Et Il est avec vous où que vous soyez.",
+      "source": "Sourate Al-Hadid, 57:4",
+      "category": "presence"
+    },
+    {
+      "id": 8,
+      "content": "Nous sommes plus proche de lui que sa veine jugulaire.",
+      "source": "Sourate Qaf, 50:16",
+      "category": "proximite"
+    },
+    {
+      "id": 9,
+      "content": "Soyez patients, car Allah est avec les patients.",
+      "source": "Sourate Al-Anfal, 8:46",
+      "category": "patience"
+    },
+    {
+      "id": 10,
+      "content": "Ne désespérez pas de la miséricorde d'Allah.",
+      "source": "Sourate Az-Zumar, 39:53",
+      "category": "esperance"
+    },
+    {
+      "id": 11,
+      "content": "Certes, Allah est avec ceux qui sont pieux et ceux qui sont bienfaisants.",
+      "source": "Sourate An-Nahl, 16:128",
+      "category": "piete"
+    },
+    {
+      "id": 12,
+      "content": "Dis : Ô Mes serviteurs qui avez commis des excès à votre propre détriment, ne désespérez pas de la miséricorde d'Allah. Car Allah pardonne tous les péchés.",
+      "source": "Sourate Az-Zumar, 39:53",
+      "category": "pardon"
+    },
+    {
+      "id": 13,
+      "content": "Et ton Seigneur n'oublie rien.",
+      "source": "Sourate Maryam, 19:64",
+      "category": "confiance"
+    },
+    {
+      "id": 14,
+      "content": "Allah veut vous alléger, car l'homme a été créé faible.",
+      "source": "Sourate An-Nisa, 4:28",
+      "category": "facilite"
+    },
+    {
+      "id": 15,
+      "content": "Et lorsque Mes serviteurs t'interrogent sur Moi, Je suis tout proche.",
+      "source": "Sourate Al-Baqara, 2:186",
+      "category": "proximite"
+    },
+    {
+      "id": 16,
+      "content": "Quiconque fait un bien du poids d'un atome le verra.",
+      "source": "Sourate Az-Zalzala, 99:7",
+      "category": "recompense"
+    },
+    {
+      "id": 17,
+      "content": "Et quiconque place sa confiance en Allah, Il lui suffit.",
+      "source": "Sourate At-Talaq, 65:3",
+      "category": "tawakkul"
+    },
+    {
+      "id": 18,
+      "content": "Et soyez reconnaissants envers Moi et ne Me reniez pas.",
+      "source": "Sourate Al-Baqara, 2:152",
+      "category": "gratitude"
+    },
+    {
+      "id": 19,
+      "content": "Certes, les hommes et les femmes soumis, les croyants et les croyantes, les obéissants et les obéissantes, Allah a préparé pour eux un pardon et une énorme récompense.",
+      "source": "Sourate Al-Ahzab, 33:35",
+      "category": "recompense"
+    },
+    {
+      "id": 20,
+      "content": "Et c'est Lui qui accepte le repentir de Ses serviteurs, pardonne les méfaits et sait ce que vous faites.",
+      "source": "Sourate Ash-Shura, 42:25",
+      "category": "repentir"
+    },
+    {
+      "id": 21,
+      "content": "Ceux qui croient et dont les cœurs se tranquillisent à l'évocation d'Allah.",
+      "source": "Sourate Ar-Ra'd, 13:28",
+      "category": "serenite"
+    },
+    {
+      "id": 22,
+      "content": "Et accomplis la prière pour te souvenir de Moi.",
+      "source": "Sourate Ta-Ha, 20:14",
+      "category": "priere"
+    },
+    {
+      "id": 23,
+      "content": "Et endure ce qui t'atteint. Cela fait partie des dispositions décisives.",
+      "source": "Sourate Luqman, 31:17",
+      "category": "patience"
+    },
+    {
+      "id": 24,
+      "content": "Ô vous qui croyez, cherchez secours dans la patience et la prière.",
+      "source": "Sourate Al-Baqara, 2:153",
+      "category": "patience"
+    },
+    {
+      "id": 25,
+      "content": "Et craignez un jour où vous serez ramenés vers Allah.",
+      "source": "Sourate Al-Baqara, 2:281",
+      "category": "au-dela"
+    },
+    {
+      "id": 26,
+      "content": "Et la vie présente n'est qu'un objet de jouissance trompeuse.",
+      "source": "Sourate Al-Hadid, 57:20",
+      "category": "detachement"
+    },
+    {
+      "id": 27,
+      "content": "Ô homme ! Qu'est-ce qui t'a trompé au sujet de ton Seigneur, le Noble ?",
+      "source": "Sourate Al-Infitar, 82:6",
+      "category": "reflexion"
+    },
+    {
+      "id": 28,
+      "content": "Et adorez Allah et ne Lui donnez aucun associé. Agissez avec bonté envers vos père et mère.",
+      "source": "Sourate An-Nisa, 4:36",
+      "category": "parents"
+    },
+    {
+      "id": 29,
+      "content": "Et dis : Ô mon Seigneur, accrois-moi en science !",
+      "source": "Sourate Ta-Ha, 20:114",
+      "category": "science"
+    },
+    {
+      "id": 30,
+      "content": "Et quant au bienfait de ton Seigneur, proclame-le.",
+      "source": "Sourate Ad-Duha, 93:11",
+      "category": "gratitude"
+    }
+  ],
+  "ramadan_content": [
+    {
+      "id": 1,
+      "content": "Ramadan est le mois durant lequel le Coran a été descendu comme guide pour les gens.",
+      "source": "Sourate Al-Baqara, 2:185",
+      "category": "coran"
+    },
+    {
+      "id": 2,
+      "content": "Celui qui jeûne Ramadan avec foi et espérance, ses péchés passés lui seront pardonnés.",
+      "source": "Sahih al-Bukhari",
+      "category": "jeune"
+    },
+    {
+      "id": 3,
+      "content": "Quand arrive le mois de Ramadan, les portes du Paradis sont ouvertes et les portes de l'Enfer sont fermées.",
+      "source": "Sahih al-Bukhari",
+      "category": "merite"
+    },
+    {
+      "id": 4,
+      "content": "Celui qui donne à manger à un jeûneur aura la même récompense que lui sans que cela diminue en rien la récompense du jeûneur.",
+      "source": "Tirmidhi",
+      "category": "iftar"
+    },
+    {
+      "id": 5,
+      "content": "La Nuit du Destin est meilleure que mille mois.",
+      "source": "Sourate Al-Qadr, 97:3",
+      "category": "laylat-al-qadr"
+    },
+    {
+      "id": 6,
+      "content": "Recherchez la Nuit du Destin dans les dix dernières nuits de Ramadan.",
+      "source": "Sahih al-Bukhari",
+      "category": "laylat-al-qadr"
+    },
+    {
+      "id": 7,
+      "content": "Le jeûne et le Coran intercéderont pour le serviteur le Jour de la Résurrection.",
+      "source": "Musnad Ahmad",
+      "category": "intercession"
+    },
+    {
+      "id": 8,
+      "content": "Allah a dit : Toute action du fils d'Adam lui appartient sauf le jeûne, car il est à Moi et c'est Moi qui le récompense.",
+      "source": "Sahih al-Bukhari",
+      "category": "recompense"
+    },
+    {
+      "id": 9,
+      "content": "Le jeûneur a deux joies : une joie au moment de la rupture et une joie lorsqu'il rencontre son Seigneur.",
+      "source": "Sahih al-Bukhari",
+      "category": "joie"
+    },
+    {
+      "id": 10,
+      "content": "Quiconque prie pendant les nuits de Ramadan avec foi et espérance, ses péchés passés lui seront pardonnés.",
+      "source": "Sahih al-Bukhari",
+      "category": "tarawih"
+    },
+    {
+      "id": 11,
+      "content": "Le suhur est une bénédiction, ne le délaissez pas.",
+      "source": "Sahih al-Bukhari",
+      "category": "suhur"
+    },
+    {
+      "id": 12,
+      "content": "Les gens ne cesseront d'être dans le bien tant qu'ils hâteront la rupture du jeûne.",
+      "source": "Sahih al-Bukhari",
+      "category": "iftar"
+    },
+    {
+      "id": 13,
+      "content": "Une Omra pendant Ramadan équivaut à un pèlerinage avec moi.",
+      "source": "Sahih al-Bukhari",
+      "category": "omra"
+    },
+    {
+      "id": 14,
+      "content": "Celui qui ne délaisse pas le mensonge et sa pratique, Allah n'a pas besoin qu'il délaisse sa nourriture et sa boisson.",
+      "source": "Sahih al-Bukhari",
+      "category": "comportement"
+    },
+    {
+      "id": 15,
+      "content": "Le Ramadan est venu à vous, mois béni durant lequel Allah vous a prescrit le jeûne.",
+      "source": "Musnad Ahmad",
+      "category": "benediction"
+    }
+  ]
+}

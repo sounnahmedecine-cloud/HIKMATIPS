@@ -1,6 +1,64 @@
 import { z } from 'zod';
 import { GEMINI_API_KEY } from '@/config/api-keys';
 
+// Types pour la base de données locale
+interface LocalHadith {
+  id: number;
+  content: string;
+  source: string;
+  category: string;
+  narrator?: string;
+}
+
+interface LocalVerse {
+  id: number;
+  content: string;
+  source: string;
+  category: string;
+}
+
+interface HadithDatabase {
+  hadiths: LocalHadith[];
+  quran_verses: LocalVerse[];
+  ramadan_content: LocalVerse[];
+}
+
+// Cache pour la base de données
+let cachedDatabase: HadithDatabase | null = null;
+
+async function loadDatabase(): Promise<HadithDatabase> {
+  if (cachedDatabase) return cachedDatabase;
+
+  try {
+    const response = await fetch('/data/hadiths.json');
+    if (!response.ok) throw new Error('Failed to load database');
+    cachedDatabase = await response.json();
+    return cachedDatabase!;
+  } catch (error) {
+    console.error('Error loading local database:', error);
+    throw error;
+  }
+}
+
+function getRandomItem<T>(array: T[]): T {
+  return array[Math.floor(Math.random() * array.length)];
+}
+
+function filterByTopic<T extends { content: string; category: string }>(
+  items: T[],
+  topic?: string
+): T[] {
+  if (!topic) return items;
+
+  const topicLower = topic.toLowerCase();
+  const filtered = items.filter(item =>
+    item.content.toLowerCase().includes(topicLower) ||
+    item.category.toLowerCase().includes(topicLower)
+  );
+
+  return filtered.length > 0 ? filtered : items;
+}
+
 const categoryLabels = {
   hadith: 'Hadith',
   ramadan: 'Conseil ou invocation du Ramadan',
@@ -20,43 +78,62 @@ export const GenerateHadithOutputSchema = z.object({
 });
 export type GenerateHadithOutput = z.infer<typeof GenerateHadithOutputSchema>;
 
-export async function generateHadith(
-  input: GenerateHadithInput
-): Promise<GenerateHadithOutput> {
-  const { category, topic } = input;
-  const label = categoryLabels[category as keyof typeof categoryLabels] || category;
+// Génération depuis la base locale
+async function generateFromLocal(
+  category: string,
+  topic?: string
+): Promise<GenerateHadithOutput | null> {
+  try {
+    const db = await loadDatabase();
 
-  // Use imported API key for static export compatibility
+    if (category === 'hadith') {
+      const filtered = filterByTopic(db.hadiths, topic);
+      const item = getRandomItem(filtered);
+      return { content: item.content, source: item.source };
+    }
+
+    if (category === 'coran') {
+      const filtered = filterByTopic(db.quran_verses, topic);
+      const item = getRandomItem(filtered);
+      return { content: item.content, source: item.source };
+    }
+
+    if (category === 'ramadan') {
+      const filtered = filterByTopic(db.ramadan_content, topic);
+      const item = getRandomItem(filtered);
+      return { content: item.content, source: item.source };
+    }
+
+    return null;
+  } catch (error) {
+    console.error('Error generating from local:', error);
+    return null;
+  }
+}
+
+// Génération via IA (fallback ou recherche personnalisée)
+async function generateFromAI(
+  category: string,
+  topic?: string
+): Promise<GenerateHadithOutput> {
   const apiKey = GEMINI_API_KEY;
 
   if (!apiKey) {
     throw new Error("Clé API Gemini manquante.");
   }
 
-  // Prompts spécifiques par catégorie pour de meilleurs résultats
-  const getPromptByCategory = () => {
-    const baseRules = `### RÈGLES OBLIGATOIRES :
+  const baseRules = `### RÈGLES OBLIGATOIRES :
 - Utilise TOUJOURS "Allah" (JAMAIS "Dieu").
 - Après le Prophète Muhammad, ajoute "(ﷺ)".
 - LANGUE : Français uniquement.
 - Réponds UNIQUEMENT en JSON valide.`;
 
+  const getPromptByCategory = () => {
     if (category === 'hadith') {
       return `Tu es un spécialiste des hadiths authentiques. Donne-moi UN hadith CÉLÈBRE et AUTHENTIQUE.
 ${topic ? `Thème souhaité : ${topic}` : 'Choisis parmi les thèmes : bonté, patience, prière, parents, science, sincérité, frères en Islam.'}
 
 ${baseRules}
-
-### EXEMPLES DE HADITHS AUTHENTIQUES À UTILISER :
-- "Les actes ne valent que par les intentions..." (Boukhari 1, Muslim 1907)
-- "Aucun de vous ne sera véritablement croyant tant qu'il n'aimera pas pour son frère ce qu'il aime pour lui-même." (Boukhari 13, Muslim 45)
-- "Le meilleur d'entre vous est celui qui apprend le Coran et l'enseigne." (Boukhari 5027)
-- "Celui qui croit en Allah et au Jour Dernier, qu'il dise du bien ou qu'il se taise." (Boukhari 6018, Muslim 47)
-- "Le Paradis se trouve sous les pieds des mères." (Nasa'i 3104)
-- "La propreté fait partie de la foi." (Muslim 223)
-- "Le sourire à ton frère est une aumône." (Tirmidhi 1956)
-
-Choisis un hadith CONNU et donne sa référence exacte.
 
 {
   "content": "Le hadith en français",
@@ -70,13 +147,6 @@ ${topic ? `Thème : ${topic}` : 'Choisis parmi : jeûne, iftar, suhur, Laylat al
 
 ${baseRules}
 
-### EXEMPLES AUTHENTIQUES SUR LE RAMADAN :
-- "Celui qui jeûne le Ramadan avec foi et en espérant la récompense d'Allah, ses péchés passés lui seront pardonnés." (Boukhari 38, Muslim 760)
-- "Celui qui prie durant les nuits de Ramadan avec foi et espérance, ses péchés passés lui seront pardonnés." (Boukhari 37, Muslim 759)
-- "Quand arrive le Ramadan, les portes du Paradis sont ouvertes, les portes de l'Enfer sont fermées et les démons sont enchaînés." (Boukhari 1899, Muslim 1079)
-- "Celui qui donne à manger à un jeûneur pour rompre son jeûne aura la même récompense que lui." (Tirmidhi 807)
-- Invocation de rupture du jeûne : "Dhahaba adh-dhama'u, wabtallatil-'urûqu, wa thabatal-ajru in shâ'Allâh" (La soif est partie, les veines sont humides, et la récompense est confirmée si Allah le veut) (Abu Dawud 2357)
-
 {
   "content": "Le hadith ou l'invocation en français",
   "source": "Rapporté par Boukhari, n°XXXX"
@@ -89,7 +159,6 @@ ${topic ? `Thème recherché : ${topic}` : 'Choisis un verset inspirant sur : fo
 
 ${baseRules}
 
-### FORMAT OBLIGATOIRE :
 {
   "content": "Le verset traduit en français",
   "source": "Sourate Al-Nom (numéro), verset numéro"
@@ -106,52 +175,74 @@ ${baseRules}
 
   const prompt = getPromptByCategory();
 
+  const response = await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: prompt }] }],
+        generationConfig: {
+          response_mime_type: 'application/json',
+          temperature: 0.7
+        },
+        safetySettings: [
+          { category: "HARM_CATEGORY_HARASSMENT", threshold: "BLOCK_NONE" },
+          { category: "HARM_CATEGORY_HATE_SPEECH", threshold: "BLOCK_NONE" },
+          { category: "HARM_CATEGORY_SEXUALLY_EXPLICIT", threshold: "BLOCK_NONE" },
+          { category: "HARM_CATEGORY_DANGEROUS_CONTENT", threshold: "BLOCK_NONE" }
+        ]
+      }),
+    }
+  );
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    console.error("Détails erreur Gemini:", errorData);
+    throw new Error(errorData.error?.message || "Erreur lors de l'appel à Gemini");
+  }
+
+  const data = await response.json();
+  let text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+
+  if (!text) throw new Error("Réponse vide de Gemini");
+
+  text = text.replace(/```json/g, '').replace(/```/g, '').trim();
+
   try {
-    const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          contents: [{ parts: [{ text: prompt }] }],
-          generationConfig: {
-            response_mime_type: 'application/json',
-            temperature: 0.7
-          },
-          safetySettings: [
-            { category: "HARM_CATEGORY_HARASSMENT", threshold: "BLOCK_NONE" },
-            { category: "HARM_CATEGORY_HATE_SPEECH", threshold: "BLOCK_NONE" },
-            { category: "HARM_CATEGORY_SEXUALLY_EXPLICIT", threshold: "BLOCK_NONE" },
-            { category: "HARM_CATEGORY_DANGEROUS_CONTENT", threshold: "BLOCK_NONE" }
-          ]
-        }),
-      }
-    );
+    const parsed = JSON.parse(text);
+    return GenerateHadithOutputSchema.parse(parsed);
+  } catch (parseError) {
+    console.error("Erreur de parsing JSON. Texte reçu:", text);
+    throw new Error("Le format de réponse de l'IA est invalide.");
+  }
+}
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      console.error("Détails erreur Gemini:", errorData);
-      throw new Error(errorData.error?.message || "Erreur lors de l'appel à Gemini");
-    }
+export async function generateHadith(
+  input: GenerateHadithInput
+): Promise<GenerateHadithOutput> {
+  const { category, topic } = input;
 
-    const data = await response.json();
-    let text = data.candidates?.[0]?.content?.parts?.[0]?.text;
-
-    if (!text) throw new Error("Réponse vide de Gemini");
-
-    // Nettoyage au cas où l'IA retourne des backticks markdown (```json ... ```)
-    text = text.replace(/```json/g, '').replace(/```/g, '').trim();
-
+  // Pour "recherche-ia" avec un thème spécifique, toujours utiliser l'IA
+  if (category === 'recherche-ia' && topic && topic.trim() !== '') {
     try {
-      const parsed = JSON.parse(text);
-      return GenerateHadithOutputSchema.parse(parsed);
-    } catch (parseError) {
-      console.error("Erreur de parsing JSON. Texte reçu:", text);
-      throw new Error("Le format de réponse de l'IA est invalide.");
+      return await generateFromAI(category, topic);
+    } catch (error) {
+      console.error("AI generation failed, falling back to local:", error);
     }
+  }
+
+  // Essayer d'abord la base locale
+  const localResult = await generateFromLocal(category, topic);
+  if (localResult) {
+    return localResult;
+  }
+
+  // Fallback vers l'IA si la base locale échoue
+  try {
+    return await generateFromAI(category, topic);
   } catch (error) {
     console.error("Erreur AI détaillée:", error);
     throw error;
   }
 }
-
