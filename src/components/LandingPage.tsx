@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
@@ -18,10 +19,27 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import dynamic from 'next/dynamic';
+
+// Import dynamique du générateur
+const GeneratorPage = dynamic(() => import('@/components/GeneratorPage'), {
+  ssr: false,
+  loading: () => (
+    <div className="text-center py-12">
+      <div className="animate-spin h-12 w-12 border-4 border-primary border-t-transparent rounded-full mx-auto mb-4" />
+      <p className="text-muted-foreground">Chargement du générateur...</p>
+    </div>
+  ),
+});
 
 export default function LandingPage() {
+  const [showGenerator, setShowGenerator] = useState(false);
+
   const scrollToApp = () => {
-    document.getElementById('app-section')?.scrollIntoView({ behavior: 'smooth' });
+    setShowGenerator(true);
+    setTimeout(() => {
+      document.getElementById('app-section')?.scrollIntoView({ behavior: 'smooth' });
+    }, 100);
   };
 
   return (
@@ -313,19 +331,24 @@ export default function LandingPage() {
       {/* App Section - Embedded Generator */}
       <section id="app-section" className="py-20 px-4 bg-muted/30 scroll-mt-16">
         <div className="container mx-auto">
-          <div className="text-center mb-8">
-            <h2 className="text-2xl font-bold mb-2">Essayez maintenant</h2>
-            <p className="text-muted-foreground">Générez votre premier visuel en quelques secondes</p>
-          </div>
-
-          {/* Note: The actual generator will be loaded here via dynamic import or iframe */}
-          <div className="text-center py-12 bg-background rounded-2xl border-2 border-dashed border-primary/20">
-            <Sparkles className="h-12 w-12 text-primary mx-auto mb-4" />
-            <p className="text-lg font-medium mb-4">Le générateur se charge...</p>
-            <Button onClick={() => window.location.reload()}>
-              Recharger la page
-            </Button>
-          </div>
+          {!showGenerator ? (
+            <>
+              <div className="text-center mb-8">
+                <h2 className="text-2xl font-bold mb-2">Essayez maintenant</h2>
+                <p className="text-muted-foreground">Générez votre premier visuel en quelques secondes</p>
+              </div>
+              <div className="text-center py-12 bg-background rounded-2xl border-2 border-dashed border-primary/20">
+                <Sparkles className="h-12 w-12 text-primary mx-auto mb-4" />
+                <p className="text-lg font-medium mb-4">Prêt à créer votre HikmaClip ?</p>
+                <Button onClick={() => setShowGenerator(true)} size="lg" className="bg-gradient-to-r from-primary to-accent">
+                  <Sparkles className="mr-2 h-4 w-4" />
+                  Lancer le générateur
+                </Button>
+              </div>
+            </>
+          ) : (
+            <GeneratorPage />
+          )}
         </div>
       </section>
 

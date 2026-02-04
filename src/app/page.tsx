@@ -5,13 +5,15 @@ import { Capacitor } from '@capacitor/core';
 import dynamic from 'next/dynamic';
 import { Loader2 } from 'lucide-react';
 
-// Dynamic imports for code splitting
+// Dynamic imports for code splitting (ssr: false required for Capacitor/browser APIs)
 const LandingPage = dynamic(() => import('@/components/LandingPage'), {
   loading: () => <LoadingScreen />,
+  ssr: false,
 });
 
 const GeneratorPage = dynamic(() => import('@/components/GeneratorPage'), {
   loading: () => <LoadingScreen />,
+  ssr: false,
 });
 
 function LoadingScreen() {
