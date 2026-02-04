@@ -87,9 +87,12 @@ export default function LandingPage() {
               {' '}inspirants en quelques clics
             </h1>
 
-            <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-              Versets coraniques, hadiths authentiques et conseils de bien-être.
+            <p className="text-xl text-muted-foreground mb-4 max-w-2xl mx-auto">
+              Versets coraniques, hadiths authentiques et rappels bénéfiques.
               Des visuels professionnels prêts à partager sur vos réseaux sociaux.
+            </p>
+            <p className="text-lg text-primary/80 italic mb-8">
+              "Le rappel profite aux croyants"
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -189,8 +192,8 @@ export default function LandingPage() {
               },
               {
                 icon: Moon,
-                title: 'Conseils Bien-être',
-                description: 'Sagesse islamique pour le corps et l\'esprit',
+                title: 'Rappels Bénéfiques',
+                description: 'Le rappel profite aux croyants - sagesse islamique',
               },
               {
                 icon: Download,
