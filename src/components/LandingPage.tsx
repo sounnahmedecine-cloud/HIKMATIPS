@@ -16,9 +16,16 @@ import {
   ArrowDown,
   CheckCircle2,
   Moon,
+  Mail,
+  MessageSquare,
+  Rocket,
+  ListChecks,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
 import dynamic from 'next/dynamic';
 
 // Import dynamique du générateur
@@ -158,6 +165,7 @@ export default function LandingPage() {
             <button
               onClick={scrollToApp}
               className="text-muted-foreground hover:text-primary transition-colors"
+              aria-label="Défiler vers le bas"
             >
               <ArrowDown className="h-8 w-8 animate-bounce mx-auto" />
             </button>
@@ -310,6 +318,68 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* Nouveautés & Futurs Section */}
+      <section className="py-20 px-4">
+        <div className="container mx-auto max-w-4xl">
+          <div className="bg-gradient-to-br from-primary/10 via-background to-accent/10 rounded-3xl p-8 border border-primary/20 shadow-xl relative overflow-hidden">
+            <div className="absolute top-0 right-0 p-8 opacity-10">
+              <Rocket className="h-32 w-32" />
+            </div>
+
+            <div className="relative z-10">
+              <h2 className="text-3xl font-bold mb-8 flex items-center gap-3">
+                <Rocket className="h-8 w-8 text-primary" />
+                Nouveautés & Prochaines Étapes
+              </h2>
+
+              <div className="grid md:grid-cols-2 gap-8">
+                <div className="space-y-4">
+                  <h3 className="text-xl font-semibold flex items-center gap-2 text-primary">
+                    <Sparkles className="h-5 w-5" />
+                    Dernières mises à jour
+                  </h3>
+                  <ul className="space-y-3">
+                    <li className="flex items-start gap-2">
+                      <CheckCircle2 className="h-5 w-5 text-green-500 shrink-0 mt-0.5" />
+                      <span>Interface mobile-first optimisée</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <CheckCircle2 className="h-5 w-5 text-green-500 shrink-0 mt-0.5" />
+                      <span>Génération de hadiths avec Genkit</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <CheckCircle2 className="h-5 w-5 text-green-500 shrink-0 mt-0.5" />
+                      <span>Export HD pour Instagram et TikTok</span>
+                    </li>
+                  </ul>
+                </div>
+
+                <div className="space-y-4">
+                  <h3 className="text-xl font-semibold flex items-center gap-2 text-accent">
+                    <ListChecks className="h-5 w-5" />
+                    Arrive bientôt
+                  </h3>
+                  <ul className="space-y-3">
+                    <li className="flex items-start gap-2">
+                      <div className="h-5 w-5 rounded-full border-2 border-accent shrink-0 mt-0.5" />
+                      <span className="font-medium text-accent">Sauvegarde des messages dans votre profil</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <div className="h-5 w-5 rounded-full border-2 border-muted shrink-0 mt-0.5" />
+                      <span className="text-muted-foreground">Plus de thèmes visuels premium</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <div className="h-5 w-5 rounded-full border-2 border-muted shrink-0 mt-0.5" />
+                      <span className="text-muted-foreground">Multilingue (Arabe, Anglais)</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* CTA Section */}
       <section className="py-20 px-4">
         <div className="container mx-auto max-w-2xl text-center">
@@ -352,6 +422,60 @@ export default function LandingPage() {
           ) : (
             <GeneratorPage />
           )}
+        </div>
+      </section>
+
+      {/* Contact & Feedback Section */}
+      <section className="py-20 px-4 bg-muted/30">
+        <div className="container mx-auto max-w-4xl">
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+            <div>
+              <h2 className="text-3xl font-bold mb-6">Votre avis compte</h2>
+              <p className="text-muted-foreground text-lg mb-8">
+                Une suggestion ? Un commentaire ? Ou simplement envie de devenir testeur ?
+                N'hésitez pas à nous contacter, nous lisons chaque message avec attention.
+              </p>
+
+              <div className="space-y-4">
+                <div className="flex items-center gap-4 p-4 bg-background rounded-xl border border-primary/10">
+                  <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                    <Mail className="h-6 w-6 text-primary" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground">Email de contact</p>
+                    <p className="font-semibold">elmalkidigital@gmail.com</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <Card className="border-primary/20 shadow-lg">
+              <CardContent className="p-8">
+                <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
+                  <div className="space-y-2">
+                    <Label htmlFor="email">Email</Label>
+                    <Input id="email" type="email" placeholder="votre@email.com" />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="subject">Sujet</Label>
+                    <Input id="subject" placeholder="Ex: Devenir testeur, Bug..." />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="message">Message</Label>
+                    <Textarea
+                      id="message"
+                      placeholder="Dites-nous tout..."
+                      className="min-h-[120px]"
+                    />
+                  </div>
+                  <Button type="submit" className="w-full bg-gradient-to-r from-primary to-accent">
+                    <MessageSquare className="mr-2 h-4 w-4" />
+                    Envoyer le message
+                  </Button>
+                </form>
+              </CardContent>
+            </Card>
+          </div>
         </div>
       </section>
 
