@@ -74,7 +74,7 @@
   * {
     @apply border-border;
   }
-  
+
   body {
     @apply bg-background text-foreground;
     /* Apple-style system fonts */
@@ -102,6 +102,7 @@
 }
 
 @layer components {
+
   /* Apple-style Shadows */
   .shadow-apple-sm {
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
@@ -164,6 +165,7 @@
 }
 
 @layer utilities {
+
   /* Backdrop Blur */
   .backdrop-blur-sm {
     backdrop-filter: blur(4px);
@@ -176,6 +178,36 @@
   .backdrop-blur-lg {
     backdrop-filter: blur(20px);
   }
+
+  /* Immersive Layout Utilities */
+  .layout-immersive {
+    @apply h-screen overflow-hidden flex flex-col relative;
+  }
+
+  .sidebar-glass {
+    @apply glass border-r border-accent/20 h-full backdrop-blur-xl z-50;
+  }
+
+  .bottom-bar-glass {
+    @apply glass border-t border-accent/20 backdrop-blur-xl z-40;
+  }
+
+  .preview-container {
+    @apply flex-1 flex items-center justify-center overflow-hidden p-4;
+  }
+
+  /* Custom Scrollbar for sidebars if needed */
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    @apply bg-primary/20 rounded-full;
+  }
 }
 
 /* Animations */
@@ -183,6 +215,7 @@
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
@@ -193,6 +226,7 @@
     transform: translateY(10px);
     opacity: 0;
   }
+
   to {
     transform: translateY(0);
     opacity: 1;
@@ -253,8 +287,15 @@
 
 /* Pulse soft animation */
 @keyframes pulseSoft {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.8; }
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.8;
+  }
 }
 
 .animate-pulse-soft {

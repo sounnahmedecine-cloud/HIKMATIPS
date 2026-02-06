@@ -25,33 +25,11 @@ import {
   Minus,
   Plus,
   Mail,
-  Wand2
+  Wand2,
+  Menu,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Label } from '@/components/ui/label';
-import { useToast } from '@/hooks/use-toast';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
-import html2canvas from 'html2canvas';
-import { cn } from '@/lib/utils';
-import { useAuth, useUser } from '@/firebase';
-import { GoogleAuthProvider, signInWithPopup, signOut, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -62,12 +40,24 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
-import { Slider } from '@/components/ui/slider';
+import { Label } from '@/components/ui/label';
 import { generateHadith } from '@/ai/flows/generate-hadith';
 import { Share } from '@capacitor/share';
 import { Filesystem, Directory } from '@capacitor/filesystem';
+import { SidebarContent, FormatSettings, FontSettings } from '@/components/SidebarContent';
+import { Sidebar } from '@/components/Sidebar';
+import { BottomControls } from '@/components/BottomControls';
+import { MobileStudioToolbar, ToolType } from '@/components/studio/MobileStudioToolbar';
+import { MobileDrawer } from '@/components/studio/MobileDrawer';
+import { MobileTopicInput } from '@/components/studio/MobileTopicInput';
+import { Sheet, SheetTrigger } from '@/components/ui/sheet';
+import { useToast } from '@/hooks/use-toast';
+import { PlaceHolderImages } from '@/lib/placeholder-images';
+import html2canvas from 'html2canvas';
+import { cn } from '@/lib/utils';
+import { useAuth, useUser } from '@/firebase';
+import { GoogleAuthProvider, signInWithPopup, signOut, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
 
 
 type Content = {
@@ -92,8 +82,8 @@ export default function StudioPage() {
   const [category, setCategory] = useState<Category>('coran');
   const [format, setFormat] = useState<Format>('story');
   const [textTheme, setTextTheme] = useState<TextTheme>('white');
-  const [fontSize, setFontSize] = useState(24);
-  const [fontFamily, setFontFamily] = useState<FontFamily>('roboto');
+  const [fontSize, setFontSize] = useState(21);
+  const [fontFamily, setFontFamily] = useState<FontFamily>('amiri');
   const [background, setBackground] = useState<string>(
     PlaceHolderImages[0]?.imageUrl || 'https://picsum.photos/seed/1/1080/1920'
   );
@@ -103,6 +93,8 @@ export default function StudioPage() {
   const [creatorSignature, setCreatorSignature] = useState('@Hikmaclips');
   const [generationCount, setGenerationCount] = useState(0);
   const [showSignInPopup, setShowSignInPopup] = useState(false);
+  const [activeMobileTool, setActiveMobileTool] = useState<ToolType>(null);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const previewRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
@@ -215,6 +207,7 @@ export default function StudioPage() {
       const result = await generateHadith({ category, topic });
       if (result && result.content) {
         setContent(result);
+        setAnimationKey(prev => prev + 1);
         toast({
           title: 'Contenu généré !',
           description: 'Votre nouveau contenu est prêt.',
@@ -351,351 +344,142 @@ export default function StudioPage() {
         directory: Directory.Cache,
       });
 
-      await Share.share({
-        title: 'Ma Hikma du jour',
-        text: `Découvrez cette sagesse sur HikmaClips : "${content.content}" - ${content.source}`,
-        files: [savedFile.uri],
-        dialogTitle: 'Partager avec...',
-      });
+      // Check if sharing is actually supported
+      const canShareResult = await Share.canShare();
 
-      toast({
-        title: 'Partage ouvert',
-        description: 'Choisissez une application pour partager votre Hikma.',
-      });
+      if (canShareResult.value) {
+        await Share.share({
+          title: 'Ma Hikma du jour',
+          text: `Découvrez cette sagesse sur HikmaClips : "${content.content}" - ${content.source}`,
+          files: [savedFile.uri],
+          dialogTitle: 'Partager avec...',
+        });
+
+        toast({
+          title: 'Partage ouvert',
+          description: 'Choisissez une application pour partager votre Hikma.',
+        });
+      } else {
+        throw new Error('Share API not available');
+      }
 
     } catch (error) {
       console.error('Le partage a échoué:', error);
+      // Fallback: Download the image if sharing is not available
+      handleDownloadImage();
       toast({
-        title: 'Partage',
-        description: 'Utilisez le bouton de téléchargement pour enregistrer et partager manuellement.',
+        title: 'Note',
+        description: 'Le partage direct n\'est pas disponible sur ce navigateur. L\'image a été téléchargée.',
       });
     } finally {
       setIsGenerating(false);
     }
-  }, [content, toast]);
+  }, [content, toast, handleDownloadImage]);
 
   return (
-    <div className="min-h-screen w-full bg-background flex flex-col">
-      <header className="border-b">
-        <div className="container mx-auto flex h-16 items-center justify-between px-4 sm:px-8">
-          <div className="flex items-center gap-2">
-            <Wand2 className="h-6 w-6 text-primary" />
-            <h1 className="text-xl font-bold text-hikma-gradient">Studio</h1>
+    <div className="layout-immersive overflow-hidden bg-background">
+      {/* Hidden file input for background upload */}
+      <input
+        type="file"
+        id="file-upload"
+        onChange={handleFileChange}
+        className="hidden"
+        accept="image/*"
+        title="Télécharger un arrière-plan"
+      />
+
+      {/* Header with Sidebar Trigger (Mobile only for sidebar button) */}
+      <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b">
+        <div className="container mx-auto flex h-14 items-center justify-between px-4">
+          {/* Left: Menu & Logo */}
+          <div className="flex items-center gap-3">
+            <Sheet open={isSidebarOpen} onOpenChange={setIsSidebarOpen}>
+              {/* Le bouton menu est maintenant masqué sur mobile au profit de la toolbar flottante */}
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="icon" className="-ml-2 hidden md:flex">
+                  <Menu className="w-6 h-6" />
+                </Button>
+              </SheetTrigger>
+              <Sidebar
+                topic={topic}
+                setTopic={setTopic}
+                onRandomBackground={handleRandomBackground}
+                onUploadClick={() => document.getElementById('file-upload')?.click()}
+                user={user}
+                onSignIn={handleSignIn}
+                onSignOut={handleSignOut}
+                onShare={handleShareImage}
+                isStudio={true}
+                format={format}
+                setFormat={setFormat}
+                fontFamily={fontFamily}
+                setFontFamily={setFontFamily}
+                fontSize={fontSize}
+                setFontSize={setFontSize}
+              />
+            </Sheet>
+            <a href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity active:scale-95 transition-transform">
+              <Palette className="w-5 h-5 text-primary" />
+              <h1 className="text-lg font-bold text-hikma-gradient tracking-tight font-display">Studio</h1>
+            </a>
           </div>
-          <div className="flex items-center gap-4">
-            {isUserLoading ? (
-              <Loader2 className="animate-spin" />
-            ) : user ? (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="relative h-10 w-10 rounded-full">
-                    <Avatar className="h-10 w-10">
-                      <AvatarImage src={user.photoURL || ''} alt={user.displayName || 'Avatar'} />
-                      <AvatarFallback>
-                        {user.displayName ? user.displayName.charAt(0).toUpperCase() : <User />}
-                      </AvatarFallback>
-                    </Avatar>
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-56" align="end" forceMount>
-                  <DropdownMenuLabel className="font-normal">
-                    <div className="flex flex-col space-y-1">
-                      <p className="text-sm font-medium leading-none">{user.displayName}</p>
-                      <p className="text-xs leading-none text-muted-foreground">
-                        {user.email}
-                      </p>
-                    </div>
-                  </DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={handleSignOut}>
-                    <LogOut className="mr-2 h-4 w-4" />
-                    <span>Déconnexion</span>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            ) : (
-              <Button onClick={handleSignIn}>
-                <LogIn className="mr-2 h-4 w-4" />
-                Connexion
-              </Button>
+
+          {/* Right: Actions & Avatar */}
+          <div className="flex items-center justify-end gap-1 sm:gap-2">
+            {!isUserLoading && user && (
+              <Avatar className="h-8 w-8 ring-1 ring-primary/20">
+                <AvatarImage src={user.photoURL || ''} />
+                <AvatarFallback className="text-[10px]">{user.displayName?.charAt(0)}</AvatarFallback>
+              </Avatar>
             )}
+            <Button variant="ghost" size="icon" onClick={() => window.location.href = '/ressources'} className="text-primary flex">
+              <BookOpen className="w-5 h-5 font-bold" />
+            </Button>
+            <Button variant="ghost" size="icon" onClick={handleDownloadImage} disabled={!content || isGenerating}>
+              <Download className="w-5 h-5 font-bold" />
+            </Button>
           </div>
         </div>
       </header>
-      <main className="container mx-auto p-4 sm:p-8 flex-grow">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 xl:gap-12">
-          {/* === CONTROLS COLUMN === */}
-          <div className="flex flex-col gap-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-primary text-primary-foreground text-xs font-bold">1</span>
-                  <Sparkles className="text-primary" />
-                  Choisir une catégorie
-                </CardTitle>
-                <CardDescription>
-                  Sélectionnez le type de contenu à générer.
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <RadioGroup
-                  defaultValue="coran"
-                  className="grid grid-cols-2 md:grid-cols-4 gap-4"
-                  onValueChange={(value: string) => setCategory(value as Category)}
-                >
-                  <div>
-                    <RadioGroupItem value="coran" id="studio-coran" className="peer sr-only" />
-                    <Label
-                      htmlFor="studio-coran"
-                      className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-primary/10 hover:text-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary peer-data-[state=checked]:bg-primary peer-data-[state=checked]:text-primary-foreground transition-smooth"
-                    >
-                      <BookMarked className="mb-3 h-6 w-6" />
-                      Coran
-                    </Label>
-                  </div>
-                  <div>
-                    <RadioGroupItem value="hadith" id="studio-hadith" className="peer sr-only" />
-                    <Label
-                      htmlFor="studio-hadith"
-                      className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-primary/10 hover:text-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary peer-data-[state=checked]:bg-primary peer-data-[state=checked]:text-primary-foreground transition-smooth"
-                    >
-                      <BookOpen className="mb-3 h-6 w-6" />
-                      Hadiths
-                    </Label>
-                  </div>
-                  <div>
-                    <RadioGroupItem value="ramadan" id="studio-ramadan" className="peer sr-only" />
-                    <Label
-                      htmlFor="studio-ramadan"
-                      className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-primary/10 hover:text-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary peer-data-[state=checked]:bg-primary peer-data-[state=checked]:text-primary-foreground transition-smooth"
-                    >
-                      <Moon className="mb-3 h-6 w-6" />
-                      Ramadan
-                    </Label>
-                  </div>
-                  <div>
-                    <RadioGroupItem value="recherche-ia" id="studio-recherche-ia" className="peer sr-only" />
-                    <Label
-                      htmlFor="studio-recherche-ia"
-                      className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-primary/10 hover:text-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary peer-data-[state=checked]:bg-primary peer-data-[state=checked]:text-primary-foreground transition-smooth"
-                    >
-                      <Search className="mb-3 h-6 w-6" />
-                      Recherche IA
-                    </Label>
-                  </div>
-                </RadioGroup>
-              </CardContent>
-            </Card>
 
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-primary text-primary-foreground text-xs font-bold">2</span>
-                  <RectangleHorizontal className="text-primary" />
-                  Choisir un format
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <RadioGroup
-                  defaultValue="story"
-                  className="grid grid-cols-2 gap-4"
-                  onValueChange={(value: string) => setFormat(value as Format)}
-                >
-                  <div>
-                    <RadioGroupItem value="story" id="studio-story" className="peer sr-only" />
-                    <Label
-                      htmlFor="studio-story"
-                      className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-primary/10 hover:text-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary peer-data-[state=checked]:bg-primary peer-data-[state=checked]:text-primary-foreground transition-smooth"
-                    >
-                      <RectangleVertical className="mb-3 h-6 w-6" />
-                      Story (9:16)
-                    </Label>
-                  </div>
-                  <div>
-                    <RadioGroupItem value="square" id="studio-square" className="peer sr-only" />
-                    <Label
-                      htmlFor="studio-square"
-                      className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-primary/10 hover:text-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary peer-data-[state=checked]:bg-primary peer-data-[state=checked]:text-primary-foreground transition-smooth"
-                    >
-                      <ImageIcon className="mb-3 h-6 w-6" />
-                      Carré (1:1)
-                    </Label>
-                  </div>
-                </RadioGroup>
-              </CardContent>
-            </Card>
+      <div className="flex-1 flex pt-14 overflow-hidden">
+        {/* Persistent Sidebar for Desktop */}
+        <aside className="hidden md:block w-80 border-r bg-background/50 backdrop-blur-sm overflow-y-auto custom-scrollbar p-6">
+          <SidebarContent
+            topic={topic}
+            setTopic={setTopic}
+            onRandomBackground={handleRandomBackground}
+            onUploadClick={() => document.getElementById('file-upload')?.click()}
+            user={user}
+            onSignIn={handleSignIn}
+            onSignOut={handleSignOut}
+            onShare={handleShareImage}
+            isStudio={true}
+            format={format}
+            setFormat={setFormat}
+            fontFamily={fontFamily}
+            setFontFamily={setFontFamily}
+            fontSize={fontSize}
+            setFontSize={setFontSize}
+          />
+        </aside>
 
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-primary text-primary-foreground text-xs font-bold">3</span>
-                  <Palette className="text-primary" />
-                  Couleur du texte
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <RadioGroup
-                  defaultValue="white"
-                  className="grid grid-cols-2 gap-4"
-                  onValueChange={(value: string) => setTextTheme(value as TextTheme)}
-                >
-                  <div>
-                    <RadioGroupItem value="gradient" id="studio-theme-gradient" className="peer sr-only" />
-                    <Label
-                      htmlFor="studio-theme-gradient"
-                      className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-primary/10 hover:text-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary peer-data-[state=checked]:bg-primary peer-data-[state=checked]:text-primary-foreground transition-smooth"
-                    >
-                      <span className="mb-3 text-lg font-bold text-hikma-gradient">Aa</span>
-                      TikTok
-                    </Label>
-                  </div>
-                  <div>
-                    <RadioGroupItem value="white" id="studio-theme-white" className="peer sr-only" />
-                    <Label
-                      htmlFor="studio-theme-white"
-                      className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-primary/10 hover:text-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary peer-data-[state=checked]:bg-primary peer-data-[state=checked]:text-primary-foreground transition-smooth"
-                    >
-                      <span className="mb-3 text-lg font-bold text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)]">Aa</span>
-                      Blanc
-                    </Label>
-                  </div>
-                </RadioGroup>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-primary text-primary-foreground text-xs font-bold">4</span>
-                  <Type className="text-primary" />
-                  Typographie
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <RadioGroup
-                  defaultValue="roboto"
-                  className="grid grid-cols-2 gap-3"
-                  onValueChange={(value: string) => setFontFamily(value as FontFamily)}
-                >
-                  {(Object.entries(fontFamilies) as [FontFamily, typeof fontFamilies[FontFamily]][]).map(([key, font]) => (
-                    <div key={key}>
-                      <RadioGroupItem value={key} id={`studio-font-${key}`} className="peer sr-only" />
-                      <Label
-                        htmlFor={`studio-font-${key}`}
-                        className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-3 hover:bg-primary/10 hover:text-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary peer-data-[state=checked]:bg-primary peer-data-[state=checked]:text-primary-foreground transition-smooth"
-                      >
-                        <span className="mb-2 text-lg" style={{ fontFamily: font.style }}>Aa</span>
-                        <span className="text-xs">{font.label}</span>
-                      </Label>
-                    </div>
-                  ))}
-                </RadioGroup>
-
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-muted-foreground">Taille du texte</span>
-                    <span className="text-sm font-medium">{fontSize}px</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => setFontSize(s => Math.max(14, s - 2))}>
-                      <Minus className="h-4 w-4" />
-                    </Button>
-                    <Slider
-                      value={[fontSize]}
-                      onValueChange={(v) => setFontSize(v[0])}
-                      min={14}
-                      max={48}
-                      step={1}
-                      className="flex-1"
-                    />
-                    <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => setFontSize(s => Math.min(48, s + 2))}>
-                      <Plus className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-primary text-primary-foreground text-xs font-bold">5</span>
-                  <AtSign className="text-primary" />
-                  Signature
-                </CardTitle>
-                <CardDescription>
-                  Ajoutez votre @pseudo ou nom sur l'image.
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="flex flex-col gap-2">
-                  <Input
-                    placeholder="Ex: @votre_pseudo"
-                    value={creatorSignature}
-                    onChange={(e) => setCreatorSignature(e.target.value)}
-                    disabled={!user}
-                    className="flex-grow"
-                  />
-                  {!user && (
-                    <p className="text-xs text-muted-foreground">
-                      Connectez-vous pour personnaliser votre propre signature.
-                    </p>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-primary text-primary-foreground text-xs font-bold">6</span>
-                  <ImageIcon className="text-primary" />
-                  Choisir l'arrière-plan
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="flex items-center gap-4">
-                <input
-                  type="file"
-                  id="studio-file-upload"
-                  onChange={handleFileChange}
-                  className="hidden"
-                  accept="image/*"
-                />
-                <Button
-                  variant="outline"
-                  onClick={() => document.getElementById('studio-file-upload')?.click()}
-                  className="flex-1"
-                >
-                  <Upload className="mr-2 h-4 w-4" />
-                  Télécharger
-                </Button>
-                <Button onClick={handleRandomBackground} className="flex-1">
-                  <Sparkles className="mr-2 h-4 w-4" />
-                  Aléatoire
-                </Button>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* === PREVIEW COLUMN === */}
-          <div className="flex flex-col items-center justify-start gap-8">
+        {/* Main Preview Container */}
+        <main className="flex-1 preview-container relative pb-32 overflow-hidden flex items-center justify-center">
+          <div className="relative w-full h-full flex items-center justify-center p-4">
             <div
               className={cn(
-                'bg-neutral-900 p-2 sm:p-4 shadow-2xl ring-2 ring-primary/20 transition-all duration-300',
-                {
-                  'w-[340px] h-[715px] sm:w-[360px] sm:h-[755px] rounded-[40px]': format === 'story',
-                  'w-[360px] h-[360px] sm:w-[480px] sm:h-[480px] rounded-2xl': format === 'square',
-                }
+                "bg-neutral-900 p-1 sm:p-2 shadow-2xl ring-4 ring-primary/5 transition-all duration-300 relative overflow-hidden",
+                format === 'story'
+                  ? "w-[240px] h-[500px] sm:w-[280px] sm:h-[590px] md:w-[320px] md:h-[673px] lg:w-[340px] lg:h-[715px] rounded-[30px] sm:rounded-[40px]"
+                  : "w-[260px] h-[260px] sm:w-[320px] sm:h-[320px] md:w-[400px] md:h-[400px] lg:w-[450px] lg:h-[450px] rounded-2xl"
               )}
             >
               <div
                 ref={previewRef}
                 className={cn(
-                  'relative h-full w-full overflow-hidden bg-black',
-                  {
-                    'rounded-[25px] sm:rounded-[32px]': format === 'story',
-                    'rounded-xl': format === 'square',
-                  }
+                  "relative h-full w-full overflow-hidden bg-black",
+                  format === 'story' ? "rounded-[22px] sm:rounded-[32px]" : "rounded-xl"
                 )}
               >
                 <Image
@@ -711,17 +495,21 @@ export default function StudioPage() {
 
                 {(isGenerating && !content) && (
                   <div className="absolute inset-0 flex flex-col items-center justify-center p-8 text-white/80">
-                    <Loader2 className="h-12 w-12 animate-spin mb-4" />
-                    <p className="text-lg text-center">Génération du contenu en cours...</p>
+                    <Loader2 className="h-10 w-10 animate-spin mb-4" />
+                    <p className="text-sm text-center">Génération...</p>
                   </div>
                 )}
 
                 {content && (
-                  <div
-                    className="absolute inset-0 flex items-center justify-center p-8"
-                  >
+                  <div className="absolute inset-0 flex items-center justify-center p-6 sm:p-8">
                     <div className="text-center w-full max-w-4xl">
-                      <div className="font-extrabold leading-tight tracking-tight px-4" style={{ fontSize: `${fontSize}px`, fontFamily: fontFamilies[fontFamily].style }}>
+                      <div
+                        className="font-extrabold leading-tight tracking-tight px-4"
+                        style={{
+                          fontSize: `${fontSize}px`,
+                          fontFamily: fontFamilies[fontFamily].style
+                        }}
+                      >
                         <AnimatePresence mode="wait">
                           <motion.div
                             key={animationKey + content.content}
@@ -730,25 +518,24 @@ export default function StudioPage() {
                             variants={{
                               visible: { transition: { staggerChildren: 0.08 } },
                             }}
-                            className="text-white"
+                            className={cn(
+                              textTheme === 'white' ? "text-white" : "text-hikma-gradient"
+                            )}
                           >
                             "
                             {content.content.split(' ').map((word, i) => (
                               <motion.span
                                 key={i}
                                 variants={{
-                                  hidden: { opacity: 0, y: 20, filter: 'blur(5px)' },
+                                  hidden: { opacity: 0, y: 15, filter: 'blur(4px)' },
                                   visible: {
                                     opacity: 1,
                                     y: 0,
                                     filter: 'blur(0px)',
-                                    transition: { type: 'spring', damping: 12, stiffness: 100 }
+                                    transition: { type: 'spring', damping: 15, stiffness: 120 }
                                   },
                                 }}
-                                className={cn(
-                                  "inline-block mr-2",
-                                  textTheme === 'white' ? "text-white" : (user ? "text-hikma-gradient" : "text-white")
-                                )}
+                                className="inline-block mr-2"
                               >
                                 {word}
                               </motion.span>
@@ -759,14 +546,14 @@ export default function StudioPage() {
                       </div>
                       <motion.p
                         key={animationKey + content.source}
-                        initial={{ opacity: 0, scale: 0.9 }}
+                        initial={{ opacity: 0, scale: 0.95 }}
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{
-                          delay: content.content.split(' ').length * 0.08 + 0.5,
-                          duration: 0.8,
+                          delay: content.content.split(' ').length * 0.08 + 0.4,
+                          duration: 0.6,
                           ease: "easeOut"
                         }}
-                        className="mt-6 text-lg sm:text-xl font-bold text-white/90 italic tracking-widest uppercase opacity-70"
+                        className="mt-6 text-sm sm:text-lg font-bold text-white/90 italic tracking-widest uppercase opacity-70"
                       >
                         — {content.source} —
                       </motion.p>
@@ -775,8 +562,8 @@ export default function StudioPage() {
                 )}
 
                 {creatorSignature && (
-                  <div className="absolute bottom-10 left-0 right-0 text-center">
-                    <p className="text-white/60 text-sm font-medium tracking-widest uppercase">
+                  <div className="absolute bottom-3 left-0 right-0 text-center">
+                    <p className="text-white/40 text-[9px] font-medium tracking-widest uppercase">
                       {creatorSignature}
                     </p>
                   </div>
@@ -784,144 +571,166 @@ export default function StudioPage() {
 
                 {!content && !isGenerating && (
                   <div className="absolute inset-0 flex items-center justify-center p-8">
-                    <div className="text-center text-white/50">
-                      <p className="text-lg">Votre contenu généré apparaîtra ici.</p>
+                    <div className="text-center text-white/40 flex flex-col items-center gap-3">
+                      <Sparkles className="w-8 h-8 opacity-20" />
+                      <p className="text-sm">Votre Hikma apparaîtra ici.</p>
                     </div>
                   </div>
                 )}
               </div>
             </div>
-
-            <Card className="w-full max-w-sm">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2 mb-2">
-                  <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-primary text-primary-foreground text-xs font-bold">7</span>
-                  <Sparkles className="text-primary" />
-                  Générer le contenu
-                </CardTitle>
-                <CardDescription>
-                  Décrivez un thème (ex. "patience", "nutrition"). Laissez vide pour un thème aléatoire.
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="flex flex-col gap-4">
-                <Textarea
-                  value={topic}
-                  onChange={(e) => setTopic(e.target.value)}
-                  placeholder="Ex: La patience dans l'épreuve"
-                />
-                <Button onClick={handleGenerateAiContent} disabled={isGenerating} className="w-full" size="lg">
-                  {isGenerating ? (
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  ) : (
-                    <Sparkles className="mr-2 h-4 w-4" />
-                  )}
-                  {isGenerating ? 'Génération...' : "Générer le contenu"}
-                </Button>
-              </CardContent>
-            </Card>
-
-            <Card className="w-full max-w-sm">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-primary text-primary-foreground text-xs font-bold">8</span>
-                  <Download className="text-primary" />
-                  Exporter & Partager
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="flex flex-col gap-3">
-                <Button
-                  onClick={handleDownloadImage}
-                  disabled={!content || isGenerating}
-                  className="w-full"
-                  size="lg"
-                  variant="outline"
-                >
-                  <Download className="mr-2 h-4 w-4" />
-                  Enregistrer l'image
-                </Button>
-                <Button
-                  onClick={handleShareImage}
-                  disabled={!content || isGenerating}
-                  className="w-full bg-gradient-to-r from-primary to-accent hover:opacity-90"
-                  size="lg"
-                >
-                  <Share2 className="mr-2 h-4 w-4" />
-                  Partager maintenant
-                </Button>
-                <Button
-                  onClick={() => setAnimationKey(prev => prev + 1)}
-                  disabled={!content || isGenerating}
-                  variant="ghost"
-                  className="w-full h-8 text-xs text-muted-foreground"
-                >
-                  <Play className="mr-1 h-3 w-3" />
-                  Revoir l'animation
-                </Button>
-              </CardContent>
-            </Card>
           </div>
-        </div>
-      </main>
+        </main>
+      </div>
 
-      <AlertDialog open={showSignInPopup} onOpenChange={(open) => {
-        setShowSignInPopup(open);
-        if (!open) {
-          setAuthError('');
-          setAuthEmail('');
-          setAuthPassword('');
+      {/* Bottom Controls Bar */}
+      <MobileTopicInput
+        value={topic}
+        onChange={setTopic}
+        isVisible={category === 'recherche-ia'}
+        placeholder="Quel thème pour votre Hikma ?"
+      />
+
+      <BottomControls
+        category={category}
+        setCategory={setCategory}
+        onGenerate={handleGenerateAiContent}
+        isGenerating={isGenerating}
+        onRandom={handleRandomBackground}
+        onUpload={() => document.getElementById('file-upload')?.click()}
+      />
+
+      {/* Mobile Studio Toolset 2.0 */}
+      <MobileStudioToolbar
+        onToolSelect={(tool) => {
+          if (tool === 'settings') {
+            setIsSidebarOpen(true);
+          } else if (tool === 'share') {
+            handleShareImage();
+          } else {
+            setActiveMobileTool(tool);
+          }
+        }}
+        activeTool={activeMobileTool}
+      />
+
+      <MobileDrawer
+        isOpen={activeMobileTool !== null}
+        onClose={() => setActiveMobileTool(null)}
+        title={
+          activeMobileTool === 'font' ? 'Typographie' :
+            activeMobileTool === 'format' ? 'Format & Style' :
+              activeMobileTool === 'theme' ? 'Couleur & Effet' :
+                activeMobileTool === 'background' ? 'Arrière-plan' : ''
         }
-      }}>
-        <AlertDialogContent className="max-w-md">
+      >
+        {activeMobileTool === 'font' && (
+          <FontSettings
+            fontFamily={fontFamily}
+            setFontFamily={setFontFamily}
+            fontSize={fontSize}
+            setFontSize={setFontSize}
+          />
+        )}
+        {activeMobileTool === 'format' && (
+          <FormatSettings format={format} setFormat={setFormat} />
+        )}
+        {activeMobileTool === 'theme' && (
+          <ThemeSettings textTheme={textTheme} setTextTheme={setTextTheme} />
+        )}
+        {activeMobileTool === 'background' && (
+          <div className="space-y-4">
+            <div className="grid grid-cols-2 gap-3">
+              <Button variant="outline" className="h-20 rounded-2xl flex flex-col gap-2 border-2 border-dashed" onClick={handleRandomBackground}>
+                <Sparkles className="w-5 h-5 text-primary" />
+                <span className="text-xs font-bold">Aléatoire</span>
+              </Button>
+              <Button variant="outline" className="h-20 rounded-2xl flex flex-col gap-2 border-2 border-dashed" onClick={() => document.getElementById('file-upload')?.click()}>
+                <Upload className="w-5 h-5 text-primary" />
+                <span className="text-xs font-bold">Importer</span>
+              </Button>
+            </div>
+          </div>
+        )}
+      </MobileDrawer>
+
+      {/* Auth Popups */}
+      <AlertDialog open={showSignInPopup} onOpenChange={setShowSignInPopup}>
+        <AlertDialogContent className="sm:max-w-[400px]">
           <AlertDialogHeader>
-            <AlertDialogTitle>{authMode === 'signup' ? 'Créer un compte' : 'Se connecter'}</AlertDialogTitle>
+            <AlertDialogTitle className="text-2xl font-bold flex items-center gap-2">
+              <User className="w-6 h-6 text-primary" />
+              {authMode === 'login' ? 'Connexion' : 'Inscription'}
+            </AlertDialogTitle>
             <AlertDialogDescription>
-              {authMode === 'signup'
-                ? 'Créez un compte gratuit pour des générations illimitées !'
-                : 'Connectez-vous pour profiter de générations illimitées.'}
+              Connectez-vous pour sauvegarder vos Hikmas et personnaliser votre signature.
             </AlertDialogDescription>
           </AlertDialogHeader>
 
-          <div className="space-y-4 py-4">
+          <div className="flex flex-col gap-4 py-4">
             <Button
-              onClick={handleSignIn}
               variant="outline"
-              className="w-full"
+              onClick={handleSignIn}
               disabled={isConnecting}
+              className="w-full py-6 transition-smooth hover:bg-muted"
             >
-              <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
-                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
-                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
-              </svg>
+              {isConnecting ? (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              ) : (
+                <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
+                  <path
+                    d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+                    fill="#4285F4"
+                  />
+                  <path
+                    d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                    fill="#34A853"
+                  />
+                  <path
+                    d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+                    fill="#FBBC05"
+                  />
+                  <path
+                    d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+                    fill="#EA4335"
+                  />
+                </svg>
+              )}
               Continuer avec Google
             </Button>
 
-            <div className="relative">
+            <div className="relative py-2">
               <div className="absolute inset-0 flex items-center">
                 <span className="w-full border-t" />
               </div>
               <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-background px-2 text-muted-foreground">Ou par email</span>
+                <span className="bg-background px-2 text-muted-foreground">Ou avec votre email</span>
               </div>
             </div>
 
             <div className="space-y-3">
-              <Input
-                type="email"
-                placeholder="Email"
-                value={authEmail}
-                onChange={(e) => setAuthEmail(e.target.value)}
-                disabled={isConnecting}
-              />
-              <Input
-                type="password"
-                placeholder="Mot de passe (min. 6 caractères)"
-                value={authPassword}
-                onChange={(e) => setAuthPassword(e.target.value)}
-                disabled={isConnecting}
-                onKeyDown={(e) => e.key === 'Enter' && handleEmailAuth()}
-              />
+              <div className="space-y-1">
+                <Label htmlFor="email-auth">Email</Label>
+                <Input
+                  id="email-auth"
+                  type="email"
+                  placeholder="nom@exemple.com"
+                  value={authEmail}
+                  onChange={(e) => setAuthEmail(e.target.value)}
+                  className="transition-smooth"
+                />
+              </div>
+              <div className="space-y-1">
+                <Label htmlFor="password-auth">Mot de passe</Label>
+                <Input
+                  id="password-auth"
+                  type="password"
+                  value={authPassword}
+                  onChange={(e) => setAuthPassword(e.target.value)}
+                  className="transition-smooth"
+                />
+              </div>
+
               {authError && (
                 <p className="text-sm text-destructive">{authError}</p>
               )}

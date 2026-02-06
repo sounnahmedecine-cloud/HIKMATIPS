@@ -1,0 +1,206 @@
+import React from 'react';
+import {
+    Home,
+    User,
+    Settings,
+    Sparkles,
+    Upload,
+    Palette,
+    RectangleVertical,
+    RectangleHorizontal,
+    Share2,
+} from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Slider } from '@/components/ui/slider';
+import { cn } from '@/lib/utils';
+
+interface SidebarContentProps {
+    topic: string;
+    setTopic: (t: string) => void;
+    onRandomBackground: () => void;
+    onUploadClick: () => void;
+    user: any;
+    onSignIn: () => void;
+    onSignOut: () => void;
+    onShare?: () => void;
+    isStudio?: boolean;
+    format?: 'story' | 'square';
+    setFormat?: (f: 'story' | 'square') => void;
+    fontFamily?: 'roboto' | 'playfair' | 'amiri' | 'naskh';
+    setFontFamily?: (f: 'roboto' | 'playfair' | 'amiri' | 'naskh') => void;
+    fontSize?: number;
+    setFontSize?: (s: number) => void;
+}
+
+const fontFamilies: Record<string, { name: string; style: string; label: string }> = {
+    roboto: { name: 'Roboto', style: "'Roboto', sans-serif", label: 'Moderne' },
+    playfair: { name: 'Playfair Display', style: "'Playfair Display', serif", label: 'Élégante' },
+    amiri: { name: 'Amiri', style: "'Amiri', serif", label: 'Calligraphie' },
+    naskh: { name: 'Noto Naskh Arabic', style: "'Noto Naskh Arabic', serif", label: 'Orientale' },
+};
+
+export function FontSettings({ fontFamily, setFontFamily, fontSize, setFontSize }: {
+    fontFamily?: string,
+    setFontFamily?: (f: any) => void,
+    fontSize?: number,
+    setFontSize?: (s: number) => void
+}) {
+    return (
+        <div className="space-y-6">
+            <div className="space-y-3">
+                <Label className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold">Police</Label>
+                <div className="grid grid-cols-2 gap-2">
+                    {(Object.entries(fontFamilies) as [string, typeof fontFamilies[string]][]).map(([key, font]) => (
+                        <Button
+                            key={key}
+                            variant={fontFamily === key ? 'default' : 'outline'}
+                            size="sm"
+                            className="h-11 rounded-xl text-xs"
+                            onClick={() => setFontFamily?.(key as any)}
+                            style={{ fontFamily: font.style }}
+                        >
+                            {font.label}
+                        </Button>
+                    ))}
+                </div>
+            </div>
+
+            <div className="space-y-3">
+                <div className="flex justify-between items-center pr-2">
+                    <Label className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold">Taille du Texte</Label>
+                    <span className="text-xs font-bold text-primary">{fontSize}px</span>
+                </div>
+                <Slider
+                    value={[fontSize || 21]}
+                    onValueChange={(v) => setFontSize?.(v[0])}
+                    min={16}
+                    max={42}
+                    step={1}
+                    className="py-2"
+                />
+            </div>
+        </div>
+    );
+}
+
+export function FormatSettings({ format, setFormat }: { format?: string, setFormat?: (f: any) => void }) {
+    return (
+        <div className="space-y-3">
+            <Label className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold">Format & Style</Label>
+            <RadioGroup
+                value={format}
+                className="grid grid-cols-2 gap-2"
+                onValueChange={(v) => setFormat?.(v as 'story' | 'square')}
+            >
+                <Label htmlFor="sb-story" className="flex items-center justify-center p-3 rounded-xl border-2 border-muted hover:bg-muted peer-data-[state=checked]:border-primary transition-smooth cursor-pointer text-xs font-bold">
+                    <RadioGroupItem value="story" id="sb-story" className="sr-only" />
+                    <RectangleVertical className="w-4 h-4 mr-2" /> Story
+                </Label>
+                <Label htmlFor="sb-square" className="flex items-center justify-center p-3 rounded-xl border-2 border-muted hover:bg-muted peer-data-[state=checked]:border-primary transition-smooth cursor-pointer text-xs font-bold">
+                    <RadioGroupItem value="square" id="sb-square" className="sr-only" />
+                    <RectangleHorizontal className="w-4 h-4 mr-2" /> Carré
+                </Label>
+            </RadioGroup>
+        </div>
+    );
+}
+
+export function SidebarContent({
+    topic,
+    setTopic,
+    onRandomBackground,
+    onUploadClick,
+    user,
+    onSignIn,
+    onSignOut,
+    onShare,
+    isStudio = false,
+    format,
+    setFormat,
+    fontFamily,
+    setFontFamily,
+    fontSize,
+    setFontSize
+}: SidebarContentProps) {
+    return (
+        <div className="space-y-6 pb-10 px-2">
+            {/* Essential Links - Compact */}
+            <div className="flex items-center justify-around bg-muted/30 rounded-2xl p-1 border border-border/50">
+                <Button variant="ghost" size="icon" className="w-12 h-12 rounded-xl" onClick={() => window.location.href = '/'}>
+                    <Home className="w-5 h-5 text-primary" />
+                </Button>
+                {user ? (
+                    <Button variant="ghost" size="icon" className="w-12 h-12 rounded-xl" onClick={onSignOut}>
+                        <User className="w-5 h-5 text-primary" />
+                    </Button>
+                ) : (
+                    <Button variant="ghost" size="icon" className="w-12 h-12 rounded-xl" onClick={onSignIn}>
+                        <User className="w-5 h-5" />
+                    </Button>
+                )}
+                <Button variant="ghost" size="icon" className="w-12 h-12 rounded-xl" onClick={() => window.location.href = '/parametres'}>
+                    <Settings className="w-5 h-5" />
+                </Button>
+            </div>
+
+            {/* Studio Controls */}
+            {isStudio && (
+                <div className="space-y-6 pt-2">
+                    <FormatSettings format={format} setFormat={setFormat} />
+                    <FontSettings
+                        fontFamily={fontFamily}
+                        setFontFamily={setFontFamily}
+                        fontSize={fontSize}
+                        setFontSize={setFontSize}
+                    />
+                </div>
+            )}
+
+            {/* Background Control */}
+            <div className="space-y-3 pt-2">
+                <Label className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold">Arrière-plan</Label>
+                <div className="grid grid-cols-2 gap-2">
+                    <Button variant="outline" size="sm" onClick={onRandomBackground} className="h-11 rounded-xl gap-2 text-xs font-bold">
+                        <Sparkles className="w-4 h-4 text-primary" />
+                        Aléatoire
+                    </Button>
+                    <Button variant="outline" size="sm" onClick={onUploadClick} className="h-11 rounded-xl gap-2 text-xs font-bold">
+                        <Upload className="w-4 h-4 text-primary" />
+                        Importer
+                    </Button>
+                </div>
+            </div>
+
+            {/* Topic Input */}
+            <div className="space-y-3 pt-2">
+                <Label className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold">Sujet de l'IA</Label>
+                <Textarea
+                    placeholder="Ex: La patience..."
+                    value={topic}
+                    onChange={(e) => setTopic(e.target.value)}
+                    className="resize-none h-24 bg-muted/20 rounded-2xl border-none focus-visible:ring-primary h-20 text-xs p-4"
+                />
+            </div>
+
+            {/* Prominent Share Button */}
+            <Button
+                variant="default"
+                size="lg"
+                className="w-full rounded-2xl h-14 font-bold gap-3 shadow-hikma transition-all active:scale-95 group"
+                onClick={onShare}
+            >
+                <div className="bg-white/20 p-2 rounded-xl group-hover:scale-110 transition-transform">
+                    <Share2 className="w-5 h-5 text-white" />
+                </div>
+                Partager l'image
+            </Button>
+
+            <p className="text-[10px] text-muted-foreground text-center italic opacity-50 pt-2">
+                "Le rappel profite aux croyants"
+            </p>
+        </div>
+    );
+}

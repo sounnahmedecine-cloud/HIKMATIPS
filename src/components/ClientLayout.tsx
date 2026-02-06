@@ -12,7 +12,7 @@ const navItems = [
   { label: 'Paramètres', icon: <Settings size={22} />, href: '/parametres' },
 ];
 
-const HIDDEN_PATHS = ['/privacy-policy', '/terms-of-service'];
+const HIDDEN_PATHS = ['/privacy-policy', '/terms-of-service', '/', '/studio'];
 
 export function ClientLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
