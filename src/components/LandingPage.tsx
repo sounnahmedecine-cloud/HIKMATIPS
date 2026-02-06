@@ -26,6 +26,9 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
+import { useToast } from '@/hooks/use-toast';
+import { initializeFirebase } from '@/firebase';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import dynamic from 'next/dynamic';
 
 // Import dynamique du générateur
@@ -41,6 +44,42 @@ const GeneratorPage = dynamic(() => import('@/components/GeneratorPage'), {
 
 export default function LandingPage() {
   const [showGenerator, setShowGenerator] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { toast } = useToast();
+
+  const handleContactSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    const formData = new FormData(e.currentTarget);
+    const data = {
+      email: formData.get('email') as string,
+      subject: formData.get('subject') as string,
+      message: formData.get('message') as string,
+      createdAt: serverTimestamp(),
+    };
+
+    try {
+      const { firestore } = initializeFirebase();
+      await addDoc(collection(firestore, 'contacts'), data);
+
+      toast({
+        title: "Message envoyé !",
+        description: "Merci pour votre retour, nous vous répondrons dès que possible.",
+      });
+
+      (e.target as HTMLFormElement).reset();
+    } catch (error) {
+      console.error('Error submitting contact form:', error);
+      toast({
+        title: "Erreur",
+        description: "Une erreur est survenue lors de l'envoi. Veuillez réessayer.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   const scrollToApp = () => {
     setShowGenerator(true);
@@ -451,26 +490,41 @@ export default function LandingPage() {
 
             <Card className="border-primary/20 shadow-lg">
               <CardContent className="p-8">
-                <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
+                <form className="space-y-4" onSubmit={handleContactSubmit}>
                   <div className="space-y-2">
                     <Label htmlFor="email">Email</Label>
-                    <Input id="email" type="email" placeholder="votre@email.com" />
+                    <Input id="email" name="email" type="email" placeholder="votre@email.com" required />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="subject">Sujet</Label>
-                    <Input id="subject" placeholder="Ex: Devenir testeur, Bug..." />
+                    <Input id="subject" name="subject" placeholder="Ex: Devenir testeur, Bug..." required />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="message">Message</Label>
                     <Textarea
                       id="message"
+                      name="message"
                       placeholder="Dites-nous tout..."
                       className="min-h-[120px]"
+                      required
                     />
                   </div>
-                  <Button type="submit" className="w-full bg-gradient-to-r from-primary to-accent">
-                    <MessageSquare className="mr-2 h-4 w-4" />
-                    Envoyer le message
+                  <Button
+                    type="submit"
+                    className="w-full bg-gradient-to-r from-primary to-accent"
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting ? (
+                      <div className="flex items-center gap-2">
+                        <div className="h-4 w-4 animate-spin border-2 border-white border-t-transparent rounded-full" />
+                        Envoi en cours...
+                      </div>
+                    ) : (
+                      <>
+                        <MessageSquare className="mr-2 h-4 w-4" />
+                        Envoyer le message
+                      </>
+                    )}
                   </Button>
                 </form>
               </CardContent>
