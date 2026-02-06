@@ -11,10 +11,17 @@ interface MobileTopicInputProps {
     onChange: (val: string) => void;
     isVisible: boolean;
     placeholder?: string;
+    onEnter?: () => void;
 }
 
-export function MobileTopicInput({ value, onChange, isVisible, placeholder }: MobileTopicInputProps) {
+export function MobileTopicInput({ value, onChange, isVisible, placeholder, onEnter }: MobileTopicInputProps) {
     const inputRef = useRef<HTMLInputElement>(null);
+
+    const handleKeyDown = (e: React.KeyboardEvent) => {
+        if (e.key === 'Enter' && onEnter) {
+            onEnter();
+        }
+    };
 
     // Auto-focus when becomes visible
     useEffect(() => {
@@ -45,6 +52,7 @@ export function MobileTopicInput({ value, onChange, isVisible, placeholder }: Mo
                                 ref={inputRef}
                                 value={value}
                                 onChange={(e) => onChange(e.target.value)}
+                                onKeyDown={handleKeyDown}
                                 placeholder={placeholder || "Écrivez votre sujet ici..."}
                                 className="border-none bg-transparent focus-visible:ring-0 text-sm h-10 px-0 placeholder:text-muted-foreground/50 font-medium"
                             />

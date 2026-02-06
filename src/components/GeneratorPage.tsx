@@ -26,7 +26,7 @@ import { useToast } from '@/hooks/use-toast';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import html2canvas from 'html2canvas';
 import { useAuth, useUser } from '@/firebase';
-import { GoogleAuthProvider, signInWithPopup, signOut, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
+import { signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from 'firebase/auth';
 import {
   AlertDialog,
   AlertDialogContent,
@@ -40,13 +40,16 @@ import { generateHadith } from '@/ai/flows/generate-hadith';
 import { Share } from '@capacitor/share';
 import { Filesystem, Directory } from '@capacitor/filesystem';
 import OnboardingScreen from '@/components/OnboardingScreen';
-import { SidebarContent, FormatSettings, FontSettings } from './SidebarContent';
+import { SidebarContent, FormatSettings, FontSettings, ThemeSettings } from './SidebarContent';
 import { Sidebar } from '@/components/Sidebar';
 import { BottomControls } from '@/components/BottomControls';
 import { MobileStudioToolbar, ToolType } from '@/components/studio/MobileStudioToolbar';
 import { MobileDrawer } from '@/components/studio/MobileDrawer';
 import { MobileTopicInput } from '@/components/studio/MobileTopicInput';
 import { Sheet, SheetTrigger } from '@/components/ui/sheet';
+
+
+import { cn } from '@/lib/utils';
 
 
 type Content = {
@@ -74,8 +77,12 @@ export default function GeneratorPage() {
   const [activeMobileTool, setActiveMobileTool] = useState<ToolType>(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  // Fixed values for simplified mode
-  const fontSize = 24;
+  // Studio Settings States
+  const [fontSize, setFontSize] = useState(24);
+  const [fontFamily, setFontFamily] = useState("'Amiri', serif");
+  const [format, setFormat] = useState<'story' | 'square'>('story');
+  const [textTheme, setTextTheme] = useState<'light' | 'dark' | 'glass'>('light');
+
   const creatorSignature = 'hikmaclips.woosenteur.fr';
 
   useEffect(() => {
@@ -101,37 +108,7 @@ export default function GeneratorPage() {
   const [authMode, setAuthMode] = useState<'login' | 'signup'>('login');
   const [authError, setAuthError] = useState('');
 
-  const handleSignIn = async () => {
-    if (!auth || isConnecting) return;
-
-    setIsConnecting(true);
-    const provider = new GoogleAuthProvider();
-
-    try {
-      await signInWithPopup(auth, provider);
-      toast({
-        title: 'Connexion réussie',
-        description: 'Bienvenue !',
-      });
-      setShowSignInPopup(false);
-      setGenerationCount(0);
-    } catch (error: any) {
-      if (error.code === 'auth/cancelled-popup-request' || error.code === 'auth/popup-closed-by-user') {
-        console.log('Authentification annulée ou fermée par l\'utilisateur');
-        return;
-      }
-
-      console.error('Erreur de connexion:', error);
-      toast({
-        variant: 'destructive',
-        title: 'Erreur de connexion',
-        description: "Une erreur s'est produite lors de la connexion.",
-      });
-      setShowSignInPopup(false);
-    } finally {
-      setIsConnecting(false);
-    }
-  };
+  // handleSignIn removed (Google Auth)
 
   const handleEmailAuth = async () => {
     if (!auth || isConnecting) return;
@@ -189,6 +166,7 @@ export default function GeneratorPage() {
       description: 'Vous avez été déconnecté.',
     });
   };
+
 
   const handleGenerateAiContent = async () => {
     if (!user && generationCount >= 5) {
@@ -389,7 +367,7 @@ export default function GeneratorPage() {
       />
 
       {/* Header with Sidebar Trigger */}
-      <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b">
+      <header className="fixed top-0 left-0 right-0 z-50 bg-emerald-50/90 backdrop-blur-md border-b border-emerald-100/50 shadow-sm">
         <div className="container mx-auto flex h-14 items-center justify-between px-4">
           <div className="flex items-center gap-3">
             <Sheet open={isSidebarOpen} onOpenChange={setIsSidebarOpen}>
@@ -404,14 +382,14 @@ export default function GeneratorPage() {
                 onRandomBackground={handleRandomBackground}
                 onUploadClick={() => document.getElementById('file-upload')?.click()}
                 user={user}
-                onSignIn={handleSignIn}
+                onSignIn={() => setShowSignInPopup(true)} // Modified to show email popup
                 onSignOut={handleSignOut}
                 onShare={handleShareImage}
               />
             </Sheet>
             <a href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity active:scale-95 transition-transform">
               <Image src="https://res.cloudinary.com/dhjwimevi/image/upload/v1770072891/ChatGPT_Image_2_f%C3%A9vr._2026_23_43_44_edeg9a.png" alt="HikmaClips" width={28} height={28} className="rounded-lg shadow-sm" />
-              <h1 className="text-lg font-bold text-hikma-gradient tracking-tight font-display">HikmaClips</h1>
+              <h1 className="text-lg font-bold text-emerald-800 tracking-tight font-display">HikmaClips</h1>
             </a>
           </div>
 
@@ -440,21 +418,32 @@ export default function GeneratorPage() {
             onRandomBackground={handleRandomBackground}
             onUploadClick={() => document.getElementById('file-upload')?.click()}
             user={user}
-            onSignIn={handleSignIn}
+            onSignIn={() => setShowSignInPopup(true)}
             onSignOut={handleSignOut}
             onShare={handleShareImage}
           />
         </aside>
 
         {/* Main Preview Container */}
-        <main className="flex-1 preview-container relative pb-32 overflow-hidden flex items-center justify-center">
-          <div className="relative w-full h-full flex items-center justify-center">
+        <main className={cn(
+          "flex-1 preview-container relative pb-32 overflow-hidden flex justify-center",
+          "items-center sm:items-center pt-4 sm:pt-0" // Centered on desktop, high on mobile
+        )}>
+          <div className="relative w-full h-full flex items-start sm:items-center justify-center p-2 sm:p-4">
             <div
-              className="bg-neutral-900 p-1 sm:p-2 shadow-2xl ring-4 ring-primary/5 transition-all duration-300 w-[240px] h-[500px] sm:w-[280px] sm:h-[590px] md:w-[320px] md:h-[673px] lg:w-[340px] lg:h-[715px] rounded-[30px] sm:rounded-[40px] relative overflow-hidden"
+              className={cn(
+                "bg-neutral-900 p-1 sm:p-2 shadow-2xl ring-4 ring-primary/5 transition-all duration-300 relative overflow-hidden",
+                format === 'story'
+                  ? "w-auto h-auto aspect-[9/16] max-h-[min(68vh,720px)] sm:w-[280px] sm:h-[590px] md:w-[320px] md:h-[673px] lg:w-[340px] lg:h-[715px] rounded-[30px] sm:rounded-[40px]"
+                  : "w-auto h-auto aspect-square max-h-[min(60vh,450px)] sm:w-[320px] sm:h-[320px] md:w-[400px] md:h-[400px] lg:w-[450px] lg:h-[450px] rounded-2xl"
+              )}
             >
               <div
                 ref={previewRef}
-                className="relative h-full w-full overflow-hidden bg-black rounded-[22px] sm:rounded-[32px]"
+                className={cn(
+                  "relative h-full w-full overflow-hidden bg-black",
+                  format === 'story' ? "rounded-[22px] sm:rounded-[32px]" : "rounded-xl"
+                )}
               >
                 <Image
                   src={background}
@@ -477,7 +466,13 @@ export default function GeneratorPage() {
                 {content && (
                   <div className="absolute inset-0 flex items-center justify-center p-6 sm:p-8">
                     <div className="text-center w-full max-w-4xl">
-                      <div className="font-extrabold leading-tight tracking-tight px-4" style={{ fontSize: `${fontSize}px`, fontFamily: "'Roboto', sans-serif" }}>
+                      <div
+                        className={cn(
+                          "font-extrabold leading-tight tracking-tight px-4",
+                          textTheme === 'light' ? "text-white" : textTheme === 'dark' ? "text-black" : "text-white drop-shadow-lg"
+                        )}
+                        style={{ fontSize: `${fontSize}px`, fontFamily }}
+                      >
                         <AnimatePresence mode="wait">
                           <motion.div
                             key={animationKey + content.content}
@@ -486,7 +481,6 @@ export default function GeneratorPage() {
                             variants={{
                               visible: { transition: { staggerChildren: 0.08 } },
                             }}
-                            className="text-white"
                           >
                             "
                             {content.content.split(' ').map((word, i) => (
@@ -501,7 +495,7 @@ export default function GeneratorPage() {
                                     transition: { type: 'spring', damping: 15, stiffness: 120 }
                                   },
                                 }}
-                                className="inline-block mr-2 text-white"
+                                className="inline-block mr-2"
                               >
                                 {word}
                               </motion.span>
@@ -519,7 +513,10 @@ export default function GeneratorPage() {
                           duration: 0.6,
                           ease: "easeOut"
                         }}
-                        className="mt-6 text-sm sm:text-lg font-bold text-white/90 italic tracking-widest uppercase opacity-70"
+                        className={cn(
+                          "mt-6 text-sm sm:text-lg font-bold italic tracking-widest uppercase opacity-70",
+                          textTheme === 'light' ? "text-white/90" : textTheme === 'dark' ? "text-black/80" : "text-white drop-shadow-md"
+                        )}
                       >
                         — {content.source} —
                       </motion.p>
@@ -528,7 +525,10 @@ export default function GeneratorPage() {
                 )}
 
                 <div className="absolute bottom-3 left-3">
-                  <p className="text-white/40 text-[9px] font-medium tracking-wide">
+                  <p className={cn(
+                    "text-[9px] font-medium tracking-wide",
+                    textTheme === 'light' ? "text-white/40" : "text-black/30"
+                  )}>
                     {creatorSignature}
                   </p>
                 </div>
@@ -565,7 +565,48 @@ export default function GeneratorPage() {
         onChange={setTopic}
         isVisible={category === 'recherche-ia'}
         placeholder="Un thème précis pour votre IA ?"
+        onEnter={handleGenerateAiContent}
       />
+
+      <MobileDrawer
+        isOpen={activeMobileTool !== null}
+        onClose={() => setActiveMobileTool(null)}
+        title={
+          activeMobileTool === 'font' ? 'Typographie' :
+            activeMobileTool === 'format' ? 'Format & Style' :
+              activeMobileTool === 'theme' ? 'Couleur & Effet' :
+                activeMobileTool === 'background' ? 'Arrière-plan' : ''
+        }
+      >
+        {activeMobileTool === 'font' && (
+          <FontSettings
+            fontFamily={fontFamily}
+            setFontFamily={setFontFamily}
+            fontSize={fontSize}
+            setFontSize={setFontSize}
+          />
+        )}
+        {activeMobileTool === 'format' && (
+          <FormatSettings format={format} setFormat={setFormat} />
+        )}
+        {activeMobileTool === 'theme' && (
+          <ThemeSettings textTheme={textTheme} setTextTheme={setTextTheme} />
+        )}
+        {activeMobileTool === 'background' && (
+          <div className="space-y-4">
+            <div className="grid grid-cols-2 gap-3">
+              <Button variant="outline" className="h-20 rounded-2xl flex flex-col gap-2 border-2 border-dashed" onClick={handleRandomBackground}>
+                <ImageIcon className="w-5 h-5 text-primary" />
+                <span className="text-xs font-bold">Aléatoire</span>
+              </Button>
+              <Button variant="outline" className="h-20 rounded-2xl flex flex-col gap-2 border-2 border-dashed" onClick={() => document.getElementById('file-upload')?.click()}>
+                <Upload className="w-5 h-5 text-primary" />
+                <span className="text-xs font-bold">Importer</span>
+              </Button>
+            </div>
+          </div>
+        )}
+      </MobileDrawer>
 
       <BottomControls
         category={category}
@@ -596,29 +637,7 @@ export default function GeneratorPage() {
           </AlertDialogHeader>
 
           <div className="space-y-4 py-4">
-            <Button
-              onClick={handleSignIn}
-              variant="outline"
-              className="w-full"
-              disabled={isConnecting}
-            >
-              <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
-                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
-                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
-                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
-                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
-              </svg>
-              Continuer avec Google
-            </Button>
-
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t" />
-              </div>
-              <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-background px-2 text-muted-foreground">Ou par email</span>
-              </div>
-            </div>
+            {/* Authentification par Email uniquement */}
 
             <div className="space-y-3">
               <Input
@@ -627,6 +646,7 @@ export default function GeneratorPage() {
                 value={authEmail}
                 onChange={(e) => setAuthEmail(e.target.value)}
                 disabled={isConnecting}
+                className="bg-emerald-50/50 border-emerald-100"
               />
               <Input
                 type="password"
@@ -635,13 +655,14 @@ export default function GeneratorPage() {
                 onChange={(e) => setAuthPassword(e.target.value)}
                 disabled={isConnecting}
                 onKeyDown={(e) => e.key === 'Enter' && handleEmailAuth()}
+                className="bg-emerald-50/50 border-emerald-100"
               />
               {authError && (
                 <p className="text-sm text-destructive">{authError}</p>
               )}
               <Button
                 onClick={handleEmailAuth}
-                className="w-full"
+                className="w-full bg-emerald-600 hover:bg-emerald-700"
                 disabled={isConnecting}
               >
                 {isConnecting ? (
@@ -657,12 +678,12 @@ export default function GeneratorPage() {
               {authMode === 'signup' ? (
                 <>
                   Déjà un compte ?{' '}
-                  <button onClick={() => setAuthMode('login')} className="text-primary font-bold hover:underline">Se connecter</button>
+                  <button onClick={() => setAuthMode('login')} className="text-emerald-700 font-bold hover:underline">Se connecter</button>
                 </>
               ) : (
                 <>
                   Pas de compte ?{' '}
-                  <button onClick={() => setAuthMode('signup')} className="text-primary font-bold hover:underline">S'inscrire</button>
+                  <button onClick={() => setAuthMode('signup')} className="text-emerald-700 font-bold hover:underline">S'inscrire</button>
                 </>
               )}
             </p>

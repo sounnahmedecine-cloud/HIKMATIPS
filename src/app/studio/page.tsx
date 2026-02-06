@@ -45,7 +45,8 @@ import { Label } from '@/components/ui/label';
 import { generateHadith } from '@/ai/flows/generate-hadith';
 import { Share } from '@capacitor/share';
 import { Filesystem, Directory } from '@capacitor/filesystem';
-import { SidebarContent, FormatSettings, FontSettings } from '@/components/SidebarContent';
+import OnboardingScreen from '@/components/OnboardingScreen';
+import { SidebarContent, FormatSettings, FontSettings, ThemeSettings } from '@/components/SidebarContent';
 import { Sidebar } from '@/components/Sidebar';
 import { BottomControls } from '@/components/BottomControls';
 import { MobileStudioToolbar, ToolType } from '@/components/studio/MobileStudioToolbar';
@@ -57,7 +58,7 @@ import { PlaceHolderImages } from '@/lib/placeholder-images';
 import html2canvas from 'html2canvas';
 import { cn } from '@/lib/utils';
 import { useAuth, useUser } from '@/firebase';
-import { GoogleAuthProvider, signInWithPopup, signOut, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
+import { signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from 'firebase/auth';
 
 
 type Content = {
@@ -67,7 +68,7 @@ type Content = {
 
 type Category = 'hadith' | 'ramadan' | 'recherche-ia' | 'coran';
 type Format = 'story' | 'square';
-type TextTheme = 'gradient' | 'white';
+type TextTheme = 'light' | 'dark' | 'glass';
 type FontFamily = 'roboto' | 'playfair' | 'amiri' | 'naskh';
 
 const fontFamilies: Record<FontFamily, { name: string; style: string; label: string }> = {
@@ -81,20 +82,35 @@ export default function StudioPage() {
   const [content, setContent] = useState<Content | null>(null);
   const [category, setCategory] = useState<Category>('coran');
   const [format, setFormat] = useState<Format>('story');
-  const [textTheme, setTextTheme] = useState<TextTheme>('white');
+  const [textTheme, setTextTheme] = useState<TextTheme>('light');
   const [fontSize, setFontSize] = useState(21);
   const [fontFamily, setFontFamily] = useState<FontFamily>('amiri');
+
+  const creatorSignature = 'hikmaclips.woosenteur.fr';
+
   const [background, setBackground] = useState<string>(
     PlaceHolderImages[0]?.imageUrl || 'https://picsum.photos/seed/1/1080/1920'
   );
   const [animationKey, setAnimationKey] = useState(0);
   const [isGenerating, setIsGenerating] = useState(false);
   const [topic, setTopic] = useState('');
-  const [creatorSignature, setCreatorSignature] = useState('@Hikmaclips');
-  const [generationCount, setGenerationCount] = useState(0);
-  const [showSignInPopup, setShowSignInPopup] = useState(false);
+  const [showOnboarding, setShowOnboarding] = useState(false);
   const [activeMobileTool, setActiveMobileTool] = useState<ToolType>(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [showSignInPopup, setShowSignInPopup] = useState(false);
+  const [generationCount, setGenerationCount] = useState(0);
+
+  useEffect(() => {
+    const hasSeenOnboarding = localStorage.getItem('hasSeenOnboarding');
+    if (!hasSeenOnboarding) {
+      setShowOnboarding(true);
+    }
+  }, []);
+
+  const handleCompleteOnboarding = () => {
+    localStorage.setItem('hasSeenOnboarding', 'true');
+    setShowOnboarding(false);
+  };
 
   const previewRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
@@ -107,37 +123,7 @@ export default function StudioPage() {
   const [authMode, setAuthMode] = useState<'login' | 'signup'>('login');
   const [authError, setAuthError] = useState('');
 
-  const handleSignIn = async () => {
-    if (!auth || isConnecting) return;
-
-    setIsConnecting(true);
-    const provider = new GoogleAuthProvider();
-
-    try {
-      await signInWithPopup(auth, provider);
-      toast({
-        title: 'Connexion réussie',
-        description: 'Bienvenue !',
-      });
-      setShowSignInPopup(false);
-      setGenerationCount(0);
-    } catch (error: any) {
-      if (error.code === 'auth/cancelled-popup-request' || error.code === 'auth/popup-closed-by-user') {
-        console.log('Authentification annulée ou fermée par l\'utilisateur');
-        return;
-      }
-
-      console.error('Erreur de connexion:', error);
-      toast({
-        variant: 'destructive',
-        title: 'Erreur de connexion',
-        description: "Une erreur s'est produite lors de la connexion.",
-      });
-      setShowSignInPopup(false);
-    } finally {
-      setIsConnecting(false);
-    }
-  };
+  // handleSignIn removed
 
   const handleEmailAuth = async () => {
     if (!auth || isConnecting) return;
@@ -376,6 +362,10 @@ export default function StudioPage() {
     }
   }, [content, toast, handleDownloadImage]);
 
+  if (showOnboarding) {
+    return <OnboardingScreen onComplete={handleCompleteOnboarding} />;
+  }
+
   return (
     <div className="layout-immersive overflow-hidden bg-background">
       {/* Hidden file input for background upload */}
@@ -389,7 +379,7 @@ export default function StudioPage() {
       />
 
       {/* Header with Sidebar Trigger (Mobile only for sidebar button) */}
-      <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b">
+      <header className="fixed top-0 left-0 right-0 z-50 bg-emerald-50/90 backdrop-blur-md border-b border-emerald-100/50 shadow-sm">
         <div className="container mx-auto flex h-14 items-center justify-between px-4">
           {/* Left: Menu & Logo */}
           <div className="flex items-center gap-3">
@@ -406,7 +396,7 @@ export default function StudioPage() {
                 onRandomBackground={handleRandomBackground}
                 onUploadClick={() => document.getElementById('file-upload')?.click()}
                 user={user}
-                onSignIn={handleSignIn}
+                onSignIn={() => setShowSignInPopup(true)}
                 onSignOut={handleSignOut}
                 onShare={handleShareImage}
                 isStudio={true}
@@ -419,8 +409,8 @@ export default function StudioPage() {
               />
             </Sheet>
             <a href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity active:scale-95 transition-transform">
-              <Palette className="w-5 h-5 text-primary" />
-              <h1 className="text-lg font-bold text-hikma-gradient tracking-tight font-display">Studio</h1>
+              <Palette className="w-5 h-5 text-emerald-600" />
+              <h1 className="text-lg font-bold text-emerald-800 tracking-tight font-display">Studio</h1>
             </a>
           </div>
 
@@ -451,7 +441,7 @@ export default function StudioPage() {
             onRandomBackground={handleRandomBackground}
             onUploadClick={() => document.getElementById('file-upload')?.click()}
             user={user}
-            onSignIn={handleSignIn}
+            onSignIn={() => setShowSignInPopup(true)}
             onSignOut={handleSignOut}
             onShare={handleShareImage}
             isStudio={true}
@@ -465,14 +455,17 @@ export default function StudioPage() {
         </aside>
 
         {/* Main Preview Container */}
-        <main className="flex-1 preview-container relative pb-32 overflow-hidden flex items-center justify-center">
-          <div className="relative w-full h-full flex items-center justify-center p-4">
+        <main className={cn(
+          "flex-1 preview-container relative pb-32 overflow-hidden flex justify-center",
+          "items-center sm:items-center pt-4 sm:pt-0" // Centered on desktop, high on mobile
+        )}>
+          <div className="relative w-full h-full flex items-start sm:items-center justify-center p-2 sm:p-4">
             <div
               className={cn(
                 "bg-neutral-900 p-1 sm:p-2 shadow-2xl ring-4 ring-primary/5 transition-all duration-300 relative overflow-hidden",
                 format === 'story'
-                  ? "w-[240px] h-[500px] sm:w-[280px] sm:h-[590px] md:w-[320px] md:h-[673px] lg:w-[340px] lg:h-[715px] rounded-[30px] sm:rounded-[40px]"
-                  : "w-[260px] h-[260px] sm:w-[320px] sm:h-[320px] md:w-[400px] md:h-[400px] lg:w-[450px] lg:h-[450px] rounded-2xl"
+                  ? "w-auto h-auto aspect-[9/16] max-h-[min(68vh,720px)] sm:w-[280px] sm:h-[590px] md:w-[320px] md:h-[673px] lg:w-[340px] lg:h-[715px] rounded-[30px] sm:rounded-[40px]"
+                  : "w-auto h-auto aspect-square max-h-[min(60vh,450px)] sm:w-[320px] sm:h-[320px] md:w-[400px] md:h-[400px] lg:w-[450px] lg:h-[450px] rounded-2xl"
               )}
             >
               <div
@@ -519,7 +512,7 @@ export default function StudioPage() {
                               visible: { transition: { staggerChildren: 0.08 } },
                             }}
                             className={cn(
-                              textTheme === 'white' ? "text-white" : "text-hikma-gradient"
+                              textTheme === 'light' ? "text-white" : textTheme === 'dark' ? "text-black" : "text-white drop-shadow-md"
                             )}
                           >
                             "
@@ -589,6 +582,7 @@ export default function StudioPage() {
         onChange={setTopic}
         isVisible={category === 'recherche-ia'}
         placeholder="Quel thème pour votre Hikma ?"
+        onEnter={handleGenerateAiContent}
       />
 
       <BottomControls
@@ -668,45 +662,9 @@ export default function StudioPage() {
           </AlertDialogHeader>
 
           <div className="flex flex-col gap-4 py-4">
-            <Button
-              variant="outline"
-              onClick={handleSignIn}
-              disabled={isConnecting}
-              className="w-full py-6 transition-smooth hover:bg-muted"
-            >
-              {isConnecting ? (
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              ) : (
-                <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
-                  <path
-                    d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
-                    fill="#4285F4"
-                  />
-                  <path
-                    d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
-                    fill="#34A853"
-                  />
-                  <path
-                    d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
-                    fill="#FBBC05"
-                  />
-                  <path
-                    d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
-                    fill="#EA4335"
-                  />
-                </svg>
-              )}
-              Continuer avec Google
-            </Button>
+            {/* Google button removed */}
 
-            <div className="relative py-2">
-              <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t" />
-              </div>
-              <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-background px-2 text-muted-foreground">Ou avec votre email</span>
-              </div>
-            </div>
+            {/* Authentification par Email uniquement */}
 
             <div className="space-y-3">
               <div className="space-y-1">
@@ -736,7 +694,7 @@ export default function StudioPage() {
               )}
               <Button
                 onClick={handleEmailAuth}
-                className="w-full"
+                className="w-full bg-emerald-600 hover:bg-emerald-700"
                 disabled={isConnecting}
               >
                 {isConnecting ? (

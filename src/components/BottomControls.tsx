@@ -44,7 +44,7 @@ export function BottomControls({
 
     return (
         <div className="fixed bottom-0 left-0 right-0 z-40 safe-area-bottom px-4 pb-4">
-            <div className="max-w-md mx-auto relative flex items-center justify-between bg-card/80 backdrop-blur-xl border border-border/50 rounded-3xl p-2 shadow-2xl h-20">
+            <div className="max-w-md mx-auto relative flex items-center justify-between bg-emerald-50/95 backdrop-blur-xl border border-emerald-100 rounded-3xl p-2 shadow-2xl h-20">
                 {/* Left Categories */}
                 <div className="flex-1 flex justify-around">
                     {categoriesLeft.map((cat) => (
@@ -53,7 +53,7 @@ export function BottomControls({
                             onClick={() => setCategory(cat.id)}
                             className={cn(
                                 "flex flex-col items-center gap-1 transition-smooth px-2 py-1 rounded-xl",
-                                category === cat.id ? "text-primary" : "text-muted-foreground"
+                                category === cat.id ? "text-emerald-600" : "text-muted-foreground"
                             )}
                         >
                             <cat.icon className={cn("w-5 h-5", category === cat.id && "animate-pulse-soft")} />
@@ -77,7 +77,7 @@ export function BottomControls({
                             size="icon"
                             variant="ghost"
                         >
-                            <Wand2 className="w-5 h-5 text-primary" />
+                            <ImageIcon className="w-5 h-5 text-primary" />
                         </Button>
                     </motion.div>
 
@@ -86,7 +86,7 @@ export function BottomControls({
                         <Button
                             onClick={onGenerate}
                             disabled={isGenerating}
-                            className="w-16 h-16 rounded-full shadow-hikma bg-gradient-to-tr from-primary to-accent hover:scale-105 active:scale-95 transition-all duration-300 border-4 border-background"
+                            className="w-16 h-16 rounded-full shadow-hikma bg-gradient-to-tr from-emerald-600 to-teal-700 hover:scale-105 active:scale-95 transition-all duration-300 border-4 border-background"
                             size="icon"
                         >
                             {isGenerating ? (
@@ -123,7 +123,7 @@ export function BottomControls({
                             onClick={() => setCategory(cat.id)}
                             className={cn(
                                 "flex flex-col items-center gap-1 transition-smooth px-2 py-1 rounded-xl",
-                                category === cat.id ? "text-primary" : "text-muted-foreground"
+                                category === cat.id ? "text-emerald-600" : "text-muted-foreground"
                             )}
                         >
                             <cat.icon className={cn("w-5 h-5", category === cat.id && "animate-pulse-soft")} />

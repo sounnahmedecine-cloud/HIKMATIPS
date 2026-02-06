@@ -1,7 +1,7 @@
 import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
-  output: 'standalone',
+  output: process.env.NEXT_PUBLIC_EXPORT ? 'export' : 'standalone',
   /* config options here */
   typescript: {
     ignoreBuildErrors: true,

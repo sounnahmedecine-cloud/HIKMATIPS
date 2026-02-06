@@ -11,7 +11,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-export type ToolType = 'font' | 'format' | 'share' | 'settings' | null;
+export type ToolType = 'font' | 'format' | 'theme' | 'background' | 'share' | 'settings' | null;
 
 interface MobileStudioToolbarProps {
     onToolSelect: (tool: ToolType) => void;
@@ -49,8 +49,8 @@ export function MobileStudioToolbar({ onToolSelect, activeTool }: MobileStudioTo
                         className={cn(
                             "w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg backdrop-blur-md border transition-all duration-300",
                             activeTool === tool.id
-                                ? "bg-primary text-white border-primary shadow-primary/20"
-                                : "bg-background/60 text-foreground border-border/50 hover:bg-background/80"
+                                ? "bg-emerald-600 text-white border-emerald-600 shadow-emerald-200"
+                                : "bg-emerald-50/80 text-foreground border-emerald-100/50 hover:bg-emerald-100"
                         )}
                     >
                         <tool.icon className={cn("w-6 h-6", activeTool === tool.id && "animate-pulse-soft")} />
@@ -62,7 +62,7 @@ export function MobileStudioToolbar({ onToolSelect, activeTool }: MobileStudioTo
                                     initial={{ opacity: 0, x: -10 }}
                                     animate={{ opacity: 1, x: -50 }}
                                     exit={{ opacity: 0, x: -10 }}
-                                    className="absolute left-0 px-2 py-1 bg-primary text-white text-[10px] font-bold rounded-lg pointer-events-none whitespace-nowrap"
+                                    className="absolute left-0 px-2 py-1 bg-emerald-600 text-white text-[10px] font-bold rounded-lg pointer-events-none whitespace-nowrap"
                                 >
                                     {tool.label}
                                 </motion.span>

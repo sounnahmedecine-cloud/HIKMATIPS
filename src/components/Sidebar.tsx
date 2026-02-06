@@ -23,8 +23,8 @@ interface SidebarProps {
     isStudio?: boolean;
     format?: 'story' | 'square';
     setFormat?: (f: 'story' | 'square') => void;
-    textTheme?: 'gradient' | 'white';
-    setTextTheme?: (t: 'gradient' | 'white') => void;
+    textTheme?: 'light' | 'dark' | 'glass';
+    setTextTheme?: (t: 'light' | 'dark' | 'glass') => void;
     fontFamily?: 'roboto' | 'playfair' | 'amiri' | 'naskh';
     setFontFamily?: (f: 'roboto' | 'playfair' | 'amiri' | 'naskh') => void;
     fontSize?: number;
@@ -33,9 +33,9 @@ interface SidebarProps {
 
 export function Sidebar(props: SidebarProps) {
     return (
-        <SheetContent side="left" className="w-[300px] sm:w-[400px] sidebar-glass overflow-y-auto custom-scrollbar">
+        <SheetContent side="left" className="w-[300px] sm:w-[400px] bg-emerald-50/95 sidebar-glass overflow-y-auto custom-scrollbar border-r-emerald-100">
             <SheetHeader className="mb-6">
-                <SheetTitle className="text-2xl font-bold text-hikma-gradient flex items-center gap-2">
+                <SheetTitle className="text-2xl font-bold text-emerald-800 flex items-center gap-2">
                     <Settings className="w-6 h-6" />
                     Menu & Paramètres
                 </SheetTitle>

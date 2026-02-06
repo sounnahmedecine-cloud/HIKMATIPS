@@ -33,6 +33,8 @@ interface SidebarContentProps {
     setFontFamily?: (f: 'roboto' | 'playfair' | 'amiri' | 'naskh') => void;
     fontSize?: number;
     setFontSize?: (s: number) => void;
+    textTheme?: 'light' | 'dark' | 'glass';
+    setTextTheme?: (t: 'light' | 'dark' | 'glass') => void;
 }
 
 const fontFamilies: Record<string, { name: string; style: string; label: string }> = {
@@ -108,6 +110,36 @@ export function FormatSettings({ format, setFormat }: { format?: string, setForm
     );
 }
 
+export function ThemeSettings({ textTheme, setTextTheme }: {
+    textTheme?: string,
+    setTextTheme?: (t: any) => void
+}) {
+    const themes = [
+        { id: 'light', label: 'Clair' },
+        { id: 'dark', label: 'Sombre' },
+        { id: 'glass', label: 'Verre' },
+    ];
+
+    return (
+        <div className="space-y-3">
+            <Label className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold">Thème du Texte</Label>
+            <div className="grid grid-cols-3 gap-2">
+                {themes.map((t) => (
+                    <Button
+                        key={t.id}
+                        variant={textTheme === t.id ? 'default' : 'outline'}
+                        size="sm"
+                        className="h-11 rounded-xl text-xs"
+                        onClick={() => setTextTheme?.(t.id as any)}
+                    >
+                        {t.label}
+                    </Button>
+                ))}
+            </div>
+        </div>
+    );
+}
+
 export function SidebarContent({
     topic,
     setTopic,
@@ -123,7 +155,9 @@ export function SidebarContent({
     fontFamily,
     setFontFamily,
     fontSize,
-    setFontSize
+    setFontSize,
+    textTheme,
+    setTextTheme
 }: SidebarContentProps) {
     return (
         <div className="space-y-6 pb-10 px-2">
@@ -156,6 +190,7 @@ export function SidebarContent({
                         fontSize={fontSize}
                         setFontSize={setFontSize}
                     />
+                    <ThemeSettings textTheme={textTheme} setTextTheme={setTextTheme} />
                 </div>
             )}
 
