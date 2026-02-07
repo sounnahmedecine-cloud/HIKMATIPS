@@ -427,15 +427,15 @@ export default function GeneratorPage() {
         {/* Main Preview Container */}
         <main className={cn(
           "flex-1 preview-container relative pb-32 overflow-hidden flex justify-center",
-          "items-center sm:items-center pt-4 sm:pt-0" // Centered on desktop, high on mobile
+          "items-center sm:items-center pt-2 sm:pt-0" // Centered for visibility
         )}>
           <div className="relative w-full h-full flex items-start sm:items-center justify-center p-2 sm:p-4">
             <div
               className={cn(
                 "bg-neutral-900 p-1 sm:p-2 shadow-2xl ring-4 ring-primary/5 transition-all duration-300 relative overflow-hidden",
                 format === 'story'
-                  ? "w-auto h-auto aspect-[9/16] max-h-[min(68vh,720px)] sm:w-[280px] sm:h-[590px] md:w-[320px] md:h-[673px] lg:w-[340px] lg:h-[715px] rounded-[30px] sm:rounded-[40px]"
-                  : "w-auto h-auto aspect-square max-h-[min(60vh,450px)] sm:w-[320px] sm:h-[320px] md:w-[400px] md:h-[400px] lg:w-[450px] lg:h-[450px] rounded-2xl"
+                  ? "w-full h-auto max-w-[min(90vw,340px)] aspect-[9/16] max-h-[75vh] sm:w-[280px] sm:h-[590px] md:w-[320px] md:h-[673px] lg:w-[340px] lg:h-[715px] rounded-[30px] sm:rounded-[40px]"
+                  : "w-full h-auto max-w-[min(90vw,400px)] aspect-square max-h-[60vh] sm:w-[320px] sm:h-[320px] md:w-[400px] md:h-[400px] lg:w-[450px] lg:h-[450px] rounded-2xl"
               )}
             >
               <div

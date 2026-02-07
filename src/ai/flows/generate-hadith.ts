@@ -176,7 +176,7 @@ ${baseRules}
   const prompt = getPromptByCategory();
 
   const response = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
     {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -198,8 +198,14 @@ ${baseRules}
 
   if (!response.ok) {
     const errorData = await response.json();
+    const errorMessage = errorData.error?.message || "Erreur lors de l'appel à Gemini";
     console.error("Détails erreur Gemini:", errorData);
-    throw new Error(errorData.error?.message || "Erreur lors de l'appel à Gemini");
+
+    if (errorMessage.includes("leaked")) {
+      throw new Error("Clé API Gemini bloquée car elle a été divulguée (leaked). Veuillez générer une nouvelle clé sur Google AI Studio et mettre à jour votre fichier .env.local.");
+    }
+
+    throw new Error(errorMessage);
   }
 
   const data = await response.json();
