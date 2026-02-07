@@ -412,6 +412,8 @@ export default function GeneratorPage() {
                 onSignIn={() => setShowSignInPopup(true)} // Modified to show email popup
                 onSignOut={handleSignOut}
                 onShare={handleShareImage}
+                hideRedundant={true}
+                isMobile={true}
               />
             </Sheet>
             <a href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity active:scale-95">

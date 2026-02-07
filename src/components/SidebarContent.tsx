@@ -159,8 +159,10 @@ export function SidebarContent({
     fontSize,
     setFontSize,
     textTheme,
-    setTextTheme
-}: SidebarContentProps) {
+    setTextTheme,
+    isMobile = false,
+    hideRedundant = false
+}: SidebarContentProps & { isMobile?: boolean, hideRedundant?: boolean }) {
     return (
         <div className="space-y-6 pb-10 px-2">
             {/* Essential Links - Compact */}
@@ -185,14 +187,15 @@ export function SidebarContent({
             {/* Studio Controls */}
             {isStudio && (
                 <div className="space-y-6 pt-2">
-                    <FormatSettings format={format} setFormat={setFormat} />
-                    <FontSettings
+                    {!hideRedundant && <FormatSettings format={format} setFormat={setFormat} isMobile={isMobile} />}
+                    {!hideRedundant && <FontSettings
                         fontFamily={fontFamily}
                         setFontFamily={setFontFamily}
                         fontSize={fontSize}
                         setFontSize={setFontSize}
-                    />
-                    <ThemeSettings textTheme={textTheme} setTextTheme={setTextTheme} />
+                        isMobile={isMobile}
+                    />}
+                    <ThemeSettings textTheme={textTheme} setTextTheme={setTextTheme} isMobile={isMobile} />
                 </div>
             )}
 

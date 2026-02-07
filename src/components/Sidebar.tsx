@@ -31,7 +31,7 @@ interface SidebarProps {
     setFontSize?: (s: number) => void;
 }
 
-export function Sidebar(props: SidebarProps) {
+export function Sidebar(props: SidebarProps & { hideRedundant?: boolean, isMobile?: boolean }) {
     return (
         <SheetContent side="left" className="w-[300px] sm:w-[400px] bg-emerald-50/95 sidebar-glass overflow-y-auto custom-scrollbar border-r-emerald-100">
             <SheetHeader className="mb-6">
@@ -44,7 +44,7 @@ export function Sidebar(props: SidebarProps) {
                 </SheetDescription>
             </SheetHeader>
 
-            <SidebarContent {...props} />
+            <SidebarContent {...props} hideRedundant={props.hideRedundant} isMobile={props.isMobile} />
         </SheetContent>
     );
 }
