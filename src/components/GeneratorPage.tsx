@@ -598,23 +598,24 @@ export default function GeneratorPage() {
             setFontFamily={setFontFamily}
             fontSize={fontSize}
             setFontSize={setFontSize}
+            isMobile={true}
           />
         )}
         {activeMobileTool === 'format' && (
-          <FormatSettings format={format} setFormat={setFormat} />
+          <FormatSettings format={format} setFormat={setFormat} isMobile={true} />
         )}
         {activeMobileTool === 'theme' && (
-          <ThemeSettings textTheme={textTheme} setTextTheme={setTextTheme} />
+          <ThemeSettings textTheme={textTheme} setTextTheme={setTextTheme} isMobile={true} />
         )}
         {activeMobileTool === 'background' && (
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-3">
-              <Button variant="outline" className="h-20 rounded-2xl flex flex-col gap-2 border-2 border-dashed" onClick={handleRandomBackground}>
-                <ImageIcon className="w-5 h-5 text-primary" />
+              <Button variant="outline" className="h-20 rounded-2xl flex flex-col gap-2 border-2 border-dashed border-gray-200 text-gray-900 hover:bg-gray-50 hover:text-gray-900" onClick={handleRandomBackground}>
+                <ImageIcon className="w-5 h-5 text-emerald-600" />
                 <span className="text-xs font-bold">Aléatoire</span>
               </Button>
-              <Button variant="outline" className="h-20 rounded-2xl flex flex-col gap-2 border-2 border-dashed" onClick={() => document.getElementById('file-upload')?.click()}>
-                <Upload className="w-5 h-5 text-primary" />
+              <Button variant="outline" className="h-20 rounded-2xl flex flex-col gap-2 border-2 border-dashed border-gray-200 text-gray-900 hover:bg-gray-50 hover:text-gray-900" onClick={() => document.getElementById('file-upload')?.click()}>
+                <Upload className="w-5 h-5 text-emerald-600" />
                 <span className="text-xs font-bold">Importer</span>
               </Button>
             </div>

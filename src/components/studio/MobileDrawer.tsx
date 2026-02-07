@@ -48,7 +48,7 @@ export function MobileDrawer({ isOpen, onClose, title, children }: MobileDrawerP
                         onDragEnd={(_, info) => {
                             if (info.offset.y > 100) onClose();
                         }}
-                        className="fixed bottom-0 left-0 right-0 z-[101] bg-background border-t border-border shadow-2xl rounded-t-[32px] md:hidden overflow-hidden"
+                        className="fixed bottom-0 left-0 right-0 z-[101] bg-white border-t border-gray-200 shadow-2xl rounded-t-[32px] md:hidden overflow-hidden"
                     >
                         {/* Drag Handle */}
                         <div className="flex justify-center pt-3 pb-2">
@@ -57,8 +57,8 @@ export function MobileDrawer({ isOpen, onClose, title, children }: MobileDrawerP
 
                         {/* Header */}
                         <div className="px-6 py-2 flex items-center justify-between">
-                            <h2 className="text-lg font-bold tracking-tight">{title}</h2>
-                            <Button variant="ghost" size="icon" onClick={onClose} className="rounded-full -mr-2">
+                            <h2 className="text-lg font-bold tracking-tight text-gray-900">{title}</h2>
+                            <Button variant="ghost" size="icon" onClick={onClose} className="rounded-full -mr-2 text-gray-500 hover:text-gray-900 hover:bg-gray-100">
                                 <X className="w-5 h-5" />
                             </Button>
                         </div>

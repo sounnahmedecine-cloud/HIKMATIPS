@@ -80,22 +80,24 @@ export function BottomControls({
                 {/* Central Action Area (Dock) */}
                 <div className="relative flex items-center justify-center -mt-12 px-2">
                     {/* Random Button (Left Satellite) */}
-                    <motion.div
-                        initial={{ opacity: 0, x: 20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        whileHover={{ scale: 1.1 }}
-                        whileTap={{ scale: 0.9 }}
-                    >
-                        <Button
-                            onClick={onRandom}
-                            className="w-10 h-10 rounded-full bg-background/80 backdrop-blur-md border border-border order-first shadow-lg mr-2"
-                            size="icon"
-                            variant="ghost"
-                            id="btn-random-bg"
+                    <div className="hidden sm:block">
+                        <motion.div
+                            initial={{ opacity: 0, x: 20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            whileHover={{ scale: 1.1 }}
+                            whileTap={{ scale: 0.9 }}
                         >
-                            <ImageIcon className="w-6 h-6 text-primary" />
-                        </Button>
-                    </motion.div>
+                            <Button
+                                onClick={onRandom}
+                                className="w-10 h-10 rounded-full bg-background/80 backdrop-blur-md border border-border order-first shadow-lg mr-2"
+                                size="icon"
+                                variant="ghost"
+                                id="btn-random-bg"
+                            >
+                                <ImageIcon className="w-6 h-6 text-primary" />
+                            </Button>
+                        </motion.div>
+                    </div>
 
                     {/* Main Generate Button */}
                     <div className="flex-shrink-0 z-10 flex flex-col items-center gap-1" id="btn-generate-container">
@@ -116,22 +118,24 @@ export function BottomControls({
                     </div>
 
                     {/* Upload Button (Right Satellite) */}
-                    <motion.div
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        whileHover={{ scale: 1.1 }}
-                        whileTap={{ scale: 0.9 }}
-                    >
-                        <Button
-                            onClick={onUpload}
-                            className="w-10 h-10 rounded-full bg-background/80 backdrop-blur-md border border-border shadow-lg ml-2"
-                            size="icon"
-                            variant="ghost"
-                            id="btn-upload-bg"
+                    <div className="hidden sm:block">
+                        <motion.div
+                            initial={{ opacity: 0, x: -20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            whileHover={{ scale: 1.1 }}
+                            whileTap={{ scale: 0.9 }}
                         >
-                            <Upload className="w-6 h-6 text-primary" />
-                        </Button>
-                    </motion.div>
+                            <Button
+                                onClick={onUpload}
+                                className="w-10 h-10 rounded-full bg-background/80 backdrop-blur-md border border-border shadow-lg ml-2"
+                                size="icon"
+                                variant="ghost"
+                                id="btn-upload-bg"
+                            >
+                                <Upload className="w-6 h-6 text-primary" />
+                            </Button>
+                        </motion.div>
+                    </div>
                 </div>
 
                 {/* Right Categories */}

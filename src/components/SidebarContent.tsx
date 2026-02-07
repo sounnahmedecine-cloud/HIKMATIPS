@@ -44,23 +44,24 @@ const fontFamilies: Record<string, { name: string; style: string; label: string 
     naskh: { name: 'Noto Naskh Arabic', style: "'Noto Naskh Arabic', serif", label: 'Orientale' },
 };
 
-export function FontSettings({ fontFamily, setFontFamily, fontSize, setFontSize }: {
+export function FontSettings({ fontFamily, setFontFamily, fontSize, setFontSize, isMobile = false }: {
     fontFamily?: string,
     setFontFamily?: (f: any) => void,
     fontSize?: number,
-    setFontSize?: (s: number) => void
+    setFontSize?: (s: number) => void,
+    isMobile?: boolean
 }) {
     return (
         <div className="space-y-6">
             <div className="space-y-3">
-                <Label className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold">Police</Label>
+                <Label className={cn("text-[10px] uppercase tracking-widest font-bold", isMobile ? "text-gray-500" : "text-muted-foreground")}>Police</Label>
                 <div className="grid grid-cols-2 gap-2">
                     {(Object.entries(fontFamilies) as [string, typeof fontFamilies[string]][]).map(([key, font]) => (
                         <Button
                             key={key}
                             variant={fontFamily === key ? 'default' : 'outline'}
                             size="sm"
-                            className="h-11 rounded-xl text-xs"
+                            className={cn("h-11 rounded-xl text-xs", isMobile && fontFamily !== key && "border-gray-200 text-gray-700 hover:bg-gray-50 hover:text-gray-900")}
                             onClick={() => setFontFamily?.(key as any)}
                             style={{ fontFamily: font.style }}
                         >
@@ -72,7 +73,7 @@ export function FontSettings({ fontFamily, setFontFamily, fontSize, setFontSize 
 
             <div className="space-y-3">
                 <div className="flex justify-between items-center pr-2">
-                    <Label className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold">Taille du Texte</Label>
+                    <Label className={cn("text-[10px] uppercase tracking-widest font-bold", isMobile ? "text-gray-500" : "text-muted-foreground")}>Taille du Texte</Label>
                     <span className="text-xs font-bold text-primary">{fontSize}px</span>
                 </div>
                 <Slider
@@ -88,20 +89,20 @@ export function FontSettings({ fontFamily, setFontFamily, fontSize, setFontSize 
     );
 }
 
-export function FormatSettings({ format, setFormat }: { format?: string, setFormat?: (f: any) => void }) {
+export function FormatSettings({ format, setFormat, isMobile = false }: { format?: string, setFormat?: (f: any) => void, isMobile?: boolean }) {
     return (
         <div className="space-y-3">
-            <Label className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold">Format & Style</Label>
+            <Label className={cn("text-[10px] uppercase tracking-widest font-bold", isMobile ? "text-gray-500" : "text-muted-foreground")}>Format & Style</Label>
             <RadioGroup
                 value={format}
                 className="grid grid-cols-2 gap-2"
                 onValueChange={(v) => setFormat?.(v as 'story' | 'square')}
             >
-                <Label htmlFor="sb-story" className="flex items-center justify-center p-3 rounded-xl border-2 border-muted hover:bg-muted peer-data-[state=checked]:border-primary transition-smooth cursor-pointer text-xs font-bold">
+                <Label htmlFor="sb-story" className={cn("flex items-center justify-center p-3 rounded-xl border-2 hover:bg-muted peer-data-[state=checked]:border-primary transition-smooth cursor-pointer text-xs font-bold", isMobile ? "border-gray-200 text-gray-700" : "border-muted")}>
                     <RadioGroupItem value="story" id="sb-story" className="sr-only" />
                     <RectangleVertical className="w-4 h-4 mr-2" /> Story
                 </Label>
-                <Label htmlFor="sb-square" className="flex items-center justify-center p-3 rounded-xl border-2 border-muted hover:bg-muted peer-data-[state=checked]:border-primary transition-smooth cursor-pointer text-xs font-bold">
+                <Label htmlFor="sb-square" className={cn("flex items-center justify-center p-3 rounded-xl border-2 hover:bg-muted peer-data-[state=checked]:border-primary transition-smooth cursor-pointer text-xs font-bold", isMobile ? "border-gray-200 text-gray-700" : "border-muted")}>
                     <RadioGroupItem value="square" id="sb-square" className="sr-only" />
                     <RectangleHorizontal className="w-4 h-4 mr-2" /> Carré
                 </Label>
@@ -110,9 +111,10 @@ export function FormatSettings({ format, setFormat }: { format?: string, setForm
     );
 }
 
-export function ThemeSettings({ textTheme, setTextTheme }: {
+export function ThemeSettings({ textTheme, setTextTheme, isMobile = false }: {
     textTheme?: string,
-    setTextTheme?: (t: any) => void
+    setTextTheme?: (t: any) => void,
+    isMobile?: boolean
 }) {
     const themes = [
         { id: 'light', label: 'Clair' },
@@ -122,14 +124,14 @@ export function ThemeSettings({ textTheme, setTextTheme }: {
 
     return (
         <div className="space-y-3">
-            <Label className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold">Thème du Texte</Label>
+            <Label className={cn("text-[10px] uppercase tracking-widest font-bold", isMobile ? "text-gray-500" : "text-muted-foreground")}>Thème du Texte</Label>
             <div className="grid grid-cols-3 gap-2">
                 {themes.map((t) => (
                     <Button
                         key={t.id}
                         variant={textTheme === t.id ? 'default' : 'outline'}
                         size="sm"
-                        className="h-11 rounded-xl text-xs"
+                        className={cn("h-11 rounded-xl text-xs", isMobile && textTheme !== t.id && "border-gray-200 text-gray-700 hover:bg-gray-50 hover:text-gray-900")}
                         onClick={() => setTextTheme?.(t.id as any)}
                     >
                         {t.label}
