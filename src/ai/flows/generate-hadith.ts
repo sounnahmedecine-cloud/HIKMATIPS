@@ -126,7 +126,8 @@ async function generateFromAI(
 - Utilise TOUJOURS "Allah" (JAMAIS "Dieu").
 - Après le Prophète Muhammad, ajoute "(ﷺ)".
 - LANGUE : Français uniquement.
-- Réponds UNIQUEMENT en JSON valide.`;
+- Réponds UNIQUEMENT en JSON valide.
+- FORMAT : Retourne UN SEUL OBJET (pas de tableau).`;
 
   const getPromptByCategory = () => {
     if (category === 'hadith') {
@@ -184,6 +185,14 @@ ${baseRules}
         contents: [{ parts: [{ text: prompt }] }],
         generationConfig: {
           response_mime_type: 'application/json',
+          response_schema: {
+            type: 'object',
+            properties: {
+              content: { type: 'string' },
+              source: { type: 'string' }
+            },
+            required: ['content', 'source']
+          },
           temperature: 0.7
         },
         safetySettings: [
@@ -216,10 +225,23 @@ ${baseRules}
   text = text.replace(/```json/g, '').replace(/```/g, '').trim();
 
   try {
-    const parsed = JSON.parse(text);
+    let parsed = JSON.parse(text);
+
+    // Si l'IA renvoie un tableau au lieu d'un objet (cela arrive parfois avec certains modèles),
+    // on prend le premier élément du tableau.
+    if (Array.isArray(parsed)) {
+      console.warn("L'IA a renvoyé un tableau au lieu d'un objet, utilisation du premier élément.");
+      parsed = parsed[0];
+    }
+
+    if (!parsed || typeof parsed !== 'object') {
+      throw new Error("Le contenu parsé n'est pas un objet valide");
+    }
+
     return GenerateHadithOutputSchema.parse(parsed);
   } catch (parseError) {
-    console.error("Erreur de parsing JSON. Texte reçu:", text);
+    console.error("Erreur de parsing ou de validation JSON. Texte reçu:", text);
+    console.error("Détails de l'erreur:", parseError);
     throw new Error("Le format de réponse de l'IA est invalide.");
   }
 }
