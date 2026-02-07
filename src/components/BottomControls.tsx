@@ -8,7 +8,9 @@ import {
     Loader2,
     Image as ImageIcon,
     Upload,
-    Wand2
+    Wand2,
+    Library,
+    Download
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -22,6 +24,8 @@ interface BottomControlsProps {
     isGenerating: boolean;
     onRandom?: () => void;
     onUpload?: () => void;
+    onDownload?: () => void;
+    onRessources?: () => void;
 }
 
 export function BottomControls({
@@ -30,7 +34,9 @@ export function BottomControls({
     onGenerate,
     isGenerating,
     onRandom,
-    onUpload
+    onUpload,
+    onDownload,
+    onRessources
 }: BottomControlsProps) {
     const categoriesLeft = [
         { id: 'hadith', icon: BookOpen, label: 'Hadith' },
@@ -39,7 +45,7 @@ export function BottomControls({
 
     const categoriesRight = [
         { id: 'ramadan', icon: Moon, label: 'Ramadan' },
-        { id: 'recherche-ia', icon: Search, label: 'Thème' },
+        { id: 'recherche-ia', icon: Search, label: 'Agent' },
     ] as const;
 
     return (
@@ -47,6 +53,13 @@ export function BottomControls({
             <div className="max-w-md mx-auto relative flex items-center justify-between bg-emerald-50/95 backdrop-blur-xl border border-emerald-100 rounded-3xl p-2 shadow-2xl h-20">
                 {/* Left Categories */}
                 <div className="flex-1 flex justify-around">
+                    <button
+                        onClick={onRessources}
+                        className="flex flex-col items-center gap-1 text-muted-foreground hover:text-emerald-600 transition-smooth px-2 py-1"
+                    >
+                        <Library className="w-5 h-5" />
+                        <span className="text-[8px] font-bold uppercase tracking-tight">Sources</span>
+                    </button>
                     {categoriesLeft.map((cat) => (
                         <button
                             key={cat.id}
@@ -130,6 +143,13 @@ export function BottomControls({
                             <span className="text-[8px] font-bold uppercase tracking-tight">{cat.label}</span>
                         </button>
                     ))}
+                    <button
+                        onClick={onDownload}
+                        className="flex flex-col items-center gap-1 text-muted-foreground hover:text-emerald-600 transition-smooth px-2 py-1"
+                    >
+                        <Download className="w-5 h-5 font-bold" />
+                        <span className="text-[8px] font-bold uppercase tracking-tight">Sauver</span>
+                    </button>
                 </div>
             </div>
         </div>

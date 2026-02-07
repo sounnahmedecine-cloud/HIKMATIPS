@@ -205,12 +205,12 @@ export default function StudioPage() {
         throw new Error('La génération a échoué ou n\'a retourné aucun contenu.');
       }
     } catch (error) {
-      console.error("Erreur lors de la génération de contenu par l'IA:", error);
+      console.error("Erreur lors de la génération avec l'Agent Hikma:", error);
       toast({
         variant: 'destructive',
-        title: 'Erreur de génération',
+        title: 'L\'Agent est occupé',
         description:
-          "Une erreur s'est produite lors de la communication avec l'IA. Veuillez réessayer.",
+          "Une erreur s'est produite lors de la communication avec l'Assistant Hikma. Veuillez réessayer.",
       });
     } finally {
       setIsGenerating(false);

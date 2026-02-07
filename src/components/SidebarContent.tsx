@@ -211,7 +211,7 @@ export function SidebarContent({
 
             {/* Topic Input */}
             <div className="space-y-3 pt-2">
-                <Label className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold">Sujet de l'IA</Label>
+                <Label className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold">Thème pour l'Agent Hikma</Label>
                 <Textarea
                     placeholder="Ex: La patience..."
                     value={topic}

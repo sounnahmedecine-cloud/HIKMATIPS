@@ -20,6 +20,7 @@ import {
   Mail,
   Menu,
 } from 'lucide-react';
+import { useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
@@ -85,12 +86,25 @@ export default function GeneratorPage() {
 
   const creatorSignature = 'hikmaclips.woosenteur.fr';
 
+  const searchParams = useSearchParams();
+
   useEffect(() => {
     const hasSeenOnboarding = localStorage.getItem('hasSeenOnboarding');
     if (!hasSeenOnboarding) {
       setShowOnboarding(true);
     }
-  }, []);
+
+    // Handle URL parameters
+    const urlTopic = searchParams.get('topic');
+    const urlCategory = searchParams.get('category');
+
+    if (urlTopic) {
+      setTopic(urlTopic);
+    }
+    if (urlCategory) {
+      setCategory(urlCategory as Category);
+    }
+  }, [searchParams]);
 
   const handleCompleteOnboarding = () => {
     localStorage.setItem('hasSeenOnboarding', 'true');
@@ -190,12 +204,12 @@ export default function GeneratorPage() {
         throw new Error('La génération a échoué ou n\'a retourné aucun contenu.');
       }
     } catch (error) {
-      console.error("Erreur lors de la génération de contenu par l'IA:", error);
+      console.error("Erreur lors de la génération avec l'Agent Hikma:", error);
       toast({
         variant: 'destructive',
-        title: 'Erreur de génération',
+        title: 'L\'Agent est occupé',
         description:
-          "Une erreur s'est produite lors de la communication avec l'IA. Veuillez réessayer.",
+          "Une erreur s'est produite lors de la communication avec l'Assistant Hikma. Veuillez réessayer.",
       });
     } finally {
       setIsGenerating(false);
@@ -387,26 +401,12 @@ export default function GeneratorPage() {
                 onShare={handleShareImage}
               />
             </Sheet>
-            <a href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity active:scale-95 transition-transform">
-              <Image src="https://res.cloudinary.com/dhjwimevi/image/upload/v1770072891/ChatGPT_Image_2_f%C3%A9vr._2026_23_43_44_edeg9a.png" alt="HikmaClips" width={28} height={28} className="rounded-lg shadow-sm" />
-              <h1 className="text-lg font-bold text-emerald-800 tracking-tight font-display">HikmaClips</h1>
+            <a href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity active:scale-95">
+              <Image src="https://res.cloudinary.com/dhjwimevi/image/upload/v1770072891/ChatGPT_Image_2_f%C3%A9vr._2026_23_43_44_edeg9a.png" alt="HikmaClips" width={32} height={32} className="rounded-lg shadow-sm" />
             </a>
           </div>
 
-          <div className="flex items-center justify-end gap-1 sm:gap-2">
-            {!isUserLoading && user && (
-              <Avatar className="h-8 w-8 ring-1 ring-primary/20">
-                <AvatarImage src={user.photoURL || ''} />
-                <AvatarFallback className="text-[10px]">{user.displayName?.charAt(0)}</AvatarFallback>
-              </Avatar>
-            )}
-            <Button variant="ghost" size="icon" onClick={() => window.location.href = '/ressources'} className="text-primary flex">
-              <BookOpen className="w-5 h-5 font-bold" />
-            </Button>
-            <Button variant="ghost" size="icon" onClick={handleDownloadImage} disabled={!content || isGenerating}>
-              <Download className="w-5 h-5 font-bold" />
-            </Button>
-          </div>
+          {/* Only Logo in Header for Return to Home */}
         </div>
       </header>
       <div className="flex-1 flex pt-14 overflow-hidden">
@@ -564,7 +564,7 @@ export default function GeneratorPage() {
         value={topic}
         onChange={setTopic}
         isVisible={category === 'recherche-ia'}
-        placeholder="Un thème précis pour votre IA ?"
+        placeholder="Un thème précis pour votre Agent ?"
         onEnter={handleGenerateAiContent}
       />
 
@@ -615,6 +615,8 @@ export default function GeneratorPage() {
         isGenerating={isGenerating}
         onRandom={handleRandomBackground}
         onUpload={() => document.getElementById('file-upload')?.click()}
+        onDownload={handleDownloadImage}
+        onRessources={() => window.location.href = '/ressources'}
       />
 
       {/* Auth Popups & Overlays */}

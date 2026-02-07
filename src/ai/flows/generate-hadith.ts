@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { GEMINI_API_KEY } from '@/config/api-keys';
+import { searchHadiths } from '@/lib/hadith-search';
 
 // Types pour la base de données locale
 interface LocalHadith {
@@ -62,7 +63,7 @@ function filterByTopic<T extends { content: string; category: string }>(
 const categoryLabels = {
   hadith: 'Hadith',
   ramadan: 'Conseil ou invocation du Ramadan',
-  'thematique': 'Verset coranique recherché par IA',
+  'thematique': 'Verset coranique trouvé par l\'Agent',
   coran: 'Verset du Coran',
 };
 
@@ -246,17 +247,92 @@ ${baseRules}
   }
 }
 
+
+
+// Analyse d'un hadith spécifique via IA
+async function generateAnalysisFromAI(
+  hadithContent: string,
+  hadithSource: string,
+  userQuery: string
+): Promise<GenerateHadithOutput> {
+  const apiKey = GEMINI_API_KEY;
+
+  const prompt = `Tu es un savant spécialiste du hadith.
+L'utilisateur a fait une recherche sur : "${userQuery}".
+J'ai trouvé ce hadith dans les recueils authentiques :
+"${hadithContent}"
+Source : ${hadithSource}
+
+Ta mission :
+1. Reprends le hadith (tu peux légèrement l'ajuster pour la clarté si besoin).
+2. Ajoute une TRÈS BRÈVE explication (1 phrase) sur sa pertinence par rapport au thème "${userQuery}".
+3. Assure-toi que le résultat final reste concis pour un format "Story".
+
+### RÈGLES OBLIGATOIRES :
+- Utilise "Allah" (JAMAIS "Dieu").
+- LANGUE : Français uniquement.
+- Pas de guillemets superflus dans le contenu.
+- Réponds UNIQUEMENT en JSON.
+
+{
+  "content": "Le texte du hadith suivi de la brève explication",
+  "source": "${hadithSource}"
+}`;
+
+  const response = await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-001:generateContent?key=${apiKey}`,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: prompt }] }],
+        generationConfig: {
+          response_mime_type: 'application/json',
+          temperature: 0.3
+        }
+      }),
+    }
+  );
+
+  if (!response.ok) throw new Error("Erreur AI");
+
+  const data = await response.json();
+  const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+  const parsed = JSON.parse(text);
+
+  return GenerateHadithOutputSchema.parse(parsed);
+}
+
 export async function generateHadith(
   input: GenerateHadithInput
 ): Promise<GenerateHadithOutput> {
   const { category, topic } = input;
 
-  // Pour "thematique" avec un thème spécifique, toujours utiliser l'IA
+  // Si c'est une recherche IA avec un thème, on essaie de trouver un hadith authentique dans nos 9 livres
+  if (category === 'recherche-ia' && topic && topic.trim() !== '') {
+    try {
+      // Dans un environnement client-side, on fait la recherche
+      const localMatches = await searchHadiths(topic);
+
+      if (localMatches.length > 0) {
+        // On prend le meilleur match ou on envoie les top matches à l'IA pour synthèse
+        // Pour l'instant, on prend le premier
+        const bestMatch = localMatches[0];
+
+        // Optionnel: Demander à l'IA d'analyser ce hadith spécifique
+        return await generateAnalysisFromAI(bestMatch.french, bestMatch.source, topic);
+      }
+    } catch (error) {
+      console.error("Local search failed for AI research:", error);
+    }
+  }
+
+  // Pour "thematique" avec un thème spécifique, toujours utiliser l'Agent
   if (category === 'thematique' && topic && topic.trim() !== '') {
     try {
       return await generateFromAI(category, topic);
     } catch (error) {
-      console.error("AI generation failed, falling back to local:", error);
+      console.error("Agent Hikma generation failed, falling back to local:", error);
     }
   }
 

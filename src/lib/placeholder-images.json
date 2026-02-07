@@ -305,6 +305,42 @@
       "description": "Kaaba pilgrimage view.",
       "imageUrl": "https://images.unsplash.com/photo-1580418827493-f2b22c0a76cb?w=1080",
       "imageHint": "kaaba islam mosque"
+    },
+    {
+      "id": "hikma-new-1",
+      "description": "Nouveau fond HikmaClips 1.",
+      "imageUrl": "https://res.cloudinary.com/db2ljqpdt/image/upload/v1770482460/1770368681324_eltq7s.jpg",
+      "imageHint": "islamic background serene"
+    },
+    {
+      "id": "hikma-new-2",
+      "description": "Nouveau fond HikmaClips 2.",
+      "imageUrl": "https://res.cloudinary.com/db2ljqpdt/image/upload/v1770482460/1770368741971_skfh9j.jpg",
+      "imageHint": "islamic background architecture"
+    },
+    {
+      "id": "hikma-new-3",
+      "description": "Nouveau fond HikmaClips 3.",
+      "imageUrl": "https://res.cloudinary.com/db2ljqpdt/image/upload/v1770482460/1770368775852_gbto8l.jpg",
+      "imageHint": "islamic background mosque"
+    },
+    {
+      "id": "hikma-new-4",
+      "description": "Nouveau fond HikmaClips 4.",
+      "imageUrl": "https://res.cloudinary.com/db2ljqpdt/image/upload/v1770482460/1770368464428_nyjfzr.jpg",
+      "imageHint": "islamic background serene"
+    },
+    {
+      "id": "hikma-new-5",
+      "description": "Nouveau fond HikmaClips 5.",
+      "imageUrl": "https://res.cloudinary.com/db2ljqpdt/image/upload/v1770482460/1770369038193_pr0prn.jpg",
+      "imageHint": "islamic background architecture"
+    },
+    {
+      "id": "hikma-new-6",
+      "description": "Nouveau fond HikmaClips 6.",
+      "imageUrl": "https://res.cloudinary.com/db2ljqpdt/image/upload/v1770482460/1770368906717_hmc02x.jpg",
+      "imageHint": "islamic background mosque"
     }
   ]
 }
