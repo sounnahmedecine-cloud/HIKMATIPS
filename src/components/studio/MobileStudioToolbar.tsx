@@ -20,10 +20,10 @@ interface MobileStudioToolbarProps {
 
 export function MobileStudioToolbar({ onToolSelect, activeTool }: MobileStudioToolbarProps) {
     const tools = [
-        { id: 'font', icon: Type, label: 'Police', color: 'bg-blue-500' },
-        { id: 'format', icon: Maximize, label: 'Format', color: 'bg-purple-500' },
-        { id: 'share', icon: Share2, label: 'Partager', color: 'bg-pink-500' },
-        { id: 'settings', icon: Settings, label: 'Menu', color: 'bg-orange-500' },
+        { id: 'font', icon: Type, label: 'Police', color: 'text-blue-500' },
+        { id: 'format', icon: Maximize, label: 'Format', color: 'text-purple-500' },
+        { id: 'share', icon: Share2, label: 'Partager', color: 'text-pink-500' },
+        { id: 'settings', icon: Settings, label: 'Menu', color: 'text-orange-500' },
     ] as const;
 
     return (
@@ -53,7 +53,7 @@ export function MobileStudioToolbar({ onToolSelect, activeTool }: MobileStudioTo
                                 : "bg-emerald-50/80 text-foreground border-emerald-100/50 hover:bg-emerald-100"
                         )}
                     >
-                        <tool.icon className={cn("w-6 h-6", activeTool === tool.id && "animate-pulse-soft")} />
+                        <tool.icon className={cn("w-8 h-8", activeTool === tool.id && "animate-pulse-soft")} />
 
                         {/* Tooltip Label (Subtle) */}
                         <AnimatePresence>

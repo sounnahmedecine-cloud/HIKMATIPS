@@ -22,10 +22,10 @@ const IllustrationWelcome = () => (
         <stop offset="100%" stopColor="#1B5E20" />
       </linearGradient>
       <filter id="glow">
-        <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+        <feGaussianBlur stdDeviation="3" result="coloredBlur" />
         <feMerge>
-          <feMergeNode in="coloredBlur"/>
-          <feMergeNode in="SourceGraphic"/>
+          <feMergeNode in="coloredBlur" />
+          <feMergeNode in="SourceGraphic" />
         </feMerge>
       </filter>
     </defs>
@@ -207,10 +207,10 @@ const IllustrationHandshake = () => (
         <stop offset="100%" stopColor="#FFA500" />
       </linearGradient>
       <filter id="glow3">
-        <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+        <feGaussianBlur stdDeviation="4" result="coloredBlur" />
         <feMerge>
-          <feMergeNode in="coloredBlur"/>
-          <feMergeNode in="SourceGraphic"/>
+          <feMergeNode in="coloredBlur" />
+          <feMergeNode in="SourceGraphic" />
         </feMerge>
       </filter>
     </defs>
@@ -334,6 +334,18 @@ const slides = [
       "100% Gratuit, pour toujours InshaAllah",
     ],
   },
+  {
+    id: 4,
+    title: "Comment ça marche ?",
+    subtitle: "Créez votre premier rappel en 3 étapes simples",
+    Illustration: IllustrationHandshake, // Placeholder, will use custom content
+    isInteractive: true,
+    steps: [
+      { number: 1, text: "Choisissez une catégorie", icon: "📖" },
+      { number: 2, text: "Appuyez sur Générer", icon: "✨" },
+      { number: 3, text: "Personnalisez et partagez", icon: "🎨" },
+    ],
+  },
 ];
 
 export default function OnboardingScreen({ onComplete }: OnboardingScreenProps) {
@@ -387,7 +399,7 @@ export default function OnboardingScreen({ onComplete }: OnboardingScreenProps) 
               {slides[currentSlide].subtitle}
             </p>
 
-            {/* Benefits for last slide */}
+            {/* Benefits for slide 3 */}
             {slides[currentSlide].benefits && (
               <div className="w-full space-y-3 mb-6">
                 {slides[currentSlide].benefits.map((benefit, index) => (
@@ -408,6 +420,33 @@ export default function OnboardingScreen({ onComplete }: OnboardingScreenProps) 
                 ))}
               </div>
             )}
+
+            {/* Interactive steps for slide 4 */}
+            {slides[currentSlide].steps && (
+              <div className="w-full space-y-4 mb-6">
+                {slides[currentSlide].steps.map((step, index) => (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: index * 0.2 }}
+                    className="flex items-center gap-4 bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 rounded-xl p-4 border-2 border-emerald-200 dark:border-emerald-800"
+                  >
+                    <div className="flex-shrink-0 w-12 h-12 rounded-full bg-gradient-to-br from-emerald-600 to-teal-700 flex items-center justify-center text-white font-bold text-xl shadow-lg">
+                      {step.icon}
+                    </div>
+                    <div className="flex-1 text-left">
+                      <div className="text-xs font-bold text-emerald-700 dark:text-emerald-400 uppercase tracking-wide mb-1">
+                        Étape {step.number}
+                      </div>
+                      <div className="text-sm font-semibold text-foreground">
+                        {step.text}
+                      </div>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            )}
           </motion.div>
         </AnimatePresence>
       </div>
@@ -420,11 +459,10 @@ export default function OnboardingScreen({ onComplete }: OnboardingScreenProps) 
             <button
               key={index}
               onClick={() => setCurrentSlide(index)}
-              className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                index === currentSlide
-                  ? 'w-8 bg-primary'
-                  : 'bg-muted-foreground/30 hover:bg-muted-foreground/50'
-              }`}
+              className={`w-2 h-2 rounded-full transition-all duration-300 ${index === currentSlide
+                ? 'w-8 bg-primary'
+                : 'bg-muted-foreground/30 hover:bg-muted-foreground/50'
+                }`}
             />
           ))}
         </div>

@@ -48,6 +48,8 @@ import { MobileStudioToolbar, ToolType } from '@/components/studio/MobileStudioT
 import { MobileDrawer } from '@/components/studio/MobileDrawer';
 import { MobileTopicInput } from '@/components/studio/MobileTopicInput';
 import { Sheet, SheetTrigger } from '@/components/ui/sheet';
+import { TooltipGuide } from '@/components/TooltipGuide';
+import { useFirstTimeUser } from '@/hooks/useFirstTimeUser';
 
 
 import { cn } from '@/lib/utils';
@@ -77,6 +79,10 @@ export default function GeneratorPage() {
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [activeMobileTool, setActiveMobileTool] = useState<ToolType>(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  // First-time user guidance
+  const { isFirstTime, markAsGenerated } = useFirstTimeUser();
+  const [showTooltipGuide, setShowTooltipGuide] = useState(false);
 
   // Studio Settings States
   const [fontSize, setFontSize] = useState(24);
@@ -109,6 +115,8 @@ export default function GeneratorPage() {
   const handleCompleteOnboarding = () => {
     localStorage.setItem('hasSeenOnboarding', 'true');
     setShowOnboarding(false);
+    // Show tooltip guide after onboarding for first-time users
+    setTimeout(() => setShowTooltipGuide(true), 500);
   };
 
   const previewRef = useRef<HTMLDivElement>(null);
@@ -213,6 +221,11 @@ export default function GeneratorPage() {
       });
     } finally {
       setIsGenerating(false);
+      // Mark as generated for first-time users
+      if (isFirstTime) {
+        markAsGenerated();
+        setShowTooltipGuide(false);
+      }
     }
   };
 
@@ -426,16 +439,16 @@ export default function GeneratorPage() {
 
         {/* Main Preview Container */}
         <main className={cn(
-          "flex-1 preview-container relative pb-32 overflow-hidden flex justify-center",
-          "items-center sm:items-center pt-2 sm:pt-0" // Centered for visibility
+          "flex-1 preview-container relative overflow-hidden flex justify-center",
+          "items-center pb-20 sm:pb-32 pt-4 sm:pt-0"
         )}>
-          <div className="relative w-full h-full flex items-start sm:items-center justify-center p-2 sm:p-4">
+          <div className="relative w-full h-full flex items-center justify-center p-2 sm:p-4">
             <div
               className={cn(
                 "bg-neutral-900 p-1 sm:p-2 shadow-2xl ring-4 ring-primary/5 transition-all duration-300 relative overflow-hidden",
                 format === 'story'
-                  ? "w-full h-auto max-w-[min(90vw,340px)] aspect-[9/16] max-h-[75vh] sm:w-[280px] sm:h-[590px] md:w-[320px] md:h-[673px] lg:w-[340px] lg:h-[715px] rounded-[30px] sm:rounded-[40px]"
-                  : "w-full h-auto max-w-[min(90vw,400px)] aspect-square max-h-[60vh] sm:w-[320px] sm:h-[320px] md:w-[400px] md:h-[400px] lg:w-[450px] lg:h-[450px] rounded-2xl"
+                  ? "h-[calc(100vh-180px)] w-auto aspect-[9/16] sm:w-[280px] sm:h-[590px] md:w-[320px] md:h-[673px] lg:w-[340px] lg:h-[715px] rounded-[30px] sm:rounded-[40px]"
+                  : "h-[calc(100vh-180px)] w-auto aspect-square sm:w-[320px] sm:h-[320px] md:w-[400px] md:h-[400px] lg:w-[450px] lg:h-[450px] rounded-2xl"
               )}
             >
               <div
@@ -451,7 +464,8 @@ export default function GeneratorPage() {
                   fill
                   className="object-cover"
                   data-ai-hint="abstract serene"
-                  crossOrigin="anonymous"
+                  priority
+                  unoptimized
                   key={background}
                 />
                 <div className="absolute inset-0 bg-black/50" />
@@ -692,6 +706,13 @@ export default function GeneratorPage() {
           </div>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Tooltip Guide for first-time users */}
+      <TooltipGuide
+        isActive={showTooltipGuide && isFirstTime}
+        onComplete={() => setShowTooltipGuide(false)}
+        onSkip={() => setShowTooltipGuide(false)}
+      />
     </div >
   );
 }
