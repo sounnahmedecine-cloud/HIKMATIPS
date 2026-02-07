@@ -180,9 +180,7 @@ export function SidebarContent({
                         <User className="w-5 h-5" />
                     </Button>
                 )}
-                <Button variant="ghost" size="icon" className="w-12 h-12 rounded-xl" onClick={() => window.location.href = '/ressources'}>
-                    <BookOpen className="w-5 h-5" />
-                </Button>
+
                 <Button variant="ghost" size="icon" className="w-12 h-12 rounded-xl" onClick={() => window.location.href = '/parametres'}>
                     <Settings className="w-5 h-5" />
                 </Button>

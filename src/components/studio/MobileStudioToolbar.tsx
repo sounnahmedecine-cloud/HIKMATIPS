@@ -8,11 +8,12 @@ import {
     Share2,
     Settings,
     ChevronUp,
-    Download
+    Download,
+    BookOpen
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-export type ToolType = 'font' | 'format' | 'theme' | 'background' | 'share' | 'download' | 'settings' | null;
+export type ToolType = 'font' | 'format' | 'theme' | 'background' | 'share' | 'download' | 'settings' | 'resources' | null;
 
 interface MobileStudioToolbarProps {
     onToolSelect: (tool: ToolType) => void;
@@ -25,6 +26,7 @@ export function MobileStudioToolbar({ onToolSelect, activeTool }: MobileStudioTo
         { id: 'format', icon: Maximize, label: 'Format', color: 'text-purple-500' },
         { id: 'share', icon: Share2, label: 'Partager', color: 'text-pink-500' },
         { id: 'download', icon: Download, label: 'Télécharger', color: 'text-blue-500' },
+        { id: 'resources', icon: BookOpen, label: 'Ressources', color: 'text-teal-500' },
         { id: 'settings', icon: Settings, label: 'Menu', color: 'text-orange-500' },
     ] as const;
 

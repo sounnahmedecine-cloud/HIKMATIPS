@@ -33,9 +33,9 @@ interface SidebarProps {
 
 export function Sidebar(props: SidebarProps & { hideRedundant?: boolean, isMobile?: boolean }) {
     return (
-        <SheetContent side="left" className="w-[300px] sm:w-[400px] bg-emerald-50/95 sidebar-glass overflow-y-auto custom-scrollbar border-r-emerald-100">
+        <SheetContent side="left" className="w-[300px] sm:w-[400px] bg-white overflow-y-auto custom-scrollbar border-r-gray-200">
             <SheetHeader className="mb-6">
-                <SheetTitle className="text-2xl font-bold text-emerald-800 flex items-center gap-2">
+                <SheetTitle className="text-2xl font-bold text-zinc-900 flex items-center gap-2">
                     <Settings className="w-6 h-6" />
                     Menu & Paramètres
                 </SheetTitle>

@@ -597,6 +597,8 @@ export default function StudioPage() {
             handleShareImage();
           } else if (tool === 'download') {
             handleDownloadImage();
+          } else if (tool === 'resources') {
+            window.location.href = '/ressources';
           } else {
             setActiveMobileTool(tool);
           }

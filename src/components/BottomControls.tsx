@@ -53,14 +53,7 @@ export function BottomControls({
             <div className="max-w-md mx-auto relative flex items-center justify-between bg-emerald-50/95 backdrop-blur-xl border border-emerald-100 rounded-3xl p-2 shadow-2xl h-20">
                 {/* Left Categories */}
                 <div className="flex-1 flex justify-around">
-                    <button
-                        onClick={onRessources}
-                        className="flex flex-col items-center gap-1 text-gray-600 hover:text-emerald-600 transition-smooth px-2 py-1"
-                        id="btn-sources"
-                    >
-                        <Library className="w-7 h-7" />
-                        <span className="text-[8px] font-bold uppercase tracking-tight">Sources</span>
-                    </button>
+
                     {categoriesLeft.map((cat) => (
                         <button
                             key={cat.id}
@@ -154,14 +147,7 @@ export function BottomControls({
                             <span className="text-[8px] font-bold uppercase tracking-tight">{cat.label}</span>
                         </button>
                     ))}
-                    <button
-                        onClick={onDownload}
-                        className="flex flex-col items-center gap-1 text-teal-600 hover:text-emerald-600 transition-smooth px-2 py-1"
-                        id="btn-download"
-                    >
-                        <Download className="w-7 h-7 font-bold" />
-                        <span className="text-[8px] font-bold uppercase tracking-tight">Sauver</span>
-                    </button>
+
                 </div>
             </div>
         </div>
