@@ -1,0 +1,23 @@
+# Release Notes - v1.2.6
+
+## Nouveautés & Améliorations
+
+*   **Base de données Hadiths :**
+    *   Ajout de la livraison de hadiths à la base de données.
+    *   Intégration de nouveaux livres (Bukhari, Muslim, etc.) en français.
+
+*   **Interface Utilisateur (Emerald Thème) :**
+    *   Mise à jour globale avec le thème "Emerald".
+    *   Amélioration de l'esthétique et de la cohérence visuelle.
+
+*   **Studio :**
+    *   Nettoyage de la barre d'outils (suppression des icônes "Sources" et "Download" superflues).
+    *   Optimisation de l'espace de travail sur mobile.
+
+*   **Landing Page :**
+    *   Intégration du questionnaire pour les testeurs.
+    *   Améliorations générales de la page d'accueil.
+
+*   **Système :**
+    *   Optimisation du processus de build.
+    *   Mise à jour de la version Android vers **1.2.6** (code **28**).
