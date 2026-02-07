@@ -128,7 +128,8 @@ async function generateFromAI(
 - Après le Prophète Muhammad, ajoute "(ﷺ)".
 - LANGUE : Français uniquement.
 - Réponds UNIQUEMENT en JSON valide.
-- FORMAT : Retourne UN SEUL OBJET (pas de tableau).`;
+- FORMAT : Retourne UN SEUL OBJET (pas de tableau).
+- CONTENU STRICT : Le champ "content" doit contenir UNIQUEMENT le texte sacré. PAS D'EXPLICATION, PAS DE COMMENTAIRE.`;
 
   const getPromptByCategory = () => {
     if (category === 'hadith') {
@@ -264,9 +265,9 @@ J'ai trouvé ce hadith dans les recueils authentiques :
 Source : ${hadithSource}
 
 Ta mission :
-1. Reprends le hadith (tu peux légèrement l'ajuster pour la clarté si besoin).
-2. Ajoute une TRÈS BRÈVE explication (1 phrase) sur sa pertinence par rapport au thème "${userQuery}".
-3. Assure-toi que le résultat final reste concis pour un format "Story".
+1. Reprends le hadith tel quel.
+2. NE RAJOUTE AUCUNE EXPLICATION.
+3. Le résultat final doit être JUSTE le texte du hadith.
 
 ### RÈGLES OBLIGATOIRES :
 - Utilise "Allah" (JAMAIS "Dieu").
@@ -275,7 +276,7 @@ Ta mission :
 - Réponds UNIQUEMENT en JSON.
 
 {
-  "content": "Le texte du hadith suivi de la brève explication",
+  "content": "Le texte du hadith UNIQUEMENT",
   "source": "${hadithSource}"
 }`;
 
@@ -348,5 +349,56 @@ export async function generateHadith(
   } catch (error) {
     console.error("Erreur AI détaillée:", error);
     throw error;
+  }
+}
+
+// Nouvelle fonction pour le mode "Étudiant" sur la Landing Page (Explications détaillées)
+export async function generateExplanation(
+  hadithContent: string,
+  hadithSource: string
+): Promise<string> {
+  const apiKey = GEMINI_API_KEY;
+
+  if (!apiKey) return "Clé API manquante.";
+
+  const prompt = `Tu es un enseignant en sciences islamiques (Talib 'Ilm).
+Explique ce hadith de manière pédagogique, simple et inspirante pour un étudiant.
+
+HADITH : "${hadithContent}"
+SOURCE : ${hadithSource}
+
+Ta réponse doit contenir :
+1. Le contexte (s'il est connu/pertinent).
+2. L'explication des termes clés.
+3. Les leçons à en tirer (3 points clés).
+4. Une conclusion spirituelle courte.
+
+Format : Markdown bien structuré. Pas de JSON. Réponds directement en texte.
+Reste concis mais complet (environ 200 mots).`;
+
+  try {
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-001:generateContent?key=${apiKey}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: prompt }] }],
+          generationConfig: {
+            temperature: 0.7
+          }
+        }),
+      }
+    );
+
+    if (!response.ok) throw new Error("Erreur AI Explication");
+
+    const data = await response.json();
+    const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+
+    return text || "Impossible de générer une explication.";
+  } catch (error) {
+    console.error("Erreur explication:", error);
+    return "Une erreur est survenue lors de l'explication.";
   }
 }

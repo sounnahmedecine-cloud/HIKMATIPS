@@ -28,6 +28,7 @@ import {
   GraduationCap,
 } from 'lucide-react';
 import { searchHadiths, DetailedHadith } from '@/lib/hadith-search';
+import { generateExplanation } from '@/ai/flows/generate-hadith';
 import { Hadiths } from '@/lib/hadiths';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { AnimatePresence } from 'framer-motion';
@@ -65,6 +66,10 @@ export default function LandingPage() {
   const [isSearchingChat, setIsSearchingChat] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
 
+  // Student Explanation Mode
+  const [explanation, setExplanation] = useState<{ id: number, text: string } | null>(null);
+  const [isExplaining, setIsExplaining] = useState<number | null>(null);
+
   const handleChatSearch = async (e?: React.FormEvent) => {
     e?.preventDefault();
     if (chatQuery.length < 3) return;
@@ -78,6 +83,28 @@ export default function LandingPage() {
       console.error("Chat search error:", error);
     } finally {
       setIsSearchingChat(false);
+    }
+  };
+
+  const handleExplain = async (hadith: DetailedHadith, index: number) => {
+    if (explanation?.id === index) {
+      setExplanation(null);
+      return;
+    }
+
+    setIsExplaining(index);
+    try {
+      const text = await generateExplanation(hadith.french, hadith.source);
+      setExplanation({ id: index, text });
+    } catch (e) {
+      console.error(e);
+      toast({
+        title: "Erreur",
+        description: "L'explication n'a pas pu être générée.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsExplaining(null);
     }
   };
 
@@ -388,17 +415,45 @@ export default function LandingPage() {
                           chatResults.map((r, i) => (
                             <div key={i} className="p-3 bg-emerald-800/40 rounded-lg border border-emerald-700/30">
                               <p className="text-sm italic text-emerald-50 leading-relaxed mb-2">"{r.french}"</p>
-                              <div className="flex justify-between items-center text-[10px] text-emerald-400 font-bold uppercase tracking-wider">
-                                <span>{r.source}</span>
+                              <div className="flex gap-2">
                                 <Button
                                   variant="ghost"
                                   size="sm"
                                   className="h-6 p-0 px-2 text-[9px] hover:bg-emerald-700 text-emerald-300"
+                                  onClick={() => handleExplain(r, i)}
+                                  disabled={isExplaining === i}
+                                >
+                                  {isExplaining === i ? (
+                                    <span className="animate-spin h-3 w-3 border-2 border-emerald-300 border-t-transparent rounded-full" />
+                                  ) : (
+                                    explanation?.id === i ? "Masquer explication" : "Expliquer (Étudiant)"
+                                  )}
+                                </Button>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  className="h-6 p-0 px-2 text-[9px] hover:bg-emerald-700 text-emerald-300 border border-emerald-700/50"
                                   onClick={() => handleUseHadith(r.french)}
                                 >
                                   Utiliser ce Hadith
                                 </Button>
                               </div>
+                              {explanation?.id === i && (
+                                <motion.div
+                                  initial={{ opacity: 0, height: 0 }}
+                                  animate={{ opacity: 1, height: 'auto' }}
+                                  exit={{ opacity: 0, height: 0 }}
+                                  className="mt-3 p-3 bg-emerald-950/50 rounded-lg border border-emerald-500/20"
+                                >
+                                  <div className="flex items-center gap-2 mb-2 text-emerald-400 font-bold text-xs uppercase tracking-wider">
+                                    <Sparkles className="h-3 w-3" />
+                                    <span>Explication Pédagogique</span>
+                                  </div>
+                                  <p className="text-xs text-emerald-100/90 leading-relaxed whitespace-pre-wrap font-serif">
+                                    {explanation.text}
+                                  </p>
+                                </motion.div>
+                              )}
                             </div>
                           ))
                         )}

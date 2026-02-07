@@ -7,11 +7,12 @@ import {
     Maximize,
     Share2,
     Settings,
-    ChevronUp
+    ChevronUp,
+    Download
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-export type ToolType = 'font' | 'format' | 'theme' | 'background' | 'share' | 'settings' | null;
+export type ToolType = 'font' | 'format' | 'theme' | 'background' | 'share' | 'download' | 'settings' | null;
 
 interface MobileStudioToolbarProps {
     onToolSelect: (tool: ToolType) => void;
@@ -23,6 +24,7 @@ export function MobileStudioToolbar({ onToolSelect, activeTool }: MobileStudioTo
         { id: 'font', icon: Type, label: 'Police', color: 'text-blue-500' },
         { id: 'format', icon: Maximize, label: 'Format', color: 'text-purple-500' },
         { id: 'share', icon: Share2, label: 'Partager', color: 'text-pink-500' },
+        { id: 'download', icon: Download, label: 'Télécharger', color: 'text-blue-500' },
         { id: 'settings', icon: Settings, label: 'Menu', color: 'text-orange-500' },
     ] as const;
 

@@ -422,12 +422,6 @@ export default function StudioPage() {
                 <AvatarFallback className="text-[10px]">{user.displayName?.charAt(0)}</AvatarFallback>
               </Avatar>
             )}
-            <Button variant="ghost" size="icon" onClick={() => window.location.href = '/ressources'} className="text-primary flex">
-              <BookOpen className="w-5 h-5 font-bold" />
-            </Button>
-            <Button variant="ghost" size="icon" onClick={handleDownloadImage} disabled={!content || isGenerating}>
-              <Download className="w-5 h-5 font-bold" />
-            </Button>
           </div>
         </div>
       </header>
@@ -464,8 +458,8 @@ export default function StudioPage() {
               className={cn(
                 "bg-neutral-900 p-1 sm:p-2 shadow-2xl ring-4 ring-primary/5 transition-all duration-300 relative overflow-hidden",
                 format === 'story'
-                  ? "w-auto h-auto aspect-[9/16] max-h-[min(68vh,720px)] sm:w-[280px] sm:h-[590px] md:w-[320px] md:h-[673px] lg:w-[340px] lg:h-[715px] rounded-[30px] sm:rounded-[40px]"
-                  : "w-auto h-auto aspect-square max-h-[min(60vh,450px)] sm:w-[320px] sm:h-[320px] md:w-[400px] md:h-[400px] lg:w-[450px] lg:h-[450px] rounded-2xl"
+                  ? "h-[calc(100vh-180px)] w-auto aspect-[9/16] sm:w-[280px] sm:h-[590px] md:w-[320px] md:h-[673px] lg:w-[340px] lg:h-[715px] rounded-[30px] sm:rounded-[40px]"
+                  : "h-[calc(100vh-180px)] w-auto aspect-square sm:w-[320px] sm:h-[320px] md:w-[400px] md:h-[400px] lg:w-[450px] lg:h-[450px] rounded-2xl"
               )}
             >
               <div
@@ -601,6 +595,8 @@ export default function StudioPage() {
             setIsSidebarOpen(true);
           } else if (tool === 'share') {
             handleShareImage();
+          } else if (tool === 'download') {
+            handleDownloadImage();
           } else {
             setActiveMobileTool(tool);
           }

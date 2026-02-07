@@ -9,6 +9,7 @@ import {
     RectangleVertical,
     RectangleHorizontal,
     Share2,
+    BookOpen,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -179,6 +180,9 @@ export function SidebarContent({
                         <User className="w-5 h-5" />
                     </Button>
                 )}
+                <Button variant="ghost" size="icon" className="w-12 h-12 rounded-xl" onClick={() => window.location.href = '/ressources'}>
+                    <BookOpen className="w-5 h-5" />
+                </Button>
                 <Button variant="ghost" size="icon" className="w-12 h-12 rounded-xl" onClick={() => window.location.href = '/parametres'}>
                     <Settings className="w-5 h-5" />
                 </Button>
