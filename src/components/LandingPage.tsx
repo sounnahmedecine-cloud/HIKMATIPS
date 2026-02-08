@@ -219,7 +219,7 @@ export default function LandingPage() {
         <div className="container mx-auto flex h-16 items-center justify-between px-4">
           <div className="flex items-center gap-2">
             <Image
-              src="https://res.cloudinary.com/dhjwimevi/image/upload/v1770072891/ChatGPT_Image_2_f%C3%A9vr._2026_23_43_44_edeg9a.png"
+              src="https://res.cloudinary.com/db2ljqpdt/image/upload/v1770580517/ChatGPT_Image_2_f%C3%A9vr._2026_23_43_44_qmfwbc_1_f4huf1.png"
               alt="HikmaClips"
               width={36}
               height={36}
@@ -469,7 +469,7 @@ export default function LandingPage() {
               <div className="relative z-10 w-full h-full border border-emerald-400/20 rounded-3xl bg-emerald-800/20 backdrop-blur-xl flex flex-col items-center justify-center p-8 text-center border-t-emerald-400/40 shadow-2xl overflow-hidden group">
                 <div className="absolute inset-0 bg-gradient-to-tr from-emerald-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                 <Image
-                  src="https://res.cloudinary.com/dhjwimevi/image/upload/v1770072891/ChatGPT_Image_2_f%C3%A9vr._2026_23_43_44_edeg9a.png"
+                  src="https://res.cloudinary.com/db2ljqpdt/image/upload/v1770580517/ChatGPT_Image_2_f%C3%A9vr._2026_23_43_44_qmfwbc_1_f4huf1.png"
                   alt="Assistant"
                   width={80}
                   height={80}

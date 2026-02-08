@@ -424,7 +424,7 @@ export default function StudioPage() {
 
       {/* Header with Sidebar Trigger (Mobile only for sidebar button) */}
       <header className="fixed top-0 left-0 right-0 z-50 bg-emerald-50/90 backdrop-blur-md border-b border-emerald-100/50 shadow-sm">
-        <div className="container mx-auto flex h-14 items-center justify-between px-4">
+        <div className="container mx-auto flex h-14 items-center justify-between px-4 relative">
           {/* Left: Menu & Logo */}
           <div className="flex items-center gap-3">
             <Sheet open={isSidebarOpen} onOpenChange={setIsSidebarOpen}>
@@ -459,8 +459,14 @@ export default function StudioPage() {
           {/* Center Logo/Title on Mobile */}
           <div className="absolute left-1/2 -translate-x-1/2 md:static md:translate-x-0 md:ml-4">
             <a href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity active:scale-95 transition-transform">
-              <Palette className="w-5 h-5 text-emerald-600" />
-              <h1 className="text-lg font-bold text-emerald-800 tracking-tight font-display">Studio</h1>
+              <Image
+                src="https://res.cloudinary.com/db2ljqpdt/image/upload/v1770580517/ChatGPT_Image_2_f%C3%A9vr._2026_23_43_44_qmfwbc_1_f4huf1.png"
+                alt="HikmaClips"
+                width={32}
+                height={32}
+                className="rounded-lg shadow-sm"
+              />
+              <span className="text-lg font-bold text-emerald-800 tracking-tight font-display md:hidden">Studio</span>
             </a>
           </div>
 

@@ -410,7 +410,7 @@ export default function GeneratorPage() {
 
       {/* Header with Sidebar Trigger */}
       <header className="fixed top-0 left-0 right-0 z-50 bg-emerald-50/90 backdrop-blur-md border-b border-emerald-100/50 shadow-sm">
-        <div className="container mx-auto flex h-14 items-center justify-between px-4">
+        <div className="container mx-auto flex h-14 items-center justify-between px-4 relative">
           <div className="flex items-center gap-3">
             <Sheet open={isSidebarOpen} onOpenChange={setIsSidebarOpen}>
               <SheetTrigger asChild>
@@ -436,7 +436,7 @@ export default function GeneratorPage() {
             {/* Center Logo on Mobile */}
             <div className="absolute left-1/2 -translate-x-1/2 md:static md:translate-x-0 md:ml-4">
               <a href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity active:scale-95">
-                <Image src="https://res.cloudinary.com/dhjwimevi/image/upload/v1770072891/ChatGPT_Image_2_f%C3%A9vr._2026_23_43_44_edeg9a.png" alt="HikmaClips" width={32} height={32} className="rounded-lg shadow-sm" />
+                <Image src="https://res.cloudinary.com/db2ljqpdt/image/upload/v1770580517/ChatGPT_Image_2_f%C3%A9vr._2026_23_43_44_qmfwbc_1_f4huf1.png" alt="HikmaClips" width={32} height={32} className="rounded-lg shadow-sm" />
                 <span className="text-lg font-bold text-emerald-800 tracking-tight font-display md:hidden">HikmaClips</span>
               </a>
             </div>
