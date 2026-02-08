@@ -3,7 +3,7 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-    Sparkles,
+    Image as ImageIcon,
     Upload,
     ChevronUp
 } from 'lucide-react';
@@ -16,8 +16,8 @@ interface MobileLeftToolbarProps {
 
 export function MobileLeftToolbar({ onRandom, onUpload }: MobileLeftToolbarProps) {
     const tools = [
-        { id: 'random', icon: Sparkles, label: 'Aléatoire', color: 'text-amber-500', action: onRandom },
-        { id: 'upload', icon: Upload, label: 'Importer', color: 'text-blue-500', action: onUpload },
+        { id: 'random', icon: ImageIcon, label: 'Aléatoire', color: 'text-emerald-600', action: onRandom },
+        { id: 'upload', icon: Upload, label: 'Importer', color: 'text-emerald-600', action: onUpload },
     ] as const;
 
     return (

@@ -50,6 +50,7 @@ import { MobileTopicInput } from '@/components/studio/MobileTopicInput';
 import { Sheet, SheetTrigger } from '@/components/ui/sheet';
 import { TooltipGuide } from '@/components/TooltipGuide';
 import { useFirstTimeUser } from '@/hooks/useFirstTimeUser';
+import { MobileLeftToolbar } from '@/components/studio/MobileLeftToolbar';
 
 
 import { cn } from '@/lib/utils';
@@ -566,6 +567,10 @@ export default function GeneratorPage() {
           }
         }}
         activeTool={activeMobileTool}
+      />
+      <MobileLeftToolbar
+        onRandom={handleRandomBackground}
+        onUpload={() => document.getElementById('file-upload')?.click()}
       />
       <MobileTopicInput
         value={topic}
