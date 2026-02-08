@@ -1,11 +1,29 @@
-# Release Notes - v1.2.11
+# Release Notes - v1.2.15
 
 ## Nouveautés & Améliorations
 
-*   **Studio :**
-    *   **Barre flottante de gauche :** Ré-implantation de la barre flottante sur mobile avec les icônes "Image Aléatoire" et "Upload".
-    *   Optimisation des icônes et des couleurs pour le thème Emerald.
+*   **Design & UI Mobile :**
+    - Centrage du logo dans le header pour une symétrie parfaite.
+    - Amélioration de l'alignement vertical de la zone de prévisualisation.
+    - Correction du z-index des barres d'outils (plus de chevauchement avec le menu).
+*   **Fonctionnalités :**
+    - Bouton "Télécharger" (Save) rendu robuste avec support natif et web.
+    - Activation complète de l'écran "Ressources" et de sa navigation.
+    - Suppression de la connexion Google (instable sur mobile) au profit de l'Email/Pass.
+    - Support de la signature personnalisée synchronisée.
 
 *   **Système :**
-    *   Mise à jour de la version Android vers **1.2.11** (code **34**).
-    *   Préparation de l'AAB pour le Play Store.
+    - Mise à jour de la version Android vers **1.2.15** (code **38**).
+
+# Release Notes - v1.2.14
+
+## Nouveautés & Améliorations
+
+*   **Contenu :**
+    *   **Suppression d'image :** Retrait de l'image de chien (ID abstract-27) qui s'était glissée dans les fonds aléatoires.
+    *   Optimisation des bibliothèques d'images.
+
+*   **Système :**
+    *   Mise à jour de la version Android vers **1.2.14** (code **37**).
+
+# Release Notes - v1.2.13

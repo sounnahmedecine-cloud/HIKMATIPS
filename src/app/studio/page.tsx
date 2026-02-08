@@ -315,17 +315,29 @@ export default function StudioPage() {
       const base64Data = canvas.toDataURL('image/png').split(',')[1];
       const fileName = `hikmaclips_${category}_${Date.now()}.png`;
 
-      // Save to Documents directory
-      const result = await Filesystem.writeFile({
-        path: fileName,
-        data: base64Data,
-        directory: Directory.Documents,
-      });
+      try {
+        // Save to Documents directory (Native)
+        await Filesystem.writeFile({
+          path: fileName,
+          data: base64Data,
+          directory: Directory.Documents,
+        });
 
-      toast({
-        title: 'Image sauvegardée !',
-        description: `Enregistrée dans Documents/${fileName}`,
-      });
+        toast({
+          title: 'Image sauvegardée !',
+          description: `Enregistrée dans Documents/${fileName}`,
+        });
+      } catch (nativeError) {
+        // Web Fallback
+        const link = document.createElement('a');
+        link.download = fileName;
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+        toast({
+          title: 'Image téléchargée !',
+          description: 'Enregistrement réussi via le navigateur.',
+        });
+      }
     } catch (error) {
       console.error('La sauvegarde de l\'image a échoué:', error);
       toast({
@@ -442,6 +454,10 @@ export default function StudioPage() {
                 setSignature={setSignature}
               />
             </Sheet>
+          </div>
+
+          {/* Center Logo/Title on Mobile */}
+          <div className="absolute left-1/2 -translate-x-1/2 md:static md:translate-x-0 md:ml-4">
             <a href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity active:scale-95 transition-transform">
               <Palette className="w-5 h-5 text-emerald-600" />
               <h1 className="text-lg font-bold text-emerald-800 tracking-tight font-display">Studio</h1>
@@ -487,7 +503,7 @@ export default function StudioPage() {
         {/* Main Preview Container */}
         <main className={cn(
           "flex-1 preview-container relative pb-32 overflow-hidden flex justify-center",
-          "items-center sm:items-center pt-4 sm:pt-0" // Centered on desktop, high on mobile
+          "items-center pt-0" // Centered on desktop and mobile
         )}>
           <div className="relative w-full h-full flex items-start sm:items-center justify-center p-2 sm:p-4">
             <div
@@ -693,10 +709,7 @@ export default function StudioPage() {
               Connectez-vous pour sauvegarder vos Hikmas et personnaliser votre signature.
             </AlertDialogDescription>
           </AlertDialogHeader>
-
           <div className="flex flex-col gap-4 py-4">
-            {/* Google button removed */}
-
             {/* Authentification par Email uniquement */}
 
             <div className="space-y-3">
@@ -767,7 +780,7 @@ export default function StudioPage() {
           <AlertDialogFooter>
             <AlertDialogCancel>Plus tard</AlertDialogCancel>
           </AlertDialogFooter>
-        </AlertDialogContent>
+        </AlertDialogContent >
       </AlertDialog>
     </div>
   );

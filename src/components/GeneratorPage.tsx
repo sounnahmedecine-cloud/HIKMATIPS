@@ -20,7 +20,7 @@ import {
   Mail,
   Menu,
 } from 'lucide-react';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
@@ -89,9 +89,8 @@ export default function GeneratorPage() {
   const [fontSize, setFontSize] = useState(24);
   const [fontFamily, setFontFamily] = useState("'Amiri', serif");
   const [format, setFormat] = useState<'story' | 'square'>('story');
-
-
-  const creatorSignature = 'hikmaclips.woosenteur.fr';
+  const [signature, setSignature] = useState('hikmaclips.woosenteur.fr');
+  const router = useRouter();
 
   const searchParams = useSearchParams();
 
@@ -296,23 +295,38 @@ export default function GeneratorPage() {
       const canvas = await generateCanvas();
       if (!canvas) throw new Error('Canvas null');
 
-      const dataUrl = canvas.toDataURL('image/png');
+      const base64Data = canvas.toDataURL('image/png').split(',')[1];
+      const fileName = `hikmaclips_${category}_${Date.now()}.png`;
 
-      const link = document.createElement('a');
-      link.download = `hikmaclips_${category}_${Date.now()}.png`;
-      link.href = dataUrl;
-      link.click();
-
-      toast({
-        title: 'Image téléchargée !',
-        description: 'Votre image a été enregistrée dans la galerie.',
-      });
+      // Try native download first if on mobile
+      try {
+        await Filesystem.writeFile({
+          path: fileName,
+          data: base64Data,
+          directory: Directory.Documents,
+        });
+        toast({
+          title: 'Image sauvegardée !',
+          description: `Enregistrée dans vos documents sous le nom ${fileName}`,
+        });
+      } catch (nativeError) {
+        // Fallback to web download
+        const dataUrl = canvas.toDataURL('image/png');
+        const link = document.createElement('a');
+        link.download = fileName;
+        link.href = dataUrl;
+        link.click();
+        toast({
+          title: 'Image téléchargée !',
+          description: 'Votre image a été enregistrée via le navigateur.',
+        });
+      }
     } catch (error) {
       console.error('La génération de l\'image a échoué:', error);
       toast({
         variant: 'destructive',
-        title: 'La génération de l\'image a échoué',
-        description: 'Une erreur s\'est produite. Réessayez ou changez l\'arrière-plan.',
+        title: 'Erreur',
+        description: 'La génération de l\'image a échoué. Réessayez.',
       });
     } finally {
       setIsGenerating(false);
@@ -413,16 +427,22 @@ export default function GeneratorPage() {
                 onSignIn={() => setShowSignInPopup(true)} // Modified to show email popup
                 onSignOut={handleSignOut}
                 onShare={handleShareImage}
+                signature={signature}
+                setSignature={setSignature}
                 hideRedundant={true}
                 isMobile={true}
               />
             </Sheet>
-            <a href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity active:scale-95">
-              <Image src="https://res.cloudinary.com/dhjwimevi/image/upload/v1770072891/ChatGPT_Image_2_f%C3%A9vr._2026_23_43_44_edeg9a.png" alt="HikmaClips" width={32} height={32} className="rounded-lg shadow-sm" />
-            </a>
-          </div>
+            {/* Center Logo on Mobile */}
+            <div className="absolute left-1/2 -translate-x-1/2 md:static md:translate-x-0 md:ml-4">
+              <a href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity active:scale-95">
+                <Image src="https://res.cloudinary.com/dhjwimevi/image/upload/v1770072891/ChatGPT_Image_2_f%C3%A9vr._2026_23_43_44_edeg9a.png" alt="HikmaClips" width={32} height={32} className="rounded-lg shadow-sm" />
+                <span className="text-lg font-bold text-emerald-800 tracking-tight font-display md:hidden">HikmaClips</span>
+              </a>
+            </div>
 
-          {/* Only Logo in Header for Return to Home */}
+            <div className="w-10 h-10 md:hidden" />
+          </div>
         </div>
       </header>
       <div className="flex-1 flex pt-14 overflow-hidden">
@@ -437,13 +457,15 @@ export default function GeneratorPage() {
             onSignIn={() => setShowSignInPopup(true)}
             onSignOut={handleSignOut}
             onShare={handleShareImage}
+            signature={signature}
+            setSignature={setSignature}
           />
         </aside>
 
         {/* Main Preview Container */}
         <main className={cn(
           "flex-1 preview-container relative overflow-hidden flex justify-center",
-          "items-center pb-20 sm:pb-32 pt-4 sm:pt-0"
+          "items-center pb-24 sm:pb-32" // Adjusted padding for better vertical centering
         )}>
           <div className="relative w-full h-full flex items-center justify-center p-2 sm:p-4">
             <div
@@ -535,11 +557,13 @@ export default function GeneratorPage() {
                   </div>
                 )}
 
-                <div className="absolute bottom-3 left-3">
-                  <p className="text-[9px] font-medium tracking-wide text-white/40">
-                    {creatorSignature}
-                  </p>
-                </div>
+                {signature && (
+                  <div className="absolute bottom-3 left-3">
+                    <p className="text-[9px] font-medium tracking-wide text-white/40">
+                      {signature}
+                    </p>
+                  </div>
+                )}
 
                 {!content && !isGenerating && (
                   <div className="absolute inset-0 flex items-center justify-center p-8">
@@ -562,6 +586,10 @@ export default function GeneratorPage() {
             setIsSidebarOpen(true);
           } else if (tool === 'share') {
             handleShareImage();
+          } else if (tool === 'download') {
+            handleDownloadImage();
+          } else if (tool === 'resources') {
+            router.push('/ressources');
           } else {
             setActiveMobileTool(tool);
           }

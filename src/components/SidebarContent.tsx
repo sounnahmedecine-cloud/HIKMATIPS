@@ -150,7 +150,7 @@ export function SidebarContent({
                     </Button>
                 )}
 
-                <Button variant="ghost" size="icon" className="w-12 h-12 rounded-xl" onClick={() => window.location.href = '/parametres'}>
+                <Button variant="ghost" size="icon" className="w-12 h-12 rounded-xl" onClick={() => window.location.href = '/settings'}>
                     <Settings className="w-5 h-5" />
                 </Button>
             </div>
