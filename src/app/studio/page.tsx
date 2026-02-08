@@ -46,7 +46,7 @@ import { generateHadith } from '@/ai/flows/generate-hadith';
 import { Share } from '@capacitor/share';
 import { Filesystem, Directory } from '@capacitor/filesystem';
 import OnboardingScreen from '@/components/OnboardingScreen';
-import { SidebarContent, FormatSettings, FontSettings, ThemeSettings } from '@/components/SidebarContent';
+import { SidebarContent, FormatSettings, FontSettings } from '@/components/SidebarContent';
 import { Sidebar } from '@/components/Sidebar';
 import { BottomControls } from '@/components/BottomControls';
 import { MobileStudioToolbar, ToolType } from '@/components/studio/MobileStudioToolbar';
@@ -59,6 +59,8 @@ import html2canvas from 'html2canvas';
 import { cn } from '@/lib/utils';
 import { useAuth, useUser } from '@/firebase';
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from 'firebase/auth';
+import { useRouter } from 'next/navigation';
+import { MobileLeftToolbar } from '@/components/studio/MobileLeftToolbar';
 
 
 type Content = {
@@ -68,7 +70,7 @@ type Content = {
 
 type Category = 'hadith' | 'ramadan' | 'recherche-ia' | 'coran';
 type Format = 'story' | 'square';
-type TextTheme = 'light' | 'dark' | 'glass';
+
 type FontFamily = 'roboto' | 'playfair' | 'amiri' | 'naskh';
 
 const fontFamilies: Record<FontFamily, { name: string; style: string; label: string }> = {
@@ -82,11 +84,12 @@ export default function StudioPage() {
   const [content, setContent] = useState<Content | null>(null);
   const [category, setCategory] = useState<Category>('coran');
   const [format, setFormat] = useState<Format>('story');
-  const [textTheme, setTextTheme] = useState<TextTheme>('light');
+
   const [fontSize, setFontSize] = useState(21);
   const [fontFamily, setFontFamily] = useState<FontFamily>('amiri');
 
-  const creatorSignature = 'hikmaclips.woosenteur.fr';
+  const [signature, setSignature] = useState('hikmaclips.woosenteur.fr');
+  const router = useRouter();
 
   const [background, setBackground] = useState<string>(
     PlaceHolderImages[0]?.imageUrl || 'https://picsum.photos/seed/1/1080/1920'
@@ -250,11 +253,37 @@ export default function StudioPage() {
     const previewEl = previewRef.current;
     if (!previewEl || !content) return null;
 
+    // Pre-process image to avoid CORS issues with html2canvas
+    let base64Image = '';
+    if (background.startsWith('http')) {
+      try {
+        const response = await fetch(background, { mode: 'cors', credentials: 'omit' });
+        const blob = await response.blob();
+        base64Image = await new Promise<string>((resolve) => {
+          const reader = new FileReader();
+          reader.onloadend = () => resolve(reader.result as string);
+          reader.readAsDataURL(blob);
+        });
+      } catch (e) {
+        console.warn("Mise en cache de l'image échouée, tentative standard:", e);
+      }
+    }
+
     try {
       const canvas = await html2canvas(previewEl, {
         useCORS: true,
         allowTaint: true,
         scale: 2,
+        backgroundColor: null, // Transparent background if needed
+        onclone: (clonedDoc) => {
+          if (base64Image) {
+            const img = clonedDoc.querySelector('img[alt="Arrière-plan"]') as HTMLImageElement;
+            if (img) {
+              img.src = base64Image;
+              img.srcset = ''; // Clear srcset to force src usage
+            }
+          }
+        }
       });
       return canvas;
     } catch (error) {
@@ -275,7 +304,7 @@ export default function StudioPage() {
 
     setIsGenerating(true);
     toast({
-      title: 'Génération de l\'image en cours...',
+      title: 'Sauvegarde de l\'image...',
       description: 'Veuillez patienter...',
     });
 
@@ -283,23 +312,26 @@ export default function StudioPage() {
       const canvas = await generateCanvas();
       if (!canvas) throw new Error('Canvas null');
 
-      const dataUrl = canvas.toDataURL('image/png');
+      const base64Data = canvas.toDataURL('image/png').split(',')[1];
+      const fileName = `hikmaclips_${category}_${Date.now()}.png`;
 
-      const link = document.createElement('a');
-      link.download = `hikmaclips_${category}_${Date.now()}.png`;
-      link.href = dataUrl;
-      link.click();
+      // Save to Documents directory
+      const result = await Filesystem.writeFile({
+        path: fileName,
+        data: base64Data,
+        directory: Directory.Documents,
+      });
 
       toast({
-        title: 'Image téléchargée !',
-        description: 'Votre image a été enregistrée dans la galerie.',
+        title: 'Image sauvegardée !',
+        description: `Enregistrée dans Documents/${fileName}`,
       });
     } catch (error) {
-      console.error('La génération de l\'image a échoué:', error);
+      console.error('La sauvegarde de l\'image a échoué:', error);
       toast({
         variant: 'destructive',
-        title: 'La génération de l\'image a échoué',
-        description: 'Une erreur s\'est produite. Réessayez ou changez l\'arrière-plan.',
+        title: 'Échec de la sauvegarde',
+        description: 'Une erreur s\'est produite lors de l\'enregistrement.',
       });
     } finally {
       setIsGenerating(false);
@@ -406,6 +438,8 @@ export default function StudioPage() {
                 setFontFamily={setFontFamily}
                 fontSize={fontSize}
                 setFontSize={setFontSize}
+                signature={signature}
+                setSignature={setSignature}
               />
             </Sheet>
             <a href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity active:scale-95 transition-transform">
@@ -445,6 +479,8 @@ export default function StudioPage() {
             setFontFamily={setFontFamily}
             fontSize={fontSize}
             setFontSize={setFontSize}
+            signature={signature}
+            setSignature={setSignature}
           />
         </aside>
 
@@ -505,9 +541,7 @@ export default function StudioPage() {
                             variants={{
                               visible: { transition: { staggerChildren: 0.08 } },
                             }}
-                            className={cn(
-                              textTheme === 'light' ? "text-white" : textTheme === 'dark' ? "text-black" : "text-white drop-shadow-md"
-                            )}
+                            className="text-white drop-shadow-md"
                           >
                             "
                             {content.content.split(' ').map((word, i) => (
@@ -548,10 +582,10 @@ export default function StudioPage() {
                   </div>
                 )}
 
-                {creatorSignature && (
+                {signature && (
                   <div className="absolute bottom-3 left-0 right-0 text-center">
                     <p className="text-white/40 text-[9px] font-medium tracking-widest uppercase">
-                      {creatorSignature}
+                      {signature}
                     </p>
                   </div>
                 )}
@@ -598,12 +632,17 @@ export default function StudioPage() {
           } else if (tool === 'download') {
             handleDownloadImage();
           } else if (tool === 'resources') {
-            window.location.href = '/ressources';
+            router.push('/ressources');
           } else {
             setActiveMobileTool(tool);
           }
         }}
         activeTool={activeMobileTool}
+      />
+
+      <MobileLeftToolbar
+        onRandom={handleRandomBackground}
+        onUpload={() => document.getElementById('file-upload')?.click()}
       />
 
       <MobileDrawer
@@ -612,8 +651,7 @@ export default function StudioPage() {
         title={
           activeMobileTool === 'font' ? 'Typographie' :
             activeMobileTool === 'format' ? 'Format & Style' :
-              activeMobileTool === 'theme' ? 'Couleur & Effet' :
-                activeMobileTool === 'background' ? 'Arrière-plan' : ''
+              activeMobileTool === 'background' ? 'Arrière-plan' : ''
         }
       >
         {activeMobileTool === 'font' && (
@@ -626,9 +664,6 @@ export default function StudioPage() {
         )}
         {activeMobileTool === 'format' && (
           <FormatSettings format={format} setFormat={setFormat} />
-        )}
-        {activeMobileTool === 'theme' && (
-          <ThemeSettings textTheme={textTheme} setTextTheme={setTextTheme} />
         )}
         {activeMobileTool === 'background' && (
           <div className="space-y-4">

@@ -34,8 +34,8 @@ interface SidebarContentProps {
     setFontFamily?: (f: 'roboto' | 'playfair' | 'amiri' | 'naskh') => void;
     fontSize?: number;
     setFontSize?: (s: number) => void;
-    textTheme?: 'light' | 'dark' | 'glass';
-    setTextTheme?: (t: 'light' | 'dark' | 'glass') => void;
+    signature?: string;
+    setSignature?: (s: string) => void;
 }
 
 const fontFamilies: Record<string, { name: string; style: string; label: string }> = {
@@ -112,37 +112,6 @@ export function FormatSettings({ format, setFormat, isMobile = false }: { format
     );
 }
 
-export function ThemeSettings({ textTheme, setTextTheme, isMobile = false }: {
-    textTheme?: string,
-    setTextTheme?: (t: any) => void,
-    isMobile?: boolean
-}) {
-    const themes = [
-        { id: 'light', label: 'Clair' },
-        { id: 'dark', label: 'Sombre' },
-        { id: 'glass', label: 'Verre' },
-    ];
-
-    return (
-        <div className="space-y-3">
-            <Label className={cn("text-[10px] uppercase tracking-widest font-bold", isMobile ? "text-gray-500" : "text-muted-foreground")}>Thème du Texte</Label>
-            <div className="grid grid-cols-3 gap-2">
-                {themes.map((t) => (
-                    <Button
-                        key={t.id}
-                        variant={textTheme === t.id ? 'default' : 'outline'}
-                        size="sm"
-                        className={cn("h-11 rounded-xl text-xs", isMobile && textTheme !== t.id && "border-gray-200 text-gray-700 hover:bg-gray-50 hover:text-gray-900")}
-                        onClick={() => setTextTheme?.(t.id as any)}
-                    >
-                        {t.label}
-                    </Button>
-                ))}
-            </div>
-        </div>
-    );
-}
-
 export function SidebarContent({
     topic,
     setTopic,
@@ -159,14 +128,14 @@ export function SidebarContent({
     setFontFamily,
     fontSize,
     setFontSize,
-    textTheme,
-    setTextTheme,
     isMobile = false,
-    hideRedundant = false
+    hideRedundant = false,
+    signature,
+    setSignature
 }: SidebarContentProps & { isMobile?: boolean, hideRedundant?: boolean }) {
     return (
         <div className="space-y-6 pb-10 px-2">
-            {/* Essential Links - Compact */}
+
             <div className="flex items-center justify-around bg-muted/30 rounded-2xl p-1 border border-border/50">
                 <Button variant="ghost" size="icon" className="w-12 h-12 rounded-xl" onClick={() => window.location.href = '/'}>
                     <Home className="w-5 h-5 text-primary" />
@@ -186,7 +155,7 @@ export function SidebarContent({
                 </Button>
             </div>
 
-            {/* Studio Controls */}
+
             {isStudio && (
                 <div className="space-y-6 pt-2">
                     {!hideRedundant && <FormatSettings format={format} setFormat={setFormat} isMobile={isMobile} />}
@@ -197,11 +166,10 @@ export function SidebarContent({
                         setFontSize={setFontSize}
                         isMobile={isMobile}
                     />}
-                    <ThemeSettings textTheme={textTheme} setTextTheme={setTextTheme} isMobile={isMobile} />
                 </div>
             )}
 
-            {/* Background Control */}
+
             <div className="space-y-3 pt-2">
                 <Label className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold">Arrière-plan</Label>
                 <div className="grid grid-cols-2 gap-2">
@@ -216,9 +184,22 @@ export function SidebarContent({
                 </div>
             </div>
 
-            {/* Topic Input */}
+
             <div className="space-y-3 pt-2">
-                <Label className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold">Thème pour l'Agent Hikma</Label>
+                <Label className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold">Signature</Label>
+                <div className="relative">
+                    <input
+                        type="text"
+                        value={signature !== undefined ? signature : 'hikmaclips.woosenteur.fr'}
+                        onChange={(e) => setSignature?.(e.target.value)}
+                        placeholder="Votre signature..."
+                        className="w-full bg-muted/20 rounded-xl border-none focus-visible:ring-primary h-11 text-xs px-4"
+                    />
+                </div>
+            </div>
+
+            <div className="space-y-3 pt-2">
+                <Label className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold">Thème pour lagent Hikma</Label>
                 <Textarea
                     placeholder="Ex: La patience..."
                     value={topic}
@@ -227,7 +208,6 @@ export function SidebarContent({
                 />
             </div>
 
-            {/* Prominent Share Button */}
             <Button
                 variant="default"
                 size="lg"
@@ -237,11 +217,11 @@ export function SidebarContent({
                 <div className="bg-white/20 p-2 rounded-xl group-hover:scale-110 transition-transform">
                     <Share2 className="w-5 h-5 text-white" />
                 </div>
-                Partager l'image
+                Partager
             </Button>
 
             <p className="text-[10px] text-muted-foreground text-center italic opacity-50 pt-2">
-                "Le rappel profite aux croyants"
+                Le rappel profite aux croyants
             </p>
         </div>
     );

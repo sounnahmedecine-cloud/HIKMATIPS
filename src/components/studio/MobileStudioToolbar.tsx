@@ -13,7 +13,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-export type ToolType = 'font' | 'format' | 'theme' | 'background' | 'share' | 'download' | 'settings' | 'resources' | null;
+export type ToolType = 'font' | 'format' | 'background' | 'share' | 'download' | 'settings' | 'resources' | null;
 
 interface MobileStudioToolbarProps {
     onToolSelect: (tool: ToolType) => void;

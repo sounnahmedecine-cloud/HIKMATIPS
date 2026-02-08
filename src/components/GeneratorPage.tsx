@@ -41,7 +41,7 @@ import { generateHadith } from '@/ai/flows/generate-hadith';
 import { Share } from '@capacitor/share';
 import { Filesystem, Directory } from '@capacitor/filesystem';
 import OnboardingScreen from '@/components/OnboardingScreen';
-import { SidebarContent, FormatSettings, FontSettings, ThemeSettings } from './SidebarContent';
+import { SidebarContent, FormatSettings, FontSettings } from './SidebarContent';
 import { Sidebar } from '@/components/Sidebar';
 import { BottomControls } from '@/components/BottomControls';
 import { MobileStudioToolbar, ToolType } from '@/components/studio/MobileStudioToolbar';
@@ -88,7 +88,7 @@ export default function GeneratorPage() {
   const [fontSize, setFontSize] = useState(24);
   const [fontFamily, setFontFamily] = useState("'Amiri', serif");
   const [format, setFormat] = useState<'story' | 'square'>('story');
-  const [textTheme, setTextTheme] = useState<'light' | 'dark' | 'glass'>('light');
+
 
   const creatorSignature = 'hikmaclips.woosenteur.fr';
 
@@ -483,10 +483,7 @@ export default function GeneratorPage() {
                   <div className="absolute inset-0 flex items-center justify-center p-6 sm:p-8">
                     <div className="text-center w-full max-w-4xl">
                       <div
-                        className={cn(
-                          "font-extrabold leading-tight tracking-tight px-4",
-                          textTheme === 'light' ? "text-white" : textTheme === 'dark' ? "text-black" : "text-white drop-shadow-lg"
-                        )}
+                        className="font-extrabold leading-tight tracking-tight px-4 text-white drop-shadow-lg"
                         style={{ fontSize: `${fontSize}px`, fontFamily }}
                       >
                         <AnimatePresence mode="wait">
@@ -529,10 +526,7 @@ export default function GeneratorPage() {
                           duration: 0.6,
                           ease: "easeOut"
                         }}
-                        className={cn(
-                          "mt-6 text-sm sm:text-lg font-bold italic tracking-widest uppercase opacity-70",
-                          textTheme === 'light' ? "text-white/90" : textTheme === 'dark' ? "text-black/80" : "text-white drop-shadow-md"
-                        )}
+                        className="mt-6 text-sm sm:text-lg font-bold italic tracking-widest uppercase opacity-70 text-white/90"
                       >
                         — {content.source} —
                       </motion.p>
@@ -541,10 +535,7 @@ export default function GeneratorPage() {
                 )}
 
                 <div className="absolute bottom-3 left-3">
-                  <p className={cn(
-                    "text-[9px] font-medium tracking-wide",
-                    textTheme === 'light' ? "text-white/40" : "text-black/30"
-                  )}>
+                  <p className="text-[9px] font-medium tracking-wide text-white/40">
                     {creatorSignature}
                   </p>
                 </div>
@@ -590,8 +581,7 @@ export default function GeneratorPage() {
         title={
           activeMobileTool === 'font' ? 'Typographie' :
             activeMobileTool === 'format' ? 'Format & Style' :
-              activeMobileTool === 'theme' ? 'Couleur & Effet' :
-                activeMobileTool === 'background' ? 'Arrière-plan' : ''
+              activeMobileTool === 'background' ? 'Arrière-plan' : ''
         }
       >
         {activeMobileTool === 'font' && (
@@ -606,9 +596,7 @@ export default function GeneratorPage() {
         {activeMobileTool === 'format' && (
           <FormatSettings format={format} setFormat={setFormat} isMobile={true} />
         )}
-        {activeMobileTool === 'theme' && (
-          <ThemeSettings textTheme={textTheme} setTextTheme={setTextTheme} isMobile={true} />
-        )}
+
         {activeMobileTool === 'background' && (
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-3">

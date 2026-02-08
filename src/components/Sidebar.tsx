@@ -29,6 +29,8 @@ interface SidebarProps {
     setFontFamily?: (f: 'roboto' | 'playfair' | 'amiri' | 'naskh') => void;
     fontSize?: number;
     setFontSize?: (s: number) => void;
+    signature?: string;
+    setSignature?: (s: string) => void;
 }
 
 export function Sidebar(props: SidebarProps & { hideRedundant?: boolean, isMobile?: boolean }) {
