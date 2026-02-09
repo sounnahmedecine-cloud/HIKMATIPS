@@ -224,7 +224,7 @@ export default function LandingPage() {
               className="mb-8"
             >
               <h2 className="text-4xl sm:text-6xl lg:text-7xl font-arabic text-primary/40 leading-relaxed dir-rtl mb-2">
-                بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
+                بِسْمِ ٱللَّٰهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ
               </h2>
               <div className="h-0.5 w-24 bg-gradient-to-r from-transparent via-primary/20 to-transparent mx-auto" />
             </motion.div>
