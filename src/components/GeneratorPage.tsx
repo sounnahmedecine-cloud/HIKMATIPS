@@ -43,6 +43,7 @@ import { Filesystem, Directory } from '@capacitor/filesystem';
 import OnboardingScreen from '@/components/OnboardingScreen';
 import { SidebarContent, FormatSettings, FontSettings } from './SidebarContent';
 import { Sidebar } from '@/components/Sidebar';
+import { ThemeToggle } from '@/components/ThemeToggle';
 import { BottomControls } from '@/components/BottomControls';
 import { MobileStudioToolbar, ToolType } from '@/components/studio/MobileStudioToolbar';
 import { MobileDrawer } from '@/components/studio/MobileDrawer';
@@ -441,7 +442,10 @@ export default function GeneratorPage() {
               </a>
             </div>
 
-            <div className="w-10 h-10 md:hidden" />
+            <div className="flex items-center gap-2">
+              <ThemeToggle />
+              <div className="w-10 h-10 md:hidden" />
+            </div>
           </div>
         </div>
       </header>

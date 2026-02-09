@@ -62,7 +62,7 @@ export function FontSettings({ fontFamily, setFontFamily, fontSize, setFontSize,
                             key={key}
                             variant={fontFamily === key ? 'default' : 'outline'}
                             size="sm"
-                            className={cn("h-11 rounded-xl text-xs", isMobile && fontFamily !== key && "border-gray-200 text-gray-700 hover:bg-gray-50 hover:text-gray-900")}
+                            className={cn("h-11 rounded-xl text-xs", isMobile && fontFamily !== key && "border-border text-muted-foreground hover:bg-muted hover:text-foreground")}
                             onClick={() => setFontFamily?.(key as any)}
                             style={{ fontFamily: font.style }}
                         >
@@ -99,11 +99,11 @@ export function FormatSettings({ format, setFormat, isMobile = false }: { format
                 className="grid grid-cols-2 gap-2"
                 onValueChange={(v) => setFormat?.(v as 'story' | 'square')}
             >
-                <Label htmlFor="sb-story" className={cn("flex items-center justify-center p-3 rounded-xl border-2 hover:bg-muted peer-data-[state=checked]:border-primary transition-smooth cursor-pointer text-xs font-bold", isMobile ? "border-gray-200 text-gray-700" : "border-muted")}>
+                <Label htmlFor="sb-story" className={cn("flex items-center justify-center p-3 rounded-xl border-2 hover:bg-muted peer-data-[state=checked]:border-primary transition-smooth cursor-pointer text-xs font-bold", isMobile ? "border-border text-muted-foreground" : "border-muted")}>
                     <RadioGroupItem value="story" id="sb-story" className="sr-only" />
                     <RectangleVertical className="w-4 h-4 mr-2" /> Story
                 </Label>
-                <Label htmlFor="sb-square" className={cn("flex items-center justify-center p-3 rounded-xl border-2 hover:bg-muted peer-data-[state=checked]:border-primary transition-smooth cursor-pointer text-xs font-bold", isMobile ? "border-gray-200 text-gray-700" : "border-muted")}>
+                <Label htmlFor="sb-square" className={cn("flex items-center justify-center p-3 rounded-xl border-2 hover:bg-muted peer-data-[state=checked]:border-primary transition-smooth cursor-pointer text-xs font-bold", isMobile ? "border-border text-muted-foreground" : "border-muted")}>
                     <RadioGroupItem value="square" id="sb-square" className="sr-only" />
                     <RectangleHorizontal className="w-4 h-4 mr-2" /> Carré
                 </Label>

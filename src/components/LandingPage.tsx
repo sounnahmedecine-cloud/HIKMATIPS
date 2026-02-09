@@ -45,6 +45,7 @@ import { Slider } from '@/components/ui/slider';
 import { useToast } from '@/hooks/use-toast';
 import { initializeFirebase } from '@/firebase';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { ThemeToggle } from '@/components/ThemeToggle';
 import dynamic from 'next/dynamic';
 
 // Import dynamique du générateur
@@ -246,6 +247,7 @@ export default function LandingPage() {
             <span className="text-xl font-bold text-hikma-gradient">HikmaClips</span>
           </div>
           <div className="flex items-center gap-4">
+            <ThemeToggle />
             <Button onClick={scrollToApp} variant="outline" className="hidden sm:flex">
               Essayer gratuitement
             </Button>
