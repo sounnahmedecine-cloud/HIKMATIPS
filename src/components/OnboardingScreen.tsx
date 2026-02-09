@@ -346,7 +346,7 @@ const slides = [
   {
     id: 4,
     title: "Comment ça marche ?",
-    subtitle: "Créez votre premier rappel en 3 étapes simples",
+    subtitle: "Diffusez votre premier rappel en 3 étapes simples",
     Illustration: IllustrationHandshake, // Placeholder, will use custom content
     isInteractive: true,
     steps: [

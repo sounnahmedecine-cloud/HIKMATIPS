@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
@@ -26,6 +26,9 @@ import {
   Search,
   Library,
   GraduationCap,
+  Play,
+  Maximize,
+  Volume2,
 } from 'lucide-react';
 import { searchHadiths, DetailedHadith } from '@/lib/hadith-search';
 import { generateExplanation } from '@/ai/flows/generate-hadith';
@@ -212,10 +215,25 @@ export default function LandingPage() {
     scrollToApp();
   };
 
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [isMuted, setIsMuted] = useState(true);
+
+  const toggleFullscreen = () => {
+    if (videoRef.current) {
+      if (videoRef.current.requestFullscreen) {
+        videoRef.current.requestFullscreen();
+      } else if ((videoRef.current as any).webkitRequestFullscreen) {
+        (videoRef.current as any).webkitRequestFullscreen();
+      } else if ((videoRef.current as any).msRequestFullscreen) {
+        (videoRef.current as any).msRequestFullscreen();
+      }
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-background overflow-x-hidden relative">
+    <div className="min-h-screen bg-background bg-islamic-pattern overflow-x-hidden relative">
       {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-lg border-b">
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-lg border-b border-primary/10">
         <div className="container mx-auto flex h-16 items-center justify-between px-4">
           <div className="flex items-center gap-2">
             <Image
@@ -248,11 +266,23 @@ export default function LandingPage() {
           >
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium mb-6">
               <Sparkles className="h-4 w-4" />
-              Générateur de contenu islamique
+              Diffusion de rappels islamiques
             </div>
 
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="mb-8"
+            >
+              <h2 className="text-4xl sm:text-6xl lg:text-7xl font-arabic text-primary/40 leading-relaxed dir-rtl mb-2">
+                السَّلَامُ عَلَيْكُمْ وَرَحْمَةُ اللهِ وَبَرَكَاتُهُ
+              </h2>
+              <div className="h-0.5 w-24 bg-gradient-to-r from-transparent via-primary/20 to-transparent mx-auto" />
+            </motion.div>
+
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight mb-6">
-              Créez des{' '}
+              Partagez des{' '}
               <span className="text-hikma-gradient">clips islamiques</span>
               {' '}inspirants en quelques clics
             </h1>
@@ -506,7 +536,7 @@ export default function LandingPage() {
                   Le Prophète <span className="text-foreground font-semibold italic">(ﷺ)</span> a dit : <span className="italic">"Celui qui emprunte un chemin par lequel il recherche une science, Allah lui facilite un chemin vers le Paradis."</span>
                 </p>
                 <p>
-                  HikmaClips n'est pas qu'un outil de création, c'est un <span className="font-bold text-foreground">compagnon d'étude</span>. Notre base de données regroupe l'intégralité des 6 grands Sahihs et Sunans, ainsi que le Muwatta.
+                  HikmaClips n'est pas qu'un outil de diffusion, c'est un <span className="font-bold text-foreground">compagnon d'étude</span>. Notre base de données regroupe l'intégralité des 6 grands Sahihs et Sunans, ainsi que le Muwatta.
                 </p>
                 <p>
                   Que vous soyez un <span className="text-primary font-medium">étudiant débutant</span> cherchant à confirmer un verset, ou plus <span className="text-primary font-medium">confirmé</span> ayant besoin de références précises pour vos cours, cet espace est le vôtre.
@@ -583,7 +613,7 @@ export default function LandingPage() {
               <span className="text-hikma-gradient">inspirer</span>
             </h2>
             <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-              HikmaClips simplifie la création de contenu islamique de qualité
+              HikmaClips simplifie la diffusion de la Da'wah islamique de manière simple et rapide
             </p>
           </div>
 
@@ -645,9 +675,9 @@ export default function LandingPage() {
           <div className="grid sm:grid-cols-2 gap-6">
             {[
               {
-                icon: Instagram,
-                title: 'Créateurs de contenu',
-                description: 'Pages Instagram, TikTok, YouTube dédiées au contenu islamique',
+                icon: Users,
+                title: 'Prédicateurs',
+                description: 'Un outil simple pour diffuser vos rappels au plus grand nombre',
               },
               {
                 icon: Users,
@@ -934,7 +964,7 @@ export default function LandingPage() {
               </div>
               <div className="text-center py-12 bg-background rounded-2xl border-2 border-dashed border-primary/20">
                 <Sparkles className="h-12 w-12 text-primary mx-auto mb-4" />
-                <p className="text-lg font-medium mb-4">Prêt à créer votre HikmaClip ?</p>
+                <p className="text-lg font-medium mb-4">Prêt à diffuser un rappel ?</p>
                 <Button onClick={() => setShowGenerator(true)} size="lg" className="bg-gradient-to-r from-primary to-accent">
                   <Sparkles className="mr-2 h-4 w-4" />
                   Lancer le générateur
@@ -1016,8 +1046,105 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* Collaboration Section for Preachers */}
+      <section className="py-24 px-4 bg-islamic-pattern relative overflow-hidden">
+        <div className="container mx-auto max-w-5xl">
+          <div className="bg-card/50 backdrop-blur-xl border border-primary/20 rounded-[2.5rem] overflow-hidden shadow-2xl relative z-10">
+            <div className="grid md:grid-cols-2 items-center">
+              <div className="p-8 md:p-12 lg:p-16 space-y-6">
+                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary border border-primary/20">
+                  <Sparkles className="h-4 w-4" />
+                  <span className="text-sm font-bold tracking-tight uppercase">Appel à la Collaboration</span>
+                </div>
+
+                <h2 className="text-3xl md:text-4xl font-bold leading-tight">
+                  Chers <span className="text-primary italic">Prédicateurs et Étudiants</span>, unissons nos efforts
+                </h2>
+
+                <p className="text-muted-foreground text-lg leading-relaxed">
+                  Salamu alaykum chers frères dans la foi. HikmaClips a été conçu pour multiplier l'impact de vos rappels.
+                  Nous vous proposons une collaboration fraternelle pour faciliter la diffusion de la science utile à notre communauté.
+                </p>
+
+                <div className="pt-4">
+                  <Button
+                    size="lg"
+                    className="h-14 px-8 rounded-2xl bg-primary hover:bg-primary/90 text-white font-bold gap-3 shadow-lg shadow-primary/20 transition-all active:scale-95"
+                    onClick={() => {
+                      const subject = encodeURIComponent("Demande de Collaboration - HikmaClips");
+                      const body = encodeURIComponent("As-salamu alaykum l'équipe HikmaClips,\n\nJe suis prédicateur/étudiant et je souhaiterais discuter d'une collaboration pour diffuser mes rappels via votre plateforme.");
+                      window.location.href = `mailto:contact@hikmaclips.fr?subject=${subject}&body=${body}`;
+                    }}
+                  >
+                    Demander une collaboration
+                    <MessageSquare className="h-5 w-5" />
+                  </Button>
+                </div>
+              </div>
+
+              <div className="relative aspect-[9/16] md:h-[600px] bg-black group rounded-r-[2.5rem] md:rounded-l-none overflow-hidden ring-1 ring-primary/10 shadow-inner">
+                <video
+                  ref={videoRef}
+                  className="absolute inset-0 w-full h-full object-contain cursor-pointer"
+                  autoPlay
+                  loop
+                  muted={isMuted}
+                  playsInline
+                  onClick={() => setIsMuted(!isMuted)}
+                  poster="https://res.cloudinary.com/db2ljqpdt/video/upload/v1770664519/hikmaclips-promo_m0xswu.jpg"
+                >
+                  <source src="https://res.cloudinary.com/db2ljqpdt/video/upload/v1770664519/hikmaclips-promo_m0xswu.mp4" type="video/mp4" />
+                </video>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+                  <div className="h-16 w-16 rounded-full bg-primary/90 flex items-center justify-center text-white shadow-xl scale-90 group-hover:scale-100 transition-transform duration-300">
+                    <Play className="h-8 w-8 ml-1" />
+                  </div>
+                </div>
+
+                {/* Video Controls Overlay */}
+                <div className="absolute bottom-4 right-4 flex gap-2">
+                  <Button
+                    size="icon"
+                    variant="secondary"
+                    className="h-10 w-10 rounded-full bg-black/40 border-none backdrop-blur-md text-white hover:bg-black/60 transition-colors"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setIsMuted(!isMuted);
+                    }}
+                  >
+                    {isMuted ? <Volume2 className="h-5 w-5 opacity-50" /> : <Volume2 className="h-5 w-5" />}
+                  </Button>
+                  <Button
+                    size="icon"
+                    variant="secondary"
+                    className="h-10 w-10 rounded-full bg-black/40 border-none backdrop-blur-md text-white hover:bg-black/60 transition-colors"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleFullscreen();
+                    }}
+                  >
+                    <Maximize className="h-5 w-5" />
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Decorative Arabesque */}
+        <div className="absolute top-0 right-0 w-64 h-64 opacity-[0.03] pointer-events-none translate-x-1/2 -translate-y-1/2">
+          <Image
+            src="https://www.transparenttextures.com/patterns/arabesque.png"
+            alt="Decoration"
+            fill
+            className="object-contain"
+          />
+        </div>
+      </section>
+
       {/* Footer */}
-      <footer className="border-t py-12 px-4">
+      <footer className="border-t border-primary/10 py-12 px-4 bg-background/50">
         <div className="container mx-auto">
           <div className="flex flex-col md:flex-row justify-between items-center gap-6">
             <div className="flex items-center gap-2">
@@ -1044,7 +1171,7 @@ export default function LandingPage() {
 
           <div className="mt-8 pt-8 border-t text-center text-sm text-muted-foreground">
             <p>
-              © {new Date().getFullYear()} HikmaClips · Créé par{' '}
+              © {new Date().getFullYear()} HikmaClips · Partagé par{' '}
               <a
                 href="http://web-linecreator.fr"
                 target="_blank"

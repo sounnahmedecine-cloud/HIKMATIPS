@@ -53,8 +53,8 @@ export function MobileStudioToolbar({ onToolSelect, activeTool }: MobileStudioTo
                         className={cn(
                             "w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg backdrop-blur-md border transition-all duration-300",
                             activeTool === tool.id
-                                ? "bg-emerald-600 text-white border-emerald-600 shadow-emerald-200"
-                                : "bg-emerald-50/80 text-foreground border-emerald-100/50 hover:bg-emerald-100"
+                                ? "bg-primary text-white border-primary shadow-primary/20"
+                                : "bg-card/80 text-foreground border-border/50 hover:bg-muted"
                         )}
                     >
                         <tool.icon className={cn("w-8 h-8", activeTool === tool.id && "animate-pulse-soft")} />

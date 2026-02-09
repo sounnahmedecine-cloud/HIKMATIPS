@@ -42,7 +42,7 @@ export function Sidebar(props: SidebarProps & { hideRedundant?: boolean, isMobil
                     Menu & Paramètres
                 </SheetTitle>
                 <SheetDescription>
-                    Gérez votre profil et personnalisez votre création.
+                    Gérez votre profil et personnalisez votre diffusion.
                 </SheetDescription>
             </SheetHeader>
 

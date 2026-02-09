@@ -150,7 +150,7 @@ export default function GeneratorPage() {
       if (authMode === 'signup') {
         await createUserWithEmailAndPassword(auth, authEmail, authPassword);
         toast({
-          title: 'Compte créé !',
+          title: 'Inscription réussie !',
           description: 'Bienvenue sur HikmaClips !',
         });
       } else {
@@ -202,8 +202,8 @@ export default function GeneratorPage() {
       if (result && result.content) {
         setContent(result);
         toast({
-          title: 'Contenu généré !',
-          description: 'Votre nouveau contenu est prêt.',
+          title: 'Prêt à diffuser !',
+          description: 'Votre nouveau rappel est préparé.',
         });
         if (!user) {
           setGenerationCount(prev => prev + 1);
@@ -279,8 +279,8 @@ export default function GeneratorPage() {
     if (!content) {
       toast({
         variant: 'destructive',
-        title: 'Impossible de générer l\'image',
-        description: 'Veuillez d\'abord générer un contenu.',
+        title: 'Impossible de préparer l\'image',
+        description: 'Veuillez d\'abord choisir un contenu.',
       });
       return;
     }
@@ -409,7 +409,7 @@ export default function GeneratorPage() {
       />
 
       {/* Header with Sidebar Trigger */}
-      <header className="fixed top-0 left-0 right-0 z-50 bg-emerald-50/90 backdrop-blur-md border-b border-emerald-100/50 shadow-sm">
+      <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-primary/10 shadow-sm">
         <div className="container mx-auto flex h-14 items-center justify-between px-4 relative">
           <div className="flex items-center gap-3">
             <Sheet open={isSidebarOpen} onOpenChange={setIsSidebarOpen}>
@@ -437,7 +437,7 @@ export default function GeneratorPage() {
             <div className="absolute left-1/2 -translate-x-1/2 md:static md:translate-x-0 md:ml-4">
               <a href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity active:scale-95">
                 <Image src="https://res.cloudinary.com/db2ljqpdt/image/upload/v1770580517/ChatGPT_Image_2_f%C3%A9vr._2026_23_43_44_qmfwbc_1_f4huf1.png" alt="HikmaClips" width={32} height={32} className="rounded-lg shadow-sm" />
-                <span className="text-lg font-bold text-emerald-800 tracking-tight font-display md:hidden">HikmaClips</span>
+                <span className="text-lg font-bold text-hikma-gradient tracking-tight font-display md:hidden">HikmaClips</span>
               </a>
             </div>
 
@@ -668,11 +668,11 @@ export default function GeneratorPage() {
       }}>
         <AlertDialogContent className="max-w-md">
           <AlertDialogHeader>
-            <AlertDialogTitle>{authMode === 'signup' ? 'Créer un compte' : 'Se connecter'}</AlertDialogTitle>
+            <AlertDialogTitle>{authMode === 'signup' ? 'S\'inscrire' : 'Se connecter'}</AlertDialogTitle>
             <AlertDialogDescription>
               {authMode === 'signup'
-                ? 'Créez un compte gratuit pour des générations illimitées !'
-                : 'Connectez-vous pour profiter de générations illimitées.'}
+                ? 'Participez à la diffusion en rejoignant la communauté gratuitement !'
+                : 'Heureux de vous revoir parmi les diffuseurs de sagesse.'}
             </AlertDialogDescription>
           </AlertDialogHeader>
 

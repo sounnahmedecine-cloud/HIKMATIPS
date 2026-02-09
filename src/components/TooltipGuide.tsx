@@ -34,7 +34,7 @@ const steps: TooltipStep[] = [
         id: 'step-2',
         targetId: 'btn-generate',
         title: '2. Générez votre rappel',
-        description: 'Appuyez sur ce bouton pour créer votre image inspirante',
+        description: 'Appuyez sur ce bouton pour diffuser votre image inspirante',
         position: 'top',
         offset: { x: 0, y: -30 },
     },
@@ -49,7 +49,7 @@ const steps: TooltipStep[] = [
     {
         id: 'step-4',
         targetId: 'btn-download',
-        title: '4. Partagez votre création',
+        title: '4. Diffusez votre rappel',
         description: 'Téléchargez ou partagez directement votre rappel sur les réseaux sociaux',
         position: 'top',
         offset: { x: 0, y: -20 },
