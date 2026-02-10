@@ -136,10 +136,17 @@ async function generateFromAI(
       return `Tu es un spécialiste des hadiths authentiques. Donne-moi UN hadith CÉLÈBRE et AUTHENTIQUE.
 ${topic ? `Thème souhaité : ${topic}` : 'Choisis parmi les thèmes : bonté, patience, prière, parents, science, sincérité, frères en Islam.'}
 
+IMPORTANT : Le hadith doit être COURT et COMPLET (maximum 300 caractères).
+Privilégie les hadiths concis et percutants plutôt que les longs récits.
+Si le hadith d'origine est long, cite uniquement la partie essentielle avec "(...)" pour indiquer l'abréviation.
+
+FORMAT OBLIGATOIRE : Commence le texte par "Le Prophète (ﷺ) a dit :" suivi du hadith entre guillemets.
+EXCLUSION : Ne mets pas la chaîne de rapporteurs (isnad) au début. Uniquement les paroles du Prophète.
+
 ${baseRules}
 
 {
-  "content": "Le hadith en français",
+  "content": "Le Prophète (ﷺ) a dit : \"Le hadith...\"",
   "source": "Rapporté par Boukhari, n°XXXX"
 }`;
     }
@@ -148,10 +155,13 @@ ${baseRules}
       return `Tu es un spécialiste du Ramadan. Donne-moi UN hadith ou UNE invocation AUTHENTIQUE sur le Ramadan.
 ${topic ? `Thème : ${topic}` : 'Choisis parmi : jeûne, iftar, suhur, Laylat al-Qadr, prière de nuit, récompenses du Ramadan.'}
 
+IMPORTANT : Le hadith/invocation doit être CONCIS (maximum 300 caractères).
+Privilégie les invocations courtes et percutantes.
+
 ${baseRules}
 
 {
-  "content": "Le hadith ou l'invocation en français",
+  "content": "Le hadith ou l'invocation en français (max 300 caractères)",
   "source": "Rapporté par Boukhari, n°XXXX"
 }`;
     }
@@ -160,10 +170,13 @@ ${baseRules}
       return `Donne-moi UN verset du Coran en français.
 ${topic ? `Thème recherché : ${topic}` : 'Choisis un verset inspirant sur : foi, patience, miséricorde, gratitude, ou guidée.'}
 
+IMPORTANT : Choisis un verset COURT et PERCUTANT (maximum 250 caractères).
+Si le verset complet est long, cite uniquement la partie la plus inspirante avec "(...)"
+
 ${baseRules}
 
 {
-  "content": "Le verset traduit en français",
+  "content": "Le verset traduit en français (max 250 caractères)",
   "source": "Sourate Al-Nom (numéro), verset numéro"
 }`;
     }
@@ -265,18 +278,21 @@ J'ai trouvé ce hadith dans les recueils authentiques :
 Source : ${hadithSource}
 
 Ta mission :
-1. Reprends le hadith tel quel.
-2. NE RAJOUTE AUCUNE EXPLICATION.
-3. Le résultat final doit être JUSTE le texte du hadith.
+1. Si le hadith est COURT (moins de 300 caractères), reprends-le tel quel.
+2. Si le hadith est LONG (plus de 300 caractères), RÉSUME-LE en gardant l'ESSENTIEL du message.
+3. Le résultat final doit être CONCIS et COMPLET (maximum 300 caractères).
+4. NE RAJOUTE AUCUNE EXPLICATION, JUSTE le texte du hadith (ou sa version abrégée).
+5. Si tu abréges, utilise "(...)" pour indiquer les parties omises.
 
 ### RÈGLES OBLIGATOIRES :
 - Utilise "Allah" (JAMAIS "Dieu").
 - LANGUE : Français uniquement.
-- Pas de guillemets superflus dans le contenu.
+- FORMAT OBLIGATOIRE : Le texte DOIT commencer par "Le Prophète (ﷺ) a dit :" suivi du hadith entre guillemets.
+- Pas de contexte narratif initial.
 - Réponds UNIQUEMENT en JSON.
 
 {
-  "content": "Le texte du hadith UNIQUEMENT",
+  "content": "Le texte du hadith (max 300 caractères)",
   "source": "${hadithSource}"
 }`;
 

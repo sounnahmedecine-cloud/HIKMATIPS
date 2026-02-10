@@ -45,13 +45,14 @@ import { SidebarContent, FormatSettings, FontSettings } from './SidebarContent';
 import { Sidebar } from '@/components/Sidebar';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { BottomControls } from '@/components/BottomControls';
-import { MobileStudioToolbar, ToolType } from '@/components/studio/MobileStudioToolbar';
 import { MobileDrawer } from '@/components/studio/MobileDrawer';
 import { MobileTopicInput } from '@/components/studio/MobileTopicInput';
 import { Sheet, SheetTrigger } from '@/components/ui/sheet';
 import { TooltipGuide } from '@/components/TooltipGuide';
 import { useFirstTimeUser } from '@/hooks/useFirstTimeUser';
 import { MobileLeftToolbar } from '@/components/studio/MobileLeftToolbar';
+import { CategoryDrawer } from '@/components/CategoryDrawer';
+import { ToolsDrawer } from '@/components/ToolsDrawer';
 
 
 import { cn } from '@/lib/utils';
@@ -79,8 +80,10 @@ export default function GeneratorPage() {
   const [generationCount, setGenerationCount] = useState(0);
   const [showSignInPopup, setShowSignInPopup] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(false);
-  const [activeMobileTool, setActiveMobileTool] = useState<ToolType>(null);
+  const [activeMobileTool, setActiveMobileTool] = useState<'font' | 'format' | 'background' | null>(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isCategoryDrawerOpen, setIsCategoryDrawerOpen] = useState(false);
+  const [isToolsDrawerOpen, setIsToolsDrawerOpen] = useState(false);
 
   // First-time user guidance
   const { isFirstTime, markAsGenerated } = useFirstTimeUser();
@@ -96,10 +99,10 @@ export default function GeneratorPage() {
   const searchParams = useSearchParams();
 
   useEffect(() => {
-    const hasSeenOnboarding = localStorage.getItem('hasSeenOnboarding');
-    if (!hasSeenOnboarding) {
-      setShowOnboarding(true);
-    }
+    // const hasSeenOnboarding = localStorage.getItem('hasSeenOnboarding');
+    // if (!hasSeenOnboarding) {
+    //   setShowOnboarding(true);
+    // }
 
     // Handle URL parameters
     const urlTopic = searchParams.get('topic');
@@ -192,7 +195,7 @@ export default function GeneratorPage() {
 
 
   const handleGenerateAiContent = async () => {
-    if (!user && generationCount >= 5) {
+    if (!user && generationCount >= 10) {
       setShowSignInPopup(true);
       return;
     }
@@ -410,9 +413,9 @@ export default function GeneratorPage() {
       />
 
       {/* Header with Sidebar Trigger */}
-      <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-primary/10 shadow-sm">
-        <div className="container mx-auto flex h-14 items-center justify-between px-4 relative">
-          <div className="flex items-center gap-3">
+      <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-primary/10 shadow-sm overflow-hidden">
+        <div className="container mx-auto flex min-h-14 items-center justify-between px-3 sm:px-4 relative">
+          <div className="flex items-center gap-2 sm:gap-3">
             <Sheet open={isSidebarOpen} onOpenChange={setIsSidebarOpen}>
               <SheetTrigger asChild>
                 <Button variant="ghost" size="icon" className="-ml-2 hidden md:flex">
@@ -438,7 +441,7 @@ export default function GeneratorPage() {
             <div className="absolute left-1/2 -translate-x-1/2 md:static md:translate-x-0 md:ml-4">
               <a href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity active:scale-95">
                 <Image src="https://res.cloudinary.com/db2ljqpdt/image/upload/v1770580517/ChatGPT_Image_2_f%C3%A9vr._2026_23_43_44_qmfwbc_1_f4huf1.png" alt="HikmaClips" width={32} height={32} className="rounded-lg shadow-sm" />
-                <span className="text-lg font-bold text-hikma-gradient tracking-tight font-display md:hidden">HikmaClips</span>
+                <span className="text-base sm:text-lg font-bold text-hikma-gradient tracking-tight font-display md:hidden">HikmaClips</span>
               </a>
             </div>
 
@@ -583,26 +586,12 @@ export default function GeneratorPage() {
         </main>
       </div>
 
-      {/* Mobile Studio Toolset 2.0 */}
-      <MobileStudioToolbar
-        onToolSelect={(tool) => {
-          if (tool === 'settings') {
-            setIsSidebarOpen(true);
-          } else if (tool === 'share') {
-            handleShareImage();
-          } else if (tool === 'download') {
-            handleDownloadImage();
-          } else if (tool === 'resources') {
-            router.push('/ressources');
-          } else {
-            setActiveMobileTool(tool);
-          }
-        }}
-        activeTool={activeMobileTool}
-      />
+      {/* Mobile Left Toolbar */}
       <MobileLeftToolbar
         onRandom={handleRandomBackground}
         onUpload={() => document.getElementById('file-upload')?.click()}
+        onShare={handleShareImage}
+        onDownload={handleDownloadImage}
       />
       <MobileTopicInput
         value={topic}
@@ -659,6 +648,33 @@ export default function GeneratorPage() {
         onUpload={() => document.getElementById('file-upload')?.click()}
         onDownload={handleDownloadImage}
         onRessources={() => window.location.href = '/ressources'}
+        onOpenCategoryDrawer={() => setIsCategoryDrawerOpen(true)}
+        onOpenToolsDrawer={() => setIsToolsDrawerOpen(true)}
+      />
+
+      {/* Category Drawer */}
+      <CategoryDrawer
+        isOpen={isCategoryDrawerOpen}
+        onClose={() => setIsCategoryDrawerOpen(false)}
+        category={category}
+        onSelectCategory={setCategory}
+      />
+
+      {/* Tools Drawer */}
+      <ToolsDrawer
+        isOpen={isToolsDrawerOpen}
+        onClose={() => setIsToolsDrawerOpen(false)}
+        onToolSelect={(tool) => {
+          if (tool === 'font') {
+            setActiveMobileTool('font');
+          } else if (tool === 'format') {
+            setActiveMobileTool('format');
+          } else if (tool === 'resources') {
+            window.location.href = '/ressources';
+          } else if (tool === 'settings') {
+            setIsSidebarOpen(true);
+          }
+        }}
       />
 
       {/* Auth Popups & Overlays */}
@@ -675,7 +691,7 @@ export default function GeneratorPage() {
             <AlertDialogTitle>{authMode === 'signup' ? 'S\'inscrire' : 'Se connecter'}</AlertDialogTitle>
             <AlertDialogDescription>
               {authMode === 'signup'
-                ? 'Participez à la diffusion en rejoignant la communauté gratuitement !'
+                ? 'Salam Aleykoum ! Vous avez apprécié vos 10 premières générations ? Inscrivez-vous gratuitement pour continuer à diffuser la sagesse et nous soutenir. Barak\'Allah oufik.'
                 : 'Heureux de vous revoir parmi les diffuseurs de sagesse.'}
             </AlertDialogDescription>
           </AlertDialogHeader>

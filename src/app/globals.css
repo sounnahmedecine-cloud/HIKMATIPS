@@ -285,6 +285,27 @@
   }
 }
 
+/* Very Small Screens - Prevent Overflow */
+@media (max-width: 375px) {
+  body {
+    font-size: 15px;
+  }
+
+  h1 {
+    @apply text-xl;
+  }
+
+  h2 {
+    @apply text-lg;
+  }
+
+  /* Ensure header elements don't overflow */
+  header .container {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+}
+
 /* Accessibility */
 @media (prefers-reduced-motion: reduce) {
   * {
