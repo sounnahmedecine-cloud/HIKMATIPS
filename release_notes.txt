@@ -1,4 +1,5 @@
-Version 1.2.19:
+Version 1.2.20:
+- Production Release (AAB).
 - Fix AI Hadith generation: Enforce "Le Prophète (ﷺ) a dit :" prefix and remove context.
 - UI Update: Split "Generate" button into "Text" and "Image" actions.
 - UX Improvement: Removed initial onboarding screen and adjusted login prompt to appear after 10 generations.
