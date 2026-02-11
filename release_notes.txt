@@ -1,5 +1,10 @@
+Version 1.2.21:
+- Production Release (AAB/APK).
+- Bump version code to 44 (Fix Play Store conflict).
+
 Version 1.2.20:
 - Production Release (AAB).
+- New Feature: Tools Drawer for easier access to settings and format options.
 - Fix AI Hadith generation: Enforce "Le Prophète (ﷺ) a dit :" prefix and remove context.
 - UI Update: Split "Generate" button into "Text" and "Image" actions.
 - UX Improvement: Removed initial onboarding screen and adjusted login prompt to appear after 10 generations.

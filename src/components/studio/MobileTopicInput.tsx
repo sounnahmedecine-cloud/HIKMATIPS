@@ -19,12 +19,14 @@ export function MobileTopicInput({ value, onChange, isVisible, placeholder, onEn
 
     const handleKeyDown = (e: React.KeyboardEvent) => {
         if (e.key === 'Enter' && onEnter) {
+            inputRef.current?.blur();
             onEnter();
         }
     };
 
     const handleSubmit = () => {
         if (onEnter && value.trim()) {
+            inputRef.current?.blur();
             onEnter();
         }
     };

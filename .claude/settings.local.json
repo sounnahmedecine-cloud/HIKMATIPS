@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ls:*)",
+      "Bash(git commit:*)",
+      "Bash(npm run build:cap:*)",
+      "Bash(npx cap sync:*)",
+      "Bash(./gradlew bundleRelease:*)"
+    ]
+  }
+}

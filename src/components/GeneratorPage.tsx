@@ -70,6 +70,7 @@ export default function GeneratorPage() {
     content: "Et rappelle, car le rappel profite aux croyants",
     source: "Sourate Adh-Dhâriyât, v. 55"
   });
+
   const [category, setCategory] = useState<Category>('coran');
   const [background, setBackground] = useState<string>(
     PlaceHolderImages[0]?.imageUrl || 'https://picsum.photos/seed/1/1080/1920'
@@ -382,16 +383,15 @@ export default function GeneratorPage() {
 
     } catch (error) {
       console.error('Le partage a échoué:', error);
-      // Fallback: Download the image if sharing is not available
-      handleDownloadImage();
       toast({
-        title: 'Note',
-        description: 'Le partage direct n\'est pas disponible sur ce navigateur. L\'image a été téléchargée.',
+        variant: 'destructive',
+        title: 'Partage indisponible',
+        description: 'Le partage natif n\'est pas supporté sur cet appareil. Utilisez le bouton Télécharger.',
       });
     } finally {
       setIsGenerating(false);
     }
-  }, [content, toast, handleDownloadImage]);
+  }, [content, toast]);
 
   if (showOnboarding) {
     return (
@@ -413,7 +413,7 @@ export default function GeneratorPage() {
       />
 
       {/* Header with Sidebar Trigger */}
-      <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-primary/10 shadow-sm overflow-hidden">
+      <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-primary/10 shadow-sm overflow-hidden safe-area-top">
         <div className="container mx-auto flex min-h-14 items-center justify-between px-3 sm:px-4 relative">
           <div className="flex items-center gap-2 sm:gap-3">
             <Sheet open={isSidebarOpen} onOpenChange={setIsSidebarOpen}>
@@ -510,7 +510,7 @@ export default function GeneratorPage() {
                 )}
 
                 {content && (
-                  <div className="absolute inset-0 flex items-center justify-center p-6 sm:p-8">
+                  <div className="absolute inset-0 flex items-start justify-center pt-16 px-6 sm:p-8">
                     <div className="text-center w-full max-w-4xl">
                       <div
                         className="font-extrabold leading-tight tracking-tight px-4 text-white drop-shadow-lg"
