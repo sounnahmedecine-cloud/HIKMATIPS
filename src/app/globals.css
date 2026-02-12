@@ -4,7 +4,7 @@
 
 @layer base {
   :root {
-    /* 🕌 HikmaClips Color System - Islamic Green + Gold */
+    /* 🍎 Apple Minimalist Color System - Blue + Red */
     --background: 0 0% 100%;
     --foreground: 216 57% 10%;
     --card: 0 0% 100%;
@@ -12,20 +12,20 @@
     --popover: 0 0% 100%;
     --popover-foreground: 216 57% 10%;
 
-    /* Primary - Islamic Green #2E7D32 */
-    --primary: 123 46% 34%;
-    --primary-foreground: 0 0% 98%;
+    /* Primary - Apple Blue #007AFF */
+    --primary: 221 100% 50%;
+    --primary-foreground: 0 0% 100%;
 
     /* Secondary */
-    --secondary: 214 20% 94%;
+    --secondary: 214 20% 96%;
     --secondary-foreground: 214 49% 15%;
 
-    /* Accent - Gold #D4A843 */
-    --accent: 42 60% 55%;
-    --accent-foreground: 216 57% 10%;
+    /* Accent - Apple Red #FF3B30 */
+    --accent: 354 100% 59%;
+    --accent-foreground: 0 0% 100%;
 
     /* Muted */
-    --muted: 214 20% 94%;
+    --muted: 214 20% 96%;
     --muted-foreground: 214 15% 45%;
 
     /* Destructive */
@@ -33,42 +33,41 @@
     --destructive-foreground: 0 0% 98%;
 
     /* Border & Input */
-    --border: 214 20% 88%;
-    --input: 214 20% 88%;
-    --ring: 123 46% 34%;
+    --border: 214 20% 92%;
+    --input: 214 20% 92%;
+    --ring: 221 100% 50%;
 
-    --radius: 1rem;
+    --radius: 1.25rem;
 
-    --chart-1: 123 46% 34%;
-    --chart-2: 42 60% 55%;
+    --chart-1: 221 100% 50%;
+    --chart-2: 354 100% 59%;
     --chart-3: 250 84% 54%;
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
   }
 
   .dark {
-    --background: 216 60% 7%;
-    --foreground: 40 30% 95%;
-    --card: 216 50% 10%;
-    --card-foreground: 40 30% 95%;
-    --popover: 215 50% 12%;
-    --popover-foreground: 40 30% 95%;
-    --primary: 123 46% 34%;
-    /* Islamic Green #2E7D32 */
+    /* Apple Dark Deep Black */
+    --background: 0 0% 2%;
+    --foreground: 0 0% 98%;
+    --card: 0 0% 5%;
+    --card-foreground: 0 0% 98%;
+    --popover: 0 0% 7%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 221 100% 50%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 123 30% 15%;
-    --secondary-foreground: 40 30% 95%;
-    --muted: 214 30% 18%;
-    --muted-foreground: 214 15% 65%;
-    --accent: 42 60% 55%;
-    /* Gold #D4A843 */
-    --accent-foreground: 216 57% 10%;
+    --secondary: 0 0% 12%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 0 0% 15%;
+    --muted-foreground: 0 0% 65%;
+    --accent: 354 100% 59%;
+    --accent-foreground: 0 0% 100%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
-    --border: 123 30% 20%;
-    --input: 123 30% 20%;
-    --ring: 123 46% 34%;
-    --radius: 1rem;
+    --border: 0 0% 12%;
+    --input: 0 0% 12%;
+    --ring: 221 100% 50%;
+    --radius: 1.25rem;
   }
 }
 

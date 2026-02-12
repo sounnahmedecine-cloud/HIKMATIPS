@@ -12,13 +12,14 @@ import {
   BookOpen,
   Search,
   RectangleVertical,
-  RectangleHorizontal,
   BookMarked,
   LogIn,
   LogOut,
   Share2,
   AtSign,
   Play,
+  Pause,
+  Volume2,
   User,
   Palette,
   Type,
@@ -27,6 +28,7 @@ import {
   Mail,
   Wand2,
   Menu,
+  X,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
@@ -66,7 +68,21 @@ import { MobileLeftToolbar } from '@/components/studio/MobileLeftToolbar';
 type Content = {
   content: string;
   source: string;
+  surah?: number;
+  ayah?: number;
 };
+
+type Reciter = {
+  id: string;
+  name: string;
+  url: string;
+};
+
+const RECITERS: Reciter[] = [
+  { id: 'alafasy', name: 'Al-Afasy', url: 'https://everyayah.com/data/Alafasy_128kbps/' },
+  { id: 'almuaiqly', name: 'Al-Muaiqly', url: 'https://everyayah.com/data/Maher_AlMuaiqly_64kbps/' },
+  { id: 'alijaber', name: 'Ali Jaber', url: 'https://everyayah.com/data/Ali_Jaber_64kbps/' },
+];
 
 type Category = 'hadith' | 'ramadan' | 'recherche-ia' | 'coran';
 type Format = 'story' | 'square';
@@ -81,7 +97,12 @@ const fontFamilies: Record<FontFamily, { name: string; style: string; label: str
 };
 
 export default function StudioPage() {
-  const [content, setContent] = useState<Content | null>(null);
+  const [content, setContent] = useState<Content | null>({
+    content: "Et rappelle, car le rappel profite aux croyants",
+    source: "Sourate Adh-Dhâriyât, v. 55",
+    surah: 51,
+    ayah: 55
+  });
   const [category, setCategory] = useState<Category>('coran');
   const [format, setFormat] = useState<Format>('story');
 
@@ -89,6 +110,23 @@ export default function StudioPage() {
   const [fontFamily, setFontFamily] = useState<FontFamily>('amiri');
 
   const [signature, setSignature] = useState('hikmaclips.woosenteur.fr');
+  const [showAnimations, setShowAnimations] = useState(true);
+
+  useEffect(() => {
+    const saved = localStorage.getItem('showAnimations');
+    if (saved !== null) setShowAnimations(saved === 'true');
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem('showAnimations', showAnimations.toString());
+  }, [showAnimations]);
+
+  // Audio States
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [volume, setVolume] = useState(0.8);
+  const [selectedReciter, setSelectedReciter] = useState(RECITERS[0]);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
   const router = useRouter();
 
   const [background, setBackground] = useState<string>(
@@ -109,6 +147,28 @@ export default function StudioPage() {
       setShowOnboarding(true);
     }
   }, []);
+
+  useEffect(() => {
+    if (isPlaying && content?.surah && content?.ayah) {
+      if (audioRef.current) {
+        audioRef.current.play().catch(console.error);
+      }
+    } else {
+      if (audioRef.current) {
+        audioRef.current.pause();
+      }
+    }
+  }, [isPlaying, content]);
+
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.volume = volume;
+    }
+  }, [volume]);
+
+  const togglePlayAudio = () => {
+    setIsPlaying(!isPlaying);
+  };
 
   const handleCompleteOnboarding = () => {
     localStorage.setItem('hasSeenOnboarding', 'true');
@@ -423,7 +483,7 @@ export default function StudioPage() {
       />
 
       {/* Header with Sidebar Trigger (Mobile only for sidebar button) */}
-      <header className="fixed top-0 left-0 right-0 z-50 bg-emerald-50/90 backdrop-blur-md border-b border-emerald-100/50 shadow-sm">
+      <header className="fixed top-0 left-0 right-0 z-50 bg-background/90 backdrop-blur-md border-b border-border shadow-sm">
         <div className="container mx-auto flex h-14 items-center justify-between px-4 relative">
           {/* Left: Menu & Logo */}
           <div className="flex items-center gap-3">
@@ -466,7 +526,7 @@ export default function StudioPage() {
                 height={32}
                 className="rounded-lg shadow-sm"
               />
-              <span className="text-lg font-bold text-emerald-800 tracking-tight font-display md:hidden">Studio</span>
+              <span className="text-lg font-bold text-primary tracking-tight font-display md:hidden">Studio</span>
             </a>
           </div>
 
@@ -503,21 +563,82 @@ export default function StudioPage() {
             setFontSize={setFontSize}
             signature={signature}
             setSignature={setSignature}
+            showAnimations={showAnimations}
+            setShowAnimations={setShowAnimations}
           />
         </aside>
 
         {/* Main Preview Container */}
         <main className={cn(
-          "flex-1 preview-container relative pb-32 overflow-hidden flex justify-center",
-          "items-center pt-0" // Centered on desktop and mobile
+          "flex-1 preview-container relative overflow-hidden flex flex-col items-center justify-center gap-6 pt-4",
+          "md:pb-12"
         )}>
-          <div className="relative w-full h-full flex items-start sm:items-center justify-center p-2 sm:p-4">
+          {/* Audio Controls (Positioned above the preview) */}
+          {content?.surah && content?.ayah && (
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="flex items-center gap-4 bg-background/80 backdrop-blur-xl border border-primary/20 p-2 sm:p-3 rounded-2xl shadow-apple-lg z-30"
+            >
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={togglePlayAudio}
+                className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-primary/10 text-primary hover:bg-primary/20"
+              >
+                {isPlaying ? <Pause className="w-5 h-5 sm:w-6 sm:h-6 fill-current" /> : <Play className="w-5 h-5 sm:w-6 sm:h-6 fill-current" />}
+              </Button>
+
+              <div className="flex flex-col gap-0.5 min-w-[100px] sm:min-w-[120px]">
+                <div className="flex justify-between text-[9px] sm:text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
+                  <span>Récitateur</span>
+                </div>
+                <select
+                  value={selectedReciter.id}
+                  onChange={(e) => {
+                    const r = RECITERS.find(rec => rec.id === e.target.value);
+                    if (r) setSelectedReciter(r);
+                  }}
+                  className="bg-transparent text-xs sm:text-sm font-bold border-none focus:ring-0 p-0 outline-none"
+                  aria-label="Sélectionner un récitateur"
+                >
+                  {RECITERS.map(r => (r && (
+                    <option key={r.id} value={r.id} className="bg-background text-foreground">{r.name}</option>
+                  )))}
+                </select>
+              </div>
+
+              <div className="flex items-center gap-2 border-l border-primary/10 pl-2 sm:pl-4">
+                <Volume2 className="w-3 h-3 sm:w-4 sm:h-4 text-muted-foreground" />
+                <input
+                  type="range"
+                  min="0"
+                  max="1"
+                  step="0.01"
+                  value={volume}
+                  onChange={(e) => setVolume(parseFloat(e.target.value))}
+                  className="w-16 sm:w-20 accent-primary"
+                  aria-label="Ajuster le volume"
+                />
+              </div>
+
+              {content?.surah && content?.ayah && (
+                <audio
+                  ref={audioRef}
+                  src={`${selectedReciter.url}${String(content.surah).padStart(3, '0')}${String(content.ayah).padStart(3, '0')}.mp3`}
+                  onEnded={() => setIsPlaying(false)}
+                />
+              )}
+            </motion.div>
+          )}
+
+          <div className="relative w-full flex items-center justify-center px-4">
             <div
               className={cn(
-                "bg-neutral-900 p-1 sm:p-2 shadow-2xl ring-4 ring-primary/5 transition-all duration-300 relative overflow-hidden",
+                "bg-neutral-900 shadow-apple-lg ring-1 ring-primary/5 transition-all duration-300 relative overflow-hidden",
                 format === 'story'
-                  ? "h-[calc(100vh-180px)] w-auto aspect-[9/16] sm:w-[280px] sm:h-[590px] md:w-[320px] md:h-[673px] lg:w-[340px] lg:h-[715px] rounded-[30px] sm:rounded-[40px]"
-                  : "h-[calc(100vh-180px)] w-auto aspect-square sm:w-[320px] sm:h-[320px] md:w-[400px] md:h-[400px] lg:w-[450px] lg:h-[450px] rounded-2xl"
+                  ? "h-[calc(100vh-280px)] w-auto aspect-[9/16] sm:w-[280px] sm:h-[590px] md:w-[320px] md:h-[673px] lg:w-[340px] lg:h-[715px] rounded-[30px] sm:rounded-[40px]"
+                  : "h-[calc(100vh-280px)] w-auto aspect-square sm:w-[320px] sm:h-[320px] md:w-[400px] md:h-[400px] lg:w-[450px] lg:h-[450px] rounded-2xl"
               )}
             >
               <div
@@ -556,50 +677,70 @@ export default function StudioPage() {
                         }}
                       >
                         <AnimatePresence mode="wait">
-                          <motion.div
-                            key={animationKey + content.content}
-                            initial="hidden"
-                            animate="visible"
-                            variants={{
-                              visible: { transition: { staggerChildren: 0.08 } },
-                            }}
-                            className="text-white drop-shadow-md"
-                          >
-                            "
-                            {content.content.split(' ').map((word, i) => (
-                              <motion.span
-                                key={i}
-                                variants={{
-                                  hidden: { opacity: 0, y: 15, filter: 'blur(4px)' },
-                                  visible: {
-                                    opacity: 1,
-                                    y: 0,
-                                    filter: 'blur(0px)',
-                                    transition: { type: 'spring', damping: 15, stiffness: 120 }
-                                  },
-                                }}
-                                className="inline-block mr-2"
-                              >
-                                {word}
-                              </motion.span>
-                            ))}
-                            "
-                          </motion.div>
+                          {showAnimations ? (
+                            <motion.div
+                              key={animationKey + (content?.content || '')}
+                              initial="hidden"
+                              animate="visible"
+                              variants={{
+                                visible: { transition: { staggerChildren: 0.05 } },
+                              }}
+                              className="text-white drop-shadow-md"
+                            >
+                              "
+                              {(content?.content || '').split(' ').map((word, i) => (
+                                <motion.span
+                                  key={i}
+                                  variants={{
+                                    hidden: { opacity: 0, y: 10, filter: 'blur(8px)', scale: 0.9, rotate: -2 },
+                                    visible: {
+                                      opacity: 1,
+                                      y: 0,
+                                      filter: 'blur(0px)',
+                                      scale: 1,
+                                      rotate: 0,
+                                      transition: {
+                                        type: 'spring',
+                                        damping: 12,
+                                        stiffness: 100,
+                                        duration: 0.5
+                                      }
+                                    },
+                                  }}
+                                  className="inline-block mr-2"
+                                >
+                                  {word}
+                                </motion.span>
+                              ))}
+                              "
+                            </motion.div>
+                          ) : (
+                            <div className="text-white drop-shadow-md">"{content?.content}"</div>
+                          )}
                         </AnimatePresence>
                       </div>
-                      <motion.p
-                        key={animationKey + content.source}
-                        initial={{ opacity: 0, scale: 0.95 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{
-                          delay: content.content.split(' ').length * 0.08 + 0.4,
-                          duration: 0.6,
-                          ease: "easeOut"
-                        }}
-                        className="mt-6 text-sm sm:text-lg font-bold text-white/90 italic tracking-widest uppercase opacity-70"
-                      >
-                        — {content.source} —
-                      </motion.p>
+
+                      <AnimatePresence>
+                        {showAnimations ? (
+                          <motion.p
+                            key={animationKey + (content?.source || '')}
+                            initial={{ opacity: 0, scale: 0.9, filter: 'blur(4px)' }}
+                            animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
+                            transition={{
+                              delay: (content?.content || '').split(' ').length * 0.05 + 0.3,
+                              duration: 0.8,
+                              ease: "easeOut"
+                            }}
+                            className="mt-6 text-sm sm:text-lg font-bold italic tracking-widest uppercase opacity-70 text-white/90"
+                          >
+                            — {content?.source} —
+                          </motion.p>
+                        ) : (
+                          <p className="mt-6 text-sm sm:text-lg font-bold italic tracking-widest uppercase opacity-70 text-white/90">
+                            — {content?.source} —
+                          </p>
+                        )}
+                      </AnimatePresence>
                     </div>
                   </div>
                 )}
@@ -623,6 +764,7 @@ export default function StudioPage() {
               </div>
             </div>
           </div>
+
         </main>
       </div>
 
@@ -665,6 +807,8 @@ export default function StudioPage() {
       <MobileLeftToolbar
         onRandom={handleRandomBackground}
         onUpload={() => document.getElementById('file-upload')?.click()}
+        onShare={handleShareImage}
+        onDownload={handleDownloadImage}
       />
 
       <MobileDrawer
@@ -706,6 +850,15 @@ export default function StudioPage() {
       {/* Auth Popups */}
       <AlertDialog open={showSignInPopup} onOpenChange={setShowSignInPopup}>
         <AlertDialogContent className="sm:max-w-[400px]">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="absolute right-4 top-4 rounded-xl opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground"
+            onClick={() => setShowSignInPopup(false)}
+          >
+            <X className="h-4 w-4" />
+            <span className="sr-only">Fermer</span>
+          </Button>
           <AlertDialogHeader>
             <AlertDialogTitle className="text-2xl font-bold flex items-center gap-2">
               <User className="w-6 h-6 text-primary" />
