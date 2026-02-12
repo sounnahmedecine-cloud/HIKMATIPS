@@ -51,7 +51,7 @@ export function MobileStudioToolbar({ onToolSelect, activeTool }: MobileStudioTo
                         }}
                         onClick={() => onToolSelect(tool.id)}
                         className={cn(
-                            "w-12 h-12 rounded-2xl flex items-center justify-center shadow-apple-lg backdrop-blur-md border transition-all duration-300",
+                            "w-12 h-12 rounded-2xl flex items-center justify-center shadow-hikma-lg backdrop-blur-md border transition-all duration-300",
                             activeTool === tool.id
                                 ? "bg-primary text-white border-primary"
                                 : "bg-card/80 text-foreground border-border/50 hover:bg-muted"
@@ -66,7 +66,7 @@ export function MobileStudioToolbar({ onToolSelect, activeTool }: MobileStudioTo
                                     initial={{ opacity: 0, x: -10 }}
                                     animate={{ opacity: 1, x: -50 }}
                                     exit={{ opacity: 0, x: -10 }}
-                                    className="absolute left-0 px-2 py-1 bg-primary text-white text-[10px] font-bold rounded-lg pointer-events-none whitespace-nowrap shadow-apple"
+                                    className="absolute left-0 px-2 py-1 bg-primary text-white text-[10px] font-bold rounded-lg pointer-events-none whitespace-nowrap shadow-hikma"
                                 >
                                     {tool.label}
                                 </motion.span>

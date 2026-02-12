@@ -141,6 +141,11 @@ export default function StudioPage() {
   const [showSignInPopup, setShowSignInPopup] = useState(false);
   const [generationCount, setGenerationCount] = useState(0);
 
+  // Image Filter States
+  const [brightness, setBrightness] = useState(100);
+  const [contrast, setContrast] = useState(100);
+  const [saturation, setSaturation] = useState(100);
+
   useEffect(() => {
     const hasSeenOnboarding = localStorage.getItem('hasSeenOnboarding');
     if (!hasSeenOnboarding) {
@@ -512,6 +517,12 @@ export default function StudioPage() {
                 setFontSize={setFontSize}
                 signature={signature}
                 setSignature={setSignature}
+                brightness={brightness}
+                setBrightness={setBrightness}
+                contrast={contrast}
+                setContrast={setContrast}
+                saturation={saturation}
+                setSaturation={setSaturation}
               />
             </Sheet>
           </div>
@@ -578,7 +589,7 @@ export default function StudioPage() {
             <motion.div
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="flex items-center gap-4 bg-background/80 backdrop-blur-xl border border-primary/20 p-2 sm:p-3 rounded-2xl shadow-apple-lg z-30"
+              className="flex items-center gap-4 bg-background/80 backdrop-blur-xl border border-primary/20 p-2 sm:p-3 rounded-2xl shadow-hikma-lg z-30"
             >
               <Button
                 variant="ghost"
@@ -635,7 +646,7 @@ export default function StudioPage() {
           <div className="relative w-full flex items-center justify-center px-4">
             <div
               className={cn(
-                "bg-neutral-900 shadow-apple-lg ring-1 ring-primary/5 transition-all duration-300 relative overflow-hidden",
+                "bg-neutral-900 shadow-hikma-lg ring-1 ring-primary/5 transition-all duration-300 relative overflow-hidden",
                 format === 'story'
                   ? "h-[calc(100vh-280px)] w-auto aspect-[9/16] sm:w-[280px] sm:h-[590px] md:w-[320px] md:h-[673px] lg:w-[340px] lg:h-[715px] rounded-[30px] sm:rounded-[40px]"
                   : "h-[calc(100vh-280px)] w-auto aspect-square sm:w-[320px] sm:h-[320px] md:w-[400px] md:h-[400px] lg:w-[450px] lg:h-[450px] rounded-2xl"
@@ -653,6 +664,9 @@ export default function StudioPage() {
                   alt="Arrière-plan"
                   fill
                   className="object-cover"
+                  style={{
+                    filter: `brightness(${brightness}%) contrast(${contrast}%) saturate(${saturation}%)`
+                  }}
                   data-ai-hint="abstract serene"
                   crossOrigin="anonymous"
                   key={background}
@@ -668,9 +682,9 @@ export default function StudioPage() {
 
                 {content && (
                   <div className="absolute inset-0 flex items-center justify-center p-6 sm:p-8">
-                    <div className="text-center w-full max-w-4xl">
+                    <div className="text-center w-full max-w-4xl flex flex-col items-center justify-center min-h-full">
                       <div
-                        className="font-extrabold leading-tight tracking-tight px-4"
+                        className="font-extrabold leading-tight tracking-tight px-4 w-full flex flex-col items-center justify-center"
                         style={{
                           fontSize: `${fontSize}px`,
                           fontFamily: fontFamilies[fontFamily].style
@@ -685,7 +699,7 @@ export default function StudioPage() {
                               variants={{
                                 visible: { transition: { staggerChildren: 0.05 } },
                               }}
-                              className="text-white drop-shadow-md"
+                              className="text-white drop-shadow-md text-center"
                             >
                               "
                               {(content?.content || '').split(' ').map((word, i) => (
@@ -731,12 +745,12 @@ export default function StudioPage() {
                               duration: 0.8,
                               ease: "easeOut"
                             }}
-                            className="mt-6 text-sm sm:text-lg font-bold italic tracking-widest uppercase opacity-70 text-white/90"
+                            className="mt-6 text-sm sm:text-lg font-bold italic tracking-widest uppercase opacity-70 text-white/90 text-center w-full"
                           >
                             — {content?.source} —
                           </motion.p>
                         ) : (
-                          <p className="mt-6 text-sm sm:text-lg font-bold italic tracking-widest uppercase opacity-70 text-white/90">
+                          <p className="mt-6 text-sm sm:text-lg font-bold italic tracking-widest uppercase opacity-70 text-white/90 text-center w-full">
                             — {content?.source} —
                           </p>
                         )}

@@ -8,10 +8,11 @@ import {
     Palette,
     RectangleVertical,
     RectangleHorizontal,
-    Share2,
     BookOpen,
+    Share2,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { ThemeToggle } from '@/components/ThemeToggle';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
@@ -36,6 +37,14 @@ interface SidebarContentProps {
     setFontSize?: (s: number) => void;
     signature?: string;
     setSignature?: (s: string) => void;
+    showAnimations?: boolean;
+    setShowAnimations?: (s: boolean) => void;
+    brightness?: number;
+    setBrightness?: (v: number) => void;
+    contrast?: number;
+    setContrast?: (v: number) => void;
+    saturation?: number;
+    setSaturation?: (v: number) => void;
 }
 
 const fontFamilies: Record<string, { name: string; style: string; label: string }> = {
@@ -112,6 +121,72 @@ export function FormatSettings({ format, setFormat, isMobile = false }: { format
     );
 }
 
+export function FilterSettings({
+    brightness,
+    setBrightness,
+    contrast,
+    setContrast,
+    saturation,
+    setSaturation,
+    isMobile = false
+}: {
+    brightness?: number;
+    setBrightness?: (v: number) => void;
+    contrast?: number;
+    setContrast?: (v: number) => void;
+    saturation?: number;
+    setSaturation?: (v: number) => void;
+    isMobile?: boolean;
+}) {
+    return (
+        <div className="space-y-6">
+            <Label className={cn("text-[10px] uppercase tracking-widest font-bold", isMobile ? "text-gray-500" : "text-muted-foreground")}>Réglages Image</Label>
+
+            <div className="space-y-3">
+                <div className="flex justify-between items-center pr-2">
+                    <Label className="text-xs font-medium">Luminosité</Label>
+                    <span className="text-[10px] font-bold text-primary">{brightness}%</span>
+                </div>
+                <Slider
+                    value={[brightness || 100]}
+                    onValueChange={(v) => setBrightness?.(v[0])}
+                    min={0}
+                    max={200}
+                    step={1}
+                />
+            </div>
+
+            <div className="space-y-3">
+                <div className="flex justify-between items-center pr-2">
+                    <Label className="text-xs font-medium">Contraste</Label>
+                    <span className="text-[10px] font-bold text-primary">{contrast}%</span>
+                </div>
+                <Slider
+                    value={[contrast || 100]}
+                    onValueChange={(v) => setContrast?.(v[0])}
+                    min={0}
+                    max={200}
+                    step={1}
+                />
+            </div>
+
+            <div className="space-y-3">
+                <div className="flex justify-between items-center pr-2">
+                    <Label className="text-xs font-medium">Saturation</Label>
+                    <span className="text-[10px] font-bold text-primary">{saturation}%</span>
+                </div>
+                <Slider
+                    value={[saturation || 100]}
+                    onValueChange={(v) => setSaturation?.(v[0])}
+                    min={0}
+                    max={200}
+                    step={1}
+                />
+            </div>
+        </div>
+    );
+}
+
 export function SidebarContent({
     topic,
     setTopic,
@@ -131,7 +206,15 @@ export function SidebarContent({
     isMobile = false,
     hideRedundant = false,
     signature,
-    setSignature
+    setSignature,
+    showAnimations,
+    setShowAnimations,
+    brightness,
+    setBrightness,
+    contrast,
+    setContrast,
+    saturation,
+    setSaturation
 }: SidebarContentProps & { isMobile?: boolean, hideRedundant?: boolean }) {
     return (
         <div className="space-y-6 pb-10 px-2">
@@ -164,6 +247,15 @@ export function SidebarContent({
                         setFontFamily={setFontFamily}
                         fontSize={fontSize}
                         setFontSize={setFontSize}
+                        isMobile={isMobile}
+                    />}
+                    {!hideRedundant && <FilterSettings
+                        brightness={brightness}
+                        setBrightness={setBrightness}
+                        contrast={contrast}
+                        setContrast={setContrast}
+                        saturation={saturation}
+                        setSaturation={setSaturation}
                         isMobile={isMobile}
                     />}
                 </div>
@@ -206,6 +298,25 @@ export function SidebarContent({
                     onChange={(e) => setTopic(e.target.value)}
                     className="resize-none h-24 bg-muted/20 rounded-2xl border-none focus-visible:ring-primary h-20 text-xs p-4"
                 />
+            </div>
+
+            <div className="space-y-3 pt-2">
+                <Label className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold">Thème de l'application</Label>
+                <div className="flex items-center justify-between bg-muted/20 rounded-xl p-3">
+                    <span className="text-xs font-medium">Mode Sombre / Clair</span>
+                    <ThemeToggle />
+                </div>
+                <div className="flex items-center justify-between bg-muted/20 rounded-xl p-3">
+                    <span className="text-xs font-medium">Animations UI</span>
+                    <Button
+                        variant={showAnimations ? "default" : "outline"}
+                        size="sm"
+                        className="h-8 rounded-lg px-3 text-[10px]"
+                        onClick={() => setShowAnimations?.(!showAnimations)}
+                    >
+                        {showAnimations ? "Activées" : "Désactivées"}
+                    </Button>
+                </div>
             </div>
 
             <Button

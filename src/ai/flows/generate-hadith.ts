@@ -76,6 +76,8 @@ export type GenerateHadithInput = z.infer<typeof GenerateHadithInputSchema>;
 export const GenerateHadithOutputSchema = z.object({
   content: z.string(),
   source: z.string(),
+  surah: z.number().optional(),
+  ayah: z.number().optional(),
 });
 export type GenerateHadithOutput = z.infer<typeof GenerateHadithOutputSchema>;
 
@@ -133,21 +135,21 @@ async function generateFromAI(
 
   const getPromptByCategory = () => {
     if (category === 'hadith') {
-      return `Tu es un spécialiste des hadiths authentiques. Donne-moi UN hadith CÉLÈBRE et AUTHENTIQUE.
-${topic ? `Thème souhaité : ${topic}` : 'Choisis parmi les thèmes : bonté, patience, prière, parents, science, sincérité, frères en Islam.'}
+      return `Tu es un expert des Hadiths. Donne-moi UN hadith AUTHENTIQUE issu EXCLUSIVEMENT de SAHIH AL-BUKHARI ou SAHIH MUSLIM.
+${topic ? `Thème : ${topic}` : 'Choisis un thème varié (évite les trop connus) : comportement, purification, aumône, mort, paradis, enfer, invocation.'}
 
-IMPORTANT : Le hadith doit être COURT et COMPLET (maximum 300 caractères).
-Privilégie les hadiths concis et percutants plutôt que les longs récits.
-Si le hadith d'origine est long, cite uniquement la partie essentielle avec "(...)" pour indiquer l'abréviation.
+IMPORTANT :
+1. SOURCE OBLIGATOIRE : Sahih Al-Bukhari ou Sahih Muslim.
+2. LONGUEUR : Le hadith doit être COURT (max 250 caractères).
+3. VARIÉTÉ : Choisis des hadiths moins souvent cités pour surprendre l'utilisateur.
 
-FORMAT OBLIGATOIRE : Commence le texte par "Le Prophète (ﷺ) a dit :" suivi du hadith entre guillemets.
-EXCLUSION : Ne mets pas la chaîne de rapporteurs (isnad) au début. Uniquement les paroles du Prophète.
+Si le hadith est long, coupe-le intelligemment avec "(...)" pour ne garder que la phrase clé.
 
 ${baseRules}
 
 {
-  "content": "Le Prophète (ﷺ) a dit : \"Le hadith...\"",
-  "source": "Rapporté par Boukhari, n°XXXX"
+  "content": "Le Prophète (ﷺ) a dit : \"...\"",
+  "source": "Rapporté par Bukhari/Muslim, n°..."
 }`;
     }
 
@@ -177,7 +179,9 @@ ${baseRules}
 
 {
   "content": "Le verset traduit en français (max 250 caractères)",
-  "source": "Sourate Al-Nom (numéro), verset numéro"
+  "source": "Sourate Al-Nom (numéro), verset numéro",
+  "surah": 1,
+  "ayah": 1
 }`;
     }
 
@@ -204,7 +208,9 @@ ${baseRules}
             type: 'object',
             properties: {
               content: { type: 'string' },
-              source: { type: 'string' }
+              source: { type: 'string' },
+              surah: { type: 'number' },
+              ayah: { type: 'number' }
             },
             required: ['content', 'source']
           },
@@ -293,7 +299,9 @@ Ta mission :
 
 {
   "content": "Le texte du hadith (max 300 caractères)",
-  "source": "${hadithSource}"
+  "source": "${hadithSource}",
+  "surah": 1,
+  "ayah": 1
 }`;
 
   const response = await fetch(
@@ -305,6 +313,16 @@ Ta mission :
         contents: [{ parts: [{ text: prompt }] }],
         generationConfig: {
           response_mime_type: 'application/json',
+          response_schema: {
+            type: 'object',
+            properties: {
+              content: { type: 'string' },
+              source: { type: 'string' },
+              surah: { type: 'number' },
+              ayah: { type: 'number' }
+            },
+            required: ['content', 'source']
+          },
           temperature: 0.3
         }
       }),
@@ -332,12 +350,11 @@ export async function generateHadith(
       const localMatches = await searchHadiths(topic);
 
       if (localMatches.length > 0) {
-        // On prend le meilleur match ou on envoie les top matches à l'IA pour synthèse
-        // Pour l'instant, on prend le premier
-        const bestMatch = localMatches[0];
+        // Prendre un hadith ALÉATOIRE parmi TOUS les résultats trouvés pour maximiser la variété
+        const randomMatch = getRandomItem(localMatches);
 
-        // Optionnel: Demander à l'IA d'analyser ce hadith spécifique
-        return await generateAnalysisFromAI(bestMatch.french, bestMatch.source, topic);
+        // Demander à l'IA d'analyser ce hadith spécifique
+        return await generateAnalysisFromAI(randomMatch.french, randomMatch.source, topic);
       }
     } catch (error) {
       console.error("Local search failed for AI research:", error);

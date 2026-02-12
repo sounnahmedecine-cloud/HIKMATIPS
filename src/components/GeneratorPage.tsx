@@ -16,9 +16,13 @@ import {
   LogOut,
   Share2,
   Play,
+  Pause,
+  Volume2,
   User,
   Mail,
   Menu,
+  Music,
+  X,
 } from 'lucide-react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -61,14 +65,30 @@ import { cn } from '@/lib/utils';
 type Content = {
   content: string;
   source: string;
+  surah?: number;
+  ayah?: number;
 };
+
+type Reciter = {
+  id: string;
+  name: string;
+  url: string;
+};
+
+const RECITERS: Reciter[] = [
+  { id: 'alafasy', name: 'Al-Afasy', url: 'https://everyayah.com/data/Alafasy_128kbps/' },
+  { id: 'almuaiqly', name: 'Al-Muaiqly', url: 'https://everyayah.com/data/Maher_AlMuaiqly_64kbps/' },
+  { id: 'alijaber', name: 'Ali Jaber', url: 'https://everyayah.com/data/Ali_Jaber_64kbps/' },
+];
 
 type Category = 'hadith' | 'ramadan' | 'thematique' | 'coran' | 'recherche-ia';
 
 export default function GeneratorPage() {
   const [content, setContent] = useState<Content | null>({
     content: "Et rappelle, car le rappel profite aux croyants",
-    source: "Sourate Adh-Dhâriyât, v. 55"
+    source: "Sourate Adh-Dhâriyât, v. 55",
+    surah: 51,
+    ayah: 55
   });
 
   const [category, setCategory] = useState<Category>('coran');
@@ -95,6 +115,23 @@ export default function GeneratorPage() {
   const [fontFamily, setFontFamily] = useState("'Amiri', serif");
   const [format, setFormat] = useState<'story' | 'square'>('story');
   const [signature, setSignature] = useState('hikmaclips.woosenteur.fr');
+  const [showAnimations, setShowAnimations] = useState(true);
+
+  useEffect(() => {
+    const saved = localStorage.getItem('showAnimations');
+    if (saved !== null) setShowAnimations(saved === 'true');
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem('showAnimations', showAnimations.toString());
+  }, [showAnimations]);
+
+  // Audio States
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [volume, setVolume] = useState(0.8);
+  const [selectedReciter, setSelectedReciter] = useState(RECITERS[0]);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
   const router = useRouter();
 
   const searchParams = useSearchParams();
@@ -206,10 +243,6 @@ export default function GeneratorPage() {
       const result = await generateHadith({ category, topic });
       if (result && result.content) {
         setContent(result);
-        toast({
-          title: 'Prêt à diffuser !',
-          description: 'Votre nouveau rappel est préparé.',
-        });
         if (!user) {
           setGenerationCount(prev => prev + 1);
         }
@@ -233,6 +266,42 @@ export default function GeneratorPage() {
       }
     }
   };
+
+  const formatAudioId = (num: number) => num.toString().padStart(3, '0');
+
+  const togglePlayAudio = () => {
+    if (!content?.surah || !content?.ayah) return;
+
+    if (!audioRef.current) {
+      const fileName = `${formatAudioId(content.surah)}${formatAudioId(content.ayah)}.mp3`;
+      const url = `${selectedReciter.url}${fileName}`;
+      audioRef.current = new Audio(url);
+      audioRef.current.volume = volume;
+      audioRef.current.onended = () => setIsPlaying(false);
+    }
+
+    if (isPlaying) {
+      audioRef.current.pause();
+    } else {
+      audioRef.current.play().catch(e => console.error("Audio play error:", e));
+    }
+    setIsPlaying(!isPlaying);
+  };
+
+  useEffect(() => {
+    // Reset audio when content or reciter changes
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current = null;
+      setIsPlaying(false);
+    }
+  }, [content?.surah, content?.ayah, selectedReciter]);
+
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.volume = volume;
+    }
+  }, [volume]);
 
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -362,24 +431,18 @@ export default function GeneratorPage() {
         directory: Directory.Cache,
       });
 
-      // Check if sharing is actually supported (especially for files)
-      const canShareResult = await Share.canShare();
+      // Attempt to share directly
+      await Share.share({
+        title: 'Ma Hikma du jour',
+        text: `Découvrez cette sagesse sur HikmaClips : "${content.content}" - ${content.source}`,
+        files: [savedFile.uri],
+        dialogTitle: 'Partager avec...',
+      });
 
-      if (canShareResult.value) {
-        await Share.share({
-          title: 'Ma Hikma du jour',
-          text: `Découvrez cette sagesse sur HikmaClips : "${content.content}" - ${content.source}`,
-          files: [savedFile.uri],
-          dialogTitle: 'Partager avec...',
-        });
-
-        toast({
-          title: 'Partage ouvert',
-          description: 'Choisissez une application pour partager votre Hikma.',
-        });
-      } else {
-        throw new Error('Share API not available');
-      }
+      toast({
+        title: 'Partage ouvert',
+        description: 'Choisissez une application pour partager votre Hikma.',
+      });
 
     } catch (error) {
       console.error('Le partage a échoué:', error);
@@ -413,7 +476,7 @@ export default function GeneratorPage() {
       />
 
       {/* Header with Sidebar Trigger */}
-      <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-primary/10 shadow-sm overflow-hidden safe-area-top">
+      <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-primary/10 shadow-sm overflow-hidden safe-area-top hidden md:flex">
         <div className="container mx-auto flex min-h-14 items-center justify-between px-3 sm:px-4 relative">
           <div className="flex items-center gap-2 sm:gap-3">
             <Sheet open={isSidebarOpen} onOpenChange={setIsSidebarOpen}>
@@ -452,7 +515,7 @@ export default function GeneratorPage() {
           </div>
         </div>
       </header>
-      <div className="flex-1 flex pt-14 overflow-hidden">
+      <div className="flex-1 flex pt-0 md:pt-14 overflow-hidden safe-area-top">
         {/* Persistent Sidebar for Desktop */}
         <aside className="hidden md:block w-80 border-r bg-background/50 backdrop-blur-sm overflow-y-auto custom-scrollbar p-6">
           <SidebarContent
@@ -466,6 +529,8 @@ export default function GeneratorPage() {
             onShare={handleShareImage}
             signature={signature}
             setSignature={setSignature}
+            showAnimations={showAnimations}
+            setShowAnimations={setShowAnimations}
           />
         </aside>
 
@@ -510,56 +575,73 @@ export default function GeneratorPage() {
                 )}
 
                 {content && (
-                  <div className="absolute inset-0 flex items-start justify-center pt-16 px-6 sm:p-8">
+                  <div className="absolute inset-0 flex items-center justify-center p-6 sm:p-8">
                     <div className="text-center w-full max-w-4xl">
                       <div
                         className="font-extrabold leading-tight tracking-tight px-4 text-white drop-shadow-lg"
                         style={{ fontSize: `${fontSize}px`, fontFamily }}
                       >
                         <AnimatePresence mode="wait">
-                          <motion.div
-                            key={animationKey + content.content}
-                            initial="hidden"
-                            animate="visible"
-                            variants={{
-                              visible: { transition: { staggerChildren: 0.08 } },
-                            }}
-                          >
-                            "
-                            {content.content.split(' ').map((word, i) => (
-                              <motion.span
-                                key={i}
-                                variants={{
-                                  hidden: { opacity: 0, y: 15, filter: 'blur(4px)' },
-                                  visible: {
-                                    opacity: 1,
-                                    y: 0,
-                                    filter: 'blur(0px)',
-                                    transition: { type: 'spring', damping: 15, stiffness: 120 }
-                                  },
-                                }}
-                                className="inline-block mr-2"
-                              >
-                                {word}
-                              </motion.span>
-                            ))}
-                            "
-                          </motion.div>
+                          {showAnimations ? (
+                            <motion.div
+                              key={animationKey + (content?.content || '')}
+                              initial="hidden"
+                              animate="visible"
+                              variants={{
+                                visible: { transition: { staggerChildren: 0.05 } },
+                              }}
+                            >
+                              "
+                              {(content?.content || '').split(' ').map((word, i) => (
+                                <motion.span
+                                  key={i}
+                                  variants={{
+                                    hidden: { opacity: 0, y: 10, filter: 'blur(8px)', scale: 0.9, rotate: -2 },
+                                    visible: {
+                                      opacity: 1,
+                                      y: 0,
+                                      filter: 'blur(0px)',
+                                      scale: 1,
+                                      rotate: 0,
+                                      transition: {
+                                        type: 'spring',
+                                        damping: 12,
+                                        stiffness: 100,
+                                        duration: 0.5
+                                      }
+                                    },
+                                  }}
+                                  className="inline-block mr-2"
+                                >
+                                  {word}
+                                </motion.span>
+                              ))}
+                              "
+                            </motion.div>
+                          ) : (
+                            <div>"{content?.content}"</div>
+                          )}
                         </AnimatePresence>
                       </div>
-                      <motion.p
-                        key={animationKey + content.source}
-                        initial={{ opacity: 0, scale: 0.95 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{
-                          delay: content.content.split(' ').length * 0.08 + 0.4,
-                          duration: 0.6,
-                          ease: "easeOut"
-                        }}
-                        className="mt-6 text-sm sm:text-lg font-bold italic tracking-widest uppercase opacity-70 text-white/90"
-                      >
-                        — {content.source} —
-                      </motion.p>
+                      {showAnimations ? (
+                        <motion.p
+                          key={animationKey + (content?.source || '')}
+                          initial={{ opacity: 0, scale: 0.9, filter: 'blur(4px)' }}
+                          animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
+                          transition={{
+                            delay: (content?.content || '').split(' ').length * 0.05 + 0.3,
+                            duration: 0.8,
+                            ease: "easeOut"
+                          }}
+                          className="mt-6 text-sm sm:text-lg font-bold italic tracking-widest uppercase opacity-70 text-white/90"
+                        >
+                          — {content?.source} —
+                        </motion.p>
+                      ) : (
+                        <p className="mt-6 text-sm sm:text-lg font-bold italic tracking-widest uppercase opacity-70 text-white/90">
+                          — {content?.source} —
+                        </p>
+                      )}
                     </div>
                   </div>
                 )}
@@ -583,6 +665,53 @@ export default function GeneratorPage() {
               </div>
             </div>
           </div>
+
+          {/* Audio Controls Overlay */}
+          {content?.surah && content?.ayah && (
+            <div className="absolute bottom-28 md:bottom-32 left-1/2 -translate-x-1/2 flex items-center gap-4 bg-background/80 backdrop-blur-xl border border-primary/20 p-3 rounded-2xl shadow-xl z-30">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={togglePlayAudio}
+                className="w-12 h-12 rounded-xl bg-primary/10 text-primary hover:bg-primary/20"
+              >
+                {isPlaying ? <Pause className="w-6 h-6 fill-current" /> : <Play className="w-6 h-6 fill-current" />}
+              </Button>
+
+              <div className="flex flex-col gap-1 min-w-[120px]">
+                <div className="flex justify-between text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
+                  <span>Récitateur</span>
+                </div>
+                <select
+                  value={selectedReciter.id}
+                  onChange={(e) => {
+                    const r = RECITERS.find(rec => rec.id === e.target.value);
+                    if (r) setSelectedReciter(r);
+                  }}
+                  className="bg-transparent text-sm font-bold border-none focus:ring-0 p-0"
+                  aria-label="Sélectionner un récitateur"
+                >
+                  {RECITERS.map(r => (
+                    <option key={r.id} value={r.id}>{r.name}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="flex items-center gap-2 border-l border-primary/10 pl-4">
+                <Volume2 className="w-4 h-4 text-muted-foreground" />
+                <input
+                  type="range"
+                  min="0"
+                  max="1"
+                  step="0.01"
+                  value={volume}
+                  onChange={(e) => setVolume(parseFloat(e.target.value))}
+                  className="w-20 accent-primary"
+                  aria-label="Ajuster le volume"
+                />
+              </div>
+            </div>
+          )}
         </main>
       </div>
 
@@ -670,7 +799,7 @@ export default function GeneratorPage() {
           } else if (tool === 'format') {
             setActiveMobileTool('format');
           } else if (tool === 'resources') {
-            window.location.href = '/ressources';
+            router.push('/ressources');
           } else if (tool === 'settings') {
             setIsSidebarOpen(true);
           }
@@ -686,43 +815,82 @@ export default function GeneratorPage() {
           setAuthPassword('');
         }
       }}>
-        <AlertDialogContent className="max-w-md">
+        <AlertDialogContent className="max-w-md overflow-hidden bg-background/95 backdrop-blur-xl border-emerald-500/20">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="absolute right-4 top-4 rounded-xl opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground"
+            onClick={() => setShowSignInPopup(false)}
+          >
+            <X className="h-4 w-4" />
+            <span className="sr-only">Fermer</span>
+          </Button>
           <AlertDialogHeader>
-            <AlertDialogTitle>{authMode === 'signup' ? 'S\'inscrire' : 'Se connecter'}</AlertDialogTitle>
-            <AlertDialogDescription>
-              {authMode === 'signup'
-                ? 'Salam Aleykoum ! Vous avez apprécié vos 10 premières générations ? Inscrivez-vous gratuitement pour continuer à diffuser la sagesse et nous soutenir. Barak\'Allah oufik.'
-                : 'Heureux de vous revoir parmi les diffuseurs de sagesse.'}
+            <div className="flex justify-center mb-4">
+              <Sparkles className="w-12 h-12 text-emerald-500 animate-pulse" />
+            </div>
+            <AlertDialogTitle className="text-2xl font-display text-center text-emerald-900 dark:text-emerald-100">
+              Débloquez l'expérience complète
+            </AlertDialogTitle>
+            <AlertDialogDescription className="text-center text-muted-foreground pt-2">
+              Salam Aleykoum ! Vous avez atteint la limite de 10 générations gratuites.
             </AlertDialogDescription>
           </AlertDialogHeader>
 
-          <div className="space-y-4 py-4">
-            {/* Authentification par Email uniquement */}
+          <div className="space-y-6 py-4">
+            {/* Avantages */}
+            <div className="space-y-3 bg-emerald-50/50 dark:bg-emerald-900/10 p-4 rounded-2xl border border-emerald-100 dark:border-emerald-800">
+              <h4 className="font-bold text-sm text-emerald-800 dark:text-emerald-200 flex items-center gap-2">
+                <span className="bg-emerald-200 dark:bg-emerald-800 p-1 rounded-full text-[10px]">VIP</span>
+                Pourquoi s'inscrire ?
+              </h4>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                <li className="flex items-center gap-2">
+                  <span className="text-emerald-500">✓</span> Générations illimitées avec l'IA
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="text-emerald-500">✓</span> Accès aux thèmes exclusifs
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="text-emerald-500">✓</span> Sauvegarde de vos créations (Bientôt)
+                </li>
+              </ul>
+            </div>
 
-            <div className="space-y-3">
+            {/* Message d'invitation */}
+            <div className="text-center space-y-2">
+              <p className="text-sm font-medium text-emerald-700 dark:text-emerald-400">
+                🚀 Soutenez le projet en invitant vos proches à tester HikmaClips !
+              </p>
+            </div>
+
+            {/* Formulaire Auth */}
+            <div className="space-y-3 pt-2 border-t border-border/50">
               <Input
                 type="email"
-                placeholder="Email"
+                placeholder="Votre Email"
                 value={authEmail}
                 onChange={(e) => setAuthEmail(e.target.value)}
                 disabled={isConnecting}
-                className="bg-emerald-50/50 border-emerald-100"
+                className="bg-background/50"
               />
               <Input
                 type="password"
-                placeholder="Mot de passe"
+                placeholder="Votre Mot de passe"
                 value={authPassword}
                 onChange={(e) => setAuthPassword(e.target.value)}
                 disabled={isConnecting}
                 onKeyDown={(e) => e.key === 'Enter' && handleEmailAuth()}
-                className="bg-emerald-50/50 border-emerald-100"
+                className="bg-background/50"
               />
+
               {authError && (
-                <p className="text-sm text-destructive">{authError}</p>
+                <p className="text-xs text-red-500 text-center font-medium animate-shake">{authError}</p>
               )}
+
               <Button
                 onClick={handleEmailAuth}
-                className="w-full bg-emerald-600 hover:bg-emerald-700"
+                className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold h-12 rounded-xl shadow-lg shadow-emerald-500/20"
                 disabled={isConnecting}
               >
                 {isConnecting ? (
@@ -730,23 +898,17 @@ export default function GeneratorPage() {
                 ) : (
                   <Mail className="mr-2 h-4 w-4" />
                 )}
-                {authMode === 'signup' ? "S'inscrire" : 'Se connecter'}
+                {authMode === 'signup' ? "Créer mon compte gratuit" : 'Se connecter'}
               </Button>
-            </div>
 
-            <p className="text-center text-sm text-muted-foreground">
-              {authMode === 'signup' ? (
-                <>
-                  Déjà un compte ?{' '}
-                  <button onClick={() => setAuthMode('login')} className="text-emerald-700 font-bold hover:underline">Se connecter</button>
-                </>
-              ) : (
-                <>
-                  Pas de compte ?{' '}
-                  <button onClick={() => setAuthMode('signup')} className="text-emerald-700 font-bold hover:underline">S'inscrire</button>
-                </>
-              )}
-            </p>
+              <p className="text-center text-xs text-muted-foreground mt-2">
+                {authMode === 'signup' ? (
+                  <>Déjà inscrit ? <button onClick={() => setAuthMode('login')} className="text-emerald-600 font-bold hover:underline">Connexion</button></>
+                ) : (
+                  <>Pas de compte ? <button onClick={() => setAuthMode('signup')} className="text-emerald-600 font-bold hover:underline">S'inscrire gratuitement</button></>
+                )}
+              </p>
+            </div>
           </div>
         </AlertDialogContent>
       </AlertDialog>

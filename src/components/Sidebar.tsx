@@ -31,6 +31,12 @@ interface SidebarProps {
     setFontSize?: (s: number) => void;
     signature?: string;
     setSignature?: (s: string) => void;
+    brightness?: number;
+    setBrightness?: (v: number) => void;
+    contrast?: number;
+    setContrast?: (v: number) => void;
+    saturation?: number;
+    setSaturation?: (v: number) => void;
 }
 
 export function Sidebar(props: SidebarProps & { hideRedundant?: boolean, isMobile?: boolean }) {

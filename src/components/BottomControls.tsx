@@ -44,9 +44,9 @@ export function BottomControls({
     const categoryConfig = {
         'hadith': { icon: BookOpen, label: 'Hadith', color: 'text-primary', bgColor: 'bg-primary', borderColor: 'border-primary' },
         'coran': { icon: BookMarked, label: 'Coran', color: 'text-primary', bgColor: 'bg-primary', borderColor: 'border-primary' },
-        'ramadan': { icon: Moon, label: 'Ramadan', color: 'text-purple-600', bgColor: 'bg-purple-600', borderColor: 'border-purple-600' },
-        'recherche-ia': { icon: Search, label: 'Agent', color: 'text-orange-600', bgColor: 'bg-orange-600', borderColor: 'border-orange-600' },
-        'thematique': { icon: BookOpen, label: 'Thème', color: 'text-blue-400', bgColor: 'bg-blue-400', borderColor: 'border-blue-400' },
+        'ramadan': { icon: Moon, label: 'Ramadan', color: 'text-accent', bgColor: 'bg-accent', borderColor: 'border-accent' },
+        'recherche-ia': { icon: Search, label: 'Agent', color: 'text-primary', bgColor: 'bg-primary', borderColor: 'border-primary' },
+        'thematique': { icon: BookOpen, label: 'Thème', color: 'text-accent', bgColor: 'bg-accent', borderColor: 'border-accent' },
     };
 
     const currentCategory = categoryConfig[category];
@@ -54,7 +54,7 @@ export function BottomControls({
 
     return (
         <div className="fixed bottom-0 left-0 right-0 z-40 safe-area-bottom px-4 pb-8">
-            <div className="max-w-md mx-auto relative flex items-center justify-between bg-card/95 backdrop-blur-xl border border-border rounded-3xl p-2 shadow-apple-lg h-20">
+            <div className="max-w-md mx-auto relative flex items-center justify-between bg-card/95 backdrop-blur-xl border border-border rounded-3xl p-2 shadow-hikma-lg h-20">
                 {/* Left - Category Selector Button */}
                 <div className="flex-1 flex justify-start pl-2">
                     <button
@@ -88,7 +88,7 @@ export function BottomControls({
                         <Button
                             onClick={onGenerate}
                             disabled={isGenerating}
-                            className="w-16 h-16 rounded-2xl shadow-apple bg-primary hover:bg-primary/90 active:scale-95 transition-all duration-300 border-4 border-background"
+                            className="w-16 h-16 rounded-2xl shadow-hikma bg-primary hover:bg-primary/90 active:scale-95 transition-all duration-300 border-4 border-background"
                             size="icon"
                         >
                             {isGenerating ? (
@@ -104,7 +104,7 @@ export function BottomControls({
                     <div className="flex-shrink-0 z-10 flex flex-col items-center gap-1" id="btn-generate-image">
                         <Button
                             onClick={onRandom}
-                            className="w-16 h-16 rounded-2xl shadow-apple bg-accent hover:bg-accent/90 active:scale-95 transition-all duration-300 border-4 border-background"
+                            className="w-16 h-16 rounded-2xl shadow-hikma bg-accent hover:bg-accent/90 active:scale-95 transition-all duration-300 border-4 border-background"
                             size="icon"
                         >
                             <ImageIcon className="w-8 h-8 text-white" />

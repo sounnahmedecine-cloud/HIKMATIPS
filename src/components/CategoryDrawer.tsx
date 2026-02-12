@@ -111,7 +111,7 @@ export function CategoryDrawer({ isOpen, onClose, category, onSelectCategory }: 
                         </div>
 
                         {/* Categories Grid */}
-                        <div className="p-6 pb-8 overflow-y-auto max-h-[calc(70vh-80px)]">
+                        <div className="p-6 pb-12 safe-area-bottom overflow-y-auto max-h-[calc(70vh-80px)]">
                             <div className="grid grid-cols-2 gap-4">
                                 {categories.map((cat) => {
                                     const isSelected = category === cat.id;

@@ -4,7 +4,7 @@
 
 @layer base {
   :root {
-    /* 🍎 Apple Minimalist Color System - Blue + Red */
+    /* 🌿 HikmaClips Color System - Green + Orange */
     --background: 0 0% 100%;
     --foreground: 216 57% 10%;
     --card: 0 0% 100%;
@@ -12,16 +12,16 @@
     --popover: 0 0% 100%;
     --popover-foreground: 216 57% 10%;
 
-    /* Primary - Apple Blue #007AFF */
-    --primary: 221 100% 50%;
+    /* Primary - Hikma Green #2E7D32 */
+    --primary: 122 45% 34%;
     --primary-foreground: 0 0% 100%;
 
     /* Secondary */
     --secondary: 214 20% 96%;
     --secondary-foreground: 214 49% 15%;
 
-    /* Accent - Apple Red #FF3B30 */
-    --accent: 354 100% 59%;
+    /* Accent - Hikma Orange #FF9100 */
+    --accent: 34 100% 50%;
     --accent-foreground: 0 0% 100%;
 
     /* Muted */
@@ -35,38 +35,38 @@
     /* Border & Input */
     --border: 214 20% 92%;
     --input: 214 20% 92%;
-    --ring: 221 100% 50%;
+    --ring: 122 45% 34%;
 
     --radius: 1.25rem;
 
-    --chart-1: 221 100% 50%;
-    --chart-2: 354 100% 59%;
+    --chart-1: 122 45% 34%;
+    --chart-2: 34 100% 50%;
     --chart-3: 250 84% 54%;
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
   }
 
   .dark {
-    /* Apple Dark Deep Black */
-    --background: 0 0% 2%;
+    /* Hikma Dark Deep Green/Black */
+    --background: 120 15% 4%;
     --foreground: 0 0% 98%;
-    --card: 0 0% 5%;
+    --card: 120 10% 6%;
     --card-foreground: 0 0% 98%;
-    --popover: 0 0% 7%;
+    --popover: 120 10% 8%;
     --popover-foreground: 0 0% 98%;
-    --primary: 221 100% 50%;
+    --primary: 122 45% 34%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 0 0% 12%;
+    --secondary: 120 5% 12%;
     --secondary-foreground: 0 0% 98%;
-    --muted: 0 0% 15%;
-    --muted-foreground: 0 0% 65%;
-    --accent: 354 100% 59%;
+    --muted: 120 5% 15%;
+    --muted-foreground: 120 5% 65%;
+    --accent: 34 100% 50%;
     --accent-foreground: 0 0% 100%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 12%;
-    --input: 0 0% 12%;
-    --ring: 221 100% 50%;
+    --border: 120 5% 12%;
+    --input: 120 5% 12%;
+    --ring: 122 45% 34%;
     --radius: 1.25rem;
   }
 }
@@ -108,16 +108,16 @@
 
 @layer components {
 
-  /* Apple-style Shadows */
-  .shadow-apple-sm {
+  /* Hikma-style Shadows */
+  .shadow-hikma-sm {
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   }
 
-  .shadow-apple {
+  .shadow-hikma {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   }
 
-  .shadow-apple-lg {
+  .shadow-hikma-lg {
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
   }
 

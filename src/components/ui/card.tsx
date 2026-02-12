@@ -18,9 +18,9 @@ const Card = React.forwardRef<
     className={cn(
       "rounded-2xl transition-smooth",
       glass
-        ? "glass shadow-apple"
-        : "bg-card shadow-apple border border-border",
-      hover && "hover:shadow-apple-lg hover:scale-[1.01]",
+        ? "glass shadow-hikma"
+        : "bg-card shadow-hikma border border-border",
+      hover && "hover:shadow-hikma-lg hover:scale-[1.01]",
       className
     )}
     {...props}

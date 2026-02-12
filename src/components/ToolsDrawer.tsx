@@ -95,7 +95,7 @@ export function ToolsDrawer({ isOpen, onClose, onToolSelect }: ToolsDrawerProps)
                         </div>
 
                         {/* Tools Grid */}
-                        <div className="p-6 pb-8 overflow-y-auto max-h-[calc(60vh-80px)]">
+                        <div className="p-6 pb-12 safe-area-bottom overflow-y-auto max-h-[calc(60vh-80px)]">
                             <div className="grid grid-cols-2 gap-4">
                                 {tools.map((tool) => (
                                     <motion.button
