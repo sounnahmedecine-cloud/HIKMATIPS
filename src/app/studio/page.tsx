@@ -17,9 +17,6 @@ import {
   LogOut,
   Share2,
   AtSign,
-  Play,
-  Pause,
-  Volume2,
   User,
   Palette,
   Type,
@@ -72,17 +69,8 @@ type Content = {
   ayah?: number;
 };
 
-type Reciter = {
-  id: string;
-  name: string;
-  url: string;
-};
 
-const RECITERS: Reciter[] = [
-  { id: 'alafasy', name: 'Al-Afasy', url: 'https://everyayah.com/data/Alafasy_128kbps/' },
-  { id: 'almuaiqly', name: 'Al-Muaiqly', url: 'https://everyayah.com/data/Maher_AlMuaiqly_64kbps/' },
-  { id: 'alijaber', name: 'Ali Jaber', url: 'https://everyayah.com/data/Ali_Jaber_64kbps/' },
-];
+const category: Category[] = ['hadith', 'ramadan', 'recherche-ia', 'coran'];
 
 type Category = 'hadith' | 'ramadan' | 'recherche-ia' | 'coran';
 type Format = 'story' | 'square';
@@ -121,12 +109,6 @@ export default function StudioPage() {
     localStorage.setItem('showAnimations', showAnimations.toString());
   }, [showAnimations]);
 
-  // Audio States
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [volume, setVolume] = useState(0.8);
-  const [selectedReciter, setSelectedReciter] = useState(RECITERS[0]);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-
   const router = useRouter();
 
   const [background, setBackground] = useState<string>(
@@ -153,27 +135,7 @@ export default function StudioPage() {
     }
   }, []);
 
-  useEffect(() => {
-    if (isPlaying && content?.surah && content?.ayah) {
-      if (audioRef.current) {
-        audioRef.current.play().catch(console.error);
-      }
-    } else {
-      if (audioRef.current) {
-        audioRef.current.pause();
-      }
-    }
-  }, [isPlaying, content]);
 
-  useEffect(() => {
-    if (audioRef.current) {
-      audioRef.current.volume = volume;
-    }
-  }, [volume]);
-
-  const togglePlayAudio = () => {
-    setIsPlaying(!isPlaying);
-  };
 
   const handleCompleteOnboarding = () => {
     localStorage.setItem('hasSeenOnboarding', 'true');
@@ -584,64 +546,7 @@ export default function StudioPage() {
           "flex-1 preview-container relative overflow-hidden flex flex-col items-center justify-center gap-6 pt-4",
           "md:pb-12"
         )}>
-          {/* Audio Controls (Positioned above the preview) */}
-          {content?.surah && content?.ayah && (
-            <motion.div
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="flex items-center gap-4 bg-background/80 backdrop-blur-xl border border-primary/20 p-2 sm:p-3 rounded-2xl shadow-hikma-lg z-30"
-            >
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={togglePlayAudio}
-                className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-primary/10 text-primary hover:bg-primary/20"
-              >
-                {isPlaying ? <Pause className="w-5 h-5 sm:w-6 sm:h-6 fill-current" /> : <Play className="w-5 h-5 sm:w-6 sm:h-6 fill-current" />}
-              </Button>
 
-              <div className="flex flex-col gap-0.5 min-w-[100px] sm:min-w-[120px]">
-                <div className="flex justify-between text-[9px] sm:text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
-                  <span>Récitateur</span>
-                </div>
-                <select
-                  value={selectedReciter.id}
-                  onChange={(e) => {
-                    const r = RECITERS.find(rec => rec.id === e.target.value);
-                    if (r) setSelectedReciter(r);
-                  }}
-                  className="bg-transparent text-xs sm:text-sm font-bold border-none focus:ring-0 p-0 outline-none"
-                  aria-label="Sélectionner un récitateur"
-                >
-                  {RECITERS.map(r => (r && (
-                    <option key={r.id} value={r.id} className="bg-background text-foreground">{r.name}</option>
-                  )))}
-                </select>
-              </div>
-
-              <div className="flex items-center gap-2 border-l border-primary/10 pl-2 sm:pl-4">
-                <Volume2 className="w-3 h-3 sm:w-4 sm:h-4 text-muted-foreground" />
-                <input
-                  type="range"
-                  min="0"
-                  max="1"
-                  step="0.01"
-                  value={volume}
-                  onChange={(e) => setVolume(parseFloat(e.target.value))}
-                  className="w-16 sm:w-20 accent-primary"
-                  aria-label="Ajuster le volume"
-                />
-              </div>
-
-              {content?.surah && content?.ayah && (
-                <audio
-                  ref={audioRef}
-                  src={`${selectedReciter.url}${String(content.surah).padStart(3, '0')}${String(content.ayah).padStart(3, '0')}.mp3`}
-                  onEnded={() => setIsPlaying(false)}
-                />
-              )}
-            </motion.div>
-          )}
 
           <div className="relative w-full flex items-center justify-center px-4">
             <div

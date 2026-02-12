@@ -15,13 +15,9 @@ import {
   LogIn,
   LogOut,
   Share2,
-  Play,
-  Pause,
-  Volume2,
   User,
   Mail,
   Menu,
-  Music,
   X,
 } from 'lucide-react';
 import { useSearchParams, useRouter } from 'next/navigation';
@@ -69,17 +65,7 @@ type Content = {
   ayah?: number;
 };
 
-type Reciter = {
-  id: string;
-  name: string;
-  url: string;
-};
-
-const RECITERS: Reciter[] = [
-  { id: 'alafasy', name: 'Al-Afasy', url: 'https://everyayah.com/data/Alafasy_128kbps/' },
-  { id: 'almuaiqly', name: 'Al-Muaiqly', url: 'https://everyayah.com/data/Maher_AlMuaiqly_64kbps/' },
-  { id: 'alijaber', name: 'Ali Jaber', url: 'https://everyayah.com/data/Ali_Jaber_64kbps/' },
-];
+const category: Category[] = ['hadith', 'ramadan', 'thematique', 'coran', 'recherche-ia'];
 
 type Category = 'hadith' | 'ramadan' | 'thematique' | 'coran' | 'recherche-ia';
 
@@ -125,12 +111,6 @@ export default function GeneratorPage() {
   useEffect(() => {
     localStorage.setItem('showAnimations', showAnimations.toString());
   }, [showAnimations]);
-
-  // Audio States
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [volume, setVolume] = useState(0.8);
-  const [selectedReciter, setSelectedReciter] = useState(RECITERS[0]);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const router = useRouter();
 
@@ -267,41 +247,7 @@ export default function GeneratorPage() {
     }
   };
 
-  const formatAudioId = (num: number) => num.toString().padStart(3, '0');
 
-  const togglePlayAudio = () => {
-    if (!content?.surah || !content?.ayah) return;
-
-    if (!audioRef.current) {
-      const fileName = `${formatAudioId(content.surah)}${formatAudioId(content.ayah)}.mp3`;
-      const url = `${selectedReciter.url}${fileName}`;
-      audioRef.current = new Audio(url);
-      audioRef.current.volume = volume;
-      audioRef.current.onended = () => setIsPlaying(false);
-    }
-
-    if (isPlaying) {
-      audioRef.current.pause();
-    } else {
-      audioRef.current.play().catch(e => console.error("Audio play error:", e));
-    }
-    setIsPlaying(!isPlaying);
-  };
-
-  useEffect(() => {
-    // Reset audio when content or reciter changes
-    if (audioRef.current) {
-      audioRef.current.pause();
-      audioRef.current = null;
-      setIsPlaying(false);
-    }
-  }, [content?.surah, content?.ayah, selectedReciter]);
-
-  useEffect(() => {
-    if (audioRef.current) {
-      audioRef.current.volume = volume;
-    }
-  }, [volume]);
 
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -666,52 +612,8 @@ export default function GeneratorPage() {
             </div>
           </div>
 
-          {/* Audio Controls Overlay */}
-          {content?.surah && content?.ayah && (
-            <div className="absolute bottom-28 md:bottom-32 left-1/2 -translate-x-1/2 flex items-center gap-4 bg-background/80 backdrop-blur-xl border border-primary/20 p-3 rounded-2xl shadow-xl z-30">
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={togglePlayAudio}
-                className="w-12 h-12 rounded-xl bg-primary/10 text-primary hover:bg-primary/20"
-              >
-                {isPlaying ? <Pause className="w-6 h-6 fill-current" /> : <Play className="w-6 h-6 fill-current" />}
-              </Button>
 
-              <div className="flex flex-col gap-1 min-w-[120px]">
-                <div className="flex justify-between text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
-                  <span>Récitateur</span>
-                </div>
-                <select
-                  value={selectedReciter.id}
-                  onChange={(e) => {
-                    const r = RECITERS.find(rec => rec.id === e.target.value);
-                    if (r) setSelectedReciter(r);
-                  }}
-                  className="bg-transparent text-sm font-bold border-none focus:ring-0 p-0"
-                  aria-label="Sélectionner un récitateur"
-                >
-                  {RECITERS.map(r => (
-                    <option key={r.id} value={r.id}>{r.name}</option>
-                  ))}
-                </select>
-              </div>
 
-              <div className="flex items-center gap-2 border-l border-primary/10 pl-4">
-                <Volume2 className="w-4 h-4 text-muted-foreground" />
-                <input
-                  type="range"
-                  min="0"
-                  max="1"
-                  step="0.01"
-                  value={volume}
-                  onChange={(e) => setVolume(parseFloat(e.target.value))}
-                  className="w-20 accent-primary"
-                  aria-label="Ajuster le volume"
-                />
-              </div>
-            </div>
-          )}
         </main>
       </div>
 
