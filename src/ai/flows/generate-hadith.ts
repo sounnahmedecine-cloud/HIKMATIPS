@@ -22,6 +22,8 @@ interface HadithDatabase {
   hadiths: LocalHadith[];
   quran_verses: LocalVerse[];
   ramadan_content: LocalVerse[];
+  citadelle: LocalVerse[];
+  authentiques: LocalHadith[];
 }
 
 // Cache pour la base de données
@@ -31,9 +33,26 @@ async function loadDatabase(): Promise<HadithDatabase> {
   if (cachedDatabase) return cachedDatabase;
 
   try {
-    const response = await fetch('/data/hadiths.json');
-    if (!response.ok) throw new Error('Failed to load database');
-    cachedDatabase = await response.json();
+    const [hadithsResponse, citadelleResponse, authentiquesResponse] = await Promise.all([
+      fetch('/data/hadiths.json'),
+      fetch('/data/hisn-al-muslim.json'),
+      fetch('/data/hadiths-authentiques.json')
+    ]);
+
+    if (!hadithsResponse.ok) throw new Error('Failed to load hadiths database');
+
+    const hadithsData = await hadithsResponse.json();
+    let citadelleData = { citadelle: [] };
+    let authentiquesData = { hadiths: [] };
+
+    if (citadelleResponse.ok) citadelleData = await citadelleResponse.json();
+    if (authentiquesResponse.ok) authentiquesData = await authentiquesResponse.json();
+
+    cachedDatabase = {
+      ...hadithsData,
+      ...citadelleData,
+      authentiques: authentiquesData.hadiths
+    };
     return cachedDatabase!;
   } catch (error) {
     console.error('Error loading local database:', error);
@@ -65,6 +84,7 @@ const categoryLabels = {
   ramadan: 'Conseil ou invocation du Ramadan',
   'thematique': 'Verset coranique trouvé par l\'Agent',
   coran: 'Verset du Coran',
+  citadelle: 'Citadelle du Musulman',
 };
 
 export const GenerateHadithInputSchema = z.object({
@@ -90,7 +110,9 @@ async function generateFromLocal(
     const db = await loadDatabase();
 
     if (category === 'hadith') {
-      const filtered = filterByTopic(db.hadiths, topic);
+      // Use the new authentic database for 'hadith' category too
+      const source = db.authentiques.length > 0 ? db.authentiques : db.hadiths;
+      const filtered = filterByTopic(source, topic);
       const item = getRandomItem(filtered);
       return { content: item.content, source: item.source };
     }
@@ -103,6 +125,12 @@ async function generateFromLocal(
 
     if (category === 'ramadan') {
       const filtered = filterByTopic(db.ramadan_content, topic);
+      const item = getRandomItem(filtered);
+      return { content: item.content, source: item.source };
+    }
+
+    if (category === 'citadelle') {
+      const filtered = filterByTopic(db.citadelle, topic);
       const item = getRandomItem(filtered);
       return { content: item.content, source: item.source };
     }
@@ -343,19 +371,25 @@ export async function generateHadith(
 ): Promise<GenerateHadithOutput> {
   const { category, topic } = input;
 
-  // Si c'est une recherche IA avec un thème, on essaie de trouver un hadith authentique dans nos 9 livres
+  // Si c'est une recherche IA avec un thème, on cherche UNIQUEMENT dans notre fichier hadiths-authentiques.json
   if (category === 'recherche-ia' && topic && topic.trim() !== '') {
     try {
-      // Dans un environnement client-side, on fait la recherche
-      const localMatches = await searchHadiths(topic);
+      const db = await loadDatabase();
+
+      // Recherche locale dans hadiths-authentiques.json
+      const localMatches = filterByTopic(db.authentiques, topic);
 
       if (localMatches.length > 0) {
-        // Prendre un hadith ALÉATOIRE parmi TOUS les résultats trouvés pour maximiser la variété
+        // Prendre un hadith ALÉATOIRE parmi les résultats trouvés
         const randomMatch = getRandomItem(localMatches);
 
         // Demander à l'IA d'analyser ce hadith spécifique
-        return await generateAnalysisFromAI(randomMatch.french, randomMatch.source, topic);
+        return await generateAnalysisFromAI(randomMatch.content, randomMatch.source, topic);
       }
+
+      // Si aucune correspondance locale stricte, on peut éventuellement fallback sur l'IA générative
+      // ou retourner rien pour forcer l'IA à dire qu'elle n'a pas trouvé dans les sources authentiques.
+      // Pour l'instant, on laisse le flux continue vers le fallback IA standard si on ne trouve rien.
     } catch (error) {
       console.error("Local search failed for AI research:", error);
     }

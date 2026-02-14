@@ -41,7 +41,7 @@ import { generateHadith } from '@/ai/flows/generate-hadith';
 import { Share } from '@capacitor/share';
 import { Filesystem, Directory } from '@capacitor/filesystem';
 import OnboardingScreen from '@/components/OnboardingScreen';
-import { SidebarContent, FormatSettings, FontSettings } from './SidebarContent';
+import { SidebarContent, FormatSettings, FontSettings, FilterSettings } from './SidebarContent';
 import { Sidebar } from '@/components/Sidebar';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { BottomControls } from '@/components/BottomControls';
@@ -65,9 +65,9 @@ type Content = {
   ayah?: number;
 };
 
-const category: Category[] = ['hadith', 'ramadan', 'thematique', 'coran', 'recherche-ia'];
+const category: Category[] = ['hadith', 'ramadan', 'thematique', 'coran', 'recherche-ia', 'citadelle'];
 
-type Category = 'hadith' | 'ramadan' | 'thematique' | 'coran' | 'recherche-ia';
+type Category = 'hadith' | 'ramadan' | 'thematique' | 'coran' | 'recherche-ia' | 'citadelle';
 
 export default function GeneratorPage() {
   const [content, setContent] = useState<Content | null>({
@@ -97,11 +97,16 @@ export default function GeneratorPage() {
   const [showTooltipGuide, setShowTooltipGuide] = useState(false);
 
   // Studio Settings States
-  const [fontSize, setFontSize] = useState(24);
+  const [fontSize, setFontSize] = useState(20);
   const [fontFamily, setFontFamily] = useState("'Amiri', serif");
   const [format, setFormat] = useState<'story' | 'square'>('story');
   const [signature, setSignature] = useState('hikmaclips.woosenteur.fr');
   const [showAnimations, setShowAnimations] = useState(true);
+
+  // Image Filter States
+  const [brightness, setBrightness] = useState(100);
+  const [contrast, setContrast] = useState(100);
+  const [saturation, setSaturation] = useState(100);
 
   useEffect(() => {
     const saved = localStorage.getItem('showAnimations');
@@ -193,7 +198,7 @@ export default function GeneratorPage() {
         message = 'Cet email est déjà utilisé. Essayez de vous connecter.';
       } else if (error.code === 'auth/invalid-email') {
         message = 'Adresse email invalide.';
-      } else if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
+      } else if (error.code === 'auth/invalid-credential' || error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
         message = 'Email ou mot de passe incorrect.';
       }
       setAuthError(message);
@@ -473,10 +478,21 @@ export default function GeneratorPage() {
             onSignIn={() => setShowSignInPopup(true)}
             onSignOut={handleSignOut}
             onShare={handleShareImage}
+            format={format}
+            setFormat={setFormat}
+            fontFamily={fontFamily as any}
+            setFontFamily={(f) => setFontFamily(f)}
+            fontSize={fontSize}
+            setFontSize={setFontSize}
             signature={signature}
             setSignature={setSignature}
-            showAnimations={showAnimations}
-            setShowAnimations={setShowAnimations}
+            brightness={brightness}
+            setBrightness={setBrightness}
+            contrast={contrast}
+            setContrast={setContrast}
+            saturation={saturation}
+            setSaturation={setSaturation}
+            isStudio={true}
           />
         </aside>
 
@@ -505,7 +521,8 @@ export default function GeneratorPage() {
                   src={background}
                   alt="Arrière-plan"
                   fill
-                  className="object-cover"
+                  className="object-cover transition-all duration-300"
+                  style={{ filter: `brightness(${brightness}%) contrast(${contrast}%) saturate(${saturation}%)` }}
                   data-ai-hint="abstract serene"
                   priority
                   unoptimized
@@ -521,8 +538,8 @@ export default function GeneratorPage() {
                 )}
 
                 {content && (
-                  <div className="absolute inset-0 flex items-center justify-center p-6 sm:p-8">
-                    <div className="text-center w-full max-w-4xl">
+                  <div className="absolute inset-0 flex items-center justify-center p-8 sm:p-10 overflow-hidden">
+                    <div className="text-center w-full max-w-4xl max-h-full flex flex-col justify-center">
                       <div
                         className="font-extrabold leading-tight tracking-tight px-4 text-white drop-shadow-lg"
                         style={{ fontSize: `${fontSize}px`, fontFamily }}
@@ -651,7 +668,18 @@ export default function GeneratorPage() {
           />
         )}
         {activeMobileTool === 'format' && (
-          <FormatSettings format={format} setFormat={setFormat} isMobile={true} />
+          <div className="space-y-6">
+            <FormatSettings format={format} setFormat={setFormat} isMobile={true} />
+            <FilterSettings
+              brightness={brightness}
+              setBrightness={setBrightness}
+              contrast={contrast}
+              setContrast={setContrast}
+              saturation={saturation}
+              setSaturation={setSaturation}
+              isMobile={true}
+            />
+          </div>
         )}
 
         {activeMobileTool === 'background' && (
@@ -702,6 +730,10 @@ export default function GeneratorPage() {
             setActiveMobileTool('format');
           } else if (tool === 'resources') {
             router.push('/ressources');
+          } else if (tool === 'updates') {
+            router.push('/updates');
+          } else if (tool === 'feedback') {
+            router.push('/feedback');
           } else if (tool === 'settings') {
             setIsSidebarOpen(true);
           }
@@ -721,10 +753,10 @@ export default function GeneratorPage() {
           <Button
             variant="ghost"
             size="icon"
-            className="absolute right-4 top-4 rounded-xl opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground"
+            className="absolute right-2 top-2 rounded-full bg-red-100 hover:bg-red-200 text-red-600 transition-colors z-50"
             onClick={() => setShowSignInPopup(false)}
           >
-            <X className="h-4 w-4" />
+            <X className="h-5 w-5" />
             <span className="sr-only">Fermer</span>
           </Button>
           <AlertDialogHeader>

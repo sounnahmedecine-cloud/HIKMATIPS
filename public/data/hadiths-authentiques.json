@@ -1,0 +1,154 @@
+{
+    "hadiths": [
+        {
+            "id": 1,
+            "content": "Les actions ne valent que par les intentions, et chacun n'aura que ce qu'il a eu l'intention de faire.",
+            "source": "Rapporté par Bukhari et Muslim",
+            "category": "intention,foi,cœur"
+        },
+        {
+            "id": 2,
+            "content": "La religion, c'est le bon conseil (la sincérité). Nous dîmes : Pour qui ? Il dit : Pour Allah, Son Livre, Son Messager, les dirigeants des musulmans et le commun des musulmans.",
+            "source": "Rapporté par Muslim",
+            "category": "religion,sincérité,conseil"
+        },
+        {
+            "id": 3,
+            "content": "L'Islam est bâti sur cinq piliers : L'attestation qu'il n'y a de divinité digne d'adoration qu'Allah et que Muhammad est le Messager d'Allah, l'accomplissement de la prière, l'acquittement de la Zakat, le Pèlerinage à la Maison Sacrée et le jeûne du Ramadan.",
+            "source": "Rapporté par Bukhari et Muslim",
+            "category": "islam,piliers,foi"
+        },
+        {
+            "id": 4,
+            "content": "Celui qui ne fait pas miséricorde aux gens, Allah ne lui fait pas miséricorde.",
+            "source": "Rapporté par Bukhari et Muslim",
+            "category": "miséricorde,comportement"
+        },
+        {
+            "id": 5,
+            "content": "Le musulman est celui dont les musulmans sont à l'abri du mal de sa langue et de sa main.",
+            "source": "Rapporté par Bukhari et Muslim",
+            "category": "comportement,langue,voisin"
+        },
+        {
+            "id": 6,
+            "content": "Nul d'entre vous ne sera véritablement croyant tant qu'il n'aimera pas pour son frère ce qu'il aime pour lui-même.",
+            "source": "Rapporté par Bukhari et Muslim",
+            "category": "fraternité,foi,amour"
+        },
+        {
+            "id": 7,
+            "content": "Celui qui croit en Allah et au Jour Dernier, qu'il dise du bien ou qu'il se taise.",
+            "source": "Rapporté par Bukhari et Muslim",
+            "category": "parole,silence,foi"
+        },
+        {
+            "id": 8,
+            "content": "La foi comporte soixante-dix et quelques branches. La plus élevée est la parole 'Il n'y a de divinité digne d'adoration qu'Allah' (La ilaha illa Allah), et la moindre est d'ôter un obstacle du chemin. Et la pudeur est une branche de la foi.",
+            "source": "Rapporté par Muslim",
+            "category": "foi,pudeur,comportement"
+        },
+        {
+            "id": 9,
+            "content": "Craignez le Feu, ne serait-ce que par un morceau de datte (donné en aumône).",
+            "source": "Rapporté par Bukhari et Muslim",
+            "category": "aumône,enfer,générosité"
+        },
+        {
+            "id": 10,
+            "content": "Le fort n'est pas celui qui terrasse ses adversaires, mais le fort est celui qui se maîtrise lors de la colère.",
+            "source": "Rapporté par Bukhari et Muslim",
+            "category": "colère,force,maîtrise"
+        },
+        {
+            "id": 11,
+            "content": "Allah ne regarde ni vos corps ni vos apparences, mais Il regarde vos cœurs et vos actions.",
+            "source": "Rapporté par Muslim",
+            "category": "cœur,sincérité,apparence"
+        },
+        {
+            "id": 12,
+            "content": "Les deux mots légers sur la langue, lourds dans la balance et aimés du Tout Miséricordieux sont : 'SubhanAllahi wa bihamdihi, SubhanAllahi l-Azim' (Gloire et pureté à Allah ainsi que Sa louange, Gloire et pureté à Allah l'Immense).",
+            "source": "Rapporté par Bukhari et Muslim",
+            "category": "dhikr,évocation,paradis"
+        },
+        {
+            "id": 13,
+            "content": "Celui qui emprunte un chemin à la recherche d'une science, Allah lui facilite par cela un chemin vers le Paradis.",
+            "source": "Rapporté par Muslim",
+            "category": "science,savoir,paradis"
+        },
+        {
+            "id": 14,
+            "content": "La prière en groupe dépasse en mérite la prière individuelle de vingt-sept degrés.",
+            "source": "Rapporté par Bukhari et Muslim",
+            "category": "prière,mosquée"
+        },
+        {
+            "id": 15,
+            "content": "Il y a trois caractéristiques, celui qui les possède goûtera à la douceur de la foi : Qu'Allah et Son Messager lui soient plus aimés que tout autre ; qu'il n'aime une personne que pour Allah ; et qu'il déteste retourner à la mécréance comme il détesterait être jeté dans le Feu.",
+            "source": "Rapporté par Bukhari et Muslim",
+            "category": "foi,amour,douceur"
+        },
+        {
+            "id": 16,
+            "content": "Méfiez-vous de la suspicion (les préjugés), car la suspicion est la parole la plus mensongère.",
+            "source": "Rapporté par Bukhari et Muslim",
+            "category": "soupçon,mensonge,comportement"
+        },
+        {
+            "id": 17,
+            "content": "Un homme a dit au Prophète (ﷺ) : 'Conseille-moi'. Il répondit : 'Ne te mets pas en colère'. L'homme répéta sa demande plusieurs fois, et il répondit à chaque fois : 'Ne te mets pas en colère'.",
+            "source": "Rapporté par Bukhari",
+            "category": "colère,conseil"
+        },
+        {
+            "id": 18,
+            "content": "Les meilleurs d'entre vous sont ceux qui ont le meilleur comportement.",
+            "source": "Rapporté par Bukhari et Muslim",
+            "category": "comportement,excellence"
+        },
+        {
+            "id": 19,
+            "content": "Le monde d'ici-bas est une prison pour le croyant et un Paradis pour le mécréant.",
+            "source": "Rapporté par Muslim",
+            "category": "monde,vie,croyant"
+        },
+        {
+            "id": 20,
+            "content": "Aucune fatigue, aucune maladie, aucun souci, aucune tristesse, aucun mal, aucune angoisse n'atteint le musulman, pas même l'épine qui le pique, sans qu'Allah ne lui expie par cela une partie de ses péchés.",
+            "source": "Rapporté par Bukhari et Muslim",
+            "category": "patience,épreuve,maladie"
+        },
+        {
+            "id": 21,
+            "content": "Celui qui veut qu'on lui allonge sa vie et qu'on augmente sa subsistance, qu'il maintienne les liens de parenté.",
+            "source": "Rapporté par Bukhari et Muslim",
+            "category": "famille,subsistance,vie"
+        },
+        {
+            "id": 22,
+            "content": "La purification est la moitié de la foi.",
+            "source": "Rapporté par Muslim",
+            "category": "purification,foi,woudou"
+        },
+        {
+            "id": 23,
+            "content": "Faites des aumônes, ne serait-ce qu'avec une demi-dattte, car cela protège du Feu. Et celui qui ne trouve pas, alors avec une bonne parole.",
+            "source": "Rapporté par Bukhari et Muslim",
+            "category": "aumône,générosité,parole"
+        },
+        {
+            "id": 24,
+            "content": "Allah est Beau et Il aime la beauté.",
+            "source": "Rapporté par Muslim",
+            "category": "allah,beauté"
+        },
+        {
+            "id": 25,
+            "content": "Rapprochez-vous de la perfection, rectifiez votre conduite et sachez que nul d'entre vous n'entrera au Paradis par ses seules œuvres. On dit : 'Même toi, ô Messager d'Allah ?' Il dit : 'Même moi, sauf si Allah me couvre de Sa miséricorde et de Sa grâce'.",
+            "source": "Rapporté par Muslim",
+            "category": "œuvres,paradis,miséricorde"
+        }
+    ]
+}

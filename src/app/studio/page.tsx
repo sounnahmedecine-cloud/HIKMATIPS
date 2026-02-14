@@ -45,7 +45,7 @@ import { generateHadith } from '@/ai/flows/generate-hadith';
 import { Share } from '@capacitor/share';
 import { Filesystem, Directory } from '@capacitor/filesystem';
 import OnboardingScreen from '@/components/OnboardingScreen';
-import { SidebarContent, FormatSettings, FontSettings } from '@/components/SidebarContent';
+import { SidebarContent, FormatSettings, FontSettings, FilterSettings } from '@/components/SidebarContent';
 import { Sidebar } from '@/components/Sidebar';
 import { BottomControls } from '@/components/BottomControls';
 import { MobileStudioToolbar, ToolType } from '@/components/studio/MobileStudioToolbar';
@@ -716,6 +716,10 @@ export default function StudioPage() {
             handleDownloadImage();
           } else if (tool === 'resources') {
             router.push('/ressources');
+          } else if (tool === 'updates') {
+            router.push('/updates');
+          } else if (tool === 'feedback') {
+            router.push('/feedback');
           } else {
             setActiveMobileTool(tool);
           }
@@ -748,7 +752,18 @@ export default function StudioPage() {
           />
         )}
         {activeMobileTool === 'format' && (
-          <FormatSettings format={format} setFormat={setFormat} />
+          <div className="space-y-6">
+            <FormatSettings format={format} setFormat={setFormat} />
+            <FilterSettings
+              brightness={brightness}
+              setBrightness={setBrightness}
+              contrast={contrast}
+              setContrast={setContrast}
+              saturation={saturation}
+              setSaturation={setSaturation}
+              isMobile={true}
+            />
+          </div>
         )}
         {activeMobileTool === 'background' && (
           <div className="space-y-4">

@@ -14,7 +14,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
-type Category = 'hadith' | 'ramadan' | 'thematique' | 'coran' | 'recherche-ia';
+type Category = 'hadith' | 'ramadan' | 'thematique' | 'coran' | 'recherche-ia' | 'citadelle';
 
 interface BottomControlsProps {
     category: Category;
@@ -47,6 +47,7 @@ export function BottomControls({
         'ramadan': { icon: Moon, label: 'Ramadan', color: 'text-accent', bgColor: 'bg-accent', borderColor: 'border-accent' },
         'recherche-ia': { icon: Search, label: 'Agent', color: 'text-primary', bgColor: 'bg-primary', borderColor: 'border-primary' },
         'thematique': { icon: BookOpen, label: 'Thème', color: 'text-accent', bgColor: 'bg-accent', borderColor: 'border-accent' },
+        'citadelle': { icon: BookOpen, label: 'Citadelle', color: 'text-teal-600', bgColor: 'bg-teal-600', borderColor: 'border-teal-600' },
     };
 
     const currentCategory = categoryConfig[category];

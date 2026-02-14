@@ -24,20 +24,18 @@ export function UpdatesSection() {
                                     <Sparkles className="h-5 w-5" />
                                     Dernières mises à jour
                                 </h3>
-                                <ul className="space-y-3">
-                                    <li className="flex items-start gap-2">
-                                        <CheckCircle2 className="h-5 w-5 text-green-500 shrink-0 mt-0.5" />
-                                        <span>Interface mobile-first optimisée</span>
-                                    </li>
-                                    <li className="flex items-start gap-2">
-                                        <CheckCircle2 className="h-5 w-5 text-green-500 shrink-0 mt-0.5" />
-                                        <span>Recherche intelligente de Hadiths authentiques</span>
-                                    </li>
-                                    <li className="flex items-start gap-2">
-                                        <CheckCircle2 className="h-5 w-5 text-green-500 shrink-0 mt-0.5" />
-                                        <span>Export HD pour Instagram et TikTok</span>
-                                    </li>
-                                </ul>
+                                <li className="flex items-start gap-2">
+                                    <CheckCircle2 className="h-5 w-5 text-green-500 shrink-0 mt-0.5" />
+                                    <span>Plus de 480 nouveaux arrière-plans HD ajoutés</span>
+                                </li>
+                                <li className="flex items-start gap-2">
+                                    <CheckCircle2 className="h-5 w-5 text-green-500 shrink-0 mt-0.5" />
+                                    <span>Nouveaux réglages d'image : Luminosité, Contraste, Saturation</span>
+                                </li>
+                                <li className="flex items-start gap-2">
+                                    <CheckCircle2 className="h-5 w-5 text-green-500 shrink-0 mt-0.5" />
+                                    <span>Interface mobile stabilisée et optimisée</span>
+                                </li>
                             </div>
 
                             <div className="space-y-4">
@@ -48,11 +46,11 @@ export function UpdatesSection() {
                                 <ul className="space-y-3">
                                     <li className="flex items-start gap-2">
                                         <div className="h-5 w-5 rounded-full border-2 border-accent shrink-0 mt-0.5" />
-                                        <span className="font-medium text-accent">Sauvegarde des messages dans votre profil</span>
+                                        <span className="font-medium text-accent">Ajout massif de nouveaux Hadiths authentiques</span>
                                     </li>
                                     <li className="flex items-start gap-2">
                                         <div className="h-5 w-5 rounded-full border-2 border-muted shrink-0 mt-0.5" />
-                                        <span className="text-muted-foreground">Plus de thèmes visuels premium</span>
+                                        <span className="text-muted-foreground">Sauvegarde des messages dans votre profil</span>
                                     </li>
                                     <li className="flex items-start gap-2">
                                         <div className="h-5 w-5 rounded-full border-2 border-muted shrink-0 mt-0.5" />

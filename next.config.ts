@@ -2,6 +2,7 @@ import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
   output: process.env.NEXT_PUBLIC_EXPORT ? 'export' : 'standalone',
+  trailingSlash: true,
   /* config options here */
   typescript: {
     ignoreBuildErrors: true,

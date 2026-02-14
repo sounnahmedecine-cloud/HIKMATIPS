@@ -12,7 +12,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-type Category = 'hadith' | 'ramadan' | 'thematique' | 'coran' | 'recherche-ia';
+type Category = 'hadith' | 'ramadan' | 'thematique' | 'coran' | 'recherche-ia' | 'citadelle';
 
 interface CategoryDrawerProps {
     isOpen: boolean;
@@ -66,6 +66,17 @@ export function CategoryDrawer({ isOpen, onClose, category, onSelectCategory }: 
             borderColor: 'border-orange-600',
             shadowColor: 'shadow-orange-600/50',
             textColor: 'text-orange-600'
+        },
+        {
+            id: 'citadelle' as Category,
+            icon: BookOpen,
+            label: 'Citadelle',
+            description: 'Invocations quotidiennes',
+            color: 'bg-teal-600',
+            hoverColor: 'hover:bg-teal-700',
+            borderColor: 'border-teal-600',
+            shadowColor: 'shadow-teal-600/50',
+            textColor: 'text-teal-600'
         },
     ];
 

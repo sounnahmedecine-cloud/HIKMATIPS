@@ -7,6 +7,8 @@ import {
     Maximize,
     BookOpen,
     Settings,
+    Rocket,
+    MessageCircle,
     X
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -14,7 +16,7 @@ import { cn } from '@/lib/utils';
 interface ToolsDrawerProps {
     isOpen: boolean;
     onClose: () => void;
-    onToolSelect: (tool: 'font' | 'format' | 'resources' | 'settings') => void;
+    onToolSelect: (tool: 'font' | 'format' | 'resources' | 'settings' | 'updates' | 'feedback') => void;
 }
 
 export function ToolsDrawer({ isOpen, onClose, onToolSelect }: ToolsDrawerProps) {
@@ -42,6 +44,22 @@ export function ToolsDrawer({ isOpen, onClose, onToolSelect }: ToolsDrawerProps)
             description: 'Accès aux sources',
             color: 'bg-teal-600',
             hoverColor: 'hover:bg-teal-700',
+        },
+        {
+            id: 'updates' as const,
+            icon: Rocket,
+            label: 'Nouveautés',
+            description: 'Quoi de neuf ?',
+            color: 'bg-emerald-600',
+            hoverColor: 'hover:bg-emerald-700',
+        },
+        {
+            id: 'feedback' as const,
+            icon: MessageCircle,
+            label: 'Votre avis',
+            description: 'Aidez-nous',
+            color: 'bg-amber-600',
+            hoverColor: 'hover:bg-amber-700',
         },
         {
             id: 'settings' as const,
