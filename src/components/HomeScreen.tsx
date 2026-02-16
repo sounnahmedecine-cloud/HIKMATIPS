@@ -269,7 +269,7 @@ export function HomeScreen() {
                     <span className="text-[10px] uppercase font-bold tracking-widest">{currentHikma.category || "Inspiration"}</span>
                 </Button>
 
-                <Button variant="ghost" size="icon" className="pointer-events-auto w-11 h-11 rounded-2xl bg-black/30 backdrop-blur-md border border-white/10 text-yellow-400 shadow-xl">
+                <Button variant="ghost" size="icon" className="pointer-events-auto w-11 h-11 rounded-2xl bg-[#FFFDD0]/10 backdrop-blur-md border border-[#FFFDD0]/20 text-yellow-400 shadow-xl">
                     <Crown className="w-5 h-5" />
                 </Button>
             </div>
@@ -278,7 +278,7 @@ export function HomeScreen() {
             <div className="absolute left-6 bottom-32 z-30 flex flex-col gap-4">
                 <button
                     onClick={() => setIsGalleryOpen(true)}
-                    className="w-12 h-12 rounded-full bg-black/40 backdrop-blur-md border border-white/20 text-white shadow-2xl flex items-center justify-center active:scale-90 transition-all"
+                    className="w-12 h-12 rounded-full bg-[#FFFDD0]/10 backdrop-blur-md border border-[#FFFDD0]/20 text-[#FFFDD0] shadow-2xl flex items-center justify-center active:scale-90 transition-all"
                     aria-label="Galerie Cloudinary"
                 >
                     <ImageIcon className="w-5 h-5" />
@@ -286,7 +286,7 @@ export function HomeScreen() {
 
                 <button
                     onClick={() => fileInputRef.current?.click()}
-                    className="w-12 h-12 rounded-full bg-black/40 backdrop-blur-md border border-white/20 text-white shadow-2xl flex items-center justify-center active:scale-90 transition-all"
+                    className="w-12 h-12 rounded-full bg-[#FFFDD0]/10 backdrop-blur-md border border-[#FFFDD0]/20 text-[#FFFDD0] shadow-2xl flex items-center justify-center active:scale-90 transition-all"
                     aria-label="Charger une image locale"
                 >
                     <Upload className="w-5 h-5" />
@@ -294,7 +294,7 @@ export function HomeScreen() {
 
                 <button
                     onClick={handleShuffle}
-                    className="w-12 h-12 rounded-full bg-black/40 backdrop-blur-md border border-white/20 text-white shadow-2xl flex items-center justify-center active:scale-90 transition-all"
+                    className="w-12 h-12 rounded-full bg-[#FFFDD0]/10 backdrop-blur-md border border-[#FFFDD0]/20 text-[#FFFDD0] shadow-2xl flex items-center justify-center active:scale-90 transition-all"
                     aria-label="Changer aléatoirement"
                 >
                     <RefreshCw className="w-5 h-5" />
@@ -305,15 +305,15 @@ export function HomeScreen() {
             <div className="absolute right-6 bottom-32 z-30 flex flex-col gap-4">
                 <button
                     onClick={handleFavorite}
-                    className="w-12 h-12 rounded-full bg-black/40 backdrop-blur-md border border-white/20 text-white shadow-2xl flex items-center justify-center active:scale-90 transition-all"
+                    className="w-12 h-12 rounded-full bg-[#FFFDD0]/10 backdrop-blur-md border border-[#FFFDD0]/20 text-[#FFFDD0] shadow-2xl flex items-center justify-center active:scale-90 transition-all"
                     aria-label="Ajouter aux favoris"
                 >
-                    <Heart className={`w-5 h-5 transition-colors ${isLiked ? "fill-red-500 text-red-500" : ""}`} />
+                    <Heart className={`w-5 h-5 transition-colors ${isLiked ? "fill-[#FFFDD0] text-[#FFFDD0]" : ""}`} />
                 </button>
 
                 <button
                     onClick={handleShare}
-                    className="w-12 h-12 rounded-full bg-black/40 backdrop-blur-md border border-white/20 text-white shadow-2xl flex items-center justify-center active:scale-90 transition-all"
+                    className="w-12 h-12 rounded-full bg-[#FFFDD0]/10 backdrop-blur-md border border-[#FFFDD0]/20 text-[#FFFDD0] shadow-2xl flex items-center justify-center active:scale-90 transition-all"
                     aria-label="Partager"
                 >
                     <Share2 className="w-5 h-5" />
@@ -321,7 +321,7 @@ export function HomeScreen() {
 
                 <button
                     onClick={handleDownload}
-                    className="w-12 h-12 rounded-full bg-black/40 backdrop-blur-md border border-white/20 text-white shadow-2xl flex items-center justify-center active:scale-90 transition-all"
+                    className="w-12 h-12 rounded-full bg-[#FFFDD0]/10 backdrop-blur-md border border-[#FFFDD0]/20 text-[#FFFDD0] shadow-2xl flex items-center justify-center active:scale-90 transition-all"
                     aria-label="Télécharger"
                 >
                     <Download className="w-5 h-5" />

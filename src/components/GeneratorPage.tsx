@@ -681,17 +681,17 @@ export default function GeneratorPage() {
             <Button
               variant="ghost"
               onClick={() => setIsCategoryDrawerOpen(true)}
-              className="h-11 px-5 rounded-full bg-black/40 backdrop-blur-md border border-white/10 text-white font-bold flex items-center gap-2 group shadow-xl"
+              className="h-11 px-5 rounded-full bg-[#FFFDD0]/10 backdrop-blur-md border border-[#FFFDD0]/20 text-[#FFFDD0] font-bold flex items-center gap-2 group shadow-xl"
               aria-label="Sélectionner la source"
             >
-              <Sparkles className="w-4 h-4 text-purple-400 group-hover:rotate-12 transition-transform" />
+              <Sparkles className="w-4 h-4 text-[#FFFDD0] group-hover:rotate-12 transition-transform" />
               <span className="text-[10px] uppercase font-bold tracking-widest">{category === 'recherche-ia' ? "Agent Hikma" : category}</span>
             </Button>
 
             <Button
               variant="ghost"
               onClick={() => setIsSidebarOpen(true)}
-              className="h-11 px-5 rounded-full bg-black/40 backdrop-blur-md border border-white/10 text-white font-bold flex items-center gap-2 group shadow-xl"
+              className="h-11 px-5 rounded-full bg-[#FFFDD0]/10 backdrop-blur-md border border-[#FFFDD0]/20 text-[#FFFDD0] font-bold flex items-center gap-2 group shadow-xl"
               aria-label="Paramètres"
             >
               <Settings className="w-4 h-4 group-hover:rotate-45 transition-transform" />
@@ -708,21 +708,21 @@ export default function GeneratorPage() {
         <div className="absolute left-6 bottom-32 z-40 flex flex-col gap-4">
           <button
             onClick={() => setIsGalleryOpen(true)}
-            className="w-12 h-12 rounded-full bg-black/50 backdrop-blur-md border border-white/20 text-white shadow-2xl flex items-center justify-center active:scale-90 transition-all font-bold"
+            className="w-12 h-12 rounded-full bg-[#FFFDD0]/10 backdrop-blur-md border border-[#FFFDD0]/20 text-[#FFFDD0] shadow-2xl flex items-center justify-center active:scale-90 transition-all font-bold"
             aria-label="Galerie"
           >
             <ImageIcon className="w-5 h-5" />
           </button>
           <button
             onClick={() => setIsToolsDrawerOpen(true)}
-            className="w-12 h-12 rounded-full bg-black/50 backdrop-blur-md border border-white/20 text-white shadow-2xl flex items-center justify-center active:scale-90 transition-all font-bold"
+            className="w-12 h-12 rounded-full bg-[#FFFDD0]/10 backdrop-blur-md border border-[#FFFDD0]/20 text-[#FFFDD0] shadow-2xl flex items-center justify-center active:scale-90 transition-all font-bold"
             aria-label="Outils de design"
           >
             <Palette className="w-5 h-5" />
           </button>
           <button
             onClick={handleRandomBackground}
-            className="w-12 h-12 rounded-full bg-black/50 backdrop-blur-md border border-white/20 text-white shadow-2xl flex items-center justify-center active:scale-90 transition-all"
+            className="w-12 h-12 rounded-full bg-[#FFFDD0]/10 backdrop-blur-md border border-[#FFFDD0]/20 text-[#FFFDD0] shadow-2xl flex items-center justify-center active:scale-90 transition-all"
             aria-label="Fond aléatoire"
           >
             <RefreshCw className="w-5 h-5" />
@@ -733,21 +733,21 @@ export default function GeneratorPage() {
         <div className="absolute right-6 bottom-32 z-40 flex flex-col gap-4">
           <button
             onClick={handleFavorite}
-            className="w-12 h-12 rounded-full bg-black/50 backdrop-blur-md border border-white/20 text-white shadow-2xl flex items-center justify-center active:scale-90 transition-all"
+            className="w-12 h-12 rounded-full bg-[#FFFDD0]/10 backdrop-blur-md border border-[#FFFDD0]/20 text-[#FFFDD0] shadow-2xl flex items-center justify-center active:scale-90 transition-all"
             aria-label="Favori"
           >
-            <Heart className={cn("w-5 h-5 transition-colors", favorites.includes(content?.content || '') ? "fill-red-500 text-red-500" : "")} />
+            <Heart className={cn("w-5 h-5 transition-colors", favorites.includes(content?.content || '') ? "fill-[#FFFDD0] text-[#FFFDD0]" : "")} />
           </button>
           <button
             onClick={handleShareImage}
-            className="w-12 h-12 rounded-full bg-black/50 backdrop-blur-md border border-white/20 text-white shadow-2xl flex items-center justify-center active:scale-90 transition-all"
+            className="w-12 h-12 rounded-full bg-[#FFFDD0]/10 backdrop-blur-md border border-[#FFFDD0]/20 text-[#FFFDD0] shadow-2xl flex items-center justify-center active:scale-90 transition-all"
             aria-label="Partager"
           >
             <Share2 className="w-5 h-5" />
           </button>
           <button
             onClick={handleDownloadImage}
-            className="w-12 h-12 rounded-full bg-black/50 backdrop-blur-md border border-white/20 text-white shadow-2xl flex items-center justify-center active:scale-90 transition-all"
+            className="w-12 h-12 rounded-full bg-[#FFFDD0]/10 backdrop-blur-md border border-[#FFFDD0]/20 text-[#FFFDD0] shadow-2xl flex items-center justify-center active:scale-90 transition-all"
             aria-label="Télécharger"
           >
             <Download className="w-5 h-5" />
@@ -770,10 +770,10 @@ export default function GeneratorPage() {
           {/* QUICK CATEGORY TILES (The requested 4 tiles) */}
           <div className="flex justify-center gap-3 w-full max-w-sm px-2">
             {[
-              { id: 'coran', icon: BookMarked, color: 'bg-purple-500/20 text-purple-400 border-purple-500/30', label: 'Coran' },
-              { id: 'hadith', icon: BookOpen, color: 'bg-blue-500/20 text-blue-400 border-blue-500/30', label: 'Hadith' },
-              { id: 'ramadan', icon: Moon, color: 'bg-indigo-500/20 text-indigo-400 border-indigo-500/30', label: 'Mois' },
-              { id: 'citadelle', icon: Sparkles, color: 'bg-teal-500/20 text-teal-400 border-teal-500/30', label: 'Douas' },
+              { id: 'coran', icon: BookMarked, color: 'bg-[#FFFDD0]/10 text-[#FFFDD0] border-[#FFFDD0]/20', label: 'Coran' },
+              { id: 'hadith', icon: BookOpen, color: 'bg-[#FFFDD0]/10 text-[#FFFDD0] border-[#FFFDD0]/20', label: 'Hadith' },
+              { id: 'ramadan', icon: Moon, color: 'bg-[#FFFDD0]/10 text-[#FFFDD0] border-[#FFFDD0]/20', label: 'Mois' },
+              { id: 'citadelle', icon: Sparkles, color: 'bg-[#FFFDD0]/10 text-[#FFFDD0] border-[#FFFDD0]/20', label: 'Douas' },
             ].map((cat) => (
               <button
                 key={cat.id}
@@ -781,7 +781,7 @@ export default function GeneratorPage() {
                 className={cn(
                   "flex-1 py-2 rounded-2xl border flex flex-col items-center gap-1 transition-all active:scale-90",
                   category === cat.id
-                    ? "bg-white/20 border-white/40 ring-2 ring-white/20"
+                    ? "bg-[#FFFDD0] text-purple-900 border-[#FFFDD0] ring-4 ring-[#FFFDD0]/20"
                     : cat.color
                 )}
               >
@@ -795,7 +795,7 @@ export default function GeneratorPage() {
             onClick={handleGenerateAiContent}
             disabled={isGenerating}
             className={cn(
-              "h-14 px-10 rounded-full bg-purple-600 text-white flex items-center gap-3 shadow-[0_10px_30px_rgba(147,51,234,0.4)] active:scale-95 transition-all w-full max-w-[280px]",
+              "h-14 px-10 rounded-full bg-[#FFFDD0] text-purple-900 flex items-center gap-3 shadow-[0_10px_30px_rgba(255,253,208,0.3)] active:scale-95 transition-all w-full max-w-[280px] font-bold",
               isGenerating && "opacity-80"
             )}
             aria-label="Générer avec l'Agent Hikma"
