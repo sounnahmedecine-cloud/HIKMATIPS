@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from "react"
 import { motion, AnimatePresence } from "framer-motion"
+import { useSwipeable } from "react-swipeable";
 import { Share } from '@capacitor/share';
 import { Filesystem, Directory } from '@capacitor/filesystem';
 import html2canvas from 'html2canvas';
@@ -11,6 +12,7 @@ import { getFavorites, toggleFavorite } from "@/lib/utils"
 import {
     Image as ImageIcon,
     Upload,
+    RefreshCw,
     Share2,
     Download,
     X,
@@ -104,7 +106,7 @@ export function HomeScreen() {
         img.imageUrl.includes('db2ljqpdt')
     );
 
-    const handleShuffle = useCallback(() => {
+    const handleShuffleText = useCallback(() => {
         const pool = selectedCategory === "all"
             ? ALL_MOCKS
             : ALL_MOCKS.filter(h => h.category.toLowerCase() === selectedCategory.toLowerCase());
@@ -117,7 +119,9 @@ export function HomeScreen() {
         } while (effectivePool.length > 1 && effectivePool[nextIndex].fr === currentHikma.fr);
 
         setCurrentHikma(effectivePool[nextIndex]);
+    }, [currentHikma, selectedCategory]);
 
+    const handleShuffleBackground = useCallback(() => {
         if (cloudinaryImages.length > 0) {
             let nextBgIndex;
             do {
@@ -125,7 +129,18 @@ export function HomeScreen() {
             } while (cloudinaryImages.length > 1 && cloudinaryImages[nextBgIndex].imageUrl === background);
             setBackground(cloudinaryImages[nextBgIndex].imageUrl);
         }
-    }, [currentHikma, background, cloudinaryImages, selectedCategory]);
+    }, [background, cloudinaryImages]);
+
+    const handleFullShuffle = useCallback(() => {
+        handleShuffleText();
+        handleShuffleBackground();
+    }, [handleShuffleText, handleShuffleBackground]);
+
+    const swipeHandlers = useSwipeable({
+        onSwipedUp: () => handleFullShuffle(),
+        preventScrollOnSwipe: true,
+        trackMouse: true
+    });
 
     useEffect(() => {
         setFavorites(getFavorites().map(f => f.fr));
@@ -140,7 +155,7 @@ export function HomeScreen() {
         }
 
         // Listen for events from bottom nav
-        const onGenerate = () => handleShuffle();
+        const onGenerate = () => handleShuffleText();
         const onTools = () => setIsToolsOpen(true);
 
         window.addEventListener('hikma:generate', onGenerate);
@@ -150,7 +165,7 @@ export function HomeScreen() {
             window.removeEventListener('hikma:generate', onGenerate);
             window.removeEventListener('hikma:tools', onTools);
         };
-    }, [handleShuffle, cloudinaryImages]);
+    }, [handleShuffleText, cloudinaryImages]);
 
     const handleFavorite = () => {
         const isLiked = toggleFavorite(currentHikma);
@@ -224,7 +239,10 @@ export function HomeScreen() {
     const isLiked = favorites.includes(currentHikma.fr);
 
     return (
-        <div className="fixed inset-0 w-full h-full bg-black overflow-hidden select-none">
+        <div
+            {...swipeHandlers}
+            className="fixed inset-0 w-full h-full bg-black overflow-hidden select-none touch-none"
+        >
             <input
                 type="file"
                 ref={fileInputRef}
@@ -320,12 +338,21 @@ export function HomeScreen() {
                     <ImageIcon className="w-5 h-5" />
                 </button>
 
+
                 <button
                     onClick={() => fileInputRef.current?.click()}
                     className="w-12 h-12 rounded-full bg-[#FFFDD0]/10 backdrop-blur-md border border-[#FFFDD0]/20 text-[#FFFDD0] shadow-2xl flex items-center justify-center active:scale-90 transition-all"
                     aria-label="Charger une image locale"
                 >
                     <Upload className="w-5 h-5" />
+                </button>
+
+                <button
+                    onClick={handleShuffleBackground}
+                    className="w-12 h-12 rounded-full bg-[#FFFDD0]/10 backdrop-blur-md border border-[#FFFDD0]/20 text-[#FFFDD0] shadow-2xl flex items-center justify-center active:scale-90 transition-all"
+                    aria-label="Changer l'image de fond"
+                >
+                    <RefreshCw className="w-5 h-5" />
                 </button>
             </div>
 
@@ -365,7 +392,7 @@ export function HomeScreen() {
                 onSelectCategory={(cat) => {
                     setSelectedCategory(cat);
                     // Shuffle after changing category to show relevant content
-                    setTimeout(handleShuffle, 300);
+                    setTimeout(handleShuffleText, 300);
                 }}
             />
 
