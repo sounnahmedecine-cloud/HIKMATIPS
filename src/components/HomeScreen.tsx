@@ -191,7 +191,10 @@ export function HomeScreen() {
     const swipeHandlers = useSwipeable({
         onSwipedUp: () => handleFullShuffle(),
         preventScrollOnSwipe: true,
-        trackMouse: true
+        trackMouse: true,
+        trackTouch: true,
+        delta: 10,
+        swipeDuration: 500,
     });
 
     useEffect(() => {
@@ -316,7 +319,7 @@ export function HomeScreen() {
                     <img
                         src={background}
                         alt=""
-                        className="absolute inset-0 w-full h-full object-cover"
+                        className="absolute inset-0 w-full h-full object-cover pointer-events-none"
                         style={{ filter: `brightness(${filters.brightness}%) contrast(${filters.contrast}%)` }}
                         crossOrigin="anonymous"
                     />
@@ -330,11 +333,11 @@ export function HomeScreen() {
                     <AnimatePresence mode="wait">
                         <motion.div
                             key={currentHikma.fr + background}
-                            initial={{ opacity: 0, y: 15 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -15 }}
-                            transition={{ duration: 0.5 }}
-                            className="space-y-6"
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 1.05 }}
+                            transition={{ duration: 0.4, ease: "easeOut" }}
+                            className="space-y-6 pointer-events-none"
                         >
                             {currentHikma.arabe && (
                                 <p className="text-3xl sm:text-5xl font-arabic text-white mb-6 drop-shadow-[0_2px_10px_rgba(0,0,0,0.5)] leading-relaxed" dir="rtl">
@@ -372,7 +375,7 @@ export function HomeScreen() {
             {/* Floating UI Elements (NOT for capture) */}
 
             {/* 1. TOP UI: Premium & Info */}
-            <div className="absolute top-12 left-6 right-6 z-30 flex justify-between items-start pointer-events-none">
+            <div className="absolute top-12 left-6 right-6 z-40 flex justify-between items-start pointer-events-none">
                 <Button
                     variant="ghost"
                     onClick={() => setIsCategoryOpen(true)}
@@ -393,7 +396,7 @@ export function HomeScreen() {
             </div>
 
             {/* 2. LEFT SIDE UI: Sidebar design tools (Moved to bottom) */}
-            <div className="absolute left-6 bottom-32 z-30 flex flex-col gap-4">
+            <div className="absolute left-6 bottom-32 z-40 flex flex-col gap-4">
                 <button
                     onClick={() => setIsGalleryOpen(true)}
                     className="w-12 h-12 rounded-full bg-[#FFFDD0]/10 backdrop-blur-md border border-[#FFFDD0]/20 text-[#FFFDD0] shadow-2xl flex items-center justify-center active:scale-90 transition-all"
@@ -421,7 +424,7 @@ export function HomeScreen() {
             </div>
 
             {/* 3. RIGHT SIDE UI: Action tools (Moved to bottom) */}
-            <div className="absolute right-6 bottom-32 z-30 flex flex-col gap-4">
+            <div className="absolute right-6 bottom-32 z-40 flex flex-col gap-4">
                 <button
                     onClick={handleShare}
                     className="w-12 h-12 rounded-full bg-[#FFFDD0]/10 backdrop-blur-md border border-[#FFFDD0]/20 text-[#FFFDD0] shadow-2xl flex items-center justify-center active:scale-90 transition-all"
