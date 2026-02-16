@@ -2,12 +2,14 @@
 
 import { usePathname } from 'next/navigation';
 import { BottomNavigation } from '@/components/BottomNavigation';
-import { Home, LayoutGrid, Heart, Wand2, BookOpen } from 'lucide-react';
+import { Home, Heart, Sparkles, BookOpen, Bell } from 'lucide-react';
 
 const navItems = [
   { label: 'Accueil', icon: <Home size={24} />, href: '/' },
-  { label: 'Favoris', icon: <Heart size={24} />, href: '/favoris' },
   { label: 'Ressources', icon: <BookOpen size={24} />, href: '/ressources' },
+  { label: 'Générer', icon: <Sparkles size={24} />, href: '/#generate' },
+  { label: 'Nouveautés', icon: <Bell size={24} />, href: '/updates' },
+  { label: 'Favoris', icon: <Heart size={24} />, href: '/favoris' },
 ];
 
 const HIDDEN_PATHS = ['/privacy-policy', '/terms-of-service', '/login'];

@@ -9,17 +9,13 @@ import { useToast } from "@/hooks/use-toast";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
 import { getFavorites, toggleFavorite } from "@/lib/utils"
 import {
-    Sparkles,
-    RefreshCw,
     Image as ImageIcon,
     Upload,
-    Heart,
     Share2,
     Download,
     X,
     LayoutGrid,
-    Crown,
-    Plus
+    Crown
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { CloudinaryGallery } from "@/components/studio/CloudinaryGallery"
@@ -130,7 +126,12 @@ export function HomeScreen() {
             const bgIndex = dateSeed % cloudinaryImages.length;
             setBackground(cloudinaryImages[bgIndex].imageUrl);
         }
-    }, []);
+
+        // Listen for generate event from bottom nav
+        const onGenerate = () => handleShuffle();
+        window.addEventListener('hikma:generate', onGenerate);
+        return () => window.removeEventListener('hikma:generate', onGenerate);
+    }, [handleShuffle, cloudinaryImages]);
 
     const handleFavorite = () => {
         const isLiked = toggleFavorite(currentHikma);
@@ -291,26 +292,10 @@ export function HomeScreen() {
                 >
                     <Upload className="w-5 h-5" />
                 </button>
-
-                <button
-                    onClick={handleShuffle}
-                    className="w-12 h-12 rounded-full bg-[#FFFDD0]/10 backdrop-blur-md border border-[#FFFDD0]/20 text-[#FFFDD0] shadow-2xl flex items-center justify-center active:scale-90 transition-all"
-                    aria-label="Changer aléatoirement"
-                >
-                    <RefreshCw className="w-5 h-5" />
-                </button>
             </div>
 
             {/* 3. RIGHT SIDE UI: Action tools (Moved to bottom) */}
             <div className="absolute right-6 bottom-32 z-30 flex flex-col gap-4">
-                <button
-                    onClick={handleFavorite}
-                    className="w-12 h-12 rounded-full bg-[#FFFDD0]/10 backdrop-blur-md border border-[#FFFDD0]/20 text-[#FFFDD0] shadow-2xl flex items-center justify-center active:scale-90 transition-all"
-                    aria-label="Ajouter aux favoris"
-                >
-                    <Heart className={`w-5 h-5 transition-colors ${isLiked ? "fill-[#FFFDD0] text-[#FFFDD0]" : ""}`} />
-                </button>
-
                 <button
                     onClick={handleShare}
                     className="w-12 h-12 rounded-full bg-[#FFFDD0]/10 backdrop-blur-md border border-[#FFFDD0]/20 text-[#FFFDD0] shadow-2xl flex items-center justify-center active:scale-90 transition-all"
