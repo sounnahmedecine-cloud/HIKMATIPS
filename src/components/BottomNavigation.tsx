@@ -1,18 +1,3 @@
-/**
- * Bottom Navigation Component
- * Apple/Android style navigation bar for mobile
- * 
- * Usage:
- * <BottomNavigation 
- *   items={[
- *     { label: 'Accueil', icon: Home, href: '/' },
- *     { label: 'Recherche', icon: Search, href: '/search' },
- *     { label: 'Profile', icon: User, href: '/profile' }
- *   ]}
- *   active="Accueil"
- * />
- */
-
 'use client';
 
 import { ReactNode } from 'react';
@@ -24,7 +9,6 @@ export interface BottomNavItem {
   label: string;
   icon: ReactNode;
   href: string;
-  badge?: number;
 }
 
 interface BottomNavigationProps {
@@ -39,56 +23,40 @@ export function BottomNavigation({
   onItemClick
 }: BottomNavigationProps) {
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-40 safe-area-bottom bg-card/80 backdrop-blur-lg border-t border-border">
-      <div className="flex items-center justify-around h-16 max-w-md mx-auto px-safe">
-        {items.map((item) => {
+    <nav className="fixed bottom-4 left-4 right-4 z-50 md:hidden">
+      <div className="flex gap-2 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md rounded-2xl p-2 shadow-2xl border border-white/20 dark:border-slate-800/50">
+        {items.slice(0, 4).map((item) => {
           const isActive = active === item.label;
-          
+          const isGenerate = item.label === 'Générer' || item.label === 'Studio';
+
           return (
             <Link
               key={item.label}
               href={item.href}
               onClick={() => onItemClick?.(item.label)}
-              className="relative flex flex-col items-center justify-center w-full h-full group"
+              className={cn(
+                "relative flex-1 flex flex-col items-center justify-center h-14 rounded-xl transition-all duration-200",
+                isActive && !isGenerate ? "text-emerald-600 dark:text-emerald-400" : "text-slate-500 dark:text-slate-400",
+                isGenerate && "bg-emerald-500 text-white shadow-lg active:scale-95"
+              )}
             >
-              {/* Animated background on active */}
-              {isActive && (
+              {isActive && !isGenerate && (
                 <motion.div
-                  layoutId="nav-active"
-                  className="absolute inset-0 bg-primary/10 rounded-t-2xl"
-                  transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+                  layoutId="bottom-nav-active"
+                  className="absolute inset-0 bg-emerald-50 dark:bg-emerald-900/30 rounded-xl"
+                  initial={false}
+                  transition={{ type: "spring", stiffness: 380, damping: 30 }}
                 />
               )}
-              
-              {/* Icon and Label */}
-              <div className="relative flex flex-col items-center gap-1 transition-smooth">
-                <div className={cn(
-                  'relative transition-smooth',
-                  isActive && 'text-primary scale-110'
-                )}>
+
+              <div className="relative z-10 flex flex-col items-center">
+                <div className={cn("transition-transform duration-200", isActive && "scale-110 font-bold")}>
                   {item.icon}
-                  
-                  {/* Badge */}
-                  {item.badge && (
-                    <span className="absolute -top-1 -right-2 flex items-center justify-center w-5 h-5 text-xs font-bold bg-accent text-accent-foreground rounded-full">
-                      {item.badge > 99 ? '99+' : item.badge}
-                    </span>
-                  )}
                 </div>
-                
-                {/* Label */}
-                <span className={cn(
-                  'text-xs font-medium transition-smooth',
-                  isActive 
-                    ? 'text-primary' 
-                    : 'text-muted-foreground group-hover:text-foreground'
-                )}>
-                  {item.label}
-                </span>
+                {!isGenerate && (
+                  <span className="text-[10px] font-medium mt-0.5">{item.label}</span>
+                )}
               </div>
-              
-              {/* Press feedback */}
-              <div className="absolute inset-0 rounded-t-2xl transition-smooth group-active:bg-primary/20" />
             </Link>
           );
         })}

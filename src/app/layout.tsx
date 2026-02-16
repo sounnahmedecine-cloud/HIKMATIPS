@@ -4,6 +4,8 @@ import { FirebaseClientProvider } from "@/firebase/client-provider";
 import { ClientLayout } from "@/components/ClientLayout";
 import "./globals.css";
 
+import { ThemeProvider } from "@/components/theme-provider";
+
 export const metadata: Metadata = {
   title: "HikmaClips",
   description: "Partagez de belles images de sagesse islamique sur les réseaux sociaux.",
@@ -30,32 +32,25 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
-          href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Amiri:wght@400;700&family=Noto+Naskh+Arabic:wght@400;700&family=Roboto:wght@400;700&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Amiri:wght@400;700&family=Noto+Naskh+Arabic:400;700&family=Roboto:wght@400;700&display=swap"
           rel="stylesheet"
         />
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              (function() {
-                try {
-                  var theme = localStorage.getItem('theme');
-                  if (theme === 'dark') {
-                    document.documentElement.classList.add('dark');
-                  } else {
-                    document.documentElement.classList.remove('dark');
-                  }
-                } catch (e) {}
-              })();
-            `,
-          }}
-        />
       </head>
-      <body className="font-body antialiased">
+      <body className="font-body antialiased min-h-screen">
         <FirebaseClientProvider>
-          <ClientLayout>
-            {children}
-          </ClientLayout>
-          <Toaster />
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            themes={['light', 'dark', 'maroc']}
+          >
+            <ClientLayout>
+              <div className="h-full w-full p-4 safe-pb-20 safe-pt-10 md:p-8">
+                {children}
+              </div>
+            </ClientLayout>
+            <Toaster />
+          </ThemeProvider>
         </FirebaseClientProvider>
       </body>
     </html>

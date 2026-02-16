@@ -94,6 +94,7 @@ export const GenerateHadithInputSchema = z.object({
 export type GenerateHadithInput = z.infer<typeof GenerateHadithInputSchema>;
 
 export const GenerateHadithOutputSchema = z.object({
+  arabe: z.string().optional(),
   content: z.string(),
   source: z.string(),
   surah: z.number().optional(),
@@ -197,19 +198,39 @@ ${baseRules}
     }
 
     if (category === 'coran' || category === 'thematique') {
-      return `Donne-moi UN verset du Coran en français.
-${topic ? `Thème recherché : ${topic}` : 'Choisis un verset inspirant sur : foi, patience, miséricorde, gratitude, ou guidée.'}
+      return `Tu es un guide spirituel. Donne-moi UN verset du Coran ou une sagesse islamique très courte.
+${topic ? `Thème spécifique et contexte : ${topic}` : 'Choisis un rappel inspirant.'}
 
-IMPORTANT : Choisis un verset COURT et PERCUTANT (maximum 250 caractères).
-Si le verset complet est long, cite uniquement la partie la plus inspirante avec "(...)"
+IMPORTANT :
+1. TEXTE ARABE : Inclus TOUJOURS le texte original en arabe si c'est un verset ou hadith.
+2. LONGUEUR : Très court (max 200 caractères pour le français).
+3. FORMAT : JSON uniquement.
 
 ${baseRules}
 
 {
-  "content": "Le verset traduit en français (max 250 caractères)",
-  "source": "Sourate Al-Nom (numéro), verset numéro",
+  "arabe": "Le texte en arabe",
+  "content": "Le texte traduit en français",
+  "source": "Référence exacte (Sourate, Hadith n°...)",
   "surah": 1,
   "ayah": 1
+}`;
+    }
+
+    if (category === 'citadelle') {
+      return `Tu es un expert de la "Citadelle du Musulman" (Hisn al-Muslim). Donne-moi UNE invocation authentique issue de ce livre.
+${topic ? `Thème : ${topic}` : 'Choisis un thème courant : matin, soir, sommeil, protection, tristesse, prière.'}
+
+IMPORTANT :
+1. SOURCE OBLIGATOIRE : Doit être une invocation reconnue de la Citadelle du Musulman.
+2. FORMAT : Donne le texte en français.
+3. PRÉCISION : Indique la source exacte ou le moment recommandé (ex: "Invocation du matin").
+
+${baseRules}
+
+{
+  "content": "L'invocation en français (max 400 caractères)",
+  "source": "Citadelle du Musulman - [Moment/Chapitre]"
 }`;
     }
 

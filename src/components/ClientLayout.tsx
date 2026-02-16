@@ -2,17 +2,16 @@
 
 import { usePathname } from 'next/navigation';
 import { BottomNavigation } from '@/components/BottomNavigation';
-import { Home, BookOpen, Share2, Wand2, Settings } from 'lucide-react';
+import { Home, LayoutGrid, Heart, Wand2 } from 'lucide-react';
 
 const navItems = [
-  { label: 'Accueil', icon: <Home size={22} />, href: '/' },
-  { label: 'Ressources', icon: <BookOpen size={22} />, href: '/ressources' },
-  { label: 'Partager', icon: <Share2 size={22} />, href: '/partager' },
-  { label: 'Studio', icon: <Wand2 size={22} />, href: '/studio' },
-  { label: 'Paramètres', icon: <Settings size={22} />, href: '/settings' },
+  { label: 'Accueil', icon: <Home size={24} />, href: '/' },
+  { label: 'Catégories', icon: <LayoutGrid size={24} />, href: '/categories' },
+  { label: 'Favoris', icon: <Heart size={24} />, href: '/favoris' },
+  { label: 'Générer', icon: <Wand2 size={24} />, href: '/studio' },
 ];
 
-const HIDDEN_PATHS = ['/privacy-policy', '/terms-of-service', '/', '/studio'];
+const HIDDEN_PATHS = ['/privacy-policy', '/terms-of-service', '/login'];
 
 export function ClientLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -22,7 +21,7 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
 
   return (
     <>
-      <div className={showNav ? 'pb-20' : ''}>
+      <div className={showNav ? 'pb-24' : ''}>
         {children}
       </div>
       {showNav && (

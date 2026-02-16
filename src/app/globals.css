@@ -173,7 +173,8 @@
 
   /* Backdrop Blur */
   .backdrop-blur-sm {
-    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
+    backdrop-filter: blur(16px) saturate(180%);
   }
 
   .backdrop-blur {
@@ -347,4 +348,9 @@
 
 .animate-pulse-soft {
   animation: pulseSoft 2s ease-in-out infinite;
+}
+
+/* Base Body Styles for Redesign */
+body {
+  @apply min-h-screen bg-gradient-to-br from-slate-50 to-emerald-50 dark:from-slate-900 dark:to-emerald-900;
 }

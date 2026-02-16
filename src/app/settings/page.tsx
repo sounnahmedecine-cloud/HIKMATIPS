@@ -1,89 +1,32 @@
-'use client';
+"use client"
 
-import { useState } from 'react';
-import Link from 'next/link';
-import { Settings, Moon, Sun, Shield, FileText, Info, ExternalLink, User, LogIn, LogOut, Mail, Eye, EyeOff } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { useTheme } from 'next-themes';
+import { Settings, Moon, Sun, Shield, FileText, Info, ExternalLink, User, LogOut, Bell, Palette } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { useUser } from '@/firebase/provider';
-import { signInWithPopup, GoogleAuthProvider, signOut, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
-import { useAuth } from '@/firebase/provider';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useUser } from '@/firebase';
+import { signOut } from 'firebase/auth';
+import { useAuth } from '@/firebase';
 
 export default function ParametresPage() {
-  const [darkMode, setDarkMode] = useState(false);
-  const [hdExport, setHdExport] = useState(true);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
-  const [isSignUp, setIsSignUp] = useState(false);
-  const [authError, setAuthError] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+  const [notifications, setNotifications] = useState(true);
   const { user, isUserLoading } = useUser();
   const auth = useAuth();
 
-  const toggleDarkMode = (enabled: boolean) => {
-    setDarkMode(enabled);
-    document.documentElement.classList.toggle('dark', enabled);
-  };
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
-
-
-  const handleEmailAuth = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setAuthError(null);
-    setIsLoading(true);
-
-    if (!email || !password) {
-      setAuthError('Veuillez remplir tous les champs');
-      setIsLoading(false);
-      return;
-    }
-
-    if (password.length < 6) {
-      setAuthError('Le mot de passe doit contenir au moins 6 caractères');
-      setIsLoading(false);
-      return;
-    }
-
-    try {
-      if (isSignUp) {
-        await createUserWithEmailAndPassword(auth, email, password);
-      } else {
-        await signInWithEmailAndPassword(auth, email, password);
-      }
-      setEmail('');
-      setPassword('');
-    } catch (e: unknown) {
-      console.error('Erreur d\'authentification:', e);
-      const error = e as { code?: string };
-      switch (error.code) {
-        case 'auth/email-already-in-use':
-          setAuthError('Cet email est déjà utilisé');
-          break;
-        case 'auth/invalid-email':
-          setAuthError('Email invalide');
-          break;
-        case 'auth/user-not-found':
-        case 'auth/wrong-password':
-        case 'auth/invalid-credential':
-          setAuthError('Email ou mot de passe incorrect');
-          break;
-        case 'auth/weak-password':
-          setAuthError('Mot de passe trop faible');
-          break;
-        default:
-          setAuthError('Erreur de connexion. Réessayez.');
-      }
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  if (!mounted) return null;
 
   const handleSignOut = async () => {
+    if (!auth) return;
     try {
       await signOut(auth);
     } catch (e) {
@@ -92,34 +35,32 @@ export default function ParametresPage() {
   };
 
   return (
-    <div className="min-h-screen bg-white p-4 pb-24 text-slate-900">
-      <div className="max-w-2xl mx-auto space-y-6">
-        <div className="text-center pt-6 pb-2">
-          <h1 className="text-2xl font-bold text-hikma-gradient inline-block">Paramètres</h1>
-        </div>
+    <div className="min-h-full pb-32 max-w-2xl mx-auto p-4">
+      <div className="mb-8 pt-6">
+        <h1 className="text-3xl font-bold text-slate-900 dark:text-emerald-50 mb-2">Paramètres</h1>
+        <p className="text-slate-500 dark:text-slate-400">Gérez vos préférences et votre routine spirituelle.</p>
+      </div>
 
-        {/* Section Compte */}
-        <Card>
-          <CardHeader>
+      <div className="space-y-6">
+        {/* Account Section */}
+        <Card className="border-none bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm rounded-3xl overflow-hidden shadow-xl shadow-slate-200/50 dark:shadow-none">
+          <CardHeader className="pb-3">
             <CardTitle className="text-lg flex items-center gap-2">
-              <User className="h-5 w-5 text-primary" />
+              <User className="h-5 w-5 text-emerald-500" />
               Compte
             </CardTitle>
           </CardHeader>
           <CardContent>
             {isUserLoading ? (
               <div className="flex justify-center py-4">
-                <div className="animate-spin h-6 w-6 border-2 border-primary border-t-transparent rounded-full" />
+                <div className="animate-spin h-6 w-6 border-2 border-emerald-500 border-t-transparent rounded-full" />
               </div>
             ) : user ? (
               <div className="space-y-4">
                 <div className="flex items-center gap-4">
-                  <Avatar className="h-14 w-14">
-                    <AvatarImage src={user.photoURL || ''} alt={user.displayName || 'Utilisateur'} />
-                    <AvatarFallback className="text-lg bg-primary/10 text-primary">
-                      {user.displayName?.[0]?.toUpperCase() || user.email?.[0]?.toUpperCase() || 'U'}
-                    </AvatarFallback>
-                  </Avatar>
+                  <div className="h-14 w-14 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center text-xl font-bold text-emerald-600">
+                    {user.email?.[0]?.toUpperCase() || 'U'}
+                  </div>
                   <div className="flex-1 min-w-0">
                     <h2 className="font-semibold truncate">{user.displayName || 'Utilisateur'}</h2>
                     <p className="text-sm text-muted-foreground truncate">{user.email}</p>
@@ -127,7 +68,7 @@ export default function ParametresPage() {
                 </div>
                 <Button
                   variant="outline"
-                  className="w-full flex items-center gap-2 text-destructive hover:text-destructive"
+                  className="w-full flex items-center gap-2 text-destructive border-red-100 dark:border-red-900/30 hover:bg-red-50 dark:hover:bg-red-900/20"
                   onClick={handleSignOut}
                 >
                   <LogOut className="h-4 w-4" />
@@ -135,155 +76,96 @@ export default function ParametresPage() {
                 </Button>
               </div>
             ) : (
-              <div className="space-y-4 py-2">
-                <p className="text-sm text-muted-foreground text-center">
-                  Connectez-vous pour accéder à toutes les fonctionnalités.
+              <div className="text-center py-4 space-y-4">
+                <p className="text-sm text-muted-foreground">
+                  Connectez-vous pour synchroniser vos favoris et vos rappels.
                 </p>
-
-                <form onSubmit={handleEmailAuth} className="space-y-3">
-                  <div className="space-y-2">
-                    <Label htmlFor="email">Email</Label>
-                    <div className="relative">
-                      <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                      <Input
-                        id="email"
-                        type="email"
-                        placeholder="votre@email.com"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        className="pl-10"
-                        disabled={isLoading}
-                      />
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="password">Mot de passe</Label>
-                    <div className="relative">
-                      <Input
-                        id="password"
-                        type={showPassword ? 'text' : 'password'}
-                        placeholder="••••••••"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        className="pr-10"
-                        disabled={isLoading}
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                      >
-                        {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                      </button>
-                    </div>
-                  </div>
-
-                  {authError && (
-                    <p className="text-sm text-destructive text-center">{authError}</p>
-                  )}
-
-                  <Button type="submit" className="w-full" disabled={isLoading}>
-                    {isLoading ? (
-                      <div className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full" />
-                    ) : (
-                      <>
-                        <LogIn className="h-4 w-4 mr-2" />
-                        {isSignUp ? 'Créer un compte' : 'Se connecter'}
-                      </>
-                    )}
-                  </Button>
-                </form>
-
-                <button
-                  type="button"
-                  onClick={() => { setIsSignUp(!isSignUp); setAuthError(null); }}
-                  className="text-sm text-primary hover:underline w-full text-center"
-                >
-                  {isSignUp ? 'Déjà un compte ? Se connecter' : 'Pas de compte ? Créer un compte'}
-                </button>
-
-                <div className="relative">
-                  <div className="absolute inset-0 flex items-center">
-                    <span className="w-full border-t" />
-                  </div>
-                  <div className="relative flex justify-center text-xs uppercase">
-                    <span className="bg-card px-2 text-muted-foreground">HikmaClips</span>
-                  </div>
-                </div>
+                <Button className="w-full bg-emerald-500 hover:bg-emerald-600" onClick={() => window.location.href = '/'}>
+                  S'identifier
+                </Button>
               </div>
             )}
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader>
+        {/* Customization Section */}
+        <Card className="border-none bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm rounded-3xl overflow-hidden shadow-xl shadow-slate-200/50 dark:shadow-none">
+          <CardHeader className="pb-3">
             <CardTitle className="text-lg flex items-center gap-2">
-              <Settings className="h-5 w-5 text-primary" />
-              Apparence
+              <Palette className="h-5 w-5 text-emerald-500" />
+              Personnalisation
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                {darkMode ? <Moon className="h-5 w-5 text-primary" /> : <Sun className="h-5 w-5 text-yellow-500" />}
-                <Label htmlFor="dark-mode">Mode sombre</Label>
-              </div>
-              <Switch id="dark-mode" checked={darkMode} onCheckedChange={toggleDarkMode} />
-            </div>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <Info className="h-5 w-5 text-primary" />
-                <Label htmlFor="hd-export">Export HD</Label>
-              </div>
-              <Switch id="hd-export" checked={hdExport} onCheckedChange={setHdExport} />
+          <CardContent className="space-y-6">
+            <div className="space-y-2">
+              <Label>Thème Visuel</Label>
+              <Select value={theme} onValueChange={setTheme}>
+                <SelectTrigger className="w-full h-12 rounded-xl border-emerald-100 dark:border-emerald-800 bg-white/50 dark:bg-slate-900/50">
+                  <SelectValue placeholder="Choisir un thème" />
+                </SelectTrigger>
+                <SelectContent className="rounded-xl border-emerald-100 dark:border-emerald-800">
+                  <SelectItem value="light">Classique (Clair)</SelectItem>
+                  <SelectItem value="dark">Sombre (Nuit)</SelectItem>
+                  <SelectItem value="system">Système</SelectItem>
+                  <SelectItem value="maroc">Marocain (Vert/Or Zellige)</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader>
+        {/* Notifications Section */}
+        <Card className="border-none bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm rounded-3xl overflow-hidden shadow-xl shadow-slate-200/50 dark:shadow-none">
+          <CardHeader className="pb-3">
             <CardTitle className="text-lg flex items-center gap-2">
-              <Shield className="h-5 w-5 text-primary" />
-              Légal
+              <Bell className="h-5 w-5 text-emerald-500" />
+              Notifications & Rappels
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-2">
-            <Link href="/privacy-policy">
-              <Button variant="ghost" className="w-full justify-between h-12">
-                <span className="flex items-center gap-2">
-                  <FileText className="h-4 w-4" />
-                  Politique de confidentialité
-                </span>
-                <ExternalLink className="h-4 w-4 text-muted-foreground" />
-              </Button>
-            </Link>
-            <Link href="/terms-of-service">
-              <Button variant="ghost" className="w-full justify-between h-12">
-                <span className="flex items-center gap-2">
-                  <FileText className="h-4 w-4" />
-                  Conditions d'utilisation
-                </span>
-                <ExternalLink className="h-4 w-4 text-muted-foreground" />
-              </Button>
-            </Link>
+          <CardContent className="space-y-6">
+            <div className="flex items-center justify-between">
+              <div className="space-y-0.5">
+                <Label>Rappels Quotidiens</Label>
+                <p className="text-xs text-muted-foreground">Recevez une Hikma chaque jour.</p>
+              </div>
+              <Switch checked={notifications} onCheckedChange={setNotifications} />
+            </div>
+
+            <div className="space-y-3 pt-2">
+              <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Moments Clés</Label>
+              <div className="grid grid-cols-3 gap-2">
+                {['Fajr', 'Midi', 'Isha'].map((time) => (
+                  <Button key={time} variant="outline" size="sm" className="rounded-full h-10 border-emerald-100 dark:border-emerald-800 hover:bg-emerald-50 dark:hover:bg-emerald-900/20">
+                    {time}
+                  </Button>
+                ))}
+              </div>
+            </div>
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader>
+        {/* Legal Section */}
+        <Card className="border-none bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm rounded-3xl overflow-hidden shadow-xl shadow-slate-200/50 dark:shadow-none">
+          <CardHeader className="pb-3">
             <CardTitle className="text-lg flex items-center gap-2">
-              <Info className="h-5 w-5 text-primary" />
-              À propos
+              <Shield className="h-5 w-5 text-emerald-500" />
+              Légal & Info
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-2">
-            <div className="flex justify-between text-sm">
-              <span className="text-muted-foreground">Version</span>
-              <span className="font-medium">1.0.5</span>
-            </div>
-            <div className="flex justify-between text-sm">
-              <span className="text-muted-foreground">Développeur</span>
-              <span className="font-medium">SounnahMedecine</span>
+          <CardContent className="p-0">
+            <div className="divide-y divide-emerald-50 dark:divide-emerald-900/30">
+              <button className="w-full h-14 px-6 flex items-center justify-between hover:bg-emerald-50 dark:hover:bg-emerald-900/10 transition-colors">
+                <span className="flex items-center gap-3 text-sm font-medium">
+                  <FileText className="h-4 w-4" /> Politique de confidentialité
+                </span>
+                <ExternalLink className="h-4 w-4 opacity-30" />
+              </button>
+              <button className="w-full h-14 px-6 flex items-center justify-between hover:bg-emerald-50 dark:hover:bg-emerald-900/10 transition-colors">
+                <span className="flex items-center gap-3 text-sm font-medium">
+                  <Info className="h-4 w-4" /> À propos de HikmaClips
+                </span>
+                <span className="text-xs opacity-40">v1.2.0</span>
+              </button>
             </div>
           </CardContent>
         </Card>

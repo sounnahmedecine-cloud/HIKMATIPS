@@ -5,17 +5,6 @@ import { Capacitor } from '@capacitor/core';
 import dynamic from 'next/dynamic';
 import { Loader2 } from 'lucide-react';
 
-// Dynamic imports for code splitting (ssr: false required for Capacitor/browser APIs)
-const LandingPage = dynamic(() => import('@/components/LandingPage'), {
-  loading: () => <LoadingScreen />,
-  ssr: false,
-});
-
-const GeneratorPage = dynamic(() => import('@/components/GeneratorPage'), {
-  loading: () => <LoadingScreen />,
-  ssr: false,
-});
-
 function LoadingScreen() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-background">
@@ -27,25 +16,22 @@ function LoadingScreen() {
   );
 }
 
+// Dynamic imports for code splitting
+const HomeScreen = dynamic(() => import('@/components/HomeScreen').then(mod => ({ default: mod.HomeScreen })), {
+  loading: () => <LoadingScreen />,
+  ssr: false,
+});
+
 export default function Home() {
-  const [isNativeApp, setIsNativeApp] = useState<boolean | null>(null);
+  const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
-    // Detect if running in Capacitor (Android/iOS)
-    const isNative = Capacitor.isNativePlatform();
-    setIsNativeApp(isNative);
+    setIsLoaded(true);
   }, []);
 
-  // Show loading while detecting platform
-  if (isNativeApp === null) {
+  if (!isLoaded) {
     return <LoadingScreen />;
   }
 
-  // Native app (Android) → Show generator directly
-  if (isNativeApp) {
-    return <GeneratorPage />;
-  }
-
-  // Web browser → Show landing page
-  return <LandingPage />;
+  return <HomeScreen />;
 }

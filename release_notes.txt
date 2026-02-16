@@ -1,27 +1,4 @@
-Version 1.2.38:
-- **Nouveau**: Ajout de la catégorie "La Citadelle du Musulman" avec invocations authentiques.
-- **Amélioration**: "Agent IA" utilise désormais une source locale de hadiths authentiques (Bukhari/Muslim) pour plus de fiabilité.
-- **UX**: Bouton de fermeture plus visible sur le popup d'inscription.
-- **Correctif**: Messages d'erreur de connexion plus clairs.
-
-Version 1.2.36.2:
-- Nouveau: Réglages d'image (Luminosité, Contraste, Saturation) disponibles dans le menu Format sur mobile.
-- Correction: Synchronisation robuste des assets Android avec nettoyage forcé des dossiers temporaires.
-- UX: Ajout des réglages d'image sur la page Générateur pour une parité avec le mode Studio.
-
-Version 1.2.36 / 1.2.36.1:
-- Nouveau: Menu "Nouveautés" et "Votre avis" intégrés au tiroir à outils mobile.
-- Suppression: Retrait complet de la fonctionnalité radio (audio/lecteur/sources) pour une application plus légère.
-- Technique: Passage en export statique Next.js avec trailingSlash pour une meilleure compatibilité Android.
-- Style: Harmonisation du thème Orange & Vert et correction du centrage du logo.
-
-Version 1.2.21:
-- Production Release (AAB/APK).
-- Bump version code to 44 (Fix Play Store conflict).
-
-Version 1.2.20:
-- Production Release (AAB).
-- New Feature: Tools Drawer for easier access to settings and format options.
-- Fix AI Hadith generation: Enforce "Le Prophète (ﷺ) a dit :" prefix and remove context.
-- UI Update: Split "Generate" button into "Text" and "Image" actions.
-- UX Improvement: Removed initial onboarding screen and adjusted login prompt to appear after 10 generations.
+Version 1.2.40 (Code 64)
+- Fix: Ajout de la logique de fallback AI pour la catégorie "Citadelle du Musulman"
+- Fix: Correction de la génération si la base locale est inaccessible
+- UI: Amélioration de la stabilité de la sélection de catégorie
