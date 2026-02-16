@@ -18,13 +18,21 @@ import {
     Download,
     X,
     LayoutGrid,
-    Crown
+    Crown,
+    Plus
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { CloudinaryGallery } from "@/components/studio/CloudinaryGallery"
 import { CategoryDrawer } from "@/components/CategoryDrawer"
 
-const MOCK_HIKMAS = [
+interface HikmaData {
+    arabe: string;
+    fr: string;
+    source: string;
+    category: string;
+}
+
+const ALL_MOCKS: HikmaData[] = [
     {
         arabe: "إِنَّ مَعَ الْعُسْرِ يُسْرًا",
         fr: "À côté de la difficulté est, certes, une facilité.",
@@ -44,26 +52,39 @@ const MOCK_HIKMAS = [
         category: "Coran"
     },
     {
+        arabe: "إِنَّمَا الْأَعْمَالُ بِالنِّيَّاتِ",
+        fr: "Les actions ne valent que par les intentions.",
+        source: "Sahih Bukhari",
+        category: "Hadith"
+    },
+    {
+        arabe: "يا مقلب القلوب ثبت قلبي على دينك",
+        fr: "Ô Toi qui retournes les cœurs, raffermis mon cœur sur Ta religion.",
+        source: "Sunan at-Tirmidhi",
+        category: "Citadelle"
+    },
+    {
+        arabe: "شَهْرُ رَمَضَانَ الَّذِي أُنْزِلَ فِيهِ الْقُرْآنُ",
+        fr: "Le mois de Ramadan au cours duquel le Coran a été descendu.",
+        source: "Sourate Al-Baqarah 2:185",
+        category: "Ramadan"
+    },
+    {
         arabe: "فَاصْبِرْ صَبْرًا جَمِيلًا",
         fr: "Endure d'une belle patience.",
         source: "Sourate Al-Ma'arij 70:5",
-        category: "Coran"
-    },
-    {
-        arabe: "وَقُولُوا لِلنَّاسِ حُسْنًا",
-        fr: "Et parlez aux gens avec bonté.",
-        source: "Sourate Al-Baqarah 2:83",
         category: "Coran"
     }
 ];
 
 export function HomeScreen() {
-    const [currentHikma, setCurrentHikma] = useState(MOCK_HIKMAS[0]);
+    const [currentHikma, setCurrentHikma] = useState(ALL_MOCKS[0]);
     const [background, setBackground] = useState("");
     const [favorites, setFavorites] = useState<string[]>([]);
     const [isGenerating, setIsGenerating] = useState(false);
     const [isGalleryOpen, setIsGalleryOpen] = useState(false);
     const [isCategoryOpen, setIsCategoryOpen] = useState(false);
+    const [selectedCategory, setSelectedCategory] = useState<string>("all");
     const { toast } = useToast();
     const fileInputRef = useRef<HTMLInputElement>(null);
     const captureRef = useRef<HTMLDivElement>(null);
@@ -76,12 +97,18 @@ export function HomeScreen() {
     );
 
     const handleShuffle = useCallback(() => {
+        const pool = selectedCategory === "all"
+            ? ALL_MOCKS
+            : ALL_MOCKS.filter(h => h.category.toLowerCase() === selectedCategory.toLowerCase());
+
+        const effectivePool = pool.length > 0 ? pool : ALL_MOCKS;
+
         let nextIndex;
         do {
-            nextIndex = Math.floor(Math.random() * MOCK_HIKMAS.length);
-        } while (MOCK_HIKMAS.length > 1 && MOCK_HIKMAS[nextIndex].fr === currentHikma.fr);
+            nextIndex = Math.floor(Math.random() * effectivePool.length);
+        } while (effectivePool.length > 1 && effectivePool[nextIndex].fr === currentHikma.fr);
 
-        setCurrentHikma(MOCK_HIKMAS[nextIndex]);
+        setCurrentHikma(effectivePool[nextIndex]);
 
         if (cloudinaryImages.length > 0) {
             let nextBgIndex;
@@ -90,14 +117,14 @@ export function HomeScreen() {
             } while (cloudinaryImages.length > 1 && cloudinaryImages[nextBgIndex].imageUrl === background);
             setBackground(cloudinaryImages[nextBgIndex].imageUrl);
         }
-    }, [currentHikma, background, cloudinaryImages]);
+    }, [currentHikma, background, cloudinaryImages, selectedCategory]);
 
     useEffect(() => {
         setFavorites(getFavorites().map(f => f.fr));
         const today = new Date();
         const dateSeed = today.getFullYear() * 365 + today.getMonth() * 31 + today.getDate();
-        const dailyIndex = dateSeed % MOCK_HIKMAS.length;
-        setCurrentHikma(MOCK_HIKMAS[dailyIndex]);
+        const dailyIndex = dateSeed % ALL_MOCKS.length;
+        setCurrentHikma(ALL_MOCKS[dailyIndex]);
 
         if (cloudinaryImages.length > 0) {
             const bgIndex = dateSeed % cloudinaryImages.length;
@@ -197,125 +224,108 @@ export function HomeScreen() {
                     />
                 )}
                 {/* Overlays */}
-                <div className="absolute inset-0 bg-black/30" />
-                <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/60" />
+                <div className="absolute inset-0 bg-black/40" />
+                <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/70" />
 
                 {/* Content */}
                 <div className="absolute inset-0 flex flex-col items-center justify-center p-8 text-center">
                     <AnimatePresence mode="wait">
                         <motion.div
                             key={currentHikma.fr + background}
-                            initial={{ opacity: 0, y: 20 }}
+                            initial={{ opacity: 0, y: 15 }}
                             animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -20 }}
-                            transition={{ duration: 0.6 }}
-                            className="space-y-8"
+                            exit={{ opacity: 0, y: -15 }}
+                            transition={{ duration: 0.5 }}
+                            className="space-y-6"
                         >
                             {currentHikma.arabe && (
-                                <p className="text-4xl sm:text-5xl font-arabic text-white mb-6 drop-shadow-2xl leading-relaxed" dir="rtl">
+                                <p className="text-3xl sm:text-5xl font-arabic text-white mb-6 drop-shadow-[0_2px_10px_rgba(0,0,0,0.5)] leading-relaxed" dir="rtl">
                                     {currentHikma.arabe}
                                 </p>
                             )}
-                            <p className="text-2xl sm:text-3xl font-medium text-white drop-shadow-2xl leading-snug max-w-lg mx-auto">
+                            <p className="text-xl sm:text-3xl font-medium text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)] leading-snug max-w-lg mx-auto">
                                 {currentHikma.fr}
                             </p>
-                            <p className="text-xs sm:text-sm font-bold tracking-[0.3em] uppercase opacity-60 text-white/90">
-                                — {currentHikma.source} —
-                            </p>
+                            <div className="pt-2 opacity-60">
+                                <p className="text-[10px] sm:text-xs font-bold tracking-[0.3em] uppercase text-white">
+                                    — {currentHikma.source} —
+                                </p>
+                            </div>
                         </motion.div>
                     </AnimatePresence>
                 </div>
-
-                {/* Bottom Watermark */}
-                <div className="absolute bottom-10 left-0 right-0 text-center opacity-30 select-none">
-                    <p className="text-[10px] font-bold tracking-[0.5em] text-white uppercase">HIKMACLIPS</p>
-                </div>
             </div>
 
-            {/* Floating UI Elements (Not for capture) */}
+            {/* Floating UI Elements (NOT for capture) */}
 
-            {/* Top Right: Progress/Premium (Placeholder) */}
-            <div className="absolute top-12 right-6 z-30">
-                <Button variant="ghost" size="icon" className="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-md border border-white/30 text-yellow-400">
-                    <Crown className="w-6 h-6" />
-                </Button>
-            </div>
-
-            {/* Bottom Left: Category Badge */}
-            <div className="absolute bottom-12 left-6 z-30">
+            {/* 1. TOP UI: Premium & Info */}
+            <div className="absolute top-12 left-6 right-6 z-30 flex justify-between items-start pointer-events-none">
                 <Button
                     variant="ghost"
                     onClick={() => setIsCategoryOpen(true)}
-                    className="h-12 px-6 rounded-full bg-white/20 backdrop-blur-md border border-white/30 text-white font-bold flex items-center gap-2 group"
+                    className="pointer-events-auto h-11 px-5 rounded-full bg-black/30 backdrop-blur-md border border-white/10 text-white font-bold flex items-center gap-2 group shadow-xl"
                 >
                     <LayoutGrid className="w-4 h-4 group-hover:rotate-90 transition-transform" />
-                    <span className="text-sm uppercase tracking-wider">{currentHikma.category || "Généralités"}</span>
+                    <span className="text-[10px] uppercase font-bold tracking-widest">{currentHikma.category || "Inspiration"}</span>
+                </Button>
+
+                <Button variant="ghost" size="icon" className="pointer-events-auto w-11 h-11 rounded-2xl bg-black/30 backdrop-blur-md border border-white/10 text-yellow-400 shadow-xl">
+                    <Crown className="w-5 h-5" />
                 </Button>
             </div>
 
-            {/* Right Side: Design Tools */}
-            <div className="absolute bottom-32 right-6 z-30 flex flex-col gap-4">
-                {/* Choose Image from Gallery */}
-                <Button
-                    variant="ghost"
-                    size="icon"
+            {/* 2. LEFT SIDE UI: Sidebar design tools (Moved to bottom) */}
+            <div className="absolute left-6 bottom-32 z-30 flex flex-col gap-4">
+                <button
                     onClick={() => setIsGalleryOpen(true)}
-                    className="w-14 h-14 rounded-full bg-white/30 backdrop-blur-md border border-white/40 text-white shadow-xl hover:bg-white/40 active:scale-95 transition-all"
+                    className="w-12 h-12 rounded-full bg-black/40 backdrop-blur-md border border-white/20 text-white shadow-2xl flex items-center justify-center active:scale-90 transition-all"
+                    aria-label="Galerie Cloudinary"
                 >
-                    <ImageIcon className="w-6 h-6" />
-                </Button>
+                    <ImageIcon className="w-5 h-5" />
+                </button>
 
-                {/* Upload Local Image */}
-                <Button
-                    variant="ghost"
-                    size="icon"
+                <button
                     onClick={() => fileInputRef.current?.click()}
-                    className="w-14 h-14 rounded-full bg-white/30 backdrop-blur-md border border-white/40 text-white shadow-xl hover:bg-white/40 active:scale-95 transition-all"
+                    className="w-12 h-12 rounded-full bg-black/40 backdrop-blur-md border border-white/20 text-white shadow-2xl flex items-center justify-center active:scale-90 transition-all"
+                    aria-label="Charger une image locale"
                 >
-                    <Upload className="w-6 h-6" />
-                </Button>
+                    <Upload className="w-5 h-5" />
+                </button>
 
-                {/* Random Designs (Shuffle both) */}
-                <Button
-                    variant="ghost"
-                    size="icon"
+                <button
                     onClick={handleShuffle}
-                    className="w-14 h-14 rounded-full bg-white/30 backdrop-blur-md border border-white/40 text-white shadow-xl hover:bg-white/40 active:scale-95 transition-all"
+                    className="w-12 h-12 rounded-full bg-black/40 backdrop-blur-md border border-white/20 text-white shadow-2xl flex items-center justify-center active:scale-90 transition-all"
+                    aria-label="Changer aléatoirement"
                 >
-                    <RefreshCw className="w-6 h-6" />
-                </Button>
+                    <RefreshCw className="w-5 h-5" />
+                </button>
             </div>
 
-            {/* Bottom: Main Actions */}
-            <div className="absolute bottom-12 right-6 z-30 flex items-center gap-4">
-                {/* Favorite */}
-                <Button
-                    variant="ghost"
-                    size="icon"
+            {/* 3. RIGHT SIDE UI: Action tools (Moved to bottom) */}
+            <div className="absolute right-6 bottom-32 z-30 flex flex-col gap-4">
+                <button
                     onClick={handleFavorite}
-                    className="w-14 h-14 rounded-full bg-white/30 backdrop-blur-md border border-white/40 text-white shadow-xl hover:bg-white/40 active:scale-95 transition-all"
+                    className="w-12 h-12 rounded-full bg-black/40 backdrop-blur-md border border-white/20 text-white shadow-2xl flex items-center justify-center active:scale-90 transition-all"
+                    aria-label="Ajouter aux favoris"
                 >
-                    <Heart className={`w-6 h-6 transition-colors ${isLiked ? "fill-red-500 text-red-500" : ""}`} />
-                </Button>
+                    <Heart className={`w-5 h-5 transition-colors ${isLiked ? "fill-red-500 text-red-500" : ""}`} />
+                </button>
 
-                {/* Share */}
-                <Button
-                    variant="ghost"
-                    size="icon"
+                <button
                     onClick={handleShare}
-                    className="w-14 h-14 rounded-full bg-white/30 backdrop-blur-md border border-white/40 text-white shadow-xl hover:bg-white/40 active:scale-95 transition-all"
+                    className="w-12 h-12 rounded-full bg-black/40 backdrop-blur-md border border-white/20 text-white shadow-2xl flex items-center justify-center active:scale-90 transition-all"
+                    aria-label="Partager"
                 >
-                    <Share2 className="w-6 h-6" />
-                </Button>
+                    <Share2 className="w-5 h-5" />
+                </button>
 
-                {/* Close/Back or More Actions */}
-                <Button
-                    variant="ghost"
-                    size="icon"
-                    className="w-14 h-14 rounded-full bg-white/30 backdrop-blur-md border border-white/40 text-white shadow-xl hover:bg-white/40 active:scale-95 transition-all"
+                <button
+                    onClick={handleDownload}
+                    className="w-12 h-12 rounded-full bg-black/40 backdrop-blur-md border border-white/20 text-white shadow-2xl flex items-center justify-center active:scale-90 transition-all"
+                    aria-label="Télécharger"
                 >
-                    <X className="w-6 h-6" />
-                </Button>
+                    <Download className="w-5 h-5" />
+                </button>
             </div>
 
             {/* Drawers & Popups */}
@@ -331,12 +341,16 @@ export function HomeScreen() {
             <CategoryDrawer
                 isOpen={isCategoryOpen}
                 onClose={() => setIsCategoryOpen(false)}
-                category="thematique" // Placeholder as we use a list
+                category={selectedCategory as any}
                 onSelectCategory={(cat) => {
-                    // Logic to change mock data pool based on category
-                    toast({ title: "Sélection", description: `Catégorie ${cat} activée.` });
+                    setSelectedCategory(cat);
+                    // Shuffle after changing category to show relevant content
+                    setTimeout(handleShuffle, 300);
                 }}
             />
+
+            {/* Mobile Navigation Indicator / Margin Fix */}
+            <div className="absolute bottom-24 left-0 right-0 pointer-events-none" />
         </div>
     )
 }

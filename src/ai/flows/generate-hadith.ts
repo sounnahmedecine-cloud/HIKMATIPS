@@ -162,7 +162,31 @@ async function generateFromAI(
 - FORMAT : Retourne UN SEUL OBJET (pas de tableau).
 - CONTENU STRICT : Le champ "content" doit contenir UNIQUEMENT le texte sacré. PAS D'EXPLICATION, PAS DE COMMENTAIRE.`;
 
-  const getPromptByCategory = () => {
+  const getPrompt = () => {
+    if (category === 'recherche-ia' || category === 'auto') {
+      return `Tu es l'Agent Hikma, expert en sciences islamiques. L'utilisateur cherche une inspiration sur : "${topic || 'un rappel au hasard'}". 
+      
+      TA MISSION : Trouve le rappel le plus pertinent et puissant parmi ces sources AUTHENTIQUES :
+      1. Un VERS DU CORAN (avec le texte arabe obligatoire).
+      2. Un HADITH Court (Bukhari ou Muslim uniquement).
+      3. Une INVOCATION (Citadelle du Musulman).
+      
+      RÈGLES :
+      - Si le thème est une émotion (tristesse, joie), privilégie une Invocation ou un Verset.
+      - Si le thème est une règle ou un comportement, privilégie un Hadith.
+      - Sois concis : le texte en français doit faire moins de 250 caractères.
+      
+      ${baseRules}
+      
+      {
+        "arabe": "Texte en arabe (si verset ou courte invocation)",
+        "content": "Le texte sacré en français uniquement",
+        "source": "Référence précise (ex: Sourate 2, Verset 255 ou Sahih Bukhari n°...)",
+        "surah": 0,
+        "ayah": 0
+      }`;
+    }
+
     if (category === 'hadith') {
       return `Tu es un expert des Hadiths. Donne-moi UN hadith AUTHENTIQUE issu EXCLUSIVEMENT de SAHIH AL-BUKHARI ou SAHIH MUSLIM.
 ${topic ? `Thème : ${topic}` : 'Choisis un thème varié (évite les trop connus) : comportement, purification, aumône, mort, paradis, enfer, invocation.'}
@@ -242,7 +266,7 @@ ${baseRules}
 }`;
   };
 
-  const prompt = getPromptByCategory();
+  const prompt = getPrompt();
 
   const response = await fetch(
     `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-001:generateContent?key=${apiKey}`,
@@ -392,27 +416,23 @@ export async function generateHadith(
 ): Promise<GenerateHadithOutput> {
   const { category, topic } = input;
 
-  // Si c'est une recherche IA avec un thème, on cherche UNIQUEMENT dans notre fichier hadiths-authentiques.json
-  if (category === 'recherche-ia' && topic && topic.trim() !== '') {
+  // Mode Agent Universel (Défaut)
+  if (category === 'recherche-ia' || category === 'auto') {
     try {
-      const db = await loadDatabase();
-
-      // Recherche locale dans hadiths-authentiques.json
-      const localMatches = filterByTopic(db.authentiques, topic);
-
-      if (localMatches.length > 0) {
-        // Prendre un hadith ALÉATOIRE parmi les résultats trouvés
-        const randomMatch = getRandomItem(localMatches);
-
-        // Demander à l'IA d'analyser ce hadith spécifique
-        return await generateAnalysisFromAI(randomMatch.content, randomMatch.source, topic);
+      // 1. On essaye de trouver une correspondance exacte dans notre base authentique locale pour garantir la fiabilité
+      if (topic) {
+        const db = await loadDatabase();
+        const localMatches = filterByTopic(db.authentiques, topic);
+        if (localMatches.length > 0) {
+          const randomMatch = getRandomItem(localMatches);
+          return await generateAnalysisFromAI(randomMatch.content, randomMatch.source, topic);
+        }
       }
 
-      // Si aucune correspondance locale stricte, on peut éventuellement fallback sur l'IA générative
-      // ou retourner rien pour forcer l'IA à dire qu'elle n'a pas trouvé dans les sources authentiques.
-      // Pour l'instant, on laisse le flux continue vers le fallback IA standard si on ne trouve rien.
+      // 2. Sinon, on laisse l'IA générer le meilleur contenu multi-sources
+      return await generateFromAI('recherche-ia', topic);
     } catch (error) {
-      console.error("Local search failed for AI research:", error);
+      console.error("Universal Agent failed:", error);
     }
   }
 

@@ -14,7 +14,13 @@ import {
   BookMarked,
   LogIn,
   LogOut,
+  RefreshCw,
+  LayoutGrid,
+  Crown,
+  Settings,
+  Heart,
   Share2,
+  Palette,
   User,
   Mail,
   Menu,
@@ -82,7 +88,7 @@ export default function GeneratorPage() {
     ayah: 55
   });
 
-  const [category, setCategory] = useState<Category>('coran');
+  const [category, setCategory] = useState<Category>('recherche-ia');
   const [background, setBackground] = useState<string>(
     PlaceHolderImages[0]?.imageUrl || 'https://picsum.photos/seed/1/1080/1920'
   );
@@ -151,10 +157,10 @@ export default function GeneratorPage() {
   const searchParams = useSearchParams();
 
   useEffect(() => {
-    // const hasSeenOnboarding = localStorage.getItem('hasSeenOnboarding');
-    // if (!hasSeenOnboarding) {
-    //   setShowOnboarding(true);
-    // }
+    const hasSeenOnboarding = localStorage.getItem('hasSeenOnboarding');
+    if (!hasSeenOnboarding) {
+      setShowOnboarding(true);
+    }
 
     // Handle URL parameters
     const urlTopic = searchParams.get('topic');
@@ -451,7 +457,7 @@ export default function GeneratorPage() {
   }
 
   return (
-    <div className="layout-immersive bg-background overflow-hidden flex flex-col">
+    <div className="fixed inset-0 w-full h-full bg-black overflow-hidden select-none md:relative md:flex md:flex-col md:bg-background">
       {/* Hidden file input for background upload */}
       <input
         type="file"
@@ -533,23 +539,24 @@ export default function GeneratorPage() {
 
         {/* Main Preview Container */}
         <main className={cn(
-          "flex-1 preview-container relative overflow-hidden flex justify-center",
-          "items-center pb-24 sm:pb-32" // Adjusted padding for better vertical centering
+          "flex-1 preview-container relative overflow-hidden flex justify-center items-center",
+          "md:pb-24"
         )}>
-          <div className="relative w-full h-full flex items-center justify-center p-2 sm:p-4">
+          <div className="relative w-full h-full flex items-center justify-center p-0 md:p-4">
             <div
               className={cn(
-                "bg-neutral-900 p-1 sm:p-2 shadow-2xl ring-4 ring-primary/5 transition-all duration-300 relative overflow-hidden",
+                "bg-neutral-900 p-0 md:p-2 shadow-2xl transition-all duration-300 relative overflow-hidden",
+                "fixed inset-0 md:relative",
                 format === 'story'
-                  ? "h-[calc(100vh-180px)] w-auto aspect-[9/16] sm:w-[280px] sm:h-[590px] md:w-[320px] md:h-[673px] lg:w-[340px] lg:h-[715px] rounded-[30px] sm:rounded-[40px]"
-                  : "h-[calc(100vh-180px)] w-auto aspect-square sm:w-[320px] sm:h-[320px] md:w-[400px] md:h-[400px] lg:w-[450px] lg:h-[450px] rounded-2xl"
+                  ? "md:h-[673px] md:w-[320px] lg:w-[340px] lg:h-[715px] md:rounded-[40px]"
+                  : "md:h-[400px] md:w-[400px] lg:w-[450px] lg:h-[450px] md:rounded-2xl"
               )}
             >
               <div
                 ref={previewRef}
                 className={cn(
                   "relative h-full w-full overflow-hidden bg-black",
-                  format === 'story' ? "rounded-[22px] sm:rounded-[32px]" : "rounded-xl"
+                  "md:rounded-[32px]"
                 )}
               >
                 <img
@@ -666,103 +673,167 @@ export default function GeneratorPage() {
         </main>
       </div>
 
-      {/* Mobile Left Toolbar */}
-      <MobileLeftToolbar
-        onRandom={handleRandomBackground}
-        onUpload={() => document.getElementById('file-upload')?.click()}
-        onShare={handleShareImage}
-        onDownload={handleDownloadImage}
-        onFavorite={handleFavorite}
-        isLiked={content ? favorites.includes(content.content) : false}
-      />
+      {/* 4. MOBILE FLOATING UI (Replaces multiple toolbars) */}
+      <div className="md:hidden">
+        {/* TOP TOOLS: Universal Search / Category */}
+        <div className="absolute top-12 left-6 right-6 z-40 flex justify-between items-start pointer-events-none">
+          <div className="flex flex-col gap-2 pointer-events-auto">
+            <Button
+              variant="ghost"
+              onClick={() => setIsCategoryDrawerOpen(true)}
+              className="h-11 px-5 rounded-full bg-black/40 backdrop-blur-md border border-white/10 text-white font-bold flex items-center gap-2 group shadow-xl"
+              aria-label="Sélectionner la source"
+            >
+              <Sparkles className="w-4 h-4 text-purple-400 group-hover:rotate-12 transition-transform" />
+              <span className="text-[10px] uppercase font-bold tracking-widest">{category === 'recherche-ia' ? "Agent Hikma" : category}</span>
+            </Button>
 
-      <MobileTopicInput
-        value={topic}
-        onChange={setTopic}
-        isVisible={category === 'recherche-ia'}
-        placeholder="Un thème précis pour votre Agent ?"
-        onEnter={handleGenerateAiContent}
-      />
+            <Button
+              variant="ghost"
+              onClick={() => setIsSidebarOpen(true)}
+              className="h-11 px-5 rounded-full bg-black/40 backdrop-blur-md border border-white/10 text-white font-bold flex items-center gap-2 group shadow-xl"
+              aria-label="Paramètres"
+            >
+              <Settings className="w-4 h-4 group-hover:rotate-45 transition-transform" />
+              <span className="text-[10px] uppercase font-bold tracking-widest">Réglages</span>
+            </Button>
+          </div>
 
-      <MobileDrawer
-        isOpen={activeMobileTool !== null}
-        onClose={() => setActiveMobileTool(null)}
-        title={
-          activeMobileTool === 'font' ? 'Typographie' :
-            activeMobileTool === 'format' ? 'Format & Style' :
-              activeMobileTool === 'background' ? 'Arrière-plan' :
-                activeMobileTool === 'signature' ? 'Signature' : ''
+          <Button variant="ghost" size="icon" className="pointer-events-auto w-11 h-11 rounded-2xl bg-black/40 backdrop-blur-md border border-white/10 text-yellow-400 shadow-xl" aria-label="Premium">
+            <Crown className="w-5 h-5" />
+          </Button>
+        </div>
 
-        }
-      >
-        {activeMobileTool === 'font' && (
-          <FontSettings
-            fontFamily={fontFamily}
-            setFontFamily={setFontFamily}
-            fontSize={fontSize}
-            setFontSize={setFontSize}
-            isMobile={true}
-          />
-        )}
-        {activeMobileTool === 'format' && (
-          <div className="space-y-6">
-            <FormatSettings format={format} setFormat={setFormat} isMobile={true} />
-            <FilterSettings
-              brightness={brightness}
-              setBrightness={setBrightness}
-              contrast={contrast}
-              setContrast={setContrast}
-              saturation={saturation}
-              setSaturation={setSaturation}
-              isMobile={true}
+        {/* LEFT TOOLS: Design */}
+        <div className="absolute left-6 bottom-32 z-40 flex flex-col gap-4">
+          <button
+            onClick={() => setIsGalleryOpen(true)}
+            className="w-12 h-12 rounded-full bg-black/50 backdrop-blur-md border border-white/20 text-white shadow-2xl flex items-center justify-center active:scale-90 transition-all font-bold"
+            aria-label="Galerie"
+          >
+            <ImageIcon className="w-5 h-5" />
+          </button>
+          <button
+            onClick={() => setIsToolsDrawerOpen(true)}
+            className="w-12 h-12 rounded-full bg-black/50 backdrop-blur-md border border-white/20 text-white shadow-2xl flex items-center justify-center active:scale-90 transition-all font-bold"
+            aria-label="Outils de design"
+          >
+            <Palette className="w-5 h-5" />
+          </button>
+          <button
+            onClick={handleRandomBackground}
+            className="w-12 h-12 rounded-full bg-black/50 backdrop-blur-md border border-white/20 text-white shadow-2xl flex items-center justify-center active:scale-90 transition-all"
+            aria-label="Fond aléatoire"
+          >
+            <RefreshCw className="w-5 h-5" />
+          </button>
+        </div>
+
+        {/* RIGHT TOOLS: Actions */}
+        <div className="absolute right-6 bottom-32 z-40 flex flex-col gap-4">
+          <button
+            onClick={handleFavorite}
+            className="w-12 h-12 rounded-full bg-black/50 backdrop-blur-md border border-white/20 text-white shadow-2xl flex items-center justify-center active:scale-90 transition-all"
+            aria-label="Favori"
+          >
+            <Heart className={cn("w-5 h-5 transition-colors", favorites.includes(content?.content || '') ? "fill-red-500 text-red-500" : "")} />
+          </button>
+          <button
+            onClick={handleShareImage}
+            className="w-12 h-12 rounded-full bg-black/50 backdrop-blur-md border border-white/20 text-white shadow-2xl flex items-center justify-center active:scale-90 transition-all"
+            aria-label="Partager"
+          >
+            <Share2 className="w-5 h-5" />
+          </button>
+          <button
+            onClick={handleDownloadImage}
+            className="w-12 h-12 rounded-full bg-black/50 backdrop-blur-md border border-white/20 text-white shadow-2xl flex items-center justify-center active:scale-90 transition-all"
+            aria-label="Télécharger"
+          >
+            <Download className="w-5 h-5" />
+          </button>
+        </div>
+
+        {/* BOTTOM TOOLS: Main Action (Generate) */}
+        <div className="absolute bottom-6 left-0 right-0 z-40 flex flex-col items-center gap-4 px-4">
+          {/* Unified Search Input */}
+          <div className="w-full max-w-sm">
+            <MobileTopicInput
+              value={topic}
+              onChange={setTopic}
+              isVisible={true}
+              placeholder="Sujet du rappel (patience, amour...)"
+              onEnter={handleGenerateAiContent}
             />
           </div>
-        )}
 
-        {activeMobileTool === 'background' && (
-          <div className="space-y-4">
-            <div className="grid grid-cols-2 gap-3">
-              <Button variant="outline" className="h-20 rounded-2xl flex flex-col gap-2 border-2 border-dashed border-gray-200 text-gray-900 hover:bg-gray-50 hover:text-gray-900" onClick={handleRandomBackground}>
-                <ImageIcon className="w-5 h-5 text-purple-500" />
-                <span className="text-xs font-bold">Aléatoire</span>
-              </Button>
-              <Button variant="outline" className="h-20 rounded-2xl flex flex-col gap-2 border-2 border-dashed border-gray-200 text-gray-900 hover:bg-gray-50 hover:text-gray-900" onClick={() => document.getElementById('file-upload')?.click()}>
-                <Upload className="w-5 h-5 text-purple-500" />
-                <span className="text-xs font-bold">Importer</span>
-              </Button>
-            </div>
+          {/* QUICK CATEGORY TILES (The requested 4 tiles) */}
+          <div className="flex justify-center gap-3 w-full max-w-sm px-2">
+            {[
+              { id: 'coran', icon: BookMarked, color: 'bg-purple-500/20 text-purple-400 border-purple-500/30', label: 'Coran' },
+              { id: 'hadith', icon: BookOpen, color: 'bg-blue-500/20 text-blue-400 border-blue-500/30', label: 'Hadith' },
+              { id: 'ramadan', icon: Moon, color: 'bg-indigo-500/20 text-indigo-400 border-indigo-500/30', label: 'Mois' },
+              { id: 'citadelle', icon: Sparkles, color: 'bg-teal-500/20 text-teal-400 border-teal-500/30', label: 'Douas' },
+            ].map((cat) => (
+              <button
+                key={cat.id}
+                onClick={() => setCategory(cat.id as Category)}
+                className={cn(
+                  "flex-1 py-2 rounded-2xl border flex flex-col items-center gap-1 transition-all active:scale-90",
+                  category === cat.id
+                    ? "bg-white/20 border-white/40 ring-2 ring-white/20"
+                    : cat.color
+                )}
+              >
+                <cat.icon className="w-5 h-5" />
+                <span className="text-[9px] font-bold uppercase tracking-tighter">{cat.label}</span>
+              </button>
+            ))}
           </div>
-        )}
 
-        {activeMobileTool === 'signature' && (
-          <div className="space-y-4">
-            <Label className="text-[10px] uppercase tracking-widest font-bold text-gray-500">Votre Signature</Label>
-            <Input
-              value={signature}
-              onChange={(e) => setSignature(e.target.value)}
-              placeholder="@votre_pseudo"
-              className="h-12 rounded-2xl bg-muted/30 border-none ring-1 ring-border focus-visible:ring-primary"
-            />
-            <p className="text-[10px] text-muted-foreground italic">
-              Cette signature apparaîtra en bas à gauche de vos créations.
-            </p>
-          </div>
-        )}
+          <button
+            onClick={handleGenerateAiContent}
+            disabled={isGenerating}
+            className={cn(
+              "h-14 px-10 rounded-full bg-purple-600 text-white flex items-center gap-3 shadow-[0_10px_30px_rgba(147,51,234,0.4)] active:scale-95 transition-all w-full max-w-[280px]",
+              isGenerating && "opacity-80"
+            )}
+            aria-label="Générer avec l'Agent Hikma"
+          >
+            {isGenerating ? (
+              <Loader2 className="w-6 h-6 animate-spin" />
+            ) : (
+              <Sparkles className="w-6 h-6" />
+            )}
+            <span className="font-bold tracking-tight">Générer avec l'Agent</span>
+          </button>
+        </div>
+      </div>
 
-      </MobileDrawer>
+      {/* Legacy Mobile Components (Kept for desktop or potential reuse, hidden by layout logic if needed) */}
+      <div className="hidden">
+        <MobileLeftToolbar
+          onRandom={handleRandomBackground}
+          onUpload={() => document.getElementById('file-upload')?.click()}
+          onShare={handleShareImage}
+          onDownload={handleDownloadImage}
+          onFavorite={handleFavorite}
+          isLiked={content ? favorites.includes(content.content) : false}
+        />
 
-      <BottomControls
-        category={category}
-        setCategory={setCategory}
-        onGenerate={handleGenerateAiContent}
-        isGenerating={isGenerating}
-        onRandom={handleRandomBackground}
-        onUpload={() => document.getElementById('file-upload')?.click()}
-        onDownload={handleDownloadImage}
-        onRessources={() => window.location.href = '/ressources'}
-        onOpenCategoryDrawer={() => setIsCategoryDrawerOpen(true)}
-        onOpenToolsDrawer={() => setIsToolsDrawerOpen(true)}
-      />
+        <BottomControls
+          category={category}
+          setCategory={setCategory}
+          onGenerate={handleGenerateAiContent}
+          isGenerating={isGenerating}
+          onRandom={handleRandomBackground}
+          onUpload={() => document.getElementById('file-upload')?.click()}
+          onDownload={handleDownloadImage}
+          onRessources={() => window.location.href = '/ressources'}
+          onOpenCategoryDrawer={() => setIsCategoryDrawerOpen(true)}
+          onOpenToolsDrawer={() => setIsToolsDrawerOpen(true)}
+        />
+      </div>
 
       {/* Category Drawer */}
       <CategoryDrawer
@@ -806,6 +877,46 @@ export default function GeneratorPage() {
         }}
       />
 
+
+      {/* Onboarding Screen */}
+      <AnimatePresence>
+        {showOnboarding && (
+          <OnboardingScreen onComplete={() => {
+            setShowOnboarding(false);
+            localStorage.setItem('hasSeenOnboarding', 'true');
+          }} />
+        )}
+      </AnimatePresence>
+
+      {/* Sidebar / Settings */}
+      <Sheet open={isSidebarOpen} onOpenChange={setIsSidebarOpen}>
+        <Sidebar
+          topic={topic}
+          setTopic={setTopic}
+          onRandomBackground={handleRandomBackground}
+          onUploadClick={() => document.getElementById('file-upload')?.click()}
+          user={user}
+          onSignIn={() => setShowSignInPopup(true)}
+          onSignOut={() => signOut(auth)}
+          onShare={handleShareImage}
+          isStudio={true}
+          format={format}
+          setFormat={setFormat}
+          fontFamily={fontFamily}
+          setFontFamily={setFontFamily}
+          fontSize={fontSize}
+          setFontSize={setFontSize}
+          signature={signature}
+          setSignature={setSignature}
+          brightness={brightness}
+          setBrightness={setBrightness}
+          contrast={contrast}
+          setContrast={setContrast}
+          saturation={saturation}
+          setSaturation={setSaturation}
+          isMobile={true}
+        />
+      </Sheet>
 
       {/* Auth Popups & Overlays */}
       <AlertDialog open={showSignInPopup} onOpenChange={(open) => {
