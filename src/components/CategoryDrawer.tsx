@@ -8,7 +8,9 @@ import {
     Moon,
     Search,
     Check,
-    X
+    X,
+    LayoutGrid,
+    Sparkles
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -50,11 +52,22 @@ export function CategoryDrawer({ isOpen, onClose, category, onSelectCategory }: 
             icon: Moon,
             label: 'Ramadan',
             description: 'Rappels du mois béni',
-            color: 'bg-purple-600',
-            hoverColor: 'hover:bg-purple-700',
-            borderColor: 'border-purple-600',
-            shadowColor: 'shadow-purple-600/50',
-            textColor: 'text-purple-600'
+            color: 'bg-indigo-600',
+            hoverColor: 'hover:bg-indigo-700',
+            borderColor: 'border-indigo-600',
+            shadowColor: 'shadow-indigo-600/50',
+            textColor: 'text-indigo-600'
+        },
+        {
+            id: 'thematique' as Category,
+            icon: LayoutGrid,
+            label: 'Thématique',
+            description: 'Sujets variés et généraux',
+            color: 'bg-emerald-600',
+            hoverColor: 'hover:bg-emerald-700',
+            borderColor: 'border-emerald-600',
+            shadowColor: 'shadow-emerald-600/50',
+            textColor: 'text-emerald-600'
         },
         {
             id: 'recherche-ia' as Category,
@@ -69,9 +82,9 @@ export function CategoryDrawer({ isOpen, onClose, category, onSelectCategory }: 
         },
         {
             id: 'citadelle' as Category,
-            icon: BookOpen,
+            icon: Sparkles,
             label: 'Citadelle',
-            description: 'Invocations quotidiennes',
+            description: 'Douas & Invocations',
             color: 'bg-teal-600',
             hoverColor: 'hover:bg-teal-700',
             borderColor: 'border-teal-600',

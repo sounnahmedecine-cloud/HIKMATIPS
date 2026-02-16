@@ -16,16 +16,22 @@ function LoadingScreen() {
   );
 }
 
-// Dynamic imports for code splitting
 const HomeScreen = dynamic(() => import('@/components/HomeScreen').then(mod => ({ default: mod.HomeScreen })), {
   loading: () => <LoadingScreen />,
   ssr: false,
 });
 
+const LandingPage = dynamic(() => import('@/components/LandingPage'), {
+  loading: () => <LoadingScreen />,
+  ssr: false,
+});
+
 export default function Home() {
+  const [isNative, setIsNative] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
+    setIsNative(Capacitor.isNativePlatform());
     setIsLoaded(true);
   }, []);
 
@@ -33,5 +39,7 @@ export default function Home() {
     return <LoadingScreen />;
   }
 
-  return <HomeScreen />;
+  // Si on est sur l'APK (Android/iOS), on lance directement l'app (HomeScreen)
+  // Sinon, sur le Web, on affiche la Landing Page marketing
+  return isNative ? <HomeScreen /> : <LandingPage />;
 }

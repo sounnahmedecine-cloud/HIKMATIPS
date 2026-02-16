@@ -11,7 +11,8 @@ import {
     Download,
     BookOpen,
     Rocket,
-    MessageCircle
+    MessageCircle,
+    Image as ImageIcon
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -26,6 +27,7 @@ export function MobileStudioToolbar({ onToolSelect, activeTool }: MobileStudioTo
     const tools = [
         { id: 'font', icon: Type, label: 'Police', color: 'text-primary' },
         { id: 'format', icon: Maximize, label: 'Format', color: 'text-primary' },
+        { id: 'background', icon: ImageIcon, label: 'Arrière-plan', color: 'text-primary' },
         { id: 'share', icon: Share2, label: 'Partager', color: 'text-accent' },
         { id: 'download', icon: Download, label: 'Télécharger', color: 'text-primary' },
         { id: 'resources', icon: BookOpen, label: 'Ressources', color: 'text-primary' },

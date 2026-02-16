@@ -63,16 +63,16 @@ export default function FavorisPage() {
                                                 </span>
                                             </div>
                                         </div>
-                                        <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                        <div className="flex gap-2">
                                             <button
-                                                className="p-2 text-slate-400 hover:text-purple-400 transition-colors"
+                                                className="p-3 text-slate-500 hover:text-red-500 transition-colors bg-slate-100 dark:bg-slate-800 rounded-full"
                                                 onClick={() => handleRemove(hikma)}
                                                 aria-label="Supprimer"
                                             >
                                                 <Trash2 className="w-5 h-5" />
                                             </button>
                                             <button
-                                                className="p-2 text-slate-400 hover:text-purple-500 transition-colors"
+                                                className="p-3 text-slate-500 hover:text-purple-600 transition-colors bg-slate-100 dark:bg-slate-800 rounded-full"
                                                 aria-label="Partager"
                                             >
                                                 <Share2 className="w-5 h-5" />
