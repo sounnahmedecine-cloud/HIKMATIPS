@@ -54,6 +54,8 @@ import { useFirstTimeUser } from '@/hooks/useFirstTimeUser';
 import { MobileLeftToolbar } from '@/components/studio/MobileLeftToolbar';
 import { CategoryDrawer } from '@/components/CategoryDrawer';
 import { ToolsDrawer } from '@/components/ToolsDrawer';
+import { CloudinaryGallery } from '@/components/studio/CloudinaryGallery';
+
 
 
 import { getFavorites, toggleFavorite, cn } from '@/lib/utils';
@@ -106,6 +108,7 @@ export default function GeneratorPage() {
   const [format, setFormat] = useState<'story' | 'square'>('story');
   const [signature, setSignature] = useState('hikmaclips.woosenteur.fr');
   const [favorites, setFavorites] = useState<string[]>([]);
+  const [isGalleryOpen, setIsGalleryOpen] = useState(false);
 
   useEffect(() => {
     setFavorites(getFavorites().map(f => f.fr));
@@ -293,7 +296,10 @@ export default function GeneratorPage() {
   };
 
   const handleRandomBackground = () => {
-    const relevantImages = PlaceHolderImages.filter(img => {
+    // Prioritize Cloudinary images that match the category
+    const cloudinaryImages = PlaceHolderImages.filter(img => img.imageUrl.includes('cloudinary'));
+
+    const relevantImages = (cloudinaryImages.length > 0 ? cloudinaryImages : PlaceHolderImages).filter(img => {
       const hint = img.imageHint.toLowerCase();
       if (category === 'hadith' || category === 'coran' || category === 'thematique') {
         return hint.includes('islamic') || hint.includes('nature') || hint.includes('serene') || hint.includes('abstract');
@@ -304,7 +310,7 @@ export default function GeneratorPage() {
       return true;
     });
 
-    const pool = relevantImages.length > 0 ? relevantImages : PlaceHolderImages;
+    const pool = relevantImages.length > 0 ? relevantImages : (cloudinaryImages.length > 0 ? cloudinaryImages : PlaceHolderImages);
     const randomIndex = Math.floor(Math.random() * pool.length);
     setBackground(pool[randomIndex].imageUrl);
   };
@@ -314,10 +320,13 @@ export default function GeneratorPage() {
     if (!previewEl || !content) return null;
 
     try {
+      // Pour html2canvas, on s'assure que toutes les images sont chargées
       const canvas = await html2canvas(previewEl, {
         useCORS: true,
-        allowTaint: true,
-        scale: 2,
+        allowTaint: false,
+        scale: 3,
+        logging: false,
+        backgroundColor: '#000000',
       });
       return canvas;
     } catch (error) {
@@ -543,15 +552,12 @@ export default function GeneratorPage() {
                   format === 'story' ? "rounded-[22px] sm:rounded-[32px]" : "rounded-xl"
                 )}
               >
-                <Image
+                <img
                   src={background}
                   alt="Arrière-plan"
-                  fill
-                  className="object-cover transition-all duration-300"
+                  className="absolute inset-0 w-full h-full object-cover transition-all duration-300"
                   style={{ filter: `brightness(${brightness}%) contrast(${contrast}%) saturate(${saturation}%)` }}
-                  data-ai-hint="abstract serene"
-                  priority
-                  unoptimized
+                  crossOrigin="anonymous"
                   key={background}
                 />
                 <div className="absolute inset-0 bg-black/50" />
@@ -775,6 +781,8 @@ export default function GeneratorPage() {
             setActiveMobileTool('font');
           } else if (tool === 'format') {
             setActiveMobileTool('format');
+          } else if (tool === 'gallery') {
+            setIsGalleryOpen(true);
           } else if (tool === 'resources') {
             router.push('/ressources');
           } else if (tool === 'updates') {
@@ -784,11 +792,20 @@ export default function GeneratorPage() {
           } else if (tool === 'signature') {
             setActiveMobileTool('signature');
           } else if (tool === 'settings') {
-
             setIsSidebarOpen(true);
           }
         }}
       />
+
+      <CloudinaryGallery
+        isOpen={isGalleryOpen}
+        onClose={() => setIsGalleryOpen(false)}
+        onSelect={(url: string) => {
+          setBackground(url);
+          setIsGalleryOpen(false);
+        }}
+      />
+
 
       {/* Auth Popups & Overlays */}
       <AlertDialog open={showSignInPopup} onOpenChange={(open) => {

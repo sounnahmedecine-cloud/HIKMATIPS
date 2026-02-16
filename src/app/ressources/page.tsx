@@ -10,6 +10,11 @@ import { Button } from '@/components/ui/button';
 import { Hadiths } from '@/lib/hadiths';
 import { VersetsCoraniques } from '@/lib/versets-coraniques';
 import { searchHadiths, DetailedHadith } from '@/lib/hadith-search';
+import { getFavorites, toggleFavorite, cn } from '@/lib/utils';
+import { Copy, CopyCheck, Share2 } from 'lucide-react';
+import { Share } from '@capacitor/share';
+import { useToast } from '@/hooks/use-toast';
+
 
 const HADITH_BOOKS_INFO = [
   { name: 'Sahih Bukhari', count: 7589, description: 'Le recueil le plus authentique.' },
@@ -25,6 +30,44 @@ export default function RessourcesPage() {
   const [activeTab, setActiveTab] = useState('hadiths');
   const [detailedResults, setDetailedResults] = useState<DetailedHadith[]>([]);
   const [isSearching, setIsSearching] = useState(false);
+  const [favorites, setFavorites] = useState<string[]>([]);
+  const [copiedId, setCopiedId] = useState<string | null>(null);
+  const { toast } = useToast();
+
+  useEffect(() => {
+    setFavorites(getFavorites().map(f => f.fr));
+  }, []);
+
+  const handleCopy = (text: string, id: string) => {
+    navigator.clipboard.writeText(text);
+    setCopiedId(id);
+    toast({
+      title: "Copié !",
+      description: "Le texte a été copié dans votre presse-papier.",
+    });
+    setTimeout(() => setCopiedId(null), 2000);
+  };
+
+  const handleToggleFavorite = (fr: string, source: string, arabe: string = '') => {
+    const isLiked = toggleFavorite({ fr, source, arabe });
+    setFavorites(prev => isLiked ? [...prev, fr] : prev.filter(f => f !== fr));
+    toast({
+      title: isLiked ? "Ajouté aux favoris" : "Retiré des favoris",
+      description: isLiked ? "Retrouvez cette pépite dans vos favoris." : "Contenu retiré de vos favoris.",
+    });
+  };
+
+  const handleShare = async (text: string, source: string) => {
+    try {
+      await Share.share({
+        title: "Hikma du jour",
+        text: `"${text}" — ${source}`,
+      });
+    } catch (error) {
+      console.error("Erreur de partage:", error);
+    }
+  };
+
 
   const filteredHadiths = useMemo(() => {
     if (!search.trim()) return Hadiths.slice(0, 50);
@@ -157,13 +200,46 @@ export default function RessourcesPage() {
                       <p className="text-center text-muted-foreground py-12">Aucun hadith trouvé.</p>
                     ) : (
                       filteredHadiths.map((hadith, i) => (
-                        <Card key={i} className="border-border/50 hover:border-primary/30 transition-colors shadow-sm">
+                        <Card key={i} className="border-border/50 hover:border-primary/30 transition-colors shadow-sm group">
                           <CardContent className="p-4">
                             <p className="text-sm leading-relaxed text-foreground/90">{hadith.content}</p>
-                            <p className="text-xs text-primary/80 mt-3 font-semibold italic flex items-center gap-2">
-                              <Sparkles className="h-3 w-3" />
-                              — {hadith.source}
-                            </p>
+                            <div className="flex items-center justify-between mt-4 pt-3 border-t border-border/10">
+                              <div className="flex items-center gap-3">
+                                <p className="text-[10px] text-primary/70 font-bold uppercase tracking-wider flex items-center gap-1.5 min-w-0 truncate">
+                                  <Sparkles className="h-3 w-3 shrink-0" />
+                                  {hadith.source}
+                                </p>
+                                <div className="flex items-center gap-0.5 shrink-0">
+                                  <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className="h-7 w-7 rounded-full hover:bg-primary/5 hover:text-primary transition-colors"
+                                    onClick={() => handleCopy(hadith.content, `hadith-${i}`)}
+                                    title="Copier"
+                                  >
+                                    {copiedId === `hadith-${i}` ? <CopyCheck className="h-3.5 w-3.5 text-green-500" /> : <Copy className="h-3.5 w-3.5" />}
+                                  </Button>
+                                  <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className="h-7 w-7 rounded-full hover:bg-primary/5 hover:text-primary transition-colors"
+                                    onClick={() => handleShare(hadith.content, hadith.source)}
+                                    title="Partager"
+                                  >
+                                    <Share2 className="h-3.5 w-3.5" />
+                                  </Button>
+                                  <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className="h-7 w-7 rounded-full hover:bg-primary/5"
+                                    onClick={() => handleToggleFavorite(hadith.content, hadith.source)}
+                                    title="Favori"
+                                  >
+                                    <Heart className={cn("h-3.5 w-3.5 transition-colors", favorites.includes(hadith.content) ? "fill-red-500 text-red-500" : "text-muted-foreground")} />
+                                  </Button>
+                                </div>
+                              </div>
+                            </div>
                           </CardContent>
                         </Card>
                       ))
@@ -179,13 +255,46 @@ export default function RessourcesPage() {
                       <p className="text-center text-muted-foreground py-12">Aucun verset trouvé.</p>
                     ) : (
                       filteredVersets.map((verset, i) => (
-                        <Card key={i} className="border-border/50 hover:border-primary/30 transition-colors shadow-sm">
+                        <Card key={i} className="border-border/50 hover:border-primary/30 transition-colors shadow-sm group">
                           <CardContent className="p-4">
                             <p className="text-sm leading-relaxed text-foreground/90">{verset.content}</p>
-                            <p className="text-xs text-primary/80 mt-3 font-semibold italic flex items-center gap-2">
-                              <BookOpen className="h-3 w-3" />
-                              — {verset.source}
-                            </p>
+                            <div className="flex items-center justify-between mt-4 pt-3 border-t border-border/10">
+                              <div className="flex items-center gap-3">
+                                <p className="text-[10px] text-primary/70 font-bold uppercase tracking-wider flex items-center gap-1.5 min-w-0 truncate">
+                                  <BookOpen className="h-3 w-3 shrink-0" />
+                                  {verset.source}
+                                </p>
+                                <div className="flex items-center gap-0.5 shrink-0">
+                                  <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className="h-7 w-7 rounded-full hover:bg-primary/5 hover:text-primary transition-colors"
+                                    onClick={() => handleCopy(verset.content, `verset-${i}`)}
+                                    title="Copier"
+                                  >
+                                    {copiedId === `verset-${i}` ? <CopyCheck className="h-3.5 w-3.5 text-green-500" /> : <Copy className="h-3.5 w-3.5" />}
+                                  </Button>
+                                  <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className="h-7 w-7 rounded-full hover:bg-primary/5 hover:text-primary transition-colors"
+                                    onClick={() => handleShare(verset.content, verset.source)}
+                                    title="Partager"
+                                  >
+                                    <Share2 className="h-3.5 w-3.5" />
+                                  </Button>
+                                  <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className="h-7 w-7 rounded-full hover:bg-primary/5"
+                                    onClick={() => handleToggleFavorite(verset.content, verset.source)}
+                                    title="Favori"
+                                  >
+                                    <Heart className={cn("h-3.5 w-3.5 transition-colors", favorites.includes(verset.content) ? "fill-red-500 text-red-500" : "text-muted-foreground")} />
+                                  </Button>
+                                </div>
+                              </div>
+                            </div>
                           </CardContent>
                         </Card>
                       ))
@@ -220,17 +329,50 @@ export default function RessourcesPage() {
                       <p className="text-center text-muted-foreground py-12">Aucun résultat dans les 9 recueils.</p>
                     ) : (
                       detailedResults.map((hadith, i) => (
-                        <Card key={i} className="border-border/50 hover:border-primary/30 transition-colors shadow-sm">
+                        <Card key={i} className="border-border/50 hover:border-primary/30 transition-colors shadow-sm group">
                           <CardContent className="p-4">
                             <p className="text-sm leading-relaxed text-foreground/90">{hadith.french}</p>
-                            <div className="mt-4 flex items-center justify-between gap-4">
-                              <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">
-                                {hadith.source}
-                              </p>
+                            <div className="mt-4 flex flex-col gap-3">
+                              <div className="flex items-center justify-between border-t border-border/10 pt-3">
+                                <div className="flex items-center gap-3">
+                                  <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-wider min-w-0 truncate">
+                                    {hadith.source}
+                                  </p>
+                                  <div className="flex items-center gap-0.5 shrink-0">
+                                    <Button
+                                      variant="ghost"
+                                      size="icon"
+                                      className="h-7 w-7 rounded-full hover:bg-primary/5 hover:text-primary transition-colors"
+                                      onClick={() => handleCopy(hadith.french, `detailed-${i}`)}
+                                      title="Copier"
+                                    >
+                                      {copiedId === `detailed-${i}` ? <CopyCheck className="h-3.5 w-3.5 text-green-500" /> : <Copy className="h-3.5 w-3.5" />}
+                                    </Button>
+                                    <Button
+                                      variant="ghost"
+                                      size="icon"
+                                      className="h-7 w-7 rounded-full hover:bg-primary/5 hover:text-primary transition-colors"
+                                      onClick={() => handleShare(hadith.french, hadith.source)}
+                                      title="Partager"
+                                    >
+                                      <Share2 className="h-3.5 w-3.5" />
+                                    </Button>
+                                    <Button
+                                      variant="ghost"
+                                      size="icon"
+                                      className="h-7 w-7 rounded-full hover:bg-primary/5"
+                                      onClick={() => handleToggleFavorite(hadith.french, hadith.source)}
+                                      title="Favori"
+                                    >
+                                      <Heart className={cn("h-3.5 w-3.5 transition-colors", favorites.includes(hadith.french) ? "fill-red-500 text-red-500" : "text-muted-foreground")} />
+                                    </Button>
+                                  </div>
+                                </div>
+                              </div>
                               <Button
                                 variant="ghost"
                                 size="sm"
-                                className="h-7 text-[10px] gap-1 text-primary hover:text-primary hover:bg-primary/10"
+                                className="w-full text-[10px] gap-1 text-primary hover:text-primary hover:bg-primary/10 border border-primary/10"
                                 onClick={() => {
                                   window.location.href = `/studio?topic=${encodeURIComponent(hadith.french)}&category=recherche-ia`;
                                 }}

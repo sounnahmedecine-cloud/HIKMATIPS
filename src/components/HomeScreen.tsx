@@ -1,17 +1,18 @@
 "use client"
 
-import { useState, useEffect } from "react"
-// ...
-import { useSwipeable } from "react-swipeable"
+import { useState, useEffect, useCallback } from "react"
 import { HikmaCard } from "@/components/HikmaCard"
 import { motion, AnimatePresence } from "framer-motion"
 import { Share } from '@capacitor/share';
 import { Filesystem, Directory } from '@capacitor/filesystem';
 import html2canvas from 'html2canvas';
 import { useToast } from "@/hooks/use-toast";
+import { PlaceHolderImages } from "@/lib/placeholder-images";
+import { getFavorites, toggleFavorite } from "@/lib/utils"
+import { Sparkles, RefreshCw } from "lucide-react"
+import { Button } from "@/components/ui/button"
 
 const MOCK_HIKMAS = [
-
     {
         arabe: "إِنَّ مَعَ الْعُسْرِ يُسْرًا",
         fr: "À côté de la difficulté est, certes, une facilité.",
@@ -26,21 +27,66 @@ const MOCK_HIKMAS = [
         arabe: "وَتَوَكَّلْ عَلَى الْعَيِّ الْقَيُّومِ",
         fr: "Et place ta confiance en le Vivant qui ne meurt jamais.",
         source: "Sourate Al-Furqan 25:58"
+    },
+    {
+        arabe: "فَاصْبِرْ صَبْرًا جَمِيلًا",
+        fr: "Endure d'une belle patience.",
+        source: "Sourate Al-Ma'arij 70:5"
+    },
+    {
+        arabe: "وَقُولُوا لِلنَّاسِ حُسْنًا",
+        fr: "Et parlez aux gens avec bonté.",
+        source: "Sourate Al-Baqarah 2:83"
     }
 ];
 
-import { getFavorites, toggleFavorite } from "@/lib/utils"
-
 export function HomeScreen() {
-    const [index, setIndex] = useState(0);
-    const [direction, setDirection] = useState(0);
+    const [currentHikma, setCurrentHikma] = useState(MOCK_HIKMAS[0]);
+    const [background, setBackground] = useState("");
     const [favorites, setFavorites] = useState<string[]>([]);
     const [isGenerating, setIsGenerating] = useState(false);
     const { toast } = useToast();
 
+    const cloudinaryImages = PlaceHolderImages.filter(img =>
+        img.imageUrl.includes('cloudinary.com') ||
+        img.imageUrl.includes('dzagwz94z') ||
+        img.imageUrl.includes('dhjwimevi') ||
+        img.imageUrl.includes('db2ljqpdt')
+    );
+
+    const handleShuffle = useCallback(() => {
+        // Pick random content that isn't the current one if possible
+        let nextIndex;
+        do {
+            nextIndex = Math.floor(Math.random() * MOCK_HIKMAS.length);
+        } while (MOCK_HIKMAS.length > 1 && MOCK_HIKMAS[nextIndex].fr === currentHikma.fr);
+
+        setCurrentHikma(MOCK_HIKMAS[nextIndex]);
+
+        // Pick random background
+        if (cloudinaryImages.length > 0) {
+            let nextBgIndex;
+            do {
+                nextBgIndex = Math.floor(Math.random() * cloudinaryImages.length);
+            } while (cloudinaryImages.length > 1 && cloudinaryImages[nextBgIndex].imageUrl === background);
+            setBackground(cloudinaryImages[nextBgIndex].imageUrl);
+        }
+    }, [currentHikma, background, cloudinaryImages]);
 
     useEffect(() => {
         setFavorites(getFavorites().map(f => f.fr));
+
+        // Initial setup based on date
+        const today = new Date();
+        const dateSeed = today.getFullYear() * 365 + today.getMonth() * 31 + today.getDate();
+
+        const dailyIndex = dateSeed % MOCK_HIKMAS.length;
+        setCurrentHikma(MOCK_HIKMAS[dailyIndex]);
+
+        if (cloudinaryImages.length > 0) {
+            const bgIndex = dateSeed % cloudinaryImages.length;
+            setBackground(cloudinaryImages[bgIndex].imageUrl);
+        }
     }, []);
 
     const handleFavorite = (hikma: any) => {
@@ -48,25 +94,21 @@ export function HomeScreen() {
         setFavorites(prev => isLiked ? [...prev, hikma.fr] : prev.filter(f => f !== hikma.fr));
     };
 
-    const nextHikma = () => {
-        setDirection(1);
-        setIndex((prev) => (prev + 1) % MOCK_HIKMAS.length);
-    };
-
-    const prevHikma = () => {
-        setDirection(-1);
-        setIndex((prev) => (prev - 1 + MOCK_HIKMAS.length) % MOCK_HIKMAS.length);
-    };
-
-    const handleShare = async (hikma: any) => {
-        const previewEl = document.getElementById(`hikma-card-${index}`);
+    const handleShare = async () => {
+        const previewEl = document.getElementById(`hikma-card-main`);
         if (!previewEl) return;
 
         setIsGenerating(true);
         try {
-            const canvas = await html2canvas(previewEl, { useCORS: true, scale: 2 });
+            const canvas = await html2canvas(previewEl, {
+                useCORS: true,
+                allowTaint: false,
+                scale: 3,
+                backgroundColor: null,
+            });
+
             const base64Data = canvas.toDataURL('image/png').split(',')[1];
-            const fileName = `hikma_${Date.now()}.png`;
+            const fileName = `hikma_share_${Date.now()}.png`;
 
             const savedFile = await Filesystem.writeFile({
                 path: fileName,
@@ -76,7 +118,7 @@ export function HomeScreen() {
 
             await Share.share({
                 title: 'Hikma du jour',
-                text: `${hikma.fr} - ${hikma.source}`,
+                text: `${currentHikma.fr} - ${currentHikma.source}`,
                 files: [savedFile.uri],
             });
         } catch (error) {
@@ -87,19 +129,39 @@ export function HomeScreen() {
         }
     };
 
-    const handleDownload = async (hikma: any) => {
-        const previewEl = document.getElementById(`hikma-card-${index}`);
+    const handleDownload = async () => {
+        const previewEl = document.getElementById(`hikma-card-main`);
         if (!previewEl) return;
 
         setIsGenerating(true);
         try {
-            const canvas = await html2canvas(previewEl, { useCORS: true, scale: 2 });
+            const canvas = await html2canvas(previewEl, {
+                useCORS: true,
+                allowTaint: false,
+                scale: 3,
+                backgroundColor: null,
+            });
+
             const dataUrl = canvas.toDataURL('image/png');
-            const link = document.createElement('a');
-            link.download = `hikma_${Date.now()}.png`;
-            link.href = dataUrl;
-            link.click();
-            toast({ title: "Succès", description: "Image téléchargée !" });
+
+            if (window.hasOwnProperty('Capacitor')) {
+                const base64Data = dataUrl.split(',')[1];
+                const fileName = `hikma_${Date.now()}.png`;
+
+                await Filesystem.writeFile({
+                    path: fileName,
+                    data: base64Data,
+                    directory: Directory.Documents,
+                    recursive: true
+                });
+
+                toast({ title: "Succès", description: "Image enregistrée !" });
+            } else {
+                const link = document.createElement('a');
+                link.download = `hikma_${Date.now()}.png`;
+                link.href = dataUrl;
+                link.click();
+            }
         } catch (error) {
             console.error(error);
             toast({ title: "Erreur", description: "Le téléchargement a échoué.", variant: "destructive" });
@@ -108,46 +170,56 @@ export function HomeScreen() {
         }
     };
 
-    const handlers = useSwipeable({
-
-        onSwipedLeft: nextHikma,
-        onSwipedRight: prevHikma,
-        trackMouse: true
-    });
-
     return (
-        <div {...handlers} className="h-full w-full flex flex-col justify-center items-center overflow-hidden">
-            <AnimatePresence initial={false} custom={direction}>
-                <motion.div
-                    key={index}
-                    custom={direction}
-                    initial={{ x: direction > 0 ? 300 : -300, opacity: 0 }}
-                    animate={{ x: 0, opacity: 1 }}
-                    exit={{ x: direction > 0 ? -300 : 300, opacity: 0 }}
-                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                    className="w-full h-full flex items-center justify-center p-4"
+        <div className="h-full w-full flex flex-col justify-between items-center overflow-hidden pt-12 pb-24 bg-slate-50 dark:bg-slate-950">
+            {/* Header Title */}
+            <div className="text-center space-y-1 z-20 px-6">
+                <h2 className="text-2xl font-black text-slate-800 dark:text-white tracking-[0.2em] uppercase font-display drop-shadow-sm">
+                    Inspiration Hikma
+                </h2>
+                <div className="w-12 h-1 bg-purple-400 mx-auto rounded-full" />
+            </div>
+
+            {/* Main Content Area */}
+            <div className="flex-1 w-full flex flex-col justify-center items-center relative z-10 px-6">
+                <AnimatePresence mode="wait">
+                    <motion.div
+                        key={currentHikma.fr + background}
+                        initial={{ opacity: 0, scale: 0.95, y: 10 }}
+                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                        exit={{ opacity: 0, scale: 1.05, y: -10 }}
+                        transition={{ duration: 0.5, ease: "easeOut" }}
+                        className="w-full h-full max-w-sm flex items-center justify-center"
+                    >
+                        <div id="hikma-card-main" className="w-full h-[65vh] shadow-2xl rounded-[40px] overflow-hidden">
+                            <HikmaCard
+                                hikma={currentHikma}
+                                background={background}
+                                isLiked={favorites.includes(currentHikma.fr)}
+                                onFavorite={() => handleFavorite(currentHikma)}
+                                onShare={handleShare}
+                                onDownload={handleDownload}
+                            />
+                        </div>
+                    </motion.div>
+                </AnimatePresence>
+            </div>
+
+            {/* Shuffle Button Button */}
+            <div className="z-20 flex flex-col items-center gap-3">
+                <Button
+                    onClick={handleShuffle}
+                    className="group relative flex items-center gap-2 bg-white dark:bg-purple-900 border-2 border-purple-400 hover:bg-purple-400 hover:text-white dark:hover:bg-purple-400 text-purple-500 dark:text-purple-200 font-bold px-8 py-6 rounded-full shadow-xl transition-all active:scale-95"
                 >
-                    <div id={`hikma-card-${index}`} className="w-full h-full flex items-center justify-center">
-                        <HikmaCard
-                            hikma={MOCK_HIKMAS[index]}
-                            isLiked={favorites.includes(MOCK_HIKMAS[index].fr)}
-                            onFavorite={() => handleFavorite(MOCK_HIKMAS[index])}
-                            onShare={() => handleShare(MOCK_HIKMAS[index])}
-                            onDownload={() => handleDownload(MOCK_HIKMAS[index])}
-                        />
-                    </div>
+                    <RefreshCw className="w-5 h-5 group-hover:rotate-180 transition-transform duration-500" />
+                    <span className="text-lg">Nouvelle Inspiration</span>
 
-                </motion.div>
-            </AnimatePresence>
-
-            {/* Pagination Indicators */}
-            <div className="absolute bottom-32 flex gap-2">
-                {MOCK_HIKMAS.map((_, i) => (
-                    <div
-                        key={i}
-                        className={`w-2 h-2 rounded-full transition-all ${i === index ? 'bg-purple-400 w-4' : 'bg-slate-300 dark:bg-slate-700'}`}
-                    />
-                ))}
+                    {/* Floating Sparkles for effect */}
+                    <Sparkles className="absolute -top-1 -right-1 w-4 h-4 text-purple-400 animate-pulse" />
+                </Button>
+                <p className="text-[10px] text-slate-400 uppercase tracking-widest font-bold">
+                    Contenu & Design Aléatoire
+                </p>
             </div>
         </div>
     )

@@ -10,7 +10,7 @@ const CATEGORIES = [
     { id: "effort", label: "Effort & Réussite", emoji: "💪", desc: "Travail halal, baraka", slug: "effort" },
     { id: "famille", label: "Famille & Mariage", emoji: "👨‍👩‍👧", desc: "Relations pieuses", slug: "famille" },
     { id: "sante", label: "Santé & Anxiété", emoji: "❤️", desc: "Corps/esprit, guérison", slug: "sante" },
-    { id: "repentir", label: "Repentir (Tawba)", emoji: "🙏", desc: "Purification, pardon", slug: "repentir" },
+    { id: "repentir", label: "Repentir (Tawba)", emoji: "🤲", desc: "Purification, pardon", slug: "repentir" },
 ];
 
 export default function CategoriesPage() {
