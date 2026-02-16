@@ -28,6 +28,7 @@ export function BottomNavigation({
         {items.map((item) => {
           const isActive = active === item.label;
           const isGenerate = item.label === 'Générer';
+          const isTools = item.label === 'Outils';
 
           return (
             <Link
@@ -37,6 +38,10 @@ export function BottomNavigation({
                 if (isGenerate) {
                   e.preventDefault();
                   window.dispatchEvent(new CustomEvent('hikma:generate'));
+                }
+                if (isTools) {
+                  e.preventDefault();
+                  window.dispatchEvent(new CustomEvent('hikma:tools'));
                 }
                 onItemClick?.(item.label);
               }}

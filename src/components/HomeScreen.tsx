@@ -20,6 +20,7 @@ import {
 import { Button } from "@/components/ui/button"
 import { CloudinaryGallery } from "@/components/studio/CloudinaryGallery"
 import { CategoryDrawer } from "@/components/CategoryDrawer"
+import { DesignToolsDrawer } from "@/components/DesignToolsDrawer"
 
 interface HikmaData {
     arabe: string;
@@ -80,7 +81,18 @@ export function HomeScreen() {
     const [isGenerating, setIsGenerating] = useState(false);
     const [isGalleryOpen, setIsGalleryOpen] = useState(false);
     const [isCategoryOpen, setIsCategoryOpen] = useState(false);
+    const [isToolsOpen, setIsToolsOpen] = useState(false);
     const [selectedCategory, setSelectedCategory] = useState<string>("all");
+
+    // Design Filters State
+    const [filters, setFilters] = useState({
+        brightness: 100,
+        contrast: 100,
+        fontFamily: "-apple-system, BlinkMacSystemFont, sans-serif",
+        showSignature: false,
+        signatureText: "hikmatips_app"
+    });
+
     const { toast } = useToast();
     const fileInputRef = useRef<HTMLInputElement>(null);
     const captureRef = useRef<HTMLDivElement>(null);
@@ -127,10 +139,17 @@ export function HomeScreen() {
             setBackground(cloudinaryImages[bgIndex].imageUrl);
         }
 
-        // Listen for generate event from bottom nav
+        // Listen for events from bottom nav
         const onGenerate = () => handleShuffle();
+        const onTools = () => setIsToolsOpen(true);
+
         window.addEventListener('hikma:generate', onGenerate);
-        return () => window.removeEventListener('hikma:generate', onGenerate);
+        window.addEventListener('hikma:tools', onTools);
+
+        return () => {
+            window.removeEventListener('hikma:generate', onGenerate);
+            window.removeEventListener('hikma:tools', onTools);
+        };
     }, [handleShuffle, cloudinaryImages]);
 
     const handleFavorite = () => {
@@ -221,6 +240,7 @@ export function HomeScreen() {
                         src={background}
                         alt=""
                         className="absolute inset-0 w-full h-full object-cover"
+                        style={{ filter: `brightness(${filters.brightness}%) contrast(${filters.contrast}%)` }}
                         crossOrigin="anonymous"
                     />
                 )}
@@ -244,7 +264,10 @@ export function HomeScreen() {
                                     {currentHikma.arabe}
                                 </p>
                             )}
-                            <p className="text-xl sm:text-3xl font-medium text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)] leading-snug max-w-lg mx-auto">
+                            <p
+                                className="text-xl sm:text-3xl font-medium text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)] leading-snug max-w-lg mx-auto"
+                                style={{ fontFamily: filters.fontFamily }}
+                            >
                                 {currentHikma.fr}
                             </p>
                             <div className="pt-2 opacity-60">
@@ -252,6 +275,18 @@ export function HomeScreen() {
                                     — {currentHikma.source} —
                                 </p>
                             </div>
+
+                            {/* TikTok Signature Overlay (Only in Capture/Preview) */}
+                            {filters.showSignature && (
+                                <div className="mt-8 flex items-center justify-center gap-2 opacity-80 scale-110">
+                                    <div className="p-1 rounded-full bg-black/40 backdrop-blur-md">
+                                        <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.03 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.28-1.44.07-2.94.81-4.2 1.02-1.76 2.85-2.97 4.86-3.23.81-.1 1.63-.1 2.44.05.11 4.39-.06 8.8.05 13.19 2.62.51 5.39-1.32 5.67-3.86.06-1.08-.04-2.18-.55-3.13-.59-1.03-1.67-1.74-2.82-1.89l-.01-4.03c1.64.01 3.27.42 4.73 1.17l.02-8.3c1.51-.44 3.01-.6 4.6-.54V.02Z" /></svg>
+                                    </div>
+                                    <span className="text-sm font-bold text-white tracking-widest drop-shadow-md">
+                                        @{filters.signatureText}
+                                    </span>
+                                </div>
+                            )}
                         </motion.div>
                     </AnimatePresence>
                 </div>
@@ -332,6 +367,13 @@ export function HomeScreen() {
                     // Shuffle after changing category to show relevant content
                     setTimeout(handleShuffle, 300);
                 }}
+            />
+
+            <DesignToolsDrawer
+                isOpen={isToolsOpen}
+                onClose={() => setIsToolsOpen(false)}
+                filters={filters}
+                setFilters={setFilters}
             />
 
             {/* Mobile Navigation Indicator / Margin Fix */}
