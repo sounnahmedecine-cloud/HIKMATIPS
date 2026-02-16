@@ -10,6 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
 import { getFavorites, toggleFavorite } from "@/lib/utils"
 import {
+    Sparkles,
     Image as ImageIcon,
     Upload,
     RefreshCw,
@@ -23,6 +24,18 @@ import { Button } from "@/components/ui/button"
 import { CloudinaryGallery } from "@/components/studio/CloudinaryGallery"
 import { CategoryDrawer } from "@/components/CategoryDrawer"
 import { DesignToolsDrawer } from "@/components/DesignToolsDrawer"
+import OnboardingScreen from '@/components/OnboardingScreen'
+import { useAuth, useUser } from '@/firebase'
+import { signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from 'firebase/auth'
+import {
+    AlertDialog,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 
 interface HikmaData {
     arabe: string;
@@ -84,7 +97,18 @@ export function HomeScreen() {
     const [isGalleryOpen, setIsGalleryOpen] = useState(false);
     const [isCategoryOpen, setIsCategoryOpen] = useState(false);
     const [isToolsOpen, setIsToolsOpen] = useState(false);
+    const [showOnboarding, setShowOnboarding] = useState(false);
+    const [showSignInPopup, setShowSignInPopup] = useState(false);
     const [selectedCategory, setSelectedCategory] = useState<string>("all");
+
+    // Auth States
+    const { user, isUserLoading } = useUser();
+    const auth = useAuth();
+    const [isConnecting, setIsConnecting] = useState(false);
+    const [authEmail, setAuthEmail] = useState('');
+    const [authPassword, setAuthPassword] = useState('');
+    const [authMode, setAuthMode] = useState<'login' | 'signup'>('login');
+    const [authError, setAuthError] = useState('');
 
     // Design Filters State
     const [filters, setFilters] = useState({
@@ -98,6 +122,34 @@ export function HomeScreen() {
     const { toast } = useToast();
     const fileInputRef = useRef<HTMLInputElement>(null);
     const captureRef = useRef<HTMLDivElement>(null);
+
+    const handleEmailAuth = async () => {
+        if (!auth || isConnecting) return;
+        if (!authEmail || !authPassword) {
+            setAuthError('Veuillez remplir tous les champs.');
+            return;
+        }
+        setIsConnecting(true);
+        setAuthError('');
+
+        try {
+            if (authMode === 'signup') {
+                await createUserWithEmailAndPassword(auth, authEmail, authPassword);
+                toast({ title: 'Inscription réussie !', description: 'Bienvenue sur HikmaClips !' });
+            } else {
+                await signInWithEmailAndPassword(auth, authEmail, authPassword);
+                toast({ title: 'Connexion réussie', description: 'Bienvenue !' });
+            }
+            setShowSignInPopup(false);
+        } catch (error: any) {
+            let message = "Une erreur s'est produite.";
+            if (error.code === 'auth/email-already-in-use') message = 'Email déjà utilisé.';
+            else if (error.code === 'auth/invalid-credential') message = 'Identifiants incorrects.';
+            setAuthError(message);
+        } finally {
+            setIsConnecting(false);
+        }
+    };
 
     const cloudinaryImages = PlaceHolderImages.filter(img =>
         img.imageUrl.includes('cloudinary.com') ||
@@ -143,6 +195,9 @@ export function HomeScreen() {
     });
 
     useEffect(() => {
+        const hasSeen = localStorage.getItem('hasSeenOnboarding');
+        if (!hasSeen) setShowOnboarding(true);
+
         setFavorites(getFavorites().map(f => f.fr));
         const today = new Date();
         const dateSeed = today.getFullYear() * 365 + today.getMonth() * 31 + today.getDate();
@@ -168,6 +223,10 @@ export function HomeScreen() {
     }, [handleShuffleText, cloudinaryImages]);
 
     const handleFavorite = () => {
+        if (!user && favorites.length >= 3) {
+            setShowSignInPopup(true);
+            return;
+        }
         const isLiked = toggleFavorite(currentHikma);
         setFavorites(prev => isLiked ? [...prev, currentHikma.fr] : prev.filter(f => f !== currentHikma.fr));
     };
@@ -323,7 +382,12 @@ export function HomeScreen() {
                     <span className="text-[10px] uppercase font-bold tracking-widest">{currentHikma.category || "Inspiration"}</span>
                 </Button>
 
-                <Button variant="ghost" size="icon" className="pointer-events-auto w-11 h-11 rounded-2xl bg-[#FFFDD0]/10 backdrop-blur-md border border-[#FFFDD0]/20 text-yellow-400 shadow-xl">
+                <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => setShowSignInPopup(true)}
+                    className="pointer-events-auto w-11 h-11 rounded-2xl bg-[#FFFDD0]/10 backdrop-blur-md border border-[#FFFDD0]/20 text-yellow-400 shadow-xl"
+                >
                     <Crown className="w-5 h-5" />
                 </Button>
             </div>
@@ -402,6 +466,66 @@ export function HomeScreen() {
                 filters={filters}
                 setFilters={setFilters}
             />
+
+            {/* Onboarding Screen */}
+            <AnimatePresence>
+                {showOnboarding && (
+                    <OnboardingScreen onComplete={() => {
+                        setShowOnboarding(false);
+                        localStorage.setItem('hasSeenOnboarding', 'true');
+                    }} />
+                )}
+            </AnimatePresence>
+
+            {/* Login Popup */}
+            <AlertDialog open={showSignInPopup} onOpenChange={setShowSignInPopup}>
+                <AlertDialogContent className="max-w-md bg-background/95 backdrop-blur-xl border border-primary/20">
+                    <Button variant="ghost" size="icon" className="absolute right-2 top-2 rounded-full" onClick={() => setShowSignInPopup(false)}>
+                        <X className="h-5 w-5" />
+                    </Button>
+                    <AlertDialogHeader>
+                        <div className="flex justify-center mb-4">
+                            <Sparkles className="w-12 h-12 text-primary animate-pulse" />
+                        </div>
+                        <AlertDialogTitle className="text-2xl font-bold text-center">
+                            Rejoignez HikmaClips
+                        </AlertDialogTitle>
+                        <AlertDialogDescription className="text-center">
+                            Connectez-vous pour sauvegarder vos favoris et vos signatures personnalisées.
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+
+                    <div className="space-y-4 py-4">
+                        <Input
+                            placeholder="Email"
+                            value={authEmail}
+                            onChange={(e) => setAuthEmail(e.target.value)}
+                            disabled={isConnecting}
+                        />
+                        <Input
+                            type="password"
+                            placeholder="Mot de passe"
+                            value={authPassword}
+                            onChange={(e) => setAuthPassword(e.target.value)}
+                            disabled={isConnecting}
+                        />
+                        {authError && <p className="text-xs text-red-500 text-center">{authError}</p>}
+                        <Button
+                            className="w-full bg-primary hover:bg-primary/90"
+                            onClick={handleEmailAuth}
+                            disabled={isConnecting}
+                        >
+                            {authMode === 'login' ? 'Se connecter' : "S'inscrire"}
+                        </Button>
+                        <button
+                            className="w-full text-xs text-muted-foreground hover:underline"
+                            onClick={() => setAuthMode(authMode === 'login' ? 'signup' : 'login')}
+                        >
+                            {authMode === 'login' ? "Pas de compte ? S'inscrire" : "Déjà un compte ? Se connecter"}
+                        </button>
+                    </div>
+                </AlertDialogContent>
+            </AlertDialog>
 
             {/* Mobile Navigation Indicator / Margin Fix */}
             <div className="absolute bottom-24 left-0 right-0 pointer-events-none" />
