@@ -27,7 +27,6 @@ export function BottomNavigation({
       <div className="flex gap-2 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md rounded-2xl p-2 shadow-2xl border border-white/20 dark:border-slate-800/50">
         {items.map((item) => {
           const isActive = active === item.label;
-          const isGenerate = item.label === 'Générer' || item.label === 'Studio';
 
           return (
             <Link
@@ -36,11 +35,10 @@ export function BottomNavigation({
               onClick={() => onItemClick?.(item.label)}
               className={cn(
                 "relative flex-1 flex flex-col items-center justify-center h-14 rounded-xl transition-all duration-200",
-                isActive && !isGenerate ? "text-emerald-600 dark:text-emerald-400" : "text-slate-500 dark:text-slate-400",
-                isGenerate && "bg-emerald-600 text-white shadow-lg active:scale-95"
+                isActive ? "text-emerald-600 dark:text-emerald-400" : "text-slate-500 dark:text-slate-400"
               )}
             >
-              {isActive && !isGenerate && (
+              {isActive && (
                 <motion.div
                   layoutId="bottom-nav-active"
                   className="absolute inset-0 bg-emerald-50 dark:bg-emerald-900/30 rounded-xl"
@@ -53,9 +51,7 @@ export function BottomNavigation({
                 <div className={cn("transition-transform duration-200", isActive && "scale-110 font-bold")}>
                   {item.icon}
                 </div>
-                {!isGenerate && (
-                  <span className="text-[10px] font-medium mt-0.5">{item.label}</span>
-                )}
+                <span className="text-[10px] font-medium mt-0.5">{item.label}</span>
               </div>
             </Link>
           );
