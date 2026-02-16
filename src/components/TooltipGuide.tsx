@@ -160,12 +160,12 @@ export function TooltipGuide({ isActive, onComplete, onSkip }: TooltipGuideProps
                         transform: 'translateX(-50%)',
                     }}
                 >
-                    <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl p-5 max-w-xs border-2 border-emerald-500">
+                    <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl p-5 max-w-xs border-2 border-purple-500">
                         {/* Header */}
                         <div className="flex items-start justify-between mb-3">
                             <div className="flex items-center gap-2">
-                                <div className="w-8 h-8 rounded-full bg-emerald-100 dark:bg-emerald-900 flex items-center justify-center">
-                                    <Sparkles className="w-4 h-4 text-emerald-600" />
+                                <div className="w-8 h-8 rounded-full bg-purple-100 dark:bg-purple-800 flex items-center justify-center">
+                                    <Sparkles className="w-4 h-4 text-purple-500" />
                                 </div>
                                 <h3 className="font-bold text-sm text-foreground">{step.title}</h3>
                             </div>
@@ -190,7 +190,7 @@ export function TooltipGuide({ isActive, onComplete, onSkip }: TooltipGuideProps
                                     className={cn(
                                         'h-1.5 rounded-full transition-all duration-300',
                                         index === currentStep
-                                            ? 'w-6 bg-emerald-600'
+                                            ? 'w-6 bg-purple-500'
                                             : 'w-1.5 bg-gray-300 dark:bg-gray-700'
                                     )}
                                 />
@@ -211,7 +211,7 @@ export function TooltipGuide({ isActive, onComplete, onSkip }: TooltipGuideProps
                             <Button
                                 size="sm"
                                 onClick={handleNext}
-                                className="bg-emerald-600 hover:bg-emerald-700 text-xs"
+                                className="bg-purple-500 hover:bg-purple-600 text-xs"
                             >
                                 {currentStep === steps.length - 1 ? 'Terminer' : 'Suivant'}
                             </Button>
@@ -219,7 +219,7 @@ export function TooltipGuide({ isActive, onComplete, onSkip }: TooltipGuideProps
 
                         {/* Arrow pointing to target */}
                         <div className="absolute -bottom-2 left-1/2 -translate-x-1/2">
-                            <ArrowDown className="w-5 h-5 text-emerald-500" />
+                            <ArrowDown className="w-5 h-5 text-purple-500" />
                         </div>
                     </div>
                 </motion.div>

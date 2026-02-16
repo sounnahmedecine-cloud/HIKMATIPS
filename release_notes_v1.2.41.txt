@@ -1,0 +1,68 @@
+Version 1.2.41 - Thème Pastel Lavande/Rose
+==========================================
+
+Date de release: 16 février 2026
+
+🎨 CHANGEMENTS MAJEURS
+---------------------
+
+### Nouveau Thème Pastel
+Application complète du thème pastel lavande/rose à toute l'application, remplaçant l'ancien thème vert émeraude.
+
+### Pages Mises à Jour
+
+✨ **Accueil**
+- Indicateurs de swiper en violet pastel
+- Harmonisation des couleurs avec le nouveau thème
+
+📂 **Catégories**
+- Icônes avec dégradé violet/rose
+- Amélioration visuelle des cartes de catégories
+
+⚡ **Génération**
+- Boutons et tags en violet
+- Interface plus douce et cohérente
+
+⭐ **Favoris**
+- Texte et accents en violet
+- Meilleure lisibilité
+
+🎨 **Studio**
+- Thème pastel déjà appliqué
+- Cohérence visuelle maintenue
+
+🧭 **Navigation**
+- Boutons actifs en violet
+- Indicateurs visuels améliorés
+
+### Palette de Couleurs
+
+**Couleur Principale**
+- Lavande: #A78BFA (purple-400)
+
+**Couleurs d'Accent**
+- Rose pâle
+- Pêche
+
+**Boutons**
+- Violet doux avec effet hover plus foncé
+- Transitions fluides
+
+🔧 DÉTAILS TECHNIQUES
+--------------------
+- Version Code: 65
+- Version Name: 1.2.41
+- Taille de l'APK: ~10 MB
+- SDK Min: 22
+- SDK Target: 34
+
+📦 FICHIERS
+-----------
+- APK Release: app-release.apk
+- Localisation: HIKMATIPS-main/android/app/build/outputs/apk/release/
+
+🎯 PROCHAINES ÉTAPES
+-------------------
+- Tests utilisateurs sur le nouveau thème
+- Collecte de feedback
+- Ajustements de couleurs si nécessaire

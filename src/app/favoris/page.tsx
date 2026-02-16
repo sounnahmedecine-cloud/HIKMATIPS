@@ -21,8 +21,8 @@ export default function FavorisPage() {
     return (
         <div className="max-w-2xl mx-auto space-y-8 pb-32">
             <header className="text-center pt-8">
-                <h1 className="text-4xl font-black text-slate-900 dark:text-emerald-50 tracking-tight">
-                    Mes <span className="text-emerald-500">Favoris</span>
+                <h1 className="text-4xl font-black text-slate-900 dark:text-purple-50 tracking-tight">
+                    Mes <span className="text-purple-400">Favoris</span>
                 </h1>
                 <p className="text-slate-500 mt-2">Tes pépites de sagesse enregistrées</p>
             </header>
@@ -51,7 +51,7 @@ export default function FavorisPage() {
                                 <Card className="group border-none shadow-md hover:shadow-xl transition-all duration-300 rounded-3xl overflow-hidden bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm">
                                     <CardContent className="p-6 flex items-center gap-6">
                                         <div className="flex-1 space-y-2">
-                                            <p className="text-lg font-arabic text-emerald-700 dark:text-emerald-400 leading-relaxed line-clamp-1">
+                                            <p className="text-lg font-arabic text-purple-600 dark:text-purple-400 leading-relaxed line-clamp-1">
                                                 {hikma.arabe}
                                             </p>
                                             <p className="text-slate-700 dark:text-slate-200 font-medium line-clamp-2">
@@ -65,14 +65,14 @@ export default function FavorisPage() {
                                         </div>
                                         <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                                             <button
-                                                className="p-2 text-slate-400 hover:text-red-500 transition-colors"
+                                                className="p-2 text-slate-400 hover:text-purple-400 transition-colors"
                                                 onClick={() => handleRemove(hikma)}
                                                 aria-label="Supprimer"
                                             >
                                                 <Trash2 className="w-5 h-5" />
                                             </button>
                                             <button
-                                                className="p-2 text-slate-400 hover:text-emerald-500 transition-colors"
+                                                className="p-2 text-slate-400 hover:text-purple-500 transition-colors"
                                                 aria-label="Partager"
                                             >
                                                 <Share2 className="w-5 h-5" />

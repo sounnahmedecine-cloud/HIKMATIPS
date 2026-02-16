@@ -9,14 +9,16 @@ import {
     Settings,
     Rocket,
     MessageCircle,
-    X
+    X,
+    Image as ImageIcon,
+    AtSign
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface ToolsDrawerProps {
     isOpen: boolean;
     onClose: () => void;
-    onToolSelect: (tool: 'font' | 'format' | 'resources' | 'settings' | 'updates' | 'feedback') => void;
+    onToolSelect: (tool: 'font' | 'format' | 'resources' | 'settings' | 'updates' | 'feedback' | 'signature' | 'gallery') => void;
 }
 
 export function ToolsDrawer({ isOpen, onClose, onToolSelect }: ToolsDrawerProps) {
@@ -50,6 +52,14 @@ export function ToolsDrawer({ isOpen, onClose, onToolSelect }: ToolsDrawerProps)
             icon: Rocket,
             label: 'Nouveautés',
             description: 'Quoi de neuf ?',
+            color: 'bg-purple-500',
+            hoverColor: 'hover:bg-purple-600',
+        },
+        {
+            id: 'signature' as const,
+            icon: AtSign,
+            label: 'Signature',
+            description: 'Votre @pseudo',
             color: 'bg-emerald-600',
             hoverColor: 'hover:bg-emerald-700',
         },

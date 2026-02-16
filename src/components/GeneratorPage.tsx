@@ -37,6 +37,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { generateHadith } from '@/ai/flows/generate-hadith';
 import { Share } from '@capacitor/share';
 import { Filesystem, Directory } from '@capacitor/filesystem';
@@ -55,7 +56,9 @@ import { CategoryDrawer } from '@/components/CategoryDrawer';
 import { ToolsDrawer } from '@/components/ToolsDrawer';
 
 
-import { cn } from '@/lib/utils';
+import { getFavorites, toggleFavorite, cn } from '@/lib/utils';
+
+
 
 
 type Content = {
@@ -87,7 +90,8 @@ export default function GeneratorPage() {
   const [generationCount, setGenerationCount] = useState(0);
   const [showSignInPopup, setShowSignInPopup] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(false);
-  const [activeMobileTool, setActiveMobileTool] = useState<'font' | 'format' | 'background' | null>(null);
+  const [activeMobileTool, setActiveMobileTool] = useState<'font' | 'format' | 'background' | 'signature' | null>(null);
+
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isCategoryDrawerOpen, setIsCategoryDrawerOpen] = useState(false);
   const [isToolsDrawerOpen, setIsToolsDrawerOpen] = useState(false);
@@ -101,6 +105,28 @@ export default function GeneratorPage() {
   const [fontFamily, setFontFamily] = useState("'Amiri', serif");
   const [format, setFormat] = useState<'story' | 'square'>('story');
   const [signature, setSignature] = useState('hikmaclips.woosenteur.fr');
+  const [favorites, setFavorites] = useState<string[]>([]);
+
+  useEffect(() => {
+    setFavorites(getFavorites().map(f => f.fr));
+  }, []);
+
+  const handleFavorite = () => {
+    if (!content) return;
+    const hikma = {
+      fr: content.content,
+      arabe: '', // IA output is French by default in this app
+      source: content.source
+    };
+    const isLiked = toggleFavorite(hikma);
+    setFavorites(prev => isLiked ? [...prev, hikma.fr] : prev.filter(f => f !== hikma.fr));
+
+    toast({
+      title: isLiked ? 'Ajouté aux favoris' : 'Retiré des favoris',
+      description: isLiked ? 'Retrouvez cette pépite dans vos favoris.' : 'Contenu retiré de vos favoris.',
+    });
+  };
+
   const [showAnimations, setShowAnimations] = useState(true);
 
   // Image Filter States
@@ -640,7 +666,10 @@ export default function GeneratorPage() {
         onUpload={() => document.getElementById('file-upload')?.click()}
         onShare={handleShareImage}
         onDownload={handleDownloadImage}
+        onFavorite={handleFavorite}
+        isLiked={content ? favorites.includes(content.content) : false}
       />
+
       <MobileTopicInput
         value={topic}
         onChange={setTopic}
@@ -655,7 +684,9 @@ export default function GeneratorPage() {
         title={
           activeMobileTool === 'font' ? 'Typographie' :
             activeMobileTool === 'format' ? 'Format & Style' :
-              activeMobileTool === 'background' ? 'Arrière-plan' : ''
+              activeMobileTool === 'background' ? 'Arrière-plan' :
+                activeMobileTool === 'signature' ? 'Signature' : ''
+
         }
       >
         {activeMobileTool === 'font' && (
@@ -686,16 +717,32 @@ export default function GeneratorPage() {
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-3">
               <Button variant="outline" className="h-20 rounded-2xl flex flex-col gap-2 border-2 border-dashed border-gray-200 text-gray-900 hover:bg-gray-50 hover:text-gray-900" onClick={handleRandomBackground}>
-                <ImageIcon className="w-5 h-5 text-emerald-600" />
+                <ImageIcon className="w-5 h-5 text-purple-500" />
                 <span className="text-xs font-bold">Aléatoire</span>
               </Button>
               <Button variant="outline" className="h-20 rounded-2xl flex flex-col gap-2 border-2 border-dashed border-gray-200 text-gray-900 hover:bg-gray-50 hover:text-gray-900" onClick={() => document.getElementById('file-upload')?.click()}>
-                <Upload className="w-5 h-5 text-emerald-600" />
+                <Upload className="w-5 h-5 text-purple-500" />
                 <span className="text-xs font-bold">Importer</span>
               </Button>
             </div>
           </div>
         )}
+
+        {activeMobileTool === 'signature' && (
+          <div className="space-y-4">
+            <Label className="text-[10px] uppercase tracking-widest font-bold text-gray-500">Votre Signature</Label>
+            <Input
+              value={signature}
+              onChange={(e) => setSignature(e.target.value)}
+              placeholder="@votre_pseudo"
+              className="h-12 rounded-2xl bg-muted/30 border-none ring-1 ring-border focus-visible:ring-primary"
+            />
+            <p className="text-[10px] text-muted-foreground italic">
+              Cette signature apparaîtra en bas à gauche de vos créations.
+            </p>
+          </div>
+        )}
+
       </MobileDrawer>
 
       <BottomControls
@@ -734,7 +781,10 @@ export default function GeneratorPage() {
             router.push('/updates');
           } else if (tool === 'feedback') {
             router.push('/feedback');
+          } else if (tool === 'signature') {
+            setActiveMobileTool('signature');
           } else if (tool === 'settings') {
+
             setIsSidebarOpen(true);
           }
         }}
@@ -749,7 +799,7 @@ export default function GeneratorPage() {
           setAuthPassword('');
         }
       }}>
-        <AlertDialogContent className="max-w-md overflow-hidden bg-background/95 backdrop-blur-xl border-emerald-500/20">
+        <AlertDialogContent className="max-w-md overflow-hidden bg-background/95 backdrop-blur-xl border-purple-500/20">
           <Button
             variant="ghost"
             size="icon"
@@ -761,9 +811,9 @@ export default function GeneratorPage() {
           </Button>
           <AlertDialogHeader>
             <div className="flex justify-center mb-4">
-              <Sparkles className="w-12 h-12 text-emerald-500 animate-pulse" />
+              <Sparkles className="w-12 h-12 text-purple-500 animate-pulse" />
             </div>
-            <AlertDialogTitle className="text-2xl font-display text-center text-emerald-900 dark:text-emerald-100">
+            <AlertDialogTitle className="text-2xl font-display text-center text-purple-800 dark:text-purple-100">
               Débloquez l'expérience complète
             </AlertDialogTitle>
             <AlertDialogDescription className="text-center text-muted-foreground pt-2">
@@ -773,27 +823,27 @@ export default function GeneratorPage() {
 
           <div className="space-y-6 py-4">
             {/* Avantages */}
-            <div className="space-y-3 bg-emerald-50/50 dark:bg-emerald-900/10 p-4 rounded-2xl border border-emerald-100 dark:border-emerald-800">
-              <h4 className="font-bold text-sm text-emerald-800 dark:text-emerald-200 flex items-center gap-2">
-                <span className="bg-emerald-200 dark:bg-emerald-800 p-1 rounded-full text-[10px]">VIP</span>
+            <div className="space-y-3 bg-purple-50/50 dark:bg-purple-800/10 p-4 rounded-2xl border border-purple-100 dark:border-purple-700">
+              <h4 className="font-bold text-sm text-purple-700 dark:text-purple-200 flex items-center gap-2">
+                <span className="bg-purple-200 dark:bg-purple-700 p-1 rounded-full text-[10px]">VIP</span>
                 Pourquoi s'inscrire ?
               </h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
                 <li className="flex items-center gap-2">
-                  <span className="text-emerald-500">✓</span> Générations illimitées avec l'IA
+                  <span className="text-purple-500">✓</span> Générations illimitées avec l'IA
                 </li>
                 <li className="flex items-center gap-2">
-                  <span className="text-emerald-500">✓</span> Accès aux thèmes exclusifs
+                  <span className="text-purple-500">✓</span> Accès aux thèmes exclusifs
                 </li>
                 <li className="flex items-center gap-2">
-                  <span className="text-emerald-500">✓</span> Sauvegarde de vos créations (Bientôt)
+                  <span className="text-purple-500">✓</span> Sauvegarde de vos créations (Bientôt)
                 </li>
               </ul>
             </div>
 
             {/* Message d'invitation */}
             <div className="text-center space-y-2">
-              <p className="text-sm font-medium text-emerald-700 dark:text-emerald-400">
+              <p className="text-sm font-medium text-purple-600 dark:text-purple-400">
                 🚀 Soutenez le projet en invitant vos proches à tester HikmaClips !
               </p>
             </div>
@@ -824,7 +874,7 @@ export default function GeneratorPage() {
 
               <Button
                 onClick={handleEmailAuth}
-                className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold h-12 rounded-xl shadow-lg shadow-emerald-500/20"
+                className="w-full bg-purple-500 hover:bg-purple-600 text-white font-bold h-12 rounded-xl shadow-lg shadow-purple-500/20"
                 disabled={isConnecting}
               >
                 {isConnecting ? (
@@ -837,9 +887,9 @@ export default function GeneratorPage() {
 
               <p className="text-center text-xs text-muted-foreground mt-2">
                 {authMode === 'signup' ? (
-                  <>Déjà inscrit ? <button onClick={() => setAuthMode('login')} className="text-emerald-600 font-bold hover:underline">Connexion</button></>
+                  <>Déjà inscrit ? <button onClick={() => setAuthMode('login')} className="text-purple-500 font-bold hover:underline">Connexion</button></>
                 ) : (
-                  <>Pas de compte ? <button onClick={() => setAuthMode('signup')} className="text-emerald-600 font-bold hover:underline">S'inscrire gratuitement</button></>
+                  <>Pas de compte ? <button onClick={() => setAuthMode('signup')} className="text-purple-500 font-bold hover:underline">S'inscrire gratuitement</button></>
                 )}
               </p>
             </div>

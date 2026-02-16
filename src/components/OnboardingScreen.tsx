@@ -316,7 +316,7 @@ const slides = [
     subtitle: "Diffusez la sagesse de l'Islam avec style",
     Illustration: () => (
       <div className="relative w-64 h-64 flex items-center justify-center">
-        <div className="absolute inset-0 bg-emerald-500/10 blur-[60px] rounded-full animate-pulse-soft" />
+        <div className="absolute inset-0 bg-purple-500/10 blur-[60px] rounded-full animate-pulse-soft" />
         <img
           src="https://res.cloudinary.com/db2ljqpdt/image/upload/v1770580517/ChatGPT_Image_2_f%C3%A9vr._2026_23_43_44_qmfwbc_1_f4huf1.png"
           alt="HikmaClips Logo"
@@ -439,13 +439,13 @@ export default function OnboardingScreen({ onComplete }: OnboardingScreenProps) 
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: index * 0.2 }}
-                    className="flex items-center gap-4 bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 rounded-xl p-4 border-2 border-emerald-200 dark:border-emerald-800"
+                    className="flex items-center gap-4 bg-gradient-to-r from-purple-50 to-teal-50 dark:from-purple-800/20 dark:to-teal-900/20 rounded-xl p-4 border-2 border-purple-200 dark:border-purple-700"
                   >
-                    <div className="flex-shrink-0 w-12 h-12 rounded-full bg-gradient-to-br from-emerald-600 to-teal-700 flex items-center justify-center text-white font-bold text-xl shadow-lg">
+                    <div className="flex-shrink-0 w-12 h-12 rounded-full bg-gradient-to-br from-purple-500 to-teal-700 flex items-center justify-center text-white font-bold text-xl shadow-lg">
                       {step.icon}
                     </div>
                     <div className="flex-1 text-left">
-                      <div className="text-xs font-bold text-emerald-700 dark:text-emerald-400 uppercase tracking-wide mb-1">
+                      <div className="text-xs font-bold text-purple-600 dark:text-purple-400 uppercase tracking-wide mb-1">
                         Étape {step.number}
                       </div>
                       <div className="text-sm font-semibold text-foreground">

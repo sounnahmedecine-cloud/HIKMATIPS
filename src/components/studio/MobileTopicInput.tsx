@@ -49,10 +49,10 @@ export function MobileTopicInput({ value, onChange, isVisible, placeholder, onEn
                 >
                     <div className="relative group">
                         {/* Enhanced Glassmorphism Container */}
-                        <div className="bg-white/95 dark:bg-gray-900/95 backdrop-blur-2xl rounded-2xl border-2 border-emerald-600/30 shadow-[0_12px_40px_rgba(0,0,0,0.2)]">
+                        <div className="bg-white/95 dark:bg-gray-900/95 backdrop-blur-2xl rounded-2xl border-2 border-purple-500/30 shadow-[0_12px_40px_rgba(0,0,0,0.2)]">
                             <div className="flex items-center gap-2 p-4">
-                                <div className="flex-shrink-0 w-10 h-10 rounded-full bg-emerald-600/10 flex items-center justify-center">
-                                    <Search className="w-5 h-5 text-emerald-600" />
+                                <div className="flex-shrink-0 w-10 h-10 rounded-full bg-purple-500/10 flex items-center justify-center">
+                                    <Search className="w-5 h-5 text-purple-500" />
                                 </div>
 
                                 <div className="flex-1 flex flex-col gap-1">
@@ -81,7 +81,7 @@ export function MobileTopicInput({ value, onChange, isVisible, placeholder, onEn
                                         </Button>
                                         <Button
                                             onClick={handleSubmit}
-                                            className="h-10 w-10 rounded-full bg-emerald-600 hover:bg-emerald-700 transition-colors flex-shrink-0 shadow-lg"
+                                            className="h-10 w-10 rounded-full bg-purple-500 hover:bg-purple-600 transition-colors flex-shrink-0 shadow-lg"
                                             size="icon"
                                         >
                                             <Check className="w-5 h-5 text-white" />
@@ -95,14 +95,14 @@ export function MobileTopicInput({ value, onChange, isVisible, placeholder, onEn
                                         transition={{ repeat: Infinity, duration: 2 }}
                                         className="pr-2"
                                     >
-                                        <Sparkles className="w-5 h-5 text-emerald-600/40" />
+                                        <Sparkles className="w-5 h-5 text-purple-500/40" />
                                     </motion.div>
                                 )}
                             </div>
                         </div>
 
                         {/* Visual indicator that it belongs to the dock */}
-                        <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-5 h-5 bg-white/90 dark:bg-gray-900/90 backdrop-blur-2xl border-r-2 border-b-2 border-emerald-600/30 rotate-45 -z-10" />
+                        <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-5 h-5 bg-white/90 dark:bg-gray-900/90 backdrop-blur-2xl border-r-2 border-b-2 border-purple-500/30 rotate-45 -z-10" />
                     </div>
                 </motion.div>
             )}

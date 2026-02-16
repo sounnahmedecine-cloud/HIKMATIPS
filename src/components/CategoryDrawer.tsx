@@ -39,11 +39,11 @@ export function CategoryDrawer({ isOpen, onClose, category, onSelectCategory }: 
             icon: BookMarked,
             label: 'Coran',
             description: 'Versets du Livre Sacré',
-            color: 'bg-emerald-600',
-            hoverColor: 'hover:bg-emerald-700',
-            borderColor: 'border-emerald-600',
-            shadowColor: 'shadow-emerald-600/50',
-            textColor: 'text-emerald-600'
+            color: 'bg-purple-500',
+            hoverColor: 'hover:bg-purple-600',
+            borderColor: 'border-purple-500',
+            shadowColor: 'shadow-purple-500/50',
+            textColor: 'text-purple-500'
         },
         {
             id: 'ramadan' as Category,

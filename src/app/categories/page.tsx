@@ -11,8 +11,6 @@ const CATEGORIES = [
     { id: "famille", label: "Famille & Mariage", emoji: "👨‍👩‍👧", desc: "Relations pieuses", slug: "famille" },
     { id: "sante", label: "Santé & Anxiété", emoji: "❤️", desc: "Corps/esprit, guérison", slug: "sante" },
     { id: "repentir", label: "Repentir (Tawba)", emoji: "🙏", desc: "Purification, pardon", slug: "repentir" },
-    { id: "travail", label: "Travail/Business", emoji: "📈", desc: "Productivité halal", slug: "travail" },
-    { id: "etudes", label: "Études/Examen", emoji: "📚", desc: "Apprentissage, succès", slug: "etudes" },
 ];
 
 export default function CategoriesPage() {
@@ -21,7 +19,7 @@ export default function CategoriesPage() {
     return (
         <div className="min-h-full pb-32">
             <div className="mb-8 p-4">
-                <h1 className="text-3xl font-bold text-slate-900 dark:text-emerald-50 mb-2">Catégories</h1>
+                <h1 className="text-3xl font-bold text-slate-900 dark:text-purple-50 mb-2">Catégories</h1>
                 <p className="text-slate-500 dark:text-slate-400">Choisissez un thème pour vos rappels quotidiens.</p>
             </div>
 
@@ -38,11 +36,11 @@ export default function CategoriesPage() {
                             onClick={() => router.push(`/generate/${cat.slug}`)}
                         >
                             <CardContent className="p-6 text-center">
-                                <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center shadow-lg group-hover:scale-110 transition-all">
+                                <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-purple-400 to-pink-400 flex items-center justify-center shadow-lg group-hover:scale-110 transition-all">
                                     <span className="text-3xl">{cat.emoji}</span>
                                 </div>
-                                <h3 className="font-bold text-lg mb-1 dark:text-emerald-50">{cat.label}</h3>
-                                <p className="text-xs opacity-75 dark:text-emerald-200/60 leading-tight">{cat.desc}</p>
+                                <h3 className="font-bold text-lg mb-1 dark:text-purple-50">{cat.label}</h3>
+                                <p className="text-xs opacity-75 dark:text-purple-200/60 leading-tight">{cat.desc}</p>
                             </CardContent>
                         </Card>
                     </motion.div>

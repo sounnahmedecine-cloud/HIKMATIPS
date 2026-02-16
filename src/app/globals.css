@@ -4,46 +4,46 @@
 
 @layer base {
   :root {
-    /* 🌿 HikmaClips Color System - Green + Orange */
-    --background: 0 0% 100%;
-    --foreground: 216 57% 10%;
+    /* 🌸 HikmaClips Pastel Theme - Soft & Inviting */
+    --background: 210 40% 98%;
+    --foreground: 220 20% 20%;
     --card: 0 0% 100%;
-    --card-foreground: 216 57% 10%;
+    --card-foreground: 220 20% 20%;
     --popover: 0 0% 100%;
-    --popover-foreground: 216 57% 10%;
+    --popover-foreground: 220 20% 20%;
 
-    /* Primary - Hikma Green #2E7D32 */
-    --primary: 122 45% 34%;
+    /* Primary - Soft Lavender #A78BFA */
+    --primary: 258 90% 66%;
     --primary-foreground: 0 0% 100%;
 
-    /* Secondary */
-    --secondary: 214 20% 96%;
-    --secondary-foreground: 214 49% 15%;
+    /* Secondary - Soft Pink */
+    --secondary: 340 82% 92%;
+    --secondary-foreground: 340 50% 30%;
 
-    /* Accent - Hikma Orange #FF9100 */
-    --accent: 34 100% 50%;
-    --accent-foreground: 0 0% 100%;
+    /* Accent - Soft Peach #FDBA74 */
+    --accent: 32 98% 73%;
+    --accent-foreground: 32 50% 20%;
 
-    /* Muted */
-    --muted: 214 20% 96%;
-    --muted-foreground: 214 15% 45%;
+    /* Muted - Light Blue Gray */
+    --muted: 214 32% 95%;
+    --muted-foreground: 214 15% 50%;
 
     /* Destructive */
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
 
     /* Border & Input */
-    --border: 214 20% 92%;
-    --input: 214 20% 92%;
-    --ring: 122 45% 34%;
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 258 90% 66%;
 
     --radius: 1.25rem;
 
-    --chart-1: 122 45% 34%;
-    --chart-2: 34 100% 50%;
-    --chart-3: 250 84% 54%;
-    --chart-4: 43 74% 66%;
-    --chart-5: 27 87% 67%;
+    --chart-1: 258 90% 66%;
+    --chart-2: 32 98% 73%;
+    --chart-3: 340 82% 67%;
+    --chart-4: 173 58% 70%;
+    --chart-5: 43 74% 66%;
   }
 
   .dark {

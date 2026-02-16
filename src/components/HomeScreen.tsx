@@ -5,8 +5,13 @@ import { useState, useEffect } from "react"
 import { useSwipeable } from "react-swipeable"
 import { HikmaCard } from "@/components/HikmaCard"
 import { motion, AnimatePresence } from "framer-motion"
+import { Share } from '@capacitor/share';
+import { Filesystem, Directory } from '@capacitor/filesystem';
+import html2canvas from 'html2canvas';
+import { useToast } from "@/hooks/use-toast";
 
 const MOCK_HIKMAS = [
+
     {
         arabe: "إِنَّ مَعَ الْعُسْرِ يُسْرًا",
         fr: "À côté de la difficulté est, certes, une facilité.",
@@ -30,6 +35,9 @@ export function HomeScreen() {
     const [index, setIndex] = useState(0);
     const [direction, setDirection] = useState(0);
     const [favorites, setFavorites] = useState<string[]>([]);
+    const [isGenerating, setIsGenerating] = useState(false);
+    const { toast } = useToast();
+
 
     useEffect(() => {
         setFavorites(getFavorites().map(f => f.fr));
@@ -50,7 +58,58 @@ export function HomeScreen() {
         setIndex((prev) => (prev - 1 + MOCK_HIKMAS.length) % MOCK_HIKMAS.length);
     };
 
+    const handleShare = async (hikma: any) => {
+        const previewEl = document.getElementById(`hikma-card-${index}`);
+        if (!previewEl) return;
+
+        setIsGenerating(true);
+        try {
+            const canvas = await html2canvas(previewEl, { useCORS: true, scale: 2 });
+            const base64Data = canvas.toDataURL('image/png').split(',')[1];
+            const fileName = `hikma_${Date.now()}.png`;
+
+            const savedFile = await Filesystem.writeFile({
+                path: fileName,
+                data: base64Data,
+                directory: Directory.Cache,
+            });
+
+            await Share.share({
+                title: 'Hikma du jour',
+                text: `${hikma.fr} - ${hikma.source}`,
+                files: [savedFile.uri],
+            });
+        } catch (error) {
+            console.error(error);
+            toast({ title: "Erreur", description: "Le partage a échoué.", variant: "destructive" });
+        } finally {
+            setIsGenerating(false);
+        }
+    };
+
+    const handleDownload = async (hikma: any) => {
+        const previewEl = document.getElementById(`hikma-card-${index}`);
+        if (!previewEl) return;
+
+        setIsGenerating(true);
+        try {
+            const canvas = await html2canvas(previewEl, { useCORS: true, scale: 2 });
+            const dataUrl = canvas.toDataURL('image/png');
+            const link = document.createElement('a');
+            link.download = `hikma_${Date.now()}.png`;
+            link.href = dataUrl;
+            link.click();
+            toast({ title: "Succès", description: "Image téléchargée !" });
+        } catch (error) {
+            console.error(error);
+            toast({ title: "Erreur", description: "Le téléchargement a échoué.", variant: "destructive" });
+        } finally {
+            setIsGenerating(false);
+        }
+    };
+
     const handlers = useSwipeable({
+
         onSwipedLeft: nextHikma,
         onSwipedRight: prevHikma,
         trackMouse: true
@@ -68,13 +127,16 @@ export function HomeScreen() {
                     transition={{ type: "spring", stiffness: 300, damping: 30 }}
                     className="w-full h-full flex items-center justify-center p-4"
                 >
-                    <HikmaCard
-                        hikma={MOCK_HIKMAS[index]}
-                        isLiked={favorites.includes(MOCK_HIKMAS[index].fr)}
-                        onFavorite={() => handleFavorite(MOCK_HIKMAS[index])}
-                        onShare={() => console.log("Share", index)}
-                        onDownload={() => console.log("Download", index)}
-                    />
+                    <div id={`hikma-card-${index}`} className="w-full h-full flex items-center justify-center">
+                        <HikmaCard
+                            hikma={MOCK_HIKMAS[index]}
+                            isLiked={favorites.includes(MOCK_HIKMAS[index].fr)}
+                            onFavorite={() => handleFavorite(MOCK_HIKMAS[index])}
+                            onShare={() => handleShare(MOCK_HIKMAS[index])}
+                            onDownload={() => handleDownload(MOCK_HIKMAS[index])}
+                        />
+                    </div>
+
                 </motion.div>
             </AnimatePresence>
 
@@ -83,7 +145,7 @@ export function HomeScreen() {
                 {MOCK_HIKMAS.map((_, i) => (
                     <div
                         key={i}
-                        className={`w-2 h-2 rounded-full transition-all ${i === index ? 'bg-emerald-500 w-4' : 'bg-slate-300 dark:bg-slate-700'}`}
+                        className={`w-2 h-2 rounded-full transition-all ${i === index ? 'bg-purple-400 w-4' : 'bg-slate-300 dark:bg-slate-700'}`}
                     />
                 ))}
             </div>
