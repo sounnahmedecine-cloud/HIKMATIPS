@@ -30,33 +30,33 @@ export function CategoryDrawer({ isOpen, onClose, category, onSelectCategory }: 
             icon: BookOpen,
             label: 'Hadith',
             description: 'Paroles du Prophète ﷺ',
-            color: 'bg-blue-500',
-            hoverColor: 'hover:bg-blue-600',
-            borderColor: 'border-blue-500',
-            shadowColor: 'shadow-blue-500/50',
-            textColor: 'text-blue-500'
+            color: 'bg-emerald-600',
+            hoverColor: 'hover:bg-emerald-700',
+            borderColor: 'border-emerald-600',
+            shadowColor: 'shadow-emerald-600/50',
+            textColor: 'text-emerald-600'
         },
         {
             id: 'coran' as Category,
             icon: BookMarked,
             label: 'Coran',
             description: 'Versets du Livre Sacré',
-            color: 'bg-purple-500',
-            hoverColor: 'hover:bg-purple-600',
-            borderColor: 'border-purple-500',
-            shadowColor: 'shadow-purple-500/50',
-            textColor: 'text-purple-500'
+            color: 'bg-emerald-700',
+            hoverColor: 'hover:bg-emerald-800',
+            borderColor: 'border-emerald-700',
+            shadowColor: 'shadow-emerald-700/50',
+            textColor: 'text-emerald-700'
         },
         {
             id: 'ramadan' as Category,
             icon: Moon,
             label: 'Ramadan',
             description: 'Rappels du mois béni',
-            color: 'bg-indigo-600',
-            hoverColor: 'hover:bg-indigo-700',
-            borderColor: 'border-indigo-600',
-            shadowColor: 'shadow-indigo-600/50',
-            textColor: 'text-indigo-600'
+            color: 'bg-orange-500',
+            hoverColor: 'hover:bg-orange-600',
+            borderColor: 'border-orange-500',
+            shadowColor: 'shadow-orange-500/50',
+            textColor: 'text-orange-500'
         },
         {
             id: 'thematique' as Category,
@@ -85,11 +85,11 @@ export function CategoryDrawer({ isOpen, onClose, category, onSelectCategory }: 
             icon: Sparkles,
             label: 'Citadelle',
             description: 'Douas & Invocations',
-            color: 'bg-teal-600',
-            hoverColor: 'hover:bg-teal-700',
-            borderColor: 'border-teal-600',
-            shadowColor: 'shadow-teal-600/50',
-            textColor: 'text-teal-600'
+            color: 'bg-emerald-500',
+            hoverColor: 'hover:bg-emerald-600',
+            borderColor: 'border-emerald-500',
+            shadowColor: 'shadow-emerald-500/50',
+            textColor: 'text-emerald-500'
         },
     ];
 

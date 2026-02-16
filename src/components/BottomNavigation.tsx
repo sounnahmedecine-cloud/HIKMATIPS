@@ -36,14 +36,14 @@ export function BottomNavigation({
               onClick={() => onItemClick?.(item.label)}
               className={cn(
                 "relative flex-1 flex flex-col items-center justify-center h-14 rounded-xl transition-all duration-200",
-                isActive && !isGenerate ? "text-purple-500 dark:text-purple-400" : "text-slate-500 dark:text-slate-400",
-                isGenerate && "bg-purple-400 text-white shadow-lg active:scale-95"
+                isActive && !isGenerate ? "text-emerald-600 dark:text-emerald-400" : "text-slate-500 dark:text-slate-400",
+                isGenerate && "bg-emerald-600 text-white shadow-lg active:scale-95"
               )}
             >
               {isActive && !isGenerate && (
                 <motion.div
                   layoutId="bottom-nav-active"
-                  className="absolute inset-0 bg-purple-50 dark:bg-purple-800/30 rounded-xl"
+                  className="absolute inset-0 bg-emerald-50 dark:bg-emerald-900/30 rounded-xl"
                   initial={false}
                   transition={{ type: "spring", stiffness: 380, damping: 30 }}
                 />
