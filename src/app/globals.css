@@ -4,46 +4,41 @@
 
 @layer base {
   :root {
-    /* 🌸 HikmaClips Pastel Theme - Soft & Inviting */
-    --background: 210 40% 98%;
+    /* 🌸 HikmaClips Cream Theme - Elegant & Sacred */
+    --background: 60 100% 97%;
+    /* #FFFDD0 base shade */
     --foreground: 220 20% 20%;
     --card: 0 0% 100%;
     --card-foreground: 220 20% 20%;
     --popover: 0 0% 100%;
     --popover-foreground: 220 20% 20%;
 
-    /* Primary - Soft Lavender #A78BFA */
-    --primary: 258 90% 66%;
-    --primary-foreground: 0 0% 100%;
+    /* Primary - Cream Pastel #FFFDD0 */
+    --primary: 60 100% 91%;
+    --primary-foreground: 258 90% 20%;
 
-    /* Secondary - Soft Pink */
-    --secondary: 340 82% 92%;
-    --secondary-foreground: 340 50% 30%;
+    /* Secondary - Hikma Green #2E7D32 */
+    --secondary: 122 45% 34%;
+    --secondary-foreground: 0 0% 100%;
 
-    /* Accent - Soft Peach #FDBA74 */
-    --accent: 32 98% 73%;
-    --accent-foreground: 32 50% 20%;
+    /* Accent - Hikma Orange #F59E0B */
+    --accent: 38 92% 50%;
+    --accent-foreground: 0 0% 100%;
 
-    /* Muted - Light Blue Gray */
-    --muted: 214 32% 95%;
-    --muted-foreground: 214 15% 50%;
-
-    /* Destructive */
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
+    /* Muted */
+    --muted: 60 30% 92%;
+    --muted-foreground: 60 10% 40%;
 
     /* Border & Input */
-    --border: 214 32% 91%;
-    --input: 214 32% 91%;
-    --ring: 258 90% 66%;
+    --border: 60 30% 85%;
+    --input: 60 30% 85%;
+    --ring: 122 45% 34%;
 
-    --radius: 1.25rem;
+    --radius: 9999px;
+    /* Force Rounded FULL everywhere */
 
-    --chart-1: 258 90% 66%;
-    --chart-2: 32 98% 73%;
-    --chart-3: 340 82% 67%;
-    --chart-4: 173 58% 70%;
-    --chart-5: 43 74% 66%;
+    --chart-1: 122 45% 34%;
+    --chart-2: 38 92% 50%;
   }
 
   .dark {
@@ -136,6 +131,21 @@
   /* Press Feedback */
   .btn-press {
     @apply active:scale-95 transition-transform duration-150;
+  }
+
+  /* Force rounded for all buttons by default */
+  button,
+  .button {
+    @apply rounded-full;
+  }
+
+  /* Global Hover Effects */
+  .hover-green:hover {
+    @apply bg-emerald-600 text-white border-emerald-600 !important;
+  }
+
+  .hover-orange:hover {
+    @apply bg-orange-500 text-white border-orange-500 !important;
   }
 
   /* Safe Area Padding for Mobile */
