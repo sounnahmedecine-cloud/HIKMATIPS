@@ -479,19 +479,31 @@ export function HomeScreen() {
 
             {/* Login Popup */}
             <AlertDialog open={showSignInPopup} onOpenChange={setShowSignInPopup}>
-                <AlertDialogContent className="max-w-md bg-background/95 backdrop-blur-xl border border-primary/20">
-                    <Button variant="ghost" size="icon" className="absolute right-2 top-2 rounded-full" onClick={() => setShowSignInPopup(false)}>
+                <AlertDialogContent className="max-w-md bg-background/95 backdrop-blur-xl border border-primary/20 rounded-[32px] overflow-hidden">
+                    <Button
+                        variant="secondary"
+                        size="icon"
+                        className="absolute right-4 top-4 rounded-full bg-muted/80 hover:bg-muted shadow-sm z-50"
+                        onClick={() => setShowSignInPopup(false)}
+                    >
                         <X className="h-5 w-5" />
                     </Button>
-                    <AlertDialogHeader>
-                        <div className="flex justify-center mb-4">
-                            <Sparkles className="w-12 h-12 text-primary animate-pulse" />
+                    <AlertDialogHeader className="pt-6">
+                        <div className="flex justify-center mb-2">
+                            <div className="p-3 rounded-2xl bg-primary/10">
+                                <Crown className="w-8 h-8 text-yellow-500 animate-pulse" />
+                            </div>
                         </div>
                         <AlertDialogTitle className="text-2xl font-bold text-center">
-                            Rejoignez HikmaClips
+                            HikmaClips Premium
                         </AlertDialogTitle>
-                        <AlertDialogDescription className="text-center">
-                            Connectez-vous pour sauvegarder vos favoris et vos signatures personnalisées.
+                        <AlertDialogDescription className="text-center px-4">
+                            Connectez-vous gratuitement pour débloquer :
+                            <span className="block mt-2 text-xs font-semibold space-y-1">
+                                <span className="block">✨ Thèmes & Arrière-plans exclusifs</span>
+                                <span className="block">🖋️ Signature personnalisée illimitée</span>
+                                <span className="block">🚀 Partage haute qualité sans limites</span>
+                            </span>
                         </AlertDialogDescription>
                     </AlertDialogHeader>
 
