@@ -446,46 +446,36 @@ export async function generateHadith(
 ): Promise<GenerateHadithOutput> {
   const { category, topic } = input;
 
-  // Mode Agent Universel (Défaut)
-  if (category === 'recherche-ia' || category === 'auto') {
-    try {
-      // 1. On essaye de trouver une correspondance exacte dans notre base authentique locale pour garantir la fiabilité
+  // Priorité absolue à l'IA pour garantir un contenu "infini" et percutant
+  // Sauf si on veut explicitement forcer le local (non implémenté ici pour maximiser l'expérience Agent)
+  try {
+    // 1. Pour les thèmes spécifiques ou Agent Universel, on utilise toujours l'IA
+    if (category === 'recherche-ia' || category === 'auto' || (category === 'thematique' && topic && topic.trim() !== '')) {
       if (topic) {
         const db = await loadDatabase();
         const localMatches = filterByTopic(db.authentiques, topic);
         if (localMatches.length > 0) {
           const randomMatch = getRandomItem(localMatches);
-          return await generateAnalysisFromAI(randomMatch.content, randomMatch.source, topic);
+          // On passe par l'IA pour "formater" et garantir le ton percutant même pour le local
+          return await generateAnalysisFromAI(randomMatch.content, randomMatch.source, topic || '');
         }
       }
-
-      // 2. Sinon, on laisse l'IA générer le meilleur contenu multi-sources
-      return await generateFromAI('recherche-ia', topic);
-    } catch (error) {
-      console.error("Universal Agent failed:", error);
-    }
-  }
-
-  // Pour "thematique" avec un thème spécifique, toujours utiliser l'Agent
-  if (category === 'thematique' && topic && topic.trim() !== '') {
-    try {
       return await generateFromAI(category, topic);
-    } catch (error) {
-      console.error("Agent Hikma generation failed, falling back to local:", error);
     }
-  }
 
-  // Essayer d'abord la base locale
-  const localResult = await generateFromLocal(category, topic);
-  if (localResult) {
-    return localResult;
-  }
-
-  // Fallback vers l'IA si la base locale échoue
-  try {
+    // 2. Pour les catégories classiques (coran, hadith, ramadan, citadelle), 
+    // on tente TOUJOURS l'IA en premier pour assurer la variété infinie demandée.
     return await generateFromAI(category, topic);
+
   } catch (error) {
-    console.error("Erreur AI détaillée:", error);
+    console.warn("AI Generation failed, falling back to local:", error);
+
+    // Fallback vers la base locale uniquement si l'IA échoue
+    const localResult = await generateFromLocal(category, topic);
+    if (localResult) {
+      return localResult;
+    }
+
     throw error;
   }
 }

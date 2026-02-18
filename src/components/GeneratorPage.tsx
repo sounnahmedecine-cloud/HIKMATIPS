@@ -952,8 +952,8 @@ export default function GeneratorPage() {
           isStudio={true}
           format={format}
           setFormat={setFormat}
-          fontFamily={fontFamily}
-          setFontFamily={setFontFamily}
+          fontFamily={fontFamily as any}
+          setFontFamily={setFontFamily as any}
           fontSize={fontSize}
           setFontSize={setFontSize}
           signature={signature}
