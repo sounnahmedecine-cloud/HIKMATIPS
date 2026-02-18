@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, Search, Sparkles, Check } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 
 interface MobileTopicInputProps {
     value: string;
@@ -12,9 +13,10 @@ interface MobileTopicInputProps {
     isVisible: boolean;
     placeholder?: string;
     onEnter?: () => void;
+    position?: 'top' | 'bottom';
 }
 
-export function MobileTopicInput({ value, onChange, isVisible, placeholder, onEnter }: MobileTopicInputProps) {
+export function MobileTopicInput({ value, onChange, isVisible, placeholder, onEnter, position = 'bottom' }: MobileTopicInputProps) {
     const inputRef = useRef<HTMLInputElement>(null);
 
     const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -38,14 +40,19 @@ export function MobileTopicInput({ value, onChange, isVisible, placeholder, onEn
         }
     }, [isVisible]);
 
+    const isTop = position === 'top';
+
     return (
         <AnimatePresence>
             {isVisible && (
                 <motion.div
-                    initial={{ opacity: 0, y: 20, scale: 0.95 }}
+                    initial={{ opacity: 0, y: isTop ? -20 : 20, scale: 0.95 }}
                     animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                    className="fixed bottom-28 left-4 right-4 z-30 md:hidden"
+                    exit={{ opacity: 0, y: isTop ? -10 : 10, scale: 0.95 }}
+                    className={cn(
+                        "fixed left-4 right-4 z-30 md:hidden",
+                        isTop ? "top-20" : "bottom-28"
+                    )}
                 >
                     <div className="relative group">
                         {/* Enhanced Glassmorphism Container */}
@@ -61,7 +68,7 @@ export function MobileTopicInput({ value, onChange, isVisible, placeholder, onEn
                                         value={value}
                                         onChange={(e) => onChange(e.target.value)}
                                         onKeyDown={handleKeyDown}
-                                        placeholder={placeholder || "Ex: La patience, la gratitude..."}
+                                        placeholder={placeholder || (isTop ? "Rechercher avec l'Agent (ex: Parents)..." : "Ex: La patience, la gratitude...")}
                                         className="border-none bg-transparent focus-visible:ring-0 text-base h-12 px-0 placeholder:text-muted-foreground/60 font-medium text-foreground"
                                     />
                                     <span className="text-[10px] text-muted-foreground/70 pl-0">
@@ -101,8 +108,13 @@ export function MobileTopicInput({ value, onChange, isVisible, placeholder, onEn
                             </div>
                         </div>
 
-                        {/* Visual indicator that it belongs to the dock */}
-                        <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-5 h-5 bg-[#FFFDD0] dark:bg-gray-900 backdrop-blur-2xl border-r-2 border-b-2 border-emerald-500/30 rotate-45 -z-10" />
+                        {/* Visual indicator that it belongs to the dock/top */}
+                        <div className={cn(
+                            "absolute left-1/2 -translate-x-1/2 w-5 h-5 bg-[#FFFDD0] dark:bg-gray-900 backdrop-blur-2xl border-emerald-500/30 -z-10",
+                            isTop
+                                ? "-top-2 border-l-2 border-t-2 rotate-45"
+                                : "-bottom-2 border-r-2 border-b-2 rotate-45"
+                        )} />
                     </div>
                 </motion.div>
             )}

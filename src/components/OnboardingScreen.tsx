@@ -370,20 +370,20 @@ export default function OnboardingScreen({ onComplete }: OnboardingScreenProps) 
   const CurrentIllustration = slides[currentSlide].Illustration;
 
   return (
-    <div className="fixed inset-0 z-50 bg-background flex flex-col items-center justify-between p-6 overflow-hidden">
+    <div className="fixed inset-0 z-[100] bg-background flex flex-col items-center justify-between overflow-hidden" style={{ paddingTop: 'max(24px, env(safe-area-inset-top))', paddingBottom: 'max(32px, env(safe-area-inset-bottom))' }}>
       {/* Skip button */}
-      <div className="w-full flex justify-end">
+      <div className="w-full flex justify-end px-4 pt-2">
         <Button
           variant="ghost"
           onClick={onComplete}
-          className="text-muted-foreground hover:text-foreground"
+          className="text-muted-foreground hover:text-foreground text-base"
         >
           Passer
         </Button>
       </div>
 
       {/* Content */}
-      <div className="flex-1 flex flex-col items-center justify-center w-full max-w-md">
+      <div className="flex-1 flex flex-col items-center justify-center w-full max-w-md px-6 overflow-y-auto">
         <AnimatePresence mode="wait">
           <motion.div
             key={currentSlide}
@@ -394,33 +394,33 @@ export default function OnboardingScreen({ onComplete }: OnboardingScreenProps) 
             className="flex flex-col items-center text-center"
           >
             {/* Illustration */}
-            <div className="mb-6 scale-90">
+            <div className="mb-6 scale-75 sm:scale-90">
               <CurrentIllustration />
             </div>
 
             {/* Title */}
-            <h1 className="text-2xl sm:text-3xl font-bold mb-4 text-hikma-gradient">
+            <h1 className="text-xl sm:text-2xl font-bold mb-3 text-hikma-gradient">
               {slides[currentSlide].title}
             </h1>
 
             {/* Subtitle */}
-            <p className="text-muted-foreground text-base sm:text-lg mb-6 px-4">
+            <p className="text-muted-foreground text-sm sm:text-base mb-4 px-2">
               {slides[currentSlide].subtitle}
             </p>
 
             {/* Benefits for slide 3 */}
             {slides[currentSlide].benefits && (
-              <div className="w-full space-y-3 mb-6">
+              <div className="w-full space-y-2 mb-4">
                 {slides[currentSlide].benefits.map((benefit, index) => (
                   <motion.div
                     key={index}
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.1 }}
-                    className="flex items-center gap-3 bg-primary/10 rounded-lg p-3"
+                    className="flex items-center gap-3 bg-primary/10 rounded-lg p-2.5"
                   >
-                    <div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center">
-                      <svg className="w-4 h-4 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <div className="w-5 h-5 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
+                      <svg className="w-3 h-3 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                       </svg>
                     </div>
@@ -432,23 +432,23 @@ export default function OnboardingScreen({ onComplete }: OnboardingScreenProps) 
 
             {/* Interactive steps for slide 4 */}
             {slides[currentSlide].steps && (
-              <div className="w-full space-y-4 mb-6">
+              <div className="w-full space-y-3 mb-4">
                 {slides[currentSlide].steps.map((step, index) => (
                   <motion.div
                     key={index}
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: index * 0.2 }}
-                    className="flex items-center gap-4 bg-gradient-to-r from-purple-50 to-teal-50 dark:from-purple-800/20 dark:to-teal-900/20 rounded-xl p-4 border-2 border-purple-200 dark:border-purple-700"
+                    className="flex items-center gap-3 bg-gradient-to-r from-purple-50 to-teal-50 dark:from-purple-800/20 dark:to-teal-900/20 rounded-xl p-3 border-2 border-purple-200 dark:border-purple-700"
                   >
-                    <div className="flex-shrink-0 w-12 h-12 rounded-full bg-gradient-to-br from-purple-500 to-teal-700 flex items-center justify-center text-white font-bold text-xl shadow-lg">
+                    <div className="flex-shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-teal-700 flex items-center justify-center text-white font-bold text-lg shadow-lg">
                       {step.icon}
                     </div>
                     <div className="flex-1 text-left">
-                      <div className="text-xs font-bold text-purple-600 dark:text-purple-400 uppercase tracking-wide mb-1">
+                      <div className="text-[10px] font-bold text-purple-600 dark:text-purple-400 uppercase tracking-wide mb-0.5">
                         Étape {step.number}
                       </div>
-                      <div className="text-sm font-semibold text-foreground">
+                      <div className="text-xs font-semibold text-foreground">
                         {step.text}
                       </div>
                     </div>
@@ -461,7 +461,7 @@ export default function OnboardingScreen({ onComplete }: OnboardingScreenProps) 
       </div>
 
       {/* Navigation */}
-      <div className="w-full max-w-md space-y-4">
+      <div className="w-full max-w-md space-y-3 px-6 pb-4">
         {/* Dots indicator */}
         <div className="flex justify-center gap-2">
           {slides.map((_, index) => (
@@ -477,11 +477,11 @@ export default function OnboardingScreen({ onComplete }: OnboardingScreenProps) 
         </div>
 
         {/* Buttons */}
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-2">
           {isLastSlide ? (
             <Button
               onClick={onComplete}
-              className="w-full bg-gradient-to-r from-primary to-accent hover:opacity-90 py-6 text-lg font-semibold"
+              className="w-full bg-gradient-to-r from-primary to-accent hover:opacity-90 py-5 text-base font-semibold rounded-2xl"
             >
               Commencer
               <ChevronRight className="ml-2 h-5 w-5" />
@@ -489,7 +489,7 @@ export default function OnboardingScreen({ onComplete }: OnboardingScreenProps) 
           ) : (
             <Button
               onClick={nextSlide}
-              className="w-full bg-gradient-to-r from-primary to-accent hover:opacity-90 py-6 text-lg font-semibold"
+              className="w-full bg-gradient-to-r from-primary to-accent hover:opacity-90 py-5 text-base font-semibold rounded-2xl"
             >
               Suivant
               <ChevronRight className="ml-2 h-5 w-5" />

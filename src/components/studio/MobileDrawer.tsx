@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -13,8 +14,10 @@ interface MobileDrawerProps {
 }
 
 export function MobileDrawer({ isOpen, onClose, title, children }: MobileDrawerProps) {
-    // Lock scroll when open
+    const [mounted, setMounted] = React.useState(false);
+
     useEffect(() => {
+        setMounted(true);
         if (isOpen) {
             document.body.style.overflow = 'hidden';
         } else {
@@ -23,7 +26,9 @@ export function MobileDrawer({ isOpen, onClose, title, children }: MobileDrawerP
         return () => { document.body.style.overflow = 'unset'; };
     }, [isOpen]);
 
-    return (
+    if (!mounted) return null;
+
+    return createPortal(
         <AnimatePresence>
             {isOpen && (
                 <>
@@ -64,12 +69,13 @@ export function MobileDrawer({ isOpen, onClose, title, children }: MobileDrawerP
                         </div>
 
                         {/* Content */}
-                        <div className="px-6 pb-12 pt-2 max-h-[70vh] overflow-y-auto">
+                        <div className="px-6 pb-24 pt-2 max-h-[85vh] overflow-y-auto">
                             {children}
                         </div>
                     </motion.div>
                 </>
             )}
-        </AnimatePresence>
+        </AnimatePresence>,
+        document.body
     );
 }

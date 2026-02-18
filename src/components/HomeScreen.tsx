@@ -8,7 +8,7 @@ import { Filesystem, Directory } from '@capacitor/filesystem';
 import html2canvas from 'html2canvas';
 import { useToast } from "@/hooks/use-toast";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
-import { getFavorites, toggleFavorite } from "@/lib/utils"
+import { getFavorites, toggleFavorite, cn } from "@/lib/utils"
 import {
     Sparkles,
     Image as ImageIcon,
@@ -18,7 +18,8 @@ import {
     Download,
     X,
     LayoutGrid,
-    Crown
+    Crown,
+    Heart
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { CloudinaryGallery } from "@/components/studio/CloudinaryGallery"
@@ -197,21 +198,36 @@ export function HomeScreen() {
         swipeDuration: 500,
     });
 
+    // Initial setup - runs only once
     useEffect(() => {
         const hasSeen = localStorage.getItem('hasSeenOnboarding');
         if (!hasSeen) setShowOnboarding(true);
 
         setFavorites(getFavorites().map(f => f.fr));
+
+        // Set daily Hikma only once on mount
         const today = new Date();
         const dateSeed = today.getFullYear() * 365 + today.getMonth() * 31 + today.getDate();
         const dailyIndex = dateSeed % ALL_MOCKS.length;
         setCurrentHikma(ALL_MOCKS[dailyIndex]);
 
-        if (cloudinaryImages.length > 0) {
-            const bgIndex = dateSeed % cloudinaryImages.length;
-            setBackground(cloudinaryImages[bgIndex].imageUrl);
-        }
+        // Filter images internally to avoid dependency on outer scope variable `cloudinaryImages`
+        // which would cause linter warnings or stale closures if we put it in deps
+        const validImages = PlaceHolderImages.filter(img =>
+            img.imageUrl.includes('cloudinary.com') ||
+            img.imageUrl.includes('dzagwz94z') ||
+            img.imageUrl.includes('dhjwimevi') ||
+            img.imageUrl.includes('db2ljqpdt')
+        );
 
+        if (validImages.length > 0) {
+            const bgIndex = dateSeed % validImages.length;
+            setBackground(validImages[bgIndex].imageUrl);
+        }
+    }, []); // Empty dependency array ensures this runs strictly once
+
+    // Event listeners configuration
+    useEffect(() => {
         // Listen for events from bottom nav
         const onGenerate = () => handleShuffleText();
         const onTools = () => setIsToolsOpen(true);
@@ -223,7 +239,7 @@ export function HomeScreen() {
             window.removeEventListener('hikma:generate', onGenerate);
             window.removeEventListener('hikma:tools', onTools);
         };
-    }, [handleShuffleText, cloudinaryImages]);
+    }, [handleShuffleText]); // Depends on handleShuffleText which updates when hikma changes, but won't trigger the INIT logic loop anymore
 
     const handleFavorite = () => {
         if (!user && favorites.length >= 3) {
@@ -396,7 +412,7 @@ export function HomeScreen() {
             </div>
 
             {/* 2. LEFT SIDE UI: Sidebar design tools (Moved to bottom) */}
-            <div className="absolute left-6 bottom-32 z-40 flex flex-col gap-4">
+            <div className="absolute left-6 bottom-40 z-40 flex flex-col gap-4">
                 <button
                     onClick={() => setIsGalleryOpen(true)}
                     className="w-12 h-12 rounded-full bg-[#FFFDD0]/10 backdrop-blur-md border border-[#FFFDD0]/20 text-[#FFFDD0] shadow-2xl flex items-center justify-center active:scale-90 transition-all"
@@ -424,7 +440,20 @@ export function HomeScreen() {
             </div>
 
             {/* 3. RIGHT SIDE UI: Action tools (Moved to bottom) */}
-            <div className="absolute right-6 bottom-32 z-40 flex flex-col gap-4">
+            <div className="absolute right-6 bottom-40 z-40 flex flex-col gap-4">
+                <button
+                    onClick={handleFavorite}
+                    className={cn(
+                        "w-12 h-12 rounded-full backdrop-blur-md border shadow-2xl flex items-center justify-center active:scale-90 transition-all",
+                        isLiked
+                            ? "bg-red-500/20 border-red-500/50 text-red-500"
+                            : "bg-[#FFFDD0]/10 border-[#FFFDD0]/20 text-[#FFFDD0]"
+                    )}
+                    aria-label="Ajouter aux favoris"
+                >
+                    <Heart className={cn("w-5 h-5", isLiked && "fill-current")} />
+                </button>
+
                 <button
                     onClick={handleShare}
                     className="w-12 h-12 rounded-full bg-[#FFFDD0]/10 backdrop-blur-md border border-[#FFFDD0]/20 text-[#FFFDD0] shadow-2xl flex items-center justify-center active:scale-90 transition-all"

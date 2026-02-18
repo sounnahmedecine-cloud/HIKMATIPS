@@ -61,6 +61,7 @@ import { MobileLeftToolbar } from '@/components/studio/MobileLeftToolbar';
 import { CategoryDrawer } from '@/components/CategoryDrawer';
 import { ToolsDrawer } from '@/components/ToolsDrawer';
 import { CloudinaryGallery } from '@/components/studio/CloudinaryGallery';
+import { SwipeHintOverlay } from '@/components/SwipeHintOverlay';
 
 
 
@@ -87,6 +88,12 @@ export default function GeneratorPage() {
     surah: 51,
     ayah: 55
   });
+
+  // Quote history for swipe navigation
+  const [contentHistory, setContentHistory] = useState<Content[]>([]);
+  const [historyIndex, setHistoryIndex] = useState(-1);
+  const touchStartY = useRef<number | null>(null);
+  const touchStartX = useRef<number | null>(null);
 
   const [category, setCategory] = useState<Category>('recherche-ia');
   const [background, setBackground] = useState<string>(
@@ -287,8 +294,42 @@ export default function GeneratorPage() {
     }
   };
 
+  // Swipe gesture handlers
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartY.current = e.touches[0].clientY;
+    touchStartX.current = e.touches[0].clientX;
+  };
 
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartY.current === null || touchStartX.current === null) return;
+    const deltaY = touchStartY.current - e.changedTouches[0].clientY;
+    const deltaX = Math.abs(touchStartX.current - e.changedTouches[0].clientX);
+    touchStartY.current = null;
+    touchStartX.current = null;
 
+    // Only trigger if vertical swipe is dominant and > 60px
+    if (Math.abs(deltaY) < 60 || deltaX > Math.abs(deltaY)) return;
+
+    if (deltaY > 0) {
+      // Swipe UP → generate new quote
+      if (content) {
+        setContentHistory(prev => [...prev, content]);
+        setHistoryIndex(-1);
+      }
+      handleGenerateAiContent();
+    } else {
+      // Swipe DOWN → go back to previous quote
+      if (contentHistory.length > 0) {
+        const newIndex = historyIndex === -1 ? contentHistory.length - 1 : Math.max(0, historyIndex - 1);
+        const prevContent = contentHistory[newIndex];
+        if (prevContent) {
+          setContent(prevContent);
+          setHistoryIndex(newIndex);
+          setAnimationKey(prev => prev + 1);
+        }
+      }
+    }
+  };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -544,6 +585,8 @@ export default function GeneratorPage() {
         )}>
           <div className="relative w-full h-full flex items-center justify-center p-0 md:p-4">
             <div
+              onTouchStart={handleTouchStart}
+              onTouchEnd={handleTouchEnd}
               className={cn(
                 "bg-neutral-900 p-0 md:p-2 shadow-2xl transition-all duration-300 relative overflow-hidden",
                 "fixed inset-0 md:relative",
@@ -656,6 +699,9 @@ export default function GeneratorPage() {
                   </div>
                 )}
 
+                {/* Swipe hint animation for first-time users */}
+                <SwipeHintOverlay />
+
                 {!content && !isGenerating && (
                   <div className="absolute inset-0 flex items-center justify-center p-8">
                     <div className="text-center text-white/40 flex flex-col items-center gap-3">
@@ -702,10 +748,10 @@ export default function GeneratorPage() {
           <Button variant="ghost" size="icon" className="pointer-events-auto w-11 h-11 rounded-2xl bg-black/40 backdrop-blur-md border border-white/10 text-yellow-400 shadow-xl" aria-label="Premium">
             <Crown className="w-5 h-5" />
           </Button>
-        </div>
+        </div >
 
         {/* LEFT TOOLS: Design */}
-        <div className="absolute left-6 bottom-32 z-40 flex flex-col gap-4">
+        < div className="absolute left-6 bottom-32 z-40 flex flex-col gap-4" >
           <button
             onClick={() => setIsGalleryOpen(true)}
             className="w-12 h-12 rounded-full bg-[#FFFDD0]/10 backdrop-blur-md border border-[#FFFDD0]/20 text-[#FFFDD0] shadow-2xl flex items-center justify-center active:scale-90 transition-all font-bold"
@@ -727,10 +773,10 @@ export default function GeneratorPage() {
           >
             <RefreshCw className="w-5 h-5" />
           </button>
-        </div>
+        </div >
 
         {/* RIGHT TOOLS: Actions */}
-        <div className="absolute right-6 bottom-32 z-40 flex flex-col gap-4">
+        < div className="absolute right-6 bottom-32 z-40 flex flex-col gap-4" >
           <button
             onClick={handleFavorite}
             className="w-12 h-12 rounded-full bg-[#FFFDD0]/10 backdrop-blur-md border border-[#FFFDD0]/20 text-[#FFFDD0] shadow-2xl flex items-center justify-center active:scale-90 transition-all"
@@ -752,43 +798,46 @@ export default function GeneratorPage() {
           >
             <Download className="w-5 h-5" />
           </button>
-        </div>
+        </div >
 
         {/* BOTTOM TOOLS: Main Action (Generate) */}
-        <div className="absolute bottom-6 left-0 right-0 z-40 flex flex-col items-center gap-4 px-4">
+        < div className="absolute bottom-6 left-0 right-0 z-40 flex flex-col items-center gap-4 px-4" >
           {/* Unified Search Input */}
-          <div className="w-full max-w-sm">
+          < div className="w-full max-w-sm" >
             <MobileTopicInput
               value={topic}
               onChange={setTopic}
               isVisible={true}
-              placeholder="Sujet du rappel (patience, amour...)"
+              placeholder={category === 'recherche-ia' ? "Rechercher avec l'Agent (ex: Parents)..." : "Sujet du rappel (patience, amour...)"}
               onEnter={handleGenerateAiContent}
+              position={category === 'recherche-ia' ? 'top' : 'bottom'}
             />
-          </div>
+          </div >
 
           {/* QUICK CATEGORY TILES (The requested 4 tiles) */}
-          <div className="flex justify-center gap-3 w-full max-w-sm px-2">
-            {[
-              { id: 'coran', icon: BookMarked, color: 'bg-[#FFFDD0]/10 text-[#FFFDD0] border-[#FFFDD0]/20', label: 'Coran' },
-              { id: 'hadith', icon: BookOpen, color: 'bg-[#FFFDD0]/10 text-[#FFFDD0] border-[#FFFDD0]/20', label: 'Hadith' },
-              { id: 'ramadan', icon: Moon, color: 'bg-[#FFFDD0]/10 text-[#FFFDD0] border-[#FFFDD0]/20', label: 'Mois' },
-              { id: 'citadelle', icon: Sparkles, color: 'bg-[#FFFDD0]/10 text-[#FFFDD0] border-[#FFFDD0]/20', label: 'Douas' },
-            ].map((cat) => (
-              <button
-                key={cat.id}
-                onClick={() => setCategory(cat.id as Category)}
-                className={cn(
-                  "flex-1 py-2 rounded-2xl border flex flex-col items-center gap-1 transition-all active:scale-90",
-                  category === cat.id
-                    ? "bg-[#FFFDD0] text-purple-900 border-[#FFFDD0] ring-4 ring-[#FFFDD0]/20"
-                    : cat.color
-                )}
-              >
-                <cat.icon className="w-5 h-5" />
-                <span className="text-[9px] font-bold uppercase tracking-tighter">{cat.label}</span>
-              </button>
-            ))}
+          < div className="flex justify-center gap-3 w-full max-w-sm px-2" >
+            {
+              [
+                { id: 'coran', icon: BookMarked, color: 'bg-[#FFFDD0]/10 text-[#FFFDD0] border-[#FFFDD0]/20', label: 'Coran' },
+                { id: 'hadith', icon: BookOpen, color: 'bg-[#FFFDD0]/10 text-[#FFFDD0] border-[#FFFDD0]/20', label: 'Hadith' },
+                { id: 'ramadan', icon: Moon, color: 'bg-[#FFFDD0]/10 text-[#FFFDD0] border-[#FFFDD0]/20', label: 'Mois' },
+                { id: 'citadelle', icon: Sparkles, color: 'bg-[#FFFDD0]/10 text-[#FFFDD0] border-[#FFFDD0]/20', label: 'Douas' },
+              ].map((cat) => (
+                <button
+                  key={cat.id}
+                  onClick={() => setCategory(cat.id as Category)}
+                  className={cn(
+                    "flex-1 py-2 rounded-2xl border flex flex-col items-center gap-1 transition-all active:scale-90",
+                    category === cat.id
+                      ? "bg-[#FFFDD0] text-purple-900 border-[#FFFDD0] ring-4 ring-[#FFFDD0]/20"
+                      : cat.color
+                  )}
+                >
+                  <cat.icon className="w-5 h-5" />
+                  <span className="text-[9px] font-bold uppercase tracking-tighter">{cat.label}</span>
+                </button>
+              ))
+            }
           </div>
 
           <button
@@ -838,7 +887,8 @@ export default function GeneratorPage() {
       {/* Category Drawer */}
       <CategoryDrawer
         isOpen={isCategoryDrawerOpen}
-        onClose={() => setIsCategoryDrawerOpen(false)}
+        onClose={() => setIsCategoryDrawerOpen(false)
+        }
         category={category}
         onSelectCategory={setCategory}
       />

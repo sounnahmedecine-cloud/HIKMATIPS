@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     BookOpen,
@@ -93,12 +94,20 @@ export function CategoryDrawer({ isOpen, onClose, category, onSelectCategory }: 
         },
     ];
 
+    const [mounted, setMounted] = React.useState(false);
+
+    React.useEffect(() => {
+        setMounted(true);
+    }, []);
+
     const handleSelect = (cat: Category) => {
         onSelectCategory(cat);
         onClose();
     };
 
-    return (
+    if (!mounted) return null;
+
+    return createPortal(
         <AnimatePresence>
             {isOpen && (
                 <>
@@ -108,7 +117,7 @@ export function CategoryDrawer({ isOpen, onClose, category, onSelectCategory }: 
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         onClick={onClose}
-                        className="fixed inset-0 bg-black/40 backdrop-blur-sm z-40"
+                        className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[100]"
                     />
 
                     {/* Drawer */}
@@ -117,7 +126,7 @@ export function CategoryDrawer({ isOpen, onClose, category, onSelectCategory }: 
                         animate={{ y: 0 }}
                         exit={{ y: '100%' }}
                         transition={{ type: 'spring', damping: 30, stiffness: 300 }}
-                        className="fixed bottom-0 left-0 right-0 z-50 bg-background rounded-t-3xl shadow-2xl max-h-[70vh] overflow-hidden"
+                        className="fixed bottom-0 left-0 right-0 z-[101] bg-background rounded-t-3xl shadow-2xl max-h-[85vh] overflow-hidden"
                     >
                         {/* Header */}
                         <div className="relative flex items-center justify-between px-6 py-4 border-b border-border/50">
@@ -135,7 +144,7 @@ export function CategoryDrawer({ isOpen, onClose, category, onSelectCategory }: 
                         </div>
 
                         {/* Categories Grid */}
-                        <div className="p-6 pb-12 safe-area-bottom overflow-y-auto max-h-[calc(70vh-80px)]">
+                        <div className="p-6 pb-24 safe-area-bottom overflow-y-auto max-h-[calc(85vh-80px)]">
                             <div className="grid grid-cols-2 gap-4">
                                 {categories.map((cat) => {
                                     const isSelected = category === cat.id;
@@ -211,6 +220,7 @@ export function CategoryDrawer({ isOpen, onClose, category, onSelectCategory }: 
                     </motion.div>
                 </>
             )}
-        </AnimatePresence>
+        </AnimatePresence>,
+        document.body
     );
 }

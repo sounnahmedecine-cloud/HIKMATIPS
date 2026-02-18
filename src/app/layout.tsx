@@ -5,6 +5,7 @@ import { ClientLayout } from "@/components/ClientLayout";
 import "./globals.css";
 
 import { ThemeProvider } from "@/components/theme-provider";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 
 export const metadata: Metadata = {
   title: "HikmaClips",
@@ -44,11 +45,13 @@ export default function RootLayout({
             enableSystem
             themes={['light', 'dark', 'maroc']}
           >
-            <ClientLayout>
-              <div className="h-full w-full p-4 safe-pb-20 safe-pt-10 md:p-8">
-                {children}
-              </div>
-            </ClientLayout>
+            <ErrorBoundary>
+              <ClientLayout>
+                <div className="h-full w-full p-4 safe-pb-20 safe-pt-10 md:p-8">
+                  {children}
+                </div>
+              </ClientLayout>
+            </ErrorBoundary>
             <Toaster />
           </ThemeProvider>
         </FirebaseClientProvider>

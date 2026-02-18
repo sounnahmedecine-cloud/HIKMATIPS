@@ -60,8 +60,29 @@ async function loadDatabase(): Promise<HadithDatabase> {
   }
 }
 
-function getRandomItem<T>(array: T[]): T {
-  return array[Math.floor(Math.random() * array.length)];
+// Track recently shown items to avoid repeats
+const recentlyShown = new Set<string>();
+const MAX_RECENT = 10;
+
+function getRandomItem<T extends { content: string }>(array: T[]): T {
+  if (array.length <= 1) return array[0];
+
+  // Filter out recently shown items
+  const available = array.filter(item => !recentlyShown.has(item.content));
+
+  // If all items were recently shown, clear history and use full array
+  const pool = available.length > 0 ? available : array;
+
+  const item = pool[Math.floor(Math.random() * pool.length)];
+
+  // Track this item
+  recentlyShown.add(item.content);
+  if (recentlyShown.size > MAX_RECENT) {
+    const first = recentlyShown.values().next().value;
+    if (first) recentlyShown.delete(first);
+  }
+
+  return item;
 }
 
 function filterByTopic<T extends { content: string; category: string }>(
@@ -164,17 +185,17 @@ async function generateFromAI(
 
   const getPrompt = () => {
     if (category === 'recherche-ia' || category === 'auto') {
-      return `Tu es l'Agent Hikma, expert en sciences islamiques. L'utilisateur cherche une inspiration sur : "${topic || 'un rappel au hasard'}". 
+      return `Tu es l'Agent Hikma, expert en sciences islamiques. L'utilisateur cherche une inspiration puissante sur : "${topic || 'un rappel au hasard'}". 
       
-      TA MISSION : Trouve le rappel le plus pertinent et puissant parmi ces sources AUTHENTIQUES :
+      TA MISSION : Trouve le rappel le plus PERCUTANT, UNIVERSEL et SPIRITUEL parmi ces sources AUTHENTIQUES :
       1. Un VERS DU CORAN (avec le texte arabe obligatoire).
       2. Un HADITH Court (Bukhari ou Muslim uniquement).
       3. Une INVOCATION (Citadelle du Musulman).
       
       RÈGLES :
-      - Si le thème est une émotion (tristesse, joie), privilégie une Invocation ou un Verset.
-      - Si le thème est une règle ou un comportement, privilégie un Hadith.
-      - Sois concis : le texte en français doit faire moins de 250 caractères.
+      - Le texte doit être court, percutant et parler au cœur (universel). Max 450 caractères.
+      - Si le thème est une émotion, privilégie une Invocation ou un Verset.
+      - Si le thème est un comportement, privilégie un Hadith.
       
       ${baseRules}
       
@@ -188,15 +209,13 @@ async function generateFromAI(
     }
 
     if (category === 'hadith') {
-      return `Tu es un expert des Hadiths. Donne-moi UN hadith AUTHENTIQUE issu EXCLUSIVEMENT de SAHIH AL-BUKHARI ou SAHIH MUSLIM.
-${topic ? `Thème : ${topic}` : 'Choisis un thème varié (évite les trop connus) : comportement, purification, aumône, mort, paradis, enfer, invocation.'}
+      return `Tu es un expert des Hadiths. Donne-moi UN hadith extrêmement PERCUTANT et UNIVERSEL issu EXCLUSIVEMENT de SAHIH AL-BUKHARI ou SAHIH MUSLIM.
+${topic ? `Thème : ${topic}` : 'Choisis un thème varié et puissant : comportement, purification, aumône, mort, paradis, invocation.'}
 
 IMPORTANT :
-1. SOURCE OBLIGATOIRE : Sahih Al-Bukhari ou Sahih Muslim.
-2. LONGUEUR : Le hadith doit être COURT (max 250 caractères).
-3. VARIÉTÉ : Choisis des hadiths moins souvent cités pour surprendre l'utilisateur.
-
-Si le hadith est long, coupe-le intelligemment avec "(...)" pour ne garder que la phrase clé.
+1. SOURCE STRICTE : Uniquement Sahih Al-Bukhari ou Sahih Muslim.
+2. TONE : Le hadith doit être court et avoir un impact spirituel immédiat (max 450 caractères).
+3. FORMAT : Pas d'explication. Juste le texte.
 
 ${baseRules}
 
@@ -207,54 +226,65 @@ ${baseRules}
     }
 
     if (category === 'ramadan') {
-      return `Tu es un spécialiste du Ramadan. Donne-moi UN hadith ou UNE invocation AUTHENTIQUE sur le Ramadan.
-${topic ? `Thème : ${topic}` : 'Choisis parmi : jeûne, iftar, suhur, Laylat al-Qadr, prière de nuit, récompenses du Ramadan.'}
+      return `Tu es un spécialiste du Ramadan. Donne-moi UN rappel STRICTEMENT lié au RAMADAN (Hadith ou Dua authentique).
+${topic ? `Thème spécifique : ${topic}` : 'Choisis parmi : jeûne, iftar, récompenses, spirituel.'}
 
-IMPORTANT : Le hadith/invocation doit être CONCIS (maximum 300 caractères).
-Privilégie les invocations courtes et percutantes.
+IMPORTANT : Le contenu doit être CONCIS (max 450 caractères) et porter exclusivement sur le mois de Ramadan.
 
 ${baseRules}
 
 {
-  "content": "Le hadith ou l'invocation en français (max 300 caractères)",
-  "source": "Rapporté par Boukhari, n°XXXX"
+  "content": "Le texte en français",
+  "source": "Source authentique (Bukhari, Muslim, Tirmidhi...)"
 }`;
     }
 
-    if (category === 'coran' || category === 'thematique') {
-      return `Tu es un guide spirituel. Donne-moi UN verset du Coran ou une sagesse islamique très courte.
-${topic ? `Thème spécifique et contexte : ${topic}` : 'Choisis un rappel inspirant.'}
+    if (category === 'coran') {
+      return `Tu es un guide expert du Coran. Donne-moi UN verset du Coran extrêmement PUISSANT, UNIVERSEL et PERCUTANT.
+${topic ? `Thème : ${topic}` : 'Choisis un verset qui touche l\'âme.'}
 
 IMPORTANT :
-1. TEXTE ARABE : Inclus TOUJOURS le texte original en arabe si c'est un verset ou hadith.
-2. LONGUEUR : Très court (max 200 caractères pour le français).
-3. FORMAT : JSON uniquement.
+1. SOURCE STRICTE : Uniquement un verset du Saint Coran.
+2. TEXTE ARABE : Inclus TOUJOURS le texte original en arabe.
+3. IMPACT : Le verset doit être court et universellement inspirant (max 450 caractères).
 
 ${baseRules}
 
 {
   "arabe": "Le texte en arabe",
-  "content": "Le texte traduit en français",
-  "source": "Référence exacte (Sourate, Hadith n°...)",
+  "content": "La traduction en français",
+  "source": "Sourate X, Verset Y",
   "surah": 1,
   "ayah": 1
 }`;
     }
 
     if (category === 'citadelle') {
-      return `Tu es un expert de la "Citadelle du Musulman" (Hisn al-Muslim). Donne-moi UNE invocation authentique issue de ce livre.
-${topic ? `Thème : ${topic}` : 'Choisis un thème courant : matin, soir, sommeil, protection, tristesse, prière.'}
+      return `Tu es un expert de la "Citadelle du Musulman" (Hisn al-Muslim). Donne-moi UNE invocation précise issue de ce livre.
+${topic ? `Thème : ${topic}` : 'Choisis une invocation puissante (matin, soir, protection, tristesse).'}
 
 IMPORTANT :
-1. SOURCE OBLIGATOIRE : Doit être une invocation reconnue de la Citadelle du Musulman.
-2. FORMAT : Donne le texte en français.
-3. PRÉCISION : Indique la source exacte ou le moment recommandé (ex: "Invocation du matin").
+1. SOURCE STRICTE : Doit provenir exclusivement de la Citadelle du Musulman.
+2. TONE : Doit être une invocation directe (max 450 caractères).
 
 ${baseRules}
 
 {
-  "content": "L'invocation en français (max 400 caractères)",
-  "source": "Citadelle du Musulman - [Moment/Chapitre]"
+  "arabe": "Le texte en arabe",
+  "content": "L'invocation en français",
+  "source": "Citadelle du Musulman - [Chapitre]"
+}`;
+    }
+
+    if (category === 'thematique') {
+      return `Tu es l'Agent Hikma. Donne-moi une sagesse ou un rappel islamique PUISSANT sur le thème : "${topic || 'la vie'}".
+Ceci peut être un verset, un hadith ou une parole de compagnon, mais cela doit être extrêmement percutant.
+
+${baseRules}
+
+{
+  "content": "Le texte",
+  "source": "La source exacte"
 }`;
     }
 
