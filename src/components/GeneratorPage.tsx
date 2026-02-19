@@ -102,6 +102,10 @@ export default function GeneratorPage() {
   const [animationKey, setAnimationKey] = useState(0);
   const [isGenerating, setIsGenerating] = useState(false);
   const [topic, setTopic] = useState('');
+
+  // Buffer de rappels pré-chargés
+  const [contentBuffer, setContentBuffer] = useState<Content[]>([]);
+  const isFillingBuffer = useRef(false);
   const [generationCount, setGenerationCount] = useState(0);
   const [showSignInPopup, setShowSignInPopup] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(false);
@@ -188,6 +192,27 @@ export default function GeneratorPage() {
     setTimeout(() => setShowTooltipGuide(true), 500);
   };
 
+  // Remplit silencieusement le buffer avec N rappels pré-générés
+  const fillBuffer = useCallback(async (cat: Category, t: string, count = 3) => {
+    if (isFillingBuffer.current) return;
+    isFillingBuffer.current = true;
+    const items: Content[] = [];
+    for (let i = 0; i < count; i++) {
+      try {
+        const result = await generateHadith({ category: cat, topic: t });
+        if (result?.content) items.push(result);
+      } catch { /* silently ignore */ }
+    }
+    setContentBuffer(prev => [...prev, ...items]);
+    isFillingBuffer.current = false;
+  }, []);
+
+  // Pré-charge le buffer au démarrage
+  useEffect(() => {
+    fillBuffer('recherche-ia', '', 3);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const previewRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
   const { user, isUserLoading } = useUser();
@@ -265,6 +290,19 @@ export default function GeneratorPage() {
       return;
     }
 
+    // Consomme le buffer si disponible → réponse instantanée
+    if (contentBuffer.length > 0) {
+      const [next, ...rest] = contentBuffer;
+      setContentBuffer(rest);
+      setContent(next);
+      if (!user) setGenerationCount(prev => prev + 1);
+      if (isFirstTime) { markAsGenerated(); setShowTooltipGuide(false); }
+      // Recharge 1 rappel en arrière-plan pour maintenir le buffer
+      if (rest.length < 2) fillBuffer(category, topic, 2);
+      return;
+    }
+
+    // Fallback : appel direct si buffer vide
     setIsGenerating(true);
     try {
       const result = await generateHadith({ category, topic });
@@ -273,6 +311,8 @@ export default function GeneratorPage() {
         if (!user) {
           setGenerationCount(prev => prev + 1);
         }
+        // Recharge le buffer en arrière-plan
+        fillBuffer(category, topic, 3);
       } else {
         throw new Error('La génération a échoué ou n\'a retourné aucun contenu.');
       }
@@ -895,7 +935,11 @@ export default function GeneratorPage() {
         onClose={() => setIsCategoryDrawerOpen(false)
         }
         category={category}
-        onSelectCategory={setCategory}
+        onSelectCategory={(cat) => {
+          setCategory(cat);
+          setContentBuffer([]);
+          fillBuffer(cat, topic, 3);
+        }}
       />
 
       {/* Tools Drawer */}
