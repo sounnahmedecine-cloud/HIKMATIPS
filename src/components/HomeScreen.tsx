@@ -482,10 +482,9 @@ export function HomeScreen() {
                     <Button
                         variant="ghost"
                         onClick={() => setIsCategoryOpen(true)}
-                        className="h-10 px-4 rounded-full bg-white/5 backdrop-blur-xl border border-white/10 text-white font-bold flex items-center gap-2 group shadow-lg"
+                        className="h-10 w-10 rounded-full bg-white/5 backdrop-blur-xl border border-white/10 text-white font-bold flex items-center justify-center group shadow-lg"
                     >
                         <LayoutGrid className="w-4 h-4 group-hover:rotate-90 transition-transform" />
-                        <span className="text-[9px] uppercase font-extrabold tracking-widest">{selectedCategory === 'recherche-ia' ? "Agent" : selectedCategory}</span>
                     </Button>
                 </div>
 

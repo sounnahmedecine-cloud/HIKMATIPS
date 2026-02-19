@@ -3,8 +3,9 @@
 import { useState, useEffect } from "react"
 import { Card, CardContent } from "@/components/ui/card"
 import { motion, AnimatePresence } from "framer-motion"
-import { Heart, Share2, Trash2, Bookmark } from "lucide-react"
+import { Share2, Trash2, Bookmark } from "lucide-react"
 import { getFavorites, toggleFavorite, Hikma } from "@/lib/utils"
+import { Share } from '@capacitor/share'
 
 export default function FavorisPage() {
     const [favorites, setFavorites] = useState<Hikma[]>([]);
@@ -16,6 +17,20 @@ export default function FavorisPage() {
     const handleRemove = (hikma: Hikma) => {
         toggleFavorite(hikma);
         setFavorites(getFavorites());
+    };
+
+    const handleShare = async (hikma: Hikma) => {
+        const text = hikma.arabe
+            ? `${hikma.arabe}\n\n${hikma.fr}\n\n— ${hikma.source}`
+            : `${hikma.fr}\n\n— ${hikma.source}`;
+        try {
+            await Share.share({
+                text,
+                dialogTitle: 'Partager cette sagesse',
+            });
+        } catch {
+            // utilisateur a annulé ou partage non supporté
+        }
     };
 
     return (
@@ -74,6 +89,7 @@ export default function FavorisPage() {
                                             <button
                                                 className="p-3 text-slate-500 hover:text-purple-600 transition-colors bg-slate-100 dark:bg-slate-800 rounded-full"
                                                 aria-label="Partager"
+                                                onClick={() => handleShare(hikma)}
                                             >
                                                 <Share2 className="w-5 h-5" />
                                             </button>

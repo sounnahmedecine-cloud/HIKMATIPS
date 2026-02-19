@@ -7,36 +7,6 @@
       "imageHint": "islamic coran mosque"
     },
     {
-      "id": "islamic-1",
-      "description": "Architectural detail of a mosque.",
-      "imageUrl": "https://images.unsplash.com/photo-1532664022384-26c74d93d5f3?w=1080",
-      "imageHint": "islamic architecture"
-    },
-    {
-      "id": "nature-2",
-      "description": "Sunlight filtering through trees.",
-      "imageUrl": "https://images.unsplash.com/photo-1426604966848-d7adac402bff?w=1080",
-      "imageHint": "nature sun"
-    },
-    {
-      "id": "islamic-2",
-      "description": "A beautiful mosque at sunset.",
-      "imageUrl": "https://images.unsplash.com/photo-1570115602146-5d24c7f0775d?w=1080",
-      "imageHint": "islamic mosque"
-    },
-    {
-      "id": "abstract-1",
-      "description": "Abstract colorful background.",
-      "imageUrl": "https://images.unsplash.com/photo-1607791330831-d3dcf312e2d1?w=1080",
-      "imageHint": "abstract serene"
-    },
-    {
-      "id": "serene-1",
-      "description": "Calm lake at dawn.",
-      "imageUrl": "https://images.unsplash.com/photo-1470252649378-9c29740c9fa8?w=1080",
-      "imageHint": "serene nature"
-    },
-    {
       "id": "ramadan-1",
       "description": "Ramadan lantern and mosque.",
       "imageUrl": "https://res.cloudinary.com/dzagwz94z/image/upload/v1769534516/1691b6e8168bef087cb436438c63774b_z8sqmt.jpg",
@@ -157,326 +127,182 @@
       "imageHint": "islamic serene nature"
     },
     {
-      "id": "mosque-16",
-      "description": "Mosque interior with golden light.",
-      "imageUrl": "https://images.unsplash.com/photo-1519817650390-64a93db51149?w=1080",
-      "imageHint": "islamic mosque architecture"
-    },
-    {
-      "id": "mosque-17",
-      "description": "Blue mosque dome.",
-      "imageUrl": "https://images.unsplash.com/photo-1584551246679-0daf3d275d0f?w=1080",
-      "imageHint": "islamic mosque architecture"
-    },
-    {
-      "id": "mosque-18",
-      "description": "Mosque at dusk.",
-      "imageUrl": "https://images.unsplash.com/photo-1545167496-c1e092d383a2?w=1080",
-      "imageHint": "islamic mosque serene"
-    },
-    {
-      "id": "mosque-19",
-      "description": "Mosque minaret silhouette.",
-      "imageUrl": "https://images.unsplash.com/photo-1604948501466-4e9c339b9c24?w=1080",
-      "imageHint": "islamic mosque night"
-    },
-    {
-      "id": "mosque-20",
-      "description": "Mosque archway.",
-      "imageUrl": "https://images.unsplash.com/photo-1566624790190-511a09f6ddbd?w=1080",
-      "imageHint": "islamic architecture serene"
-    },
-    {
-      "id": "nature-21",
-      "description": "Ocean sunset.",
-      "imageUrl": "https://images.unsplash.com/photo-1507400492013-162706c8c05e?w=1080",
-      "imageHint": "nature serene ocean"
-    },
-    {
-      "id": "nature-22",
-      "description": "Mountain peaks at sunrise.",
-      "imageUrl": "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1080",
-      "imageHint": "nature mountain serene"
-    },
-    {
-      "id": "nature-23",
-      "description": "Snow-capped mountains.",
-      "imageUrl": "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1080",
-      "imageHint": "nature mountain abstract"
-    },
-    {
-      "id": "nature-24",
-      "description": "Golden wheat field.",
-      "imageUrl": "https://images.unsplash.com/photo-1475924156734-496f6cac6ec1?w=1080",
-      "imageHint": "nature serene golden"
-    },
-    {
-      "id": "nature-25",
-      "description": "Forest sunbeams.",
-      "imageUrl": "https://images.unsplash.com/photo-1502082553048-f009c37129b9?w=1080",
-      "imageHint": "nature forest serene"
-    },
-    {
-      "id": "abstract-26",
-      "description": "Blue gradient abstract.",
-      "imageUrl": "https://images.unsplash.com/photo-1557683316-973673baf926?w=1080",
-      "imageHint": "abstract serene blue"
-    },
-    {
-      "id": "abstract-28",
-      "description": "Gradient mesh colors.",
-      "imageUrl": "https://images.unsplash.com/photo-1579546929518-9e396f3cc809?w=1080",
-      "imageHint": "abstract gradient serene"
-    },
-    {
-      "id": "sky-29",
-      "description": "Starry night sky.",
-      "imageUrl": "https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?w=1080",
-      "imageHint": "night stars serene"
-    },
-    {
-      "id": "sky-30",
-      "description": "Milky Way galaxy.",
-      "imageUrl": "https://images.unsplash.com/photo-1531306728370-e2ebd9d7bb99?w=1080",
-      "imageHint": "night stars galaxy"
-    },
-    {
-      "id": "sky-31",
-      "description": "Blue hour sky.",
-      "imageUrl": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?w=1080",
-      "imageHint": "night sky abstract"
-    },
-    {
-      "id": "kaaba-32",
-      "description": "Kaaba at night.",
-      "imageUrl": "https://images.unsplash.com/photo-1591604129939-f1efa4d9f7fa?w=1080",
-      "imageHint": "kaaba islam mosque"
-    },
-    {
-      "id": "mosque-33",
-      "description": "Grand mosque interior.",
-      "imageUrl": "https://images.unsplash.com/photo-1564769625905-50e93615e769?w=1080",
-      "imageHint": "mosque islam coran"
-    },
-    {
-      "id": "coran-34",
-      "description": "Quran with light.",
-      "imageUrl": "https://images.unsplash.com/photo-1609599006353-e629aaabfeae?w=1080",
-      "imageHint": "coran islam mosque"
-    },
-    {
-      "id": "mosque-35",
-      "description": "Mosque with palm trees.",
-      "imageUrl": "https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=1080",
-      "imageHint": "mosque islam musulman"
-    },
-    {
-      "id": "islamic-36",
-      "description": "Islamic geometric pattern.",
-      "imageUrl": "https://images.unsplash.com/photo-1585036156171-384164a8c675?w=1080",
-      "imageHint": "islam coran mosque"
-    },
-    {
-      "id": "mosque-37",
-      "description": "Sultan Ahmed Mosque.",
-      "imageUrl": "https://images.unsplash.com/photo-1541788360-1af30bed7bf5?w=1080",
-      "imageHint": "mosque islam musulman"
-    },
-    {
-      "id": "islamic-38",
-      "description": "Islamic calligraphy art.",
-      "imageUrl": "https://images.unsplash.com/photo-1573090867324-2c4e02809079?w=1080",
-      "imageHint": "coran islam calligraphy"
-    },
-    {
-      "id": "mosque-39",
-      "description": "Mosque dome golden.",
-      "imageUrl": "https://images.unsplash.com/photo-1565362676315-f3f1b1e92f89?w=1080",
-      "imageHint": "mosque islam musulman"
-    },
-    {
-      "id": "kaaba-40",
-      "description": "Kaaba pilgrimage view.",
-      "imageUrl": "https://images.unsplash.com/photo-1580418827493-f2b22c0a76cb?w=1080",
-      "imageHint": "kaaba islam mosque"
-    },
-    {
       "id": "hikma-new-1",
-      "description": "Nouveau fond HikmaClips 1.",
+      "description": "Fond islamique HikmaClips 1.",
       "imageUrl": "https://res.cloudinary.com/db2ljqpdt/image/upload/v1770482460/1770368681324_eltq7s.jpg",
       "imageHint": "islamic background serene"
     },
     {
       "id": "hikma-new-2",
-      "description": "Nouveau fond HikmaClips 2.",
+      "description": "Fond islamique HikmaClips 2.",
       "imageUrl": "https://res.cloudinary.com/db2ljqpdt/image/upload/v1770482460/1770368741971_skfh9j.jpg",
       "imageHint": "islamic background architecture"
     },
     {
       "id": "hikma-new-3",
-      "description": "Nouveau fond HikmaClips 3.",
+      "description": "Fond islamique HikmaClips 3.",
       "imageUrl": "https://res.cloudinary.com/db2ljqpdt/image/upload/v1770482460/1770368775852_gbto8l.jpg",
       "imageHint": "islamic background mosque"
     },
     {
       "id": "hikma-new-4",
-      "description": "Nouveau fond HikmaClips 4.",
+      "description": "Fond islamique HikmaClips 4.",
       "imageUrl": "https://res.cloudinary.com/db2ljqpdt/image/upload/v1770482460/1770368464428_nyjfzr.jpg",
       "imageHint": "islamic background serene"
     },
     {
       "id": "hikma-new-5",
-      "description": "Nouveau fond HikmaClips 5.",
+      "description": "Fond islamique HikmaClips 5.",
       "imageUrl": "https://res.cloudinary.com/db2ljqpdt/image/upload/v1770482460/1770369038193_pr0prn.jpg",
       "imageHint": "islamic background architecture"
     },
     {
       "id": "hikma-new-6",
-      "description": "Nouveau fond HikmaClips 6.",
+      "description": "Fond islamique HikmaClips 6.",
       "imageUrl": "https://res.cloudinary.com/db2ljqpdt/image/upload/v1770482460/1770368906717_hmc02x.jpg",
       "imageHint": "islamic background mosque"
     },
     {
       "id": "cbb964155dfdaf5cf0e75f7561ea90f6_u2fz8n",
-      "description": "Background image - Nature & Astronomy.",
+      "description": "Cosmos et nature 1.",
       "imageUrl": "https://res.cloudinary.com/dk93srhfb/image/upload/v1770828773/cbb964155dfdaf5cf0e75f7561ea90f6_u2fz8n.jpg",
       "imageHint": "nature astronomy background serene"
     },
     {
       "id": "8da4dddebfc8d7464b871418de1de14a_mncfuk",
-      "description": "Background image - Nature & Astronomy.",
+      "description": "Cosmos et nature 2.",
       "imageUrl": "https://res.cloudinary.com/dk93srhfb/image/upload/v1770828772/8da4dddebfc8d7464b871418de1de14a_mncfuk.jpg",
       "imageHint": "nature astronomy background serene"
     },
     {
       "id": "c6ba5f63981b657daa9d030aaef4a01c_pgohin",
-      "description": "Background image - Nature & Astronomy.",
+      "description": "Cosmos et nature 3.",
       "imageUrl": "https://res.cloudinary.com/dk93srhfb/image/upload/v1770828772/c6ba5f63981b657daa9d030aaef4a01c_pgohin.jpg",
       "imageHint": "nature astronomy background serene"
     },
     {
       "id": "3b463e19a723821dd82191afa7232a14_zxwvj3",
-      "description": "Background image - Nature & Astronomy.",
+      "description": "Cosmos et nature 4.",
       "imageUrl": "https://res.cloudinary.com/dk93srhfb/image/upload/v1770828772/3b463e19a723821dd82191afa7232a14_zxwvj3.jpg",
       "imageHint": "nature astronomy background serene"
     },
     {
       "id": "d43dd03a5683fa2623cc11bdc2bf9ba5_tkhzx1",
-      "description": "Background image - Nature & Astronomy.",
+      "description": "Cosmos et nature 5.",
       "imageUrl": "https://res.cloudinary.com/dk93srhfb/image/upload/v1770828772/d43dd03a5683fa2623cc11bdc2bf9ba5_tkhzx1.jpg",
       "imageHint": "nature astronomy background serene"
     },
     {
       "id": "842ed0fcc23ff82e06292b3cd9dfff00_ed4f5n",
-      "description": "Background image - Nature & Astronomy.",
+      "description": "Cosmos et nature 6.",
       "imageUrl": "https://res.cloudinary.com/dk93srhfb/image/upload/v1770828771/842ed0fcc23ff82e06292b3cd9dfff00_ed4f5n.jpg",
       "imageHint": "nature astronomy background serene"
     },
     {
       "id": "40622c4aea66b53d6d7627513a6f5dfc_l85kre",
-      "description": "Background image - Nature & Astronomy.",
+      "description": "Cosmos et nature 7.",
       "imageUrl": "https://res.cloudinary.com/dk93srhfb/image/upload/v1770828771/40622c4aea66b53d6d7627513a6f5dfc_l85kre.jpg",
       "imageHint": "nature astronomy background serene"
     },
     {
       "id": "924384f8cc55fcd1cb29753eef6e1ec3_u4fyi7",
-      "description": "Background image - Nature & Astronomy.",
+      "description": "Cosmos et nature 8.",
       "imageUrl": "https://res.cloudinary.com/dk93srhfb/image/upload/v1770828771/924384f8cc55fcd1cb29753eef6e1ec3_u4fyi7.jpg",
       "imageHint": "nature astronomy background serene"
     },
     {
       "id": "fa0f48cab1f58502b03db1797b82cf5a_w1tpzw",
-      "description": "Background image - Nature & Astronomy.",
+      "description": "Cosmos et nature 9.",
       "imageUrl": "https://res.cloudinary.com/dk93srhfb/image/upload/v1770828771/fa0f48cab1f58502b03db1797b82cf5a_w1tpzw.jpg",
       "imageHint": "nature astronomy background serene"
     },
     {
       "id": "076d9fb4e5d4b172d48ebd4ec1503444_l6iovt",
-      "description": "Background image - Nature & Astronomy.",
+      "description": "Cosmos et nature 10.",
       "imageUrl": "https://res.cloudinary.com/dk93srhfb/image/upload/v1770828770/076d9fb4e5d4b172d48ebd4ec1503444_l6iovt.jpg",
       "imageHint": "nature astronomy background serene"
     },
     {
       "id": "fa6ecddd0d25d2820f02cc3ec2e3638d_wht1nd",
-      "description": "Background image - Nature & Astronomy.",
+      "description": "Cosmos et nature 11.",
       "imageUrl": "https://res.cloudinary.com/dk93srhfb/image/upload/v1770828770/fa6ecddd0d25d2820f02cc3ec2e3638d_wht1nd.jpg",
       "imageHint": "nature astronomy background serene"
     },
     {
       "id": "9e188443460f5e27d65e342c82201ed0_wbe5c2",
-      "description": "Background image - Nature & Astronomy.",
+      "description": "Cosmos et nature 12.",
       "imageUrl": "https://res.cloudinary.com/dk93srhfb/image/upload/v1770828770/9e188443460f5e27d65e342c82201ed0_wbe5c2.jpg",
       "imageHint": "nature astronomy background serene"
     },
     {
       "id": "4858de5f821b1dfb41ae9c73f6aa4518_dwfugj",
-      "description": "Background image - Nature & Astronomy.",
+      "description": "Cosmos et nature 13.",
       "imageUrl": "https://res.cloudinary.com/dk93srhfb/image/upload/v1770828769/4858de5f821b1dfb41ae9c73f6aa4518_dwfugj.jpg",
       "imageHint": "nature astronomy background serene"
     },
     {
       "id": "ed3c845de6e29791b14e6ec7df63665c_u2vk6d",
-      "description": "Background image - Nature & Astronomy.",
+      "description": "Cosmos et nature 14.",
       "imageUrl": "https://res.cloudinary.com/dk93srhfb/image/upload/v1770828769/ed3c845de6e29791b14e6ec7df63665c_u2vk6d.jpg",
       "imageHint": "nature astronomy background serene"
     },
     {
       "id": "9e0db3133648e8b52bff4ad3fac7e0f4_iz2jyp",
-      "description": "Background image - Nature & Astronomy.",
+      "description": "Cosmos et nature 15.",
       "imageUrl": "https://res.cloudinary.com/dk93srhfb/image/upload/v1770828769/9e0db3133648e8b52bff4ad3fac7e0f4_iz2jyp.jpg",
       "imageHint": "nature astronomy background serene"
     },
     {
       "id": "a985daba50552fe35494a531ea005d4d_ykelon",
-      "description": "Background image - Nature & Astronomy.",
+      "description": "Cosmos et nature 16.",
       "imageUrl": "https://res.cloudinary.com/dk93srhfb/image/upload/v1770828769/a985daba50552fe35494a531ea005d4d_ykelon.jpg",
       "imageHint": "nature astronomy background serene"
     },
     {
       "id": "44ebf168b0514257f444fcb0dfc064a5_empjxk",
-      "description": "Background image - Nature & Astronomy.",
+      "description": "Cosmos et nature 17.",
       "imageUrl": "https://res.cloudinary.com/dk93srhfb/image/upload/v1770828769/44ebf168b0514257f444fcb0dfc064a5_empjxk.jpg",
       "imageHint": "nature astronomy background serene"
     },
     {
       "id": "ff228d254a9915835c4a2c168c427980_ecwpze",
-      "description": "Background image - Nature & Astronomy.",
+      "description": "Cosmos et nature 18.",
       "imageUrl": "https://res.cloudinary.com/dk93srhfb/image/upload/v1770828769/ff228d254a9915835c4a2c168c427980_ecwpze.jpg",
       "imageHint": "nature astronomy background serene"
     },
     {
       "id": "5bc6018d41a8bdfe01220b06840bfeed_vx3uaf",
-      "description": "Background image - Nature & Astronomy.",
+      "description": "Cosmos et nature 19.",
       "imageUrl": "https://res.cloudinary.com/dk93srhfb/image/upload/v1770828768/5bc6018d41a8bdfe01220b06840bfeed_vx3uaf.jpg",
       "imageHint": "nature astronomy background serene"
     },
     {
       "id": "5ca1d47ba5b604d4705f16631d19960f_jwz5b0",
-      "description": "Background image - Nature & Astronomy.",
+      "description": "Cosmos et nature 20.",
       "imageUrl": "https://res.cloudinary.com/dk93srhfb/image/upload/v1770828768/5ca1d47ba5b604d4705f16631d19960f_jwz5b0.jpg",
       "imageHint": "nature astronomy background serene"
     },
     {
       "id": "01b4ae03b3c86cf92fcd6c1dd8c70dda_pfswy4",
-      "description": "Background image - Nature & Astronomy.",
+      "description": "Cosmos et nature 21.",
       "imageUrl": "https://res.cloudinary.com/dk93srhfb/image/upload/v1770828768/01b4ae03b3c86cf92fcd6c1dd8c70dda_pfswy4.jpg",
       "imageHint": "nature astronomy background serene"
     },
     {
       "id": "0702618f3d516d2b716131b44f8eb73a_d8t9yf",
-      "description": "Background image - Nature & Astronomy.",
+      "description": "Cosmos et nature 22.",
       "imageUrl": "https://res.cloudinary.com/dk93srhfb/image/upload/v1770828768/0702618f3d516d2b716131b44f8eb73a_d8t9yf.jpg",
       "imageHint": "nature astronomy background serene"
     },
     {
       "id": "b0c14253928cb004bdb910244c05aaff_vvy6ve",
-      "description": "Background image - Nature & Astronomy.",
+      "description": "Cosmos et nature 23.",
       "imageUrl": "https://res.cloudinary.com/dk93srhfb/image/upload/v1770828768/b0c14253928cb004bdb910244c05aaff_vvy6ve.jpg",
       "imageHint": "nature astronomy background serene"
     },
     {
       "id": "156fe60f49ee8f87ce04edbdd4015036_oyqjo8",
-      "description": "Background image - Nature & Astronomy.",
+      "description": "Cosmos et nature 24.",
       "imageUrl": "https://res.cloudinary.com/dk93srhfb/image/upload/v1770828768/156fe60f49ee8f87ce04edbdd4015036_oyqjo8.jpg",
       "imageHint": "nature astronomy background serene"
     }

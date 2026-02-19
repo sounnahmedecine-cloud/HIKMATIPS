@@ -41,6 +41,43 @@
     --chart-2: 38 92% 50%;
   }
 
+  .maroc {
+    /* 🇲🇦 Thème Marocain — Vert Royal & Or Zellige */
+    --background: 150 30% 96%;
+    /* Blanc ivoire chaud */
+    --foreground: 150 40% 10%;
+    --card: 0 0% 100%;
+    --card-foreground: 150 40% 10%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 150 40% 10%;
+
+    /* Primary — Vert Marocain #006233 */
+    --primary: 150 100% 19%;
+    --primary-foreground: 0 0% 100%;
+
+    /* Secondary — Or Zellige #C9A84C */
+    --secondary: 42 54% 54%;
+    --secondary-foreground: 0 0% 100%;
+
+    /* Accent — Or vif #D4A843 */
+    --accent: 43 63% 55%;
+    --accent-foreground: 0 0% 100%;
+
+    /* Muted */
+    --muted: 150 15% 90%;
+    --muted-foreground: 150 15% 40%;
+
+    /* Border & Input */
+    --border: 42 40% 75%;
+    --input: 42 40% 75%;
+    --ring: 150 100% 19%;
+
+    --radius: 9999px;
+
+    --chart-1: 150 100% 19%;
+    --chart-2: 43 63% 55%;
+  }
+
   .dark {
     /* Hikma Dark Deep Green/Black */
     --background: 120 15% 4%;
