@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useMemo } from "react"
+import { useState, useMemo, useCallback } from "react"
 import { X, Image as ImageIcon, Star } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { PlaceHolderImages } from "@/lib/placeholder-images"
@@ -53,14 +53,24 @@ const isCloudinary = (url: string) =>
     url.includes('db2ljqpdt') ||
     url.includes('dk93srhfb');
 
+const PAGE_SIZE = 20;
+
 export function CloudinaryGallery({ isOpen, onClose, onSelect, currentBackground }: CloudinaryGalleryProps) {
     const [selectedCategory, setSelectedCategory] = useState('all');
+    const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
 
     const allImages = PlaceHolderImages;
 
     const filteredImages = useMemo(() => {
         return allImages.filter(img => matchesCategory(img.imageHint, selectedCategory));
     }, [allImages, selectedCategory]);
+
+    const visibleImages = useMemo(() => filteredImages.slice(0, visibleCount), [filteredImages, visibleCount]);
+
+    const handleCategoryChange = useCallback((catId: string) => {
+        setSelectedCategory(catId);
+        setVisibleCount(PAGE_SIZE);
+    }, []);
 
     const cloudinaryCount = allImages.filter(img => isCloudinary(img.imageUrl)).length;
 
@@ -104,7 +114,7 @@ export function CloudinaryGallery({ isOpen, onClose, onSelect, currentBackground
                             {CATEGORIES.map((cat) => (
                                 <button
                                     key={cat.id}
-                                    onClick={() => setSelectedCategory(cat.id)}
+                                    onClick={() => handleCategoryChange(cat.id)}
                                     className={cn(
                                         "px-4 py-2 rounded-full text-sm font-semibold transition-all whitespace-nowrap flex items-center gap-1.5 flex-shrink-0",
                                         selectedCategory === cat.id
@@ -131,8 +141,9 @@ export function CloudinaryGallery({ isOpen, onClose, onSelect, currentBackground
                                     <p className="text-sm">Aucune image dans cette catégorie.</p>
                                 </div>
                             ) : (
+                                <>
                                 <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-                                    {filteredImages.map((img) => {
+                                    {visibleImages.map((img) => {
                                         const isPremium = isCloudinary(img.imageUrl);
                                         const isActive = currentBackground === img.imageUrl;
                                         return (
@@ -181,6 +192,17 @@ export function CloudinaryGallery({ isOpen, onClose, onSelect, currentBackground
                                         );
                                     })}
                                 </div>
+                                {visibleCount < filteredImages.length && (
+                                    <div className="flex justify-center mt-4 pb-2">
+                                        <button
+                                            onClick={() => setVisibleCount(v => v + PAGE_SIZE)}
+                                            className="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold rounded-full transition-colors shadow-md"
+                                        >
+                                            Voir plus ({filteredImages.length - visibleCount} restantes)
+                                        </button>
+                                    </div>
+                                )}
+                                </>
                             )}
                         </div>
 

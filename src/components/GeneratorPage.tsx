@@ -77,9 +77,9 @@ type Content = {
   ayah?: number;
 };
 
-type Category = 'hadith' | 'ramadan' | 'thematique' | 'coran' | 'recherche-ia' | 'citadelle' | 'rabbana';
+type Category = 'hadith' | 'ramadan' | 'coran' | 'recherche-ia' | 'citadelle' | 'rabbana';
 
-const ALL_CATEGORIES: Category[] = ['hadith', 'ramadan', 'thematique', 'coran', 'recherche-ia', 'citadelle', 'rabbana'];
+const ALL_CATEGORIES: Category[] = ['hadith', 'ramadan', 'coran', 'recherche-ia', 'citadelle', 'rabbana'];
 
 export default function GeneratorPage() {
   const [content, setContent] = useState<Content | null>({
@@ -404,7 +404,7 @@ export default function GeneratorPage() {
 
     const relevantImages = (cloudinaryImages.length > 0 ? cloudinaryImages : PlaceHolderImages).filter(img => {
       const hint = img.imageHint.toLowerCase();
-      if (category === 'hadith' || category === 'coran' || category === 'thematique') {
+      if (category === 'hadith' || category === 'coran') {
         return hint.includes('islamic') || hint.includes('nature') || hint.includes('serene') || hint.includes('abstract');
       }
       if (category === 'ramadan') {
@@ -859,7 +859,6 @@ export default function GeneratorPage() {
               { id: 'hadith',      icon: BookOpen,   label: 'Hadith'   },
               { id: 'ramadan',     icon: Moon,       label: 'Ramadan'  },
               { id: 'citadelle',   icon: Sparkles,   label: 'Douas'    },
-              { id: 'thematique',  icon: LayoutGrid, label: 'Thème'    },
               { id: 'rabbana',     icon: Heart,      label: 'Rabbana'  },
             ].map((cat) => (
               <button
