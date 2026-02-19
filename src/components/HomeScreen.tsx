@@ -10,7 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
 import { getFavorites, toggleFavorite, cn } from "@/lib/utils"
 import {
-    Sparkles,
+    Zap,
     Image as ImageIcon,
     Upload,
     RefreshCw,
@@ -19,13 +19,19 @@ import {
     X,
     LayoutGrid,
     Crown,
-    Heart
+    Heart,
+    BookMarked,
+    BookOpen,
+    Moon,
+    Loader2
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { CloudinaryGallery } from "@/components/studio/CloudinaryGallery"
 import { CategoryDrawer } from "@/components/CategoryDrawer"
 import { DesignToolsDrawer } from "@/components/DesignToolsDrawer"
+import { MobileTopicInput } from "@/components/studio/MobileTopicInput"
 import OnboardingScreen from '@/components/OnboardingScreen'
+import { generateHadith } from '@/ai/flows/generate-hadith'
 import { useAuth, useUser } from '@/firebase'
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from 'firebase/auth'
 import {
@@ -100,7 +106,11 @@ export function HomeScreen() {
     const [isToolsOpen, setIsToolsOpen] = useState(false);
     const [showOnboarding, setShowOnboarding] = useState(false);
     const [showSignInPopup, setShowSignInPopup] = useState(false);
-    const [selectedCategory, setSelectedCategory] = useState<string>("all");
+    const [selectedCategory, setSelectedCategory] = useState<string>("recherche-ia");
+    const [topic, setTopic] = useState("");
+    const [generationCount, setGenerationCount] = useState(0);
+    const [buffer, setBuffer] = useState<HikmaData[]>([]);
+    const [isBuffering, setIsBuffering] = useState(false);
 
     // Auth States
     const { user, isUserLoading } = useUser();
@@ -123,6 +133,88 @@ export function HomeScreen() {
     const { toast } = useToast();
     const fileInputRef = useRef<HTMLInputElement>(null);
     const captureRef = useRef<HTMLDivElement>(null);
+
+    const fetchToBuffer = async (cat: string, t: string) => {
+        try {
+            const result = await generateHadith({ category: cat as any, topic: t });
+            if (result && result.content) {
+                return {
+                    arabe: result.arabe || "",
+                    fr: result.content,
+                    source: result.source,
+                    category: cat
+                };
+            }
+        } catch (e) {
+            console.error("Buffer fetch error:", e);
+        }
+        return null;
+    };
+
+    const refillBuffer = useCallback(async (cat: string, t: string, count = 2) => {
+        if (isBuffering) return;
+        setIsBuffering(true);
+        const newItems: HikmaData[] = [];
+        for (let i = 0; i < count; i++) {
+            const item = await fetchToBuffer(cat, t);
+            if (item) newItems.push(item);
+        }
+        setBuffer(prev => [...prev, ...newItems]);
+        setIsBuffering(false);
+    }, [isBuffering]);
+
+    const handleGenerateAiContent = async () => {
+        if (!user && generationCount >= 10) {
+            setShowSignInPopup(true);
+            return;
+        }
+
+        // 1. If we have items in buffer, use one immediately
+        if (buffer.length > 0) {
+            const nextItem = buffer[0];
+            const remaining = buffer.slice(1);
+            setBuffer(remaining);
+            setCurrentHikma(nextItem);
+
+            if (!user) {
+                setGenerationCount(prev => prev + 1);
+            }
+
+            // 2. Refill buffer in the background if it's getting low
+            if (remaining.length < 2) {
+                refillBuffer(selectedCategory, topic, 2);
+            }
+            return;
+        }
+
+        // 3. Fallback to normal generation if buffer empty
+        setIsGenerating(true);
+        try {
+            const result = await generateHadith({ category: selectedCategory as any, topic });
+            if (result && result.content) {
+                setCurrentHikma({
+                    arabe: result.arabe || "",
+                    fr: result.content,
+                    source: result.source,
+                    category: selectedCategory
+                });
+                if (!user) {
+                    setGenerationCount(prev => prev + 1);
+                }
+                // Also start filling buffer
+                refillBuffer(selectedCategory, topic, 2);
+            }
+        } catch (error) {
+            console.error("Erreur génération IA Home:", error);
+            toast({
+                variant: 'destructive',
+                title: 'L\'Agent est occupé',
+                description: "Veuillez réessayer dans un instant.",
+            });
+        } finally {
+            setIsGenerating(false);
+        }
+    };
 
     const handleEmailAuth = async () => {
         if (!auth || isConnecting) return;
@@ -159,21 +251,6 @@ export function HomeScreen() {
         img.imageUrl.includes('db2ljqpdt')
     );
 
-    const handleShuffleText = useCallback(() => {
-        const pool = selectedCategory === "all"
-            ? ALL_MOCKS
-            : ALL_MOCKS.filter(h => h.category.toLowerCase() === selectedCategory.toLowerCase());
-
-        const effectivePool = pool.length > 0 ? pool : ALL_MOCKS;
-
-        let nextIndex;
-        do {
-            nextIndex = Math.floor(Math.random() * effectivePool.length);
-        } while (effectivePool.length > 1 && effectivePool[nextIndex].fr === currentHikma.fr);
-
-        setCurrentHikma(effectivePool[nextIndex]);
-    }, [currentHikma, selectedCategory]);
-
     const handleShuffleBackground = useCallback(() => {
         if (cloudinaryImages.length > 0) {
             let nextBgIndex;
@@ -185,9 +262,9 @@ export function HomeScreen() {
     }, [background, cloudinaryImages]);
 
     const handleFullShuffle = useCallback(() => {
-        handleShuffleText();
+        handleGenerateAiContent();
         handleShuffleBackground();
-    }, [handleShuffleText, handleShuffleBackground]);
+    }, [handleGenerateAiContent, handleShuffleBackground]);
 
     const swipeHandlers = useSwipeable({
         onSwipedUp: () => handleFullShuffle(),
@@ -224,12 +301,15 @@ export function HomeScreen() {
             const bgIndex = dateSeed % validImages.length;
             setBackground(validImages[bgIndex].imageUrl);
         }
+
+        // Pre-fill buffer on mount
+        refillBuffer("recherche-ia", "", 2);
     }, []); // Empty dependency array ensures this runs strictly once
 
     // Event listeners configuration
     useEffect(() => {
         // Listen for events from bottom nav
-        const onGenerate = () => handleShuffleText();
+        const onGenerate = () => handleGenerateAiContent();
         const onTools = () => setIsToolsOpen(true);
 
         window.addEventListener('hikma:generate', onGenerate);
@@ -239,7 +319,7 @@ export function HomeScreen() {
             window.removeEventListener('hikma:generate', onGenerate);
             window.removeEventListener('hikma:tools', onTools);
         };
-    }, [handleShuffleText]); // Depends on handleShuffleText which updates when hikma changes, but won't trigger the INIT logic loop anymore
+    }, [handleGenerateAiContent]); // Depends on handleShuffleText which updates when hikma changes, but won't trigger the INIT logic loop anymore
 
     const handleFavorite = () => {
         if (!user && favorites.length >= 3) {
@@ -346,6 +426,12 @@ export function HomeScreen() {
 
                 {/* Content */}
                 <div className="absolute inset-0 flex flex-col items-center justify-center p-8 text-center">
+                    {isGenerating && (
+                        <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/20 backdrop-blur-sm z-50">
+                            <Loader2 className="w-10 h-10 animate-spin text-white mb-2" />
+                            <p className="text-white text-sm font-medium">Votre Hikma est en cours...</p>
+                        </div>
+                    )}
                     <AnimatePresence mode="wait">
                         <motion.div
                             key={currentHikma.fr + background}
@@ -390,22 +476,36 @@ export function HomeScreen() {
 
             {/* Floating UI Elements (NOT for capture) */}
 
-            {/* 1. TOP UI: Premium & Info */}
-            <div className="absolute top-12 left-6 right-6 z-40 flex justify-between items-start pointer-events-none">
-                <Button
-                    variant="ghost"
-                    onClick={() => setIsCategoryOpen(true)}
-                    className="pointer-events-auto h-11 px-5 rounded-full bg-black/30 backdrop-blur-md border border-white/10 text-white font-bold flex items-center gap-2 group shadow-xl"
-                >
-                    <LayoutGrid className="w-4 h-4 group-hover:rotate-90 transition-transform" />
-                    <span className="text-[10px] uppercase font-bold tracking-widest">{currentHikma.category || "Inspiration"}</span>
-                </Button>
+            {/* 1. TOP UI: Perfectly Symmetrical & Ultra-Transparent */}
+            <div className="absolute top-8 left-6 right-6 z-[60] flex justify-between items-center pointer-events-none">
+                <div className="pointer-events-auto">
+                    <Button
+                        variant="ghost"
+                        onClick={() => setIsCategoryOpen(true)}
+                        className="h-10 px-4 rounded-full bg-white/5 backdrop-blur-xl border border-white/10 text-white font-bold flex items-center gap-2 group shadow-lg"
+                    >
+                        <LayoutGrid className="w-4 h-4 group-hover:rotate-90 transition-transform" />
+                        <span className="text-[9px] uppercase font-extrabold tracking-widest">{selectedCategory === 'recherche-ia' ? "Agent" : selectedCategory}</span>
+                    </Button>
+                </div>
+
+                {/* Centered Top Search Bar */}
+                <div className="absolute left-1/2 -translate-x-1/2 w-full max-w-[170px] pointer-events-auto">
+                    <MobileTopicInput
+                        value={topic}
+                        onChange={setTopic}
+                        isVisible={true}
+                        placeholder="Thème..."
+                        onEnter={handleGenerateAiContent}
+                        position="top"
+                    />
+                </div>
 
                 <Button
                     variant="ghost"
                     size="icon"
                     onClick={() => setShowSignInPopup(true)}
-                    className="pointer-events-auto w-11 h-11 rounded-2xl bg-[#FFFDD0]/10 backdrop-blur-md border border-[#FFFDD0]/20 text-yellow-400 shadow-xl"
+                    className="pointer-events-auto w-10 h-10 rounded-full bg-white/5 backdrop-blur-xl border border-white/10 text-yellow-500 shadow-lg"
                 >
                     <Crown className="w-5 h-5" />
                 </Button>
@@ -415,7 +515,7 @@ export function HomeScreen() {
             <div className="absolute left-6 bottom-40 z-40 flex flex-col gap-4">
                 <button
                     onClick={() => setIsGalleryOpen(true)}
-                    className="w-12 h-12 rounded-full bg-[#FFFDD0]/10 backdrop-blur-md border border-[#FFFDD0]/20 text-[#FFFDD0] shadow-2xl flex items-center justify-center active:scale-90 transition-all"
+                    className="w-12 h-12 rounded-full bg-primary/20 dark:bg-primary/10 backdrop-blur-md border border-primary/30 dark:border-primary/20 text-primary-foreground dark:text-primary shadow-2xl flex items-center justify-center active:scale-90 transition-all font-bold"
                     aria-label="Galerie Cloudinary"
                 >
                     <ImageIcon className="w-5 h-5" />
@@ -424,7 +524,7 @@ export function HomeScreen() {
 
                 <button
                     onClick={() => fileInputRef.current?.click()}
-                    className="w-12 h-12 rounded-full bg-[#FFFDD0]/10 backdrop-blur-md border border-[#FFFDD0]/20 text-[#FFFDD0] shadow-2xl flex items-center justify-center active:scale-90 transition-all"
+                    className="w-12 h-12 rounded-full bg-primary/20 dark:bg-primary/10 backdrop-blur-md border border-primary/30 dark:border-primary/20 text-primary-foreground dark:text-primary shadow-2xl flex items-center justify-center active:scale-90 transition-all font-bold"
                     aria-label="Charger une image locale"
                 >
                     <Upload className="w-5 h-5" />
@@ -432,7 +532,7 @@ export function HomeScreen() {
 
                 <button
                     onClick={handleShuffleBackground}
-                    className="w-12 h-12 rounded-full bg-[#FFFDD0]/10 backdrop-blur-md border border-[#FFFDD0]/20 text-[#FFFDD0] shadow-2xl flex items-center justify-center active:scale-90 transition-all"
+                    className="w-12 h-12 rounded-full bg-primary/20 dark:bg-primary/10 backdrop-blur-md border border-primary/30 dark:border-primary/20 text-primary-foreground dark:text-primary shadow-2xl flex items-center justify-center active:scale-90 transition-all font-bold"
                     aria-label="Changer l'image de fond"
                 >
                     <RefreshCw className="w-5 h-5" />
@@ -444,10 +544,10 @@ export function HomeScreen() {
                 <button
                     onClick={handleFavorite}
                     className={cn(
-                        "w-12 h-12 rounded-full backdrop-blur-md border shadow-2xl flex items-center justify-center active:scale-90 transition-all",
+                        "w-12 h-12 rounded-full backdrop-blur-md border shadow-2xl flex items-center justify-center active:scale-90 transition-all font-bold",
                         isLiked
-                            ? "bg-red-500/20 border-red-500/50 text-red-500"
-                            : "bg-[#FFFDD0]/10 border-[#FFFDD0]/20 text-[#FFFDD0]"
+                            ? "bg-red-500/20 border-red-500/50 text-red-600 dark:text-red-500"
+                            : "bg-primary/20 dark:bg-primary/10 border-primary/30 dark:border-primary/20 text-primary-foreground dark:text-primary"
                     )}
                     aria-label="Ajouter aux favoris"
                 >
@@ -456,7 +556,7 @@ export function HomeScreen() {
 
                 <button
                     onClick={handleShare}
-                    className="w-12 h-12 rounded-full bg-[#FFFDD0]/10 backdrop-blur-md border border-[#FFFDD0]/20 text-[#FFFDD0] shadow-2xl flex items-center justify-center active:scale-90 transition-all"
+                    className="w-12 h-12 rounded-full bg-primary/20 dark:bg-primary/10 backdrop-blur-md border border-primary/30 dark:border-primary/20 text-primary-foreground dark:text-primary shadow-2xl flex items-center justify-center active:scale-90 transition-all font-bold"
                     aria-label="Partager"
                 >
                     <Share2 className="w-5 h-5" />
@@ -464,10 +564,29 @@ export function HomeScreen() {
 
                 <button
                     onClick={handleDownload}
-                    className="w-12 h-12 rounded-full bg-[#FFFDD0]/10 backdrop-blur-md border border-[#FFFDD0]/20 text-[#FFFDD0] shadow-2xl flex items-center justify-center active:scale-90 transition-all"
+                    className="w-12 h-12 rounded-full bg-primary/20 dark:bg-primary/10 backdrop-blur-md border border-primary/30 dark:border-primary/20 text-primary-foreground dark:text-primary shadow-2xl flex items-center justify-center active:scale-90 transition-all font-bold"
                     aria-label="Télécharger"
                 >
                     <Download className="w-5 h-5" />
+                </button>
+            </div>
+
+            {/* Bottom Tools - Cleaned up to match old demand */}
+            <div className="absolute bottom-10 left-0 right-0 z-40 flex flex-col items-center gap-4 px-4">
+                <button
+                    onClick={handleGenerateAiContent}
+                    disabled={isGenerating || isBuffering}
+                    className={cn(
+                        "h-14 px-10 rounded-full bg-emerald-500/10 backdrop-blur-xl text-white flex items-center gap-3 active:scale-95 transition-all w-full max-w-[280px] font-bold border border-white/20",
+                        (isGenerating || isBuffering && buffer.length === 0) && "opacity-80"
+                    )}
+                >
+                    {isGenerating || (isBuffering && buffer.length === 0) ? (
+                        <Loader2 className="w-6 h-6 animate-spin text-emerald-400" />
+                    ) : (
+                        <Zap className="w-6 h-6 text-emerald-400 fill-emerald-400" />
+                    )}
+                    <span className="font-bold tracking-tight text-emerald-500">Agent Hikma</span>
                 </button>
             </div>
 
@@ -487,8 +606,9 @@ export function HomeScreen() {
                 category={selectedCategory as any}
                 onSelectCategory={(cat) => {
                     setSelectedCategory(cat);
-                    // Shuffle after changing category to show relevant content
-                    setTimeout(handleShuffleText, 300);
+                    setBuffer([]); // Clear buffer for new category
+                    // Generate AI content after changing category to show relevant content
+                    setTimeout(handleGenerateAiContent, 300);
                 }}
             />
 
