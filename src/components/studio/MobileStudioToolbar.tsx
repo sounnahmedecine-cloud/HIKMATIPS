@@ -37,7 +37,7 @@ export function MobileStudioToolbar({ onToolSelect, activeTool }: MobileStudioTo
     ] as const;
 
     return (
-        <div className="fixed right-4 top-1/2 -translate-y-1/2 z-50 flex flex-col gap-4 md:hidden">
+        <div className="fixed right-4 z-50 flex flex-col gap-3 md:hidden" style={{ top: 'calc(50% + max(0px, env(safe-area-inset-top) / 2))', transform: 'translateY(-50%)' }}>
             <AnimatePresence mode="popLayout">
                 {tools.map((tool, index) => (
                     <motion.button

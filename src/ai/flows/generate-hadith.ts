@@ -60,7 +60,6 @@ async function loadDatabase(): Promise<HadithDatabase> {
     };
     return cachedDatabase!;
   } catch (error) {
-    console.error('Error loading local database:', error);
     throw error;
   }
 }
@@ -105,12 +104,14 @@ function filterByTopic<T extends { content: string; category: string }>(
   return filtered.length > 0 ? filtered : items;
 }
 
-const categoryLabels = {
+const categoryLabels: Record<string, string> = {
   hadith: 'Hadith',
   ramadan: 'Conseil ou invocation du Ramadan',
-  'thematique': 'Verset coranique trouvé par l\'Agent',
+  thematique: 'Verset coranique trouvé par l\'Agent',
   coran: 'Verset du Coran',
   citadelle: 'Citadelle du Musulman',
+  'recherche-ia': 'Agent Hikma',
+  rabbana: 'Les 40 Rabbana',
 };
 
 export const GenerateHadithInputSchema = z.object({
@@ -169,8 +170,7 @@ async function generateFromLocal(
     }
 
     return null;
-  } catch (error) {
-    console.error('Error generating from local:', error);
+  } catch {
     return null;
   }
 }
@@ -313,44 +313,52 @@ ${baseRules}
 
   const prompt = getPrompt();
 
-  const response = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-001:generateContent?key=${apiKey}`,
-    {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        contents: [{ parts: [{ text: prompt }] }],
-        generationConfig: {
-          response_mime_type: 'application/json',
-          response_schema: {
-            type: 'object',
-            properties: {
-              content: { type: 'string' },
-              source: { type: 'string' },
-              surah: { type: 'number' },
-              ayah: { type: 'number' }
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 15000);
+
+  let response: Response;
+  try {
+    response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-001:generateContent?key=${apiKey}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        signal: controller.signal,
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: prompt }] }],
+          generationConfig: {
+            response_mime_type: 'application/json',
+            response_schema: {
+              type: 'object',
+              properties: {
+                content: { type: 'string' },
+                source: { type: 'string' },
+                surah: { type: 'number' },
+                ayah: { type: 'number' }
+              },
+              required: ['content', 'source']
             },
-            required: ['content', 'source']
+            temperature: 0.8
           },
-          temperature: 0.8
-        },
-        safetySettings: [
-          { category: "HARM_CATEGORY_HARASSMENT", threshold: "BLOCK_NONE" },
-          { category: "HARM_CATEGORY_HATE_SPEECH", threshold: "BLOCK_NONE" },
-          { category: "HARM_CATEGORY_SEXUALLY_EXPLICIT", threshold: "BLOCK_NONE" },
-          { category: "HARM_CATEGORY_DANGEROUS_CONTENT", threshold: "BLOCK_NONE" }
-        ]
-      }),
-    }
-  );
+          safetySettings: [
+            { category: "HARM_CATEGORY_HARASSMENT", threshold: "BLOCK_NONE" },
+            { category: "HARM_CATEGORY_HATE_SPEECH", threshold: "BLOCK_NONE" },
+            { category: "HARM_CATEGORY_SEXUALLY_EXPLICIT", threshold: "BLOCK_NONE" },
+            { category: "HARM_CATEGORY_DANGEROUS_CONTENT", threshold: "BLOCK_NONE" }
+          ]
+        }),
+      }
+    );
+  } finally {
+    clearTimeout(timeoutId);
+  }
 
   if (!response.ok) {
     const errorData = await response.json();
     const errorMessage = errorData.error?.message || "Erreur lors de l'appel à Gemini";
-    console.error("Détails erreur Gemini:", errorData);
 
     if (errorMessage.includes("leaked")) {
-      throw new Error("Clé API Gemini bloquée car elle a été divulguée (leaked). Veuillez générer une nouvelle clé sur Google AI Studio et mettre à jour votre fichier .env.local.");
+      throw new Error("Clé API Gemini bloquée. Veuillez générer une nouvelle clé sur Google AI Studio.");
     }
 
     throw new Error(errorMessage);
@@ -369,7 +377,6 @@ ${baseRules}
     // Si l'IA renvoie un tableau au lieu d'un objet (cela arrive parfois avec certains modèles),
     // on prend le premier élément du tableau.
     if (Array.isArray(parsed)) {
-      console.warn("L'IA a renvoyé un tableau au lieu d'un objet, utilisation du premier élément.");
       parsed = parsed[0];
     }
 
@@ -378,9 +385,7 @@ ${baseRules}
     }
 
     return GenerateHadithOutputSchema.parse(parsed);
-  } catch (parseError) {
-    console.error("Erreur de parsing ou de validation JSON. Texte reçu:", text);
-    console.error("Détails de l'erreur:", parseError);
+  } catch {
     throw new Error("Le format de réponse de l'IA est invalide.");
   }
 }
@@ -490,7 +495,6 @@ export async function generateHadith(
     return await generateFromAI(category, topic);
 
   } catch (error) {
-    console.warn("AI Generation failed, falling back to local:", error);
 
     // Fallback vers la base locale uniquement si l'IA échoue
     const localResult = await generateFromLocal(category, topic);
@@ -547,8 +551,7 @@ Reste concis mais complet (environ 200 mots).`;
     const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
 
     return text || "Impossible de générer une explication.";
-  } catch (error) {
-    console.error("Erreur explication:", error);
+  } catch {
     return "Une erreur est survenue lors de l'explication.";
   }
 }
