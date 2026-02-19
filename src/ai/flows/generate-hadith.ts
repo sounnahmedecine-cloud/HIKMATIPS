@@ -341,10 +341,10 @@ ${baseRules}
             temperature: 0.8
           },
           safetySettings: [
-            { category: "HARM_CATEGORY_HARASSMENT", threshold: "BLOCK_NONE" },
-            { category: "HARM_CATEGORY_HATE_SPEECH", threshold: "BLOCK_NONE" },
-            { category: "HARM_CATEGORY_SEXUALLY_EXPLICIT", threshold: "BLOCK_NONE" },
-            { category: "HARM_CATEGORY_DANGEROUS_CONTENT", threshold: "BLOCK_NONE" }
+            { category: "HARM_CATEGORY_HARASSMENT", threshold: "BLOCK_MEDIUM_AND_ABOVE" },
+            { category: "HARM_CATEGORY_HATE_SPEECH", threshold: "BLOCK_MEDIUM_AND_ABOVE" },
+            { category: "HARM_CATEGORY_SEXUALLY_EXPLICIT", threshold: "BLOCK_MEDIUM_AND_ABOVE" },
+            { category: "HARM_CATEGORY_DANGEROUS_CONTENT", threshold: "BLOCK_MEDIUM_AND_ABOVE" }
           ]
         }),
       }
@@ -427,30 +427,39 @@ Ta mission :
   "ayah": 1
 }`;
 
-  const response = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-001:generateContent?key=${apiKey}`,
-    {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        contents: [{ parts: [{ text: prompt }] }],
-        generationConfig: {
-          response_mime_type: 'application/json',
-          response_schema: {
-            type: 'object',
-            properties: {
-              content: { type: 'string' },
-              source: { type: 'string' },
-              surah: { type: 'number' },
-              ayah: { type: 'number' }
+  const analysisController = new AbortController();
+  const analysisTimeoutId = setTimeout(() => analysisController.abort(), 15000);
+
+  let response: Response;
+  try {
+    response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-001:generateContent?key=${apiKey}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        signal: analysisController.signal,
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: prompt }] }],
+          generationConfig: {
+            response_mime_type: 'application/json',
+            response_schema: {
+              type: 'object',
+              properties: {
+                content: { type: 'string' },
+                source: { type: 'string' },
+                surah: { type: 'number' },
+                ayah: { type: 'number' }
+              },
+              required: ['content', 'source']
             },
-            required: ['content', 'source']
-          },
-          temperature: 0.3
-        }
-      }),
-    }
-  );
+            temperature: 0.3
+          }
+        }),
+      }
+    );
+  } finally {
+    clearTimeout(analysisTimeoutId);
+  }
 
   if (!response.ok) throw new Error("Erreur AI");
 

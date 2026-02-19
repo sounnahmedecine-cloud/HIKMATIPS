@@ -77,9 +77,9 @@ type Content = {
   ayah?: number;
 };
 
-const category: Category[] = ['hadith', 'ramadan', 'thematique', 'coran', 'recherche-ia', 'citadelle', 'rabbana'];
-
 type Category = 'hadith' | 'ramadan' | 'thematique' | 'coran' | 'recherche-ia' | 'citadelle' | 'rabbana';
+
+const ALL_CATEGORIES: Category[] = ['hadith', 'ramadan', 'thematique', 'coran', 'recherche-ia', 'citadelle', 'rabbana'];
 
 export default function GeneratorPage() {
   const [content, setContent] = useState<Content | null>({
@@ -128,18 +128,21 @@ export default function GeneratorPage() {
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
 
   useEffect(() => {
-    setFavorites(getFavorites().map(f => f.fr));
+    setFavorites(getFavorites().map(f => `${f.fr}||${f.source}`));
   }, []);
+
+  const getFavoriteKey = (c: Content) => `${c.content}||${c.source}`;
 
   const handleFavorite = () => {
     if (!content) return;
     const hikma = {
       fr: content.content,
-      arabe: '', // IA output is French by default in this app
+      arabe: '',
       source: content.source
     };
     const isLiked = toggleFavorite(hikma);
-    setFavorites(prev => isLiked ? [...prev, hikma.fr] : prev.filter(f => f !== hikma.fr));
+    const key = getFavoriteKey(content);
+    setFavorites(prev => isLiked ? [...prev, key] : prev.filter(f => f !== key));
 
     toast({
       title: isLiked ? 'Ajouté aux favoris' : 'Retiré des favoris',
@@ -197,15 +200,27 @@ export default function GeneratorPage() {
     if (isFillingBuffer.current) return;
     isFillingBuffer.current = true;
     const items: Content[] = [];
+    let failures = 0;
     for (let i = 0; i < count; i++) {
       try {
         const result = await generateHadith({ category: cat, topic: t });
         if (result?.content) items.push(result);
-      } catch { /* silently ignore */ }
+        else failures++;
+      } catch {
+        failures++;
+      }
     }
     setContentBuffer(prev => [...prev, ...items]);
     isFillingBuffer.current = false;
-  }, []);
+    // Si tous les appels ont échoué et le buffer sera vide, on avertit
+    if (failures === count && items.length === 0) {
+      toast({
+        variant: 'destructive',
+        title: 'Service indisponible',
+        description: 'Vérifiez votre connexion. Certains rappels locaux restent disponibles.',
+      });
+    }
+  }, [toast]);
 
   // Pré-charge le buffer au démarrage avec les Rabbana (local, instantané)
   useEffect(() => {
@@ -810,13 +825,13 @@ export default function GeneratorPage() {
             onClick={handleFavorite}
             className={cn(
               "w-12 h-12 rounded-full backdrop-blur-md border shadow-2xl flex items-center justify-center active:scale-90 transition-all",
-              favorites.includes(content?.content || '')
+              favorites.includes(content ? getFavoriteKey(content) : '')
                 ? "bg-red-500/20 border-red-500/50 text-red-600 dark:text-red-500"
                 : "bg-primary/20 dark:bg-primary/10 border-primary/30 dark:border-primary/20 text-primary-foreground dark:text-primary"
             )}
             aria-label="Favori"
           >
-            <Heart className={cn("w-5 h-5 transition-colors", favorites.includes(content?.content || '') ? "fill-current" : "")} />
+            <Heart className={cn("w-5 h-5 transition-colors", favorites.includes(content ? getFavoriteKey(content) : '') ? "fill-current" : "")} />
           </button>
           <button
             onClick={handleShareImage}
@@ -915,7 +930,7 @@ export default function GeneratorPage() {
           onShare={handleShareImage}
           onDownload={handleDownloadImage}
           onFavorite={handleFavorite}
-          isLiked={content ? favorites.includes(content.content) : false}
+          isLiked={content ? favorites.includes(getFavoriteKey(content)) : false}
         />
 
         <BottomControls

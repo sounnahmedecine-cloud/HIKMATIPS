@@ -29,7 +29,6 @@ import { Button } from "@/components/ui/button"
 import { CloudinaryGallery } from "@/components/studio/CloudinaryGallery"
 import { CategoryDrawer } from "@/components/CategoryDrawer"
 import { DesignToolsDrawer } from "@/components/DesignToolsDrawer"
-import { MobileTopicInput } from "@/components/studio/MobileTopicInput"
 import OnboardingScreen from '@/components/OnboardingScreen'
 import { generateHadith } from '@/ai/flows/generate-hadith'
 import { useAuth, useUser } from '@/firebase'
@@ -106,7 +105,7 @@ export function HomeScreen() {
     const [isToolsOpen, setIsToolsOpen] = useState(false);
     const [showOnboarding, setShowOnboarding] = useState(false);
     const [showSignInPopup, setShowSignInPopup] = useState(false);
-    const [selectedCategory, setSelectedCategory] = useState<string>("recherche-ia");
+    const [selectedCategory, setSelectedCategory] = useState<string>("rabbana");
     const [topic, setTopic] = useState("");
     const [generationCount, setGenerationCount] = useState(0);
     const [buffer, setBuffer] = useState<HikmaData[]>([]);
@@ -303,7 +302,7 @@ export function HomeScreen() {
         }
 
         // Pre-fill buffer on mount
-        refillBuffer("recherche-ia", "", 2);
+        refillBuffer("rabbana", "", 2);
     }, []); // Empty dependency array ensures this runs strictly once
 
     // Event listeners configuration
@@ -490,15 +489,24 @@ export function HomeScreen() {
                 </div>
 
                 {/* Centered Top Search Bar */}
-                <div className="absolute left-1/2 -translate-x-1/2 w-full max-w-[170px] pointer-events-auto">
-                    <MobileTopicInput
-                        value={topic}
-                        onChange={setTopic}
-                        isVisible={true}
-                        placeholder="Thème..."
-                        onEnter={handleGenerateAiContent}
-                        position="top"
-                    />
+                <div className="absolute left-1/2 -translate-x-1/2 w-full max-w-[190px] pointer-events-auto">
+                    <div className="bg-black/30 backdrop-blur-3xl rounded-full border border-white/10 shadow-[0_4px_16px_rgba(0,0,0,0.3)]">
+                        <div className="flex items-center gap-1.5 px-3 py-1">
+                            <Search className="w-3.5 h-3.5 text-white/40 flex-shrink-0" />
+                            <input
+                                value={topic}
+                                onChange={(e) => setTopic(e.target.value)}
+                                onKeyDown={(e) => { if (e.key === 'Enter') { (e.target as HTMLInputElement).blur(); handleGenerateAiContent(); } }}
+                                placeholder="Thème.. ✨"
+                                className="flex-1 bg-transparent border-none outline-none text-xs text-white/90 placeholder:text-white/30 font-medium min-w-0"
+                            />
+                            {topic && (
+                                <button onClick={() => setTopic('')} className="flex-shrink-0 text-white/40 hover:text-white/70">
+                                    <X className="w-3 h-3" />
+                                </button>
+                            )}
+                        </div>
+                    </div>
                 </div>
 
                 <Button
@@ -571,24 +579,6 @@ export function HomeScreen() {
                 </button>
             </div>
 
-            {/* Bottom Tools - Cleaned up to match old demand */}
-            <div className="absolute bottom-10 left-0 right-0 z-40 flex flex-col items-center gap-4 px-4">
-                <button
-                    onClick={handleGenerateAiContent}
-                    disabled={isGenerating || isBuffering}
-                    className={cn(
-                        "h-14 px-10 rounded-full bg-emerald-500/10 backdrop-blur-xl text-white flex items-center gap-3 active:scale-95 transition-all w-full max-w-[280px] font-bold border border-white/20",
-                        (isGenerating || isBuffering && buffer.length === 0) && "opacity-80"
-                    )}
-                >
-                    {isGenerating || (isBuffering && buffer.length === 0) ? (
-                        <Loader2 className="w-6 h-6 animate-spin text-emerald-400" />
-                    ) : (
-                        <Zap className="w-6 h-6 text-emerald-400 fill-emerald-400" />
-                    )}
-                    <span className="font-bold tracking-tight text-emerald-500">Agent Hikma</span>
-                </button>
-            </div>
 
             {/* Drawers & Popups */}
             <CloudinaryGallery

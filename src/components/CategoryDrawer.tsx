@@ -7,7 +7,6 @@ import {
     BookOpen,
     BookMarked,
     Moon,
-    Search,
     Check,
     X,
     LayoutGrid,
@@ -70,17 +69,6 @@ export function CategoryDrawer({ isOpen, onClose, category, onSelectCategory }: 
             borderColor: 'border-emerald-600',
             shadowColor: 'shadow-emerald-600/50',
             textColor: 'text-emerald-600'
-        },
-        {
-            id: 'recherche-ia' as Category,
-            icon: Search,
-            label: 'Agent IA',
-            description: 'Recherche personnalisée',
-            color: 'bg-orange-600',
-            hoverColor: 'hover:bg-orange-700',
-            borderColor: 'border-orange-600',
-            shadowColor: 'shadow-orange-600/50',
-            textColor: 'text-orange-600'
         },
         {
             id: 'citadelle' as Category,
