@@ -95,7 +95,7 @@ export default function GeneratorPage() {
   const touchStartY = useRef<number | null>(null);
   const touchStartX = useRef<number | null>(null);
 
-  const [category, setCategory] = useState<Category>('recherche-ia');
+  const [category, setCategory] = useState<Category>('rabbana');
   const [background, setBackground] = useState<string>(
     PlaceHolderImages[0]?.imageUrl || 'https://picsum.photos/seed/1/1080/1920'
   );
@@ -207,9 +207,9 @@ export default function GeneratorPage() {
     isFillingBuffer.current = false;
   }, []);
 
-  // Pré-charge le buffer au démarrage
+  // Pré-charge le buffer au démarrage avec les Rabbana (local, instantané)
   useEffect(() => {
-    fillBuffer('recherche-ia', '', 3);
+    fillBuffer('rabbana', '', 3);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
