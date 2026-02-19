@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useUser } from '@/firebase';
 import { signOut } from 'firebase/auth';
 import { useAuth } from '@/firebase';
+import { NotificationService } from '@/lib/notifications';
 
 export default function ParametresPage() {
   const { theme, setTheme } = useTheme();
@@ -21,7 +22,23 @@ export default function ParametresPage() {
 
   useEffect(() => {
     setMounted(true);
+    checkNotificationStatus();
   }, []);
+
+  const checkNotificationStatus = async () => {
+    const enabled = await NotificationService.isEnabled();
+    setNotifications(enabled);
+  };
+
+  const handleNotificationToggle = async (checked: boolean) => {
+    if (checked) {
+      const success = await NotificationService.scheduleDailyReminder();
+      setNotifications(success);
+    } else {
+      await NotificationService.cancelDailyReminders();
+      setNotifications(false);
+    }
+  };
 
   if (!mounted) return null;
 
@@ -128,7 +145,7 @@ export default function ParametresPage() {
                 <Label>Rappels Quotidiens</Label>
                 <p className="text-xs text-muted-foreground">Recevez une Hikma chaque jour.</p>
               </div>
-              <Switch checked={notifications} onCheckedChange={setNotifications} />
+              <Switch checked={notifications} onCheckedChange={handleNotificationToggle} />
             </div>
 
             <div className="space-y-3 pt-2">

@@ -71,7 +71,7 @@ export function HikmaCard({ hikma, isLiked, background, onFavorite, onShare, onD
                         onFavorite?.();
                     }}
                 >
-                    <Heart className={cn("w-6 h-6 transition-colors", isLiked ? "fill-red-500 text-red-500" : "text-white/70")} />
+                    <Heart className={cn("w-6 h-6 transition-colors", isLiked ? "fill-emerald-500 text-emerald-500" : "text-white/70")} />
                 </Button>
                 <Button
                     variant="outline"

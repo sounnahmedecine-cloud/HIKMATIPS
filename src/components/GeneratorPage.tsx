@@ -14,7 +14,13 @@ import {
   BookMarked,
   LogIn,
   LogOut,
+  RefreshCw,
+  LayoutGrid,
+  Crown,
+  Settings,
+  Heart,
   Share2,
+  Palette,
   User,
   Mail,
   Menu,
@@ -55,6 +61,7 @@ import { MobileLeftToolbar } from '@/components/studio/MobileLeftToolbar';
 import { CategoryDrawer } from '@/components/CategoryDrawer';
 import { ToolsDrawer } from '@/components/ToolsDrawer';
 import { CloudinaryGallery } from '@/components/studio/CloudinaryGallery';
+import { SwipeHintOverlay } from '@/components/SwipeHintOverlay';
 
 
 
@@ -70,9 +77,9 @@ type Content = {
   ayah?: number;
 };
 
-const category: Category[] = ['hadith', 'ramadan', 'thematique', 'coran', 'recherche-ia', 'citadelle'];
+type Category = 'hadith' | 'ramadan' | 'thematique' | 'coran' | 'recherche-ia' | 'citadelle' | 'rabbana';
 
-type Category = 'hadith' | 'ramadan' | 'thematique' | 'coran' | 'recherche-ia' | 'citadelle';
+const ALL_CATEGORIES: Category[] = ['hadith', 'ramadan', 'thematique', 'coran', 'recherche-ia', 'citadelle', 'rabbana'];
 
 export default function GeneratorPage() {
   const [content, setContent] = useState<Content | null>({
@@ -82,13 +89,23 @@ export default function GeneratorPage() {
     ayah: 55
   });
 
-  const [category, setCategory] = useState<Category>('coran');
+  // Quote history for swipe navigation
+  const [contentHistory, setContentHistory] = useState<Content[]>([]);
+  const [historyIndex, setHistoryIndex] = useState(-1);
+  const touchStartY = useRef<number | null>(null);
+  const touchStartX = useRef<number | null>(null);
+
+  const [category, setCategory] = useState<Category>('rabbana');
   const [background, setBackground] = useState<string>(
     PlaceHolderImages[0]?.imageUrl || 'https://picsum.photos/seed/1/1080/1920'
   );
   const [animationKey, setAnimationKey] = useState(0);
   const [isGenerating, setIsGenerating] = useState(false);
   const [topic, setTopic] = useState('');
+
+  // Buffer de rappels pré-chargés
+  const [contentBuffer, setContentBuffer] = useState<Content[]>([]);
+  const isFillingBuffer = useRef(false);
   const [generationCount, setGenerationCount] = useState(0);
   const [showSignInPopup, setShowSignInPopup] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(false);
@@ -111,18 +128,21 @@ export default function GeneratorPage() {
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
 
   useEffect(() => {
-    setFavorites(getFavorites().map(f => f.fr));
+    setFavorites(getFavorites().map(f => `${f.fr}||${f.source}`));
   }, []);
+
+  const getFavoriteKey = (c: Content) => `${c.content}||${c.source}`;
 
   const handleFavorite = () => {
     if (!content) return;
     const hikma = {
       fr: content.content,
-      arabe: '', // IA output is French by default in this app
+      arabe: '',
       source: content.source
     };
     const isLiked = toggleFavorite(hikma);
-    setFavorites(prev => isLiked ? [...prev, hikma.fr] : prev.filter(f => f !== hikma.fr));
+    const key = getFavoriteKey(content);
+    setFavorites(prev => isLiked ? [...prev, key] : prev.filter(f => f !== key));
 
     toast({
       title: isLiked ? 'Ajouté aux favoris' : 'Retiré des favoris',
@@ -151,10 +171,10 @@ export default function GeneratorPage() {
   const searchParams = useSearchParams();
 
   useEffect(() => {
-    // const hasSeenOnboarding = localStorage.getItem('hasSeenOnboarding');
-    // if (!hasSeenOnboarding) {
-    //   setShowOnboarding(true);
-    // }
+    const hasSeenOnboarding = localStorage.getItem('hasSeenOnboarding');
+    if (!hasSeenOnboarding) {
+      setShowOnboarding(true);
+    }
 
     // Handle URL parameters
     const urlTopic = searchParams.get('topic');
@@ -174,6 +194,39 @@ export default function GeneratorPage() {
     // Show tooltip guide after onboarding for first-time users
     setTimeout(() => setShowTooltipGuide(true), 500);
   };
+
+  // Remplit silencieusement le buffer avec N rappels pré-générés
+  const fillBuffer = useCallback(async (cat: Category, t: string, count = 3) => {
+    if (isFillingBuffer.current) return;
+    isFillingBuffer.current = true;
+    const items: Content[] = [];
+    let failures = 0;
+    for (let i = 0; i < count; i++) {
+      try {
+        const result = await generateHadith({ category: cat, topic: t });
+        if (result?.content) items.push(result);
+        else failures++;
+      } catch {
+        failures++;
+      }
+    }
+    setContentBuffer(prev => [...prev, ...items]);
+    isFillingBuffer.current = false;
+    // Si tous les appels ont échoué et le buffer sera vide, on avertit
+    if (failures === count && items.length === 0) {
+      toast({
+        variant: 'destructive',
+        title: 'Service indisponible',
+        description: 'Vérifiez votre connexion. Certains rappels locaux restent disponibles.',
+      });
+    }
+  }, [toast]);
+
+  // Pré-charge le buffer au démarrage avec les Rabbana (local, instantané)
+  useEffect(() => {
+    fillBuffer('rabbana', '', 3);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const previewRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
@@ -252,6 +305,19 @@ export default function GeneratorPage() {
       return;
     }
 
+    // Consomme le buffer si disponible → réponse instantanée
+    if (contentBuffer.length > 0) {
+      const [next, ...rest] = contentBuffer;
+      setContentBuffer(rest);
+      setContent(next);
+      if (!user) setGenerationCount(prev => prev + 1);
+      if (isFirstTime) { markAsGenerated(); setShowTooltipGuide(false); }
+      // Recharge 1 rappel en arrière-plan pour maintenir le buffer
+      if (rest.length < 2) fillBuffer(category, topic, 2);
+      return;
+    }
+
+    // Fallback : appel direct si buffer vide
     setIsGenerating(true);
     try {
       const result = await generateHadith({ category, topic });
@@ -260,16 +326,19 @@ export default function GeneratorPage() {
         if (!user) {
           setGenerationCount(prev => prev + 1);
         }
+        // Recharge le buffer en arrière-plan
+        fillBuffer(category, topic, 3);
       } else {
         throw new Error('La génération a échoué ou n\'a retourné aucun contenu.');
       }
-    } catch (error) {
-      console.error("Erreur lors de la génération avec l'Agent Hikma:", error);
+    } catch {
+      const isLocal = ['rabbana', 'coran', 'hadith', 'ramadan', 'citadelle'].includes(category);
       toast({
         variant: 'destructive',
-        title: 'L\'Agent est occupé',
-        description:
-          "Une erreur s'est produite lors de la communication avec l'Assistant Hikma. Veuillez réessayer.",
+        title: isLocal ? 'Erreur de chargement' : 'Service temporairement indisponible',
+        description: isLocal
+          ? 'Impossible de charger le contenu. Réessayez.'
+          : 'Vérifiez votre connexion et réessayez.',
       });
     } finally {
       setIsGenerating(false);
@@ -281,8 +350,42 @@ export default function GeneratorPage() {
     }
   };
 
+  // Swipe gesture handlers
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartY.current = e.touches[0].clientY;
+    touchStartX.current = e.touches[0].clientX;
+  };
 
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartY.current === null || touchStartX.current === null) return;
+    const deltaY = touchStartY.current - e.changedTouches[0].clientY;
+    const deltaX = Math.abs(touchStartX.current - e.changedTouches[0].clientX);
+    touchStartY.current = null;
+    touchStartX.current = null;
 
+    // Only trigger if vertical swipe is dominant and > 60px
+    if (Math.abs(deltaY) < 60 || deltaX > Math.abs(deltaY)) return;
+
+    if (deltaY > 0) {
+      // Swipe UP → generate new quote
+      if (content) {
+        setContentHistory(prev => [...prev, content]);
+        setHistoryIndex(-1);
+      }
+      handleGenerateAiContent();
+    } else {
+      // Swipe DOWN → go back to previous quote
+      if (contentHistory.length > 0) {
+        const newIndex = historyIndex === -1 ? contentHistory.length - 1 : Math.max(0, historyIndex - 1);
+        const prevContent = contentHistory[newIndex];
+        if (prevContent) {
+          setContent(prevContent);
+          setHistoryIndex(newIndex);
+          setAnimationKey(prev => prev + 1);
+        }
+      }
+    }
+  };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -451,7 +554,7 @@ export default function GeneratorPage() {
   }
 
   return (
-    <div className="layout-immersive bg-background overflow-hidden flex flex-col">
+    <div className="fixed inset-0 w-full h-full bg-black overflow-hidden select-none md:relative md:flex md:flex-col md:bg-background">
       {/* Hidden file input for background upload */}
       <input
         type="file"
@@ -533,23 +636,26 @@ export default function GeneratorPage() {
 
         {/* Main Preview Container */}
         <main className={cn(
-          "flex-1 preview-container relative overflow-hidden flex justify-center",
-          "items-center pb-24 sm:pb-32" // Adjusted padding for better vertical centering
+          "flex-1 preview-container relative overflow-hidden flex justify-center items-center",
+          "md:pb-24"
         )}>
-          <div className="relative w-full h-full flex items-center justify-center p-2 sm:p-4">
+          <div className="relative w-full h-full flex items-center justify-center p-0 md:p-4">
             <div
+              onTouchStart={handleTouchStart}
+              onTouchEnd={handleTouchEnd}
               className={cn(
-                "bg-neutral-900 p-1 sm:p-2 shadow-2xl ring-4 ring-primary/5 transition-all duration-300 relative overflow-hidden",
+                "bg-neutral-900 p-0 md:p-2 shadow-2xl transition-all duration-300 relative overflow-hidden",
+                "fixed inset-0 md:relative",
                 format === 'story'
-                  ? "h-[calc(100vh-180px)] w-auto aspect-[9/16] sm:w-[280px] sm:h-[590px] md:w-[320px] md:h-[673px] lg:w-[340px] lg:h-[715px] rounded-[30px] sm:rounded-[40px]"
-                  : "h-[calc(100vh-180px)] w-auto aspect-square sm:w-[320px] sm:h-[320px] md:w-[400px] md:h-[400px] lg:w-[450px] lg:h-[450px] rounded-2xl"
+                  ? "md:h-[673px] md:w-[320px] lg:w-[340px] lg:h-[715px] md:rounded-[40px]"
+                  : "md:h-[400px] md:w-[400px] lg:w-[450px] lg:h-[450px] md:rounded-2xl"
               )}
             >
               <div
                 ref={previewRef}
                 className={cn(
                   "relative h-full w-full overflow-hidden bg-black",
-                  format === 'story' ? "rounded-[22px] sm:rounded-[32px]" : "rounded-xl"
+                  "md:rounded-[32px]"
                 )}
               >
                 <img
@@ -649,6 +755,9 @@ export default function GeneratorPage() {
                   </div>
                 )}
 
+                {/* Swipe hint animation for first-time users */}
+                <SwipeHintOverlay />
+
                 {!content && !isGenerating && (
                   <div className="absolute inset-0 flex items-center justify-center p-8">
                     <div className="text-center text-white/40 flex flex-col items-center gap-3">
@@ -666,110 +775,189 @@ export default function GeneratorPage() {
         </main>
       </div>
 
-      {/* Mobile Left Toolbar */}
-      <MobileLeftToolbar
-        onRandom={handleRandomBackground}
-        onUpload={() => document.getElementById('file-upload')?.click()}
-        onShare={handleShareImage}
-        onDownload={handleDownloadImage}
-        onFavorite={handleFavorite}
-        isLiked={content ? favorites.includes(content.content) : false}
-      />
+      {/* 4. MOBILE FLOATING UI (Replaces multiple toolbars) */}
+      <div className="md:hidden">
+        {/* TOP TOOLS: Settings + Crown only */}
+        <div className="absolute top-12 left-6 right-6 z-40 flex justify-between items-start pointer-events-none">
+          <Button
+            variant="ghost"
+            onClick={() => setIsSidebarOpen(true)}
+            className="pointer-events-auto h-11 px-4 rounded-full bg-black/30 backdrop-blur-md border border-white/10 text-white/70 flex items-center gap-2 shadow-lg"
+            aria-label="Paramètres"
+          >
+            <Settings className="w-4 h-4" />
+            <span className="text-[10px] uppercase font-bold tracking-widest">Réglages</span>
+          </Button>
 
-      <MobileTopicInput
-        value={topic}
-        onChange={setTopic}
-        isVisible={category === 'recherche-ia'}
-        placeholder="Un thème précis pour votre Agent ?"
-        onEnter={handleGenerateAiContent}
-      />
+          <Button variant="ghost" size="icon" className="pointer-events-auto w-11 h-11 rounded-2xl bg-black/30 backdrop-blur-md border border-white/10 text-yellow-500 shadow-lg" aria-label="Premium">
+            <Crown className="w-5 h-5" />
+          </Button>
+        </div>
 
-      <MobileDrawer
-        isOpen={activeMobileTool !== null}
-        onClose={() => setActiveMobileTool(null)}
-        title={
-          activeMobileTool === 'font' ? 'Typographie' :
-            activeMobileTool === 'format' ? 'Format & Style' :
-              activeMobileTool === 'background' ? 'Arrière-plan' :
-                activeMobileTool === 'signature' ? 'Signature' : ''
+        {/* LEFT TOOLS: Design */}
+        <div className="absolute left-4 z-40 flex flex-col gap-3" style={{ bottom: 'calc(max(2rem, env(safe-area-inset-bottom) + 1rem) + 9rem)' }}>
+          <button
+            onClick={() => setIsGalleryOpen(true)}
+            className="w-12 h-12 rounded-full bg-primary/20 dark:bg-primary/10 backdrop-blur-md border border-primary/30 dark:border-primary/20 text-primary-foreground dark:text-primary shadow-2xl flex items-center justify-center active:scale-90 transition-all font-bold"
+            aria-label="Galerie"
+          >
+            <ImageIcon className="w-5 h-5" />
+          </button>
+          <button
+            onClick={() => setIsToolsDrawerOpen(true)}
+            className="w-12 h-12 rounded-full bg-primary/20 dark:bg-primary/10 backdrop-blur-md border border-primary/30 dark:border-primary/20 text-primary-foreground dark:text-primary shadow-2xl flex items-center justify-center active:scale-90 transition-all font-bold"
+            aria-label="Outils de design"
+          >
+            <Palette className="w-5 h-5" />
+          </button>
+          <button
+            onClick={handleRandomBackground}
+            className="w-12 h-12 rounded-full bg-primary/20 dark:bg-primary/10 backdrop-blur-md border border-primary/30 dark:border-primary/20 text-primary-foreground dark:text-primary shadow-2xl flex items-center justify-center active:scale-90 transition-all"
+            aria-label="Fond aléatoire"
+          >
+            <RefreshCw className="w-5 h-5" />
+          </button>
+        </div>
 
-        }
-      >
-        {activeMobileTool === 'font' && (
-          <FontSettings
-            fontFamily={fontFamily}
-            setFontFamily={setFontFamily}
-            fontSize={fontSize}
-            setFontSize={setFontSize}
-            isMobile={true}
-          />
-        )}
-        {activeMobileTool === 'format' && (
-          <div className="space-y-6">
-            <FormatSettings format={format} setFormat={setFormat} isMobile={true} />
-            <FilterSettings
-              brightness={brightness}
-              setBrightness={setBrightness}
-              contrast={contrast}
-              setContrast={setContrast}
-              saturation={saturation}
-              setSaturation={setSaturation}
-              isMobile={true}
-            />
+        {/* RIGHT TOOLS: Actions */}
+        <div className="absolute right-4 z-40 flex flex-col gap-3" style={{ bottom: 'calc(max(2rem, env(safe-area-inset-bottom) + 1rem) + 9rem)' }}>
+          <button
+            onClick={handleFavorite}
+            className={cn(
+              "w-12 h-12 rounded-full backdrop-blur-md border shadow-2xl flex items-center justify-center active:scale-90 transition-all",
+              favorites.includes(content ? getFavoriteKey(content) : '')
+                ? "bg-red-500/20 border-red-500/50 text-red-600 dark:text-red-500"
+                : "bg-primary/20 dark:bg-primary/10 border-primary/30 dark:border-primary/20 text-primary-foreground dark:text-primary"
+            )}
+            aria-label="Favori"
+          >
+            <Heart className={cn("w-5 h-5 transition-colors", favorites.includes(content ? getFavoriteKey(content) : '') ? "fill-current" : "")} />
+          </button>
+          <button
+            onClick={handleShareImage}
+            className="w-12 h-12 rounded-full bg-primary/20 dark:bg-primary/10 backdrop-blur-md border border-primary/30 dark:border-primary/20 text-primary-foreground dark:text-primary shadow-2xl flex items-center justify-center active:scale-90 transition-all"
+            aria-label="Partager"
+          >
+            <Share2 className="w-5 h-5" />
+          </button>
+          <button
+            onClick={handleDownloadImage}
+            className="w-12 h-12 rounded-full bg-primary/20 dark:bg-primary/10 backdrop-blur-md border border-primary/30 dark:border-primary/20 text-primary-foreground dark:text-primary shadow-2xl flex items-center justify-center active:scale-90 transition-all"
+            aria-label="Télécharger"
+          >
+            <Download className="w-5 h-5" />
+          </button>
+        </div>
+
+        {/* BOTTOM TOOLS: Main Action (Generate) */}
+        <div className="absolute bottom-0 left-0 right-0 z-40 flex flex-col items-center gap-3 px-4 pb-8" style={{ paddingBottom: 'max(2rem, env(safe-area-inset-bottom) + 1rem)' }}>
+
+          {/* QUICK CATEGORY TILES — grille 3 colonnes */}
+          <div className="grid grid-cols-3 gap-2 w-full max-w-sm mx-auto">
+            {[
+              { id: 'coran',       icon: BookMarked, label: 'Coran'    },
+              { id: 'hadith',      icon: BookOpen,   label: 'Hadith'   },
+              { id: 'ramadan',     icon: Moon,       label: 'Ramadan'  },
+              { id: 'citadelle',   icon: Sparkles,   label: 'Douas'    },
+              { id: 'thematique',  icon: LayoutGrid, label: 'Thème'    },
+              { id: 'rabbana',     icon: Heart,      label: 'Rabbana'  },
+            ].map((cat) => (
+              <button
+                key={cat.id}
+                onClick={() => setCategory(cat.id as Category)}
+                className={cn(
+                  "py-2 rounded-2xl border flex flex-col items-center gap-1 transition-all active:scale-90",
+                  category === cat.id
+                    ? "bg-white/20 text-white border-white/40 shadow-lg"
+                    : "bg-black/20 text-white/50 border-white/10"
+                )}
+              >
+                <cat.icon className="w-4 h-4" />
+                <span className="text-[9px] font-bold uppercase tracking-tighter">{cat.label}</span>
+              </button>
+            ))}
           </div>
-        )}
 
-        {activeMobileTool === 'background' && (
-          <div className="space-y-4">
-            <div className="grid grid-cols-2 gap-3">
-              <Button variant="outline" className="h-20 rounded-2xl flex flex-col gap-2 border-2 border-dashed border-gray-200 text-gray-900 hover:bg-gray-50 hover:text-gray-900" onClick={handleRandomBackground}>
-                <ImageIcon className="w-5 h-5 text-purple-500" />
-                <span className="text-xs font-bold">Aléatoire</span>
-              </Button>
-              <Button variant="outline" className="h-20 rounded-2xl flex flex-col gap-2 border-2 border-dashed border-gray-200 text-gray-900 hover:bg-gray-50 hover:text-gray-900" onClick={() => document.getElementById('file-upload')?.click()}>
-                <Upload className="w-5 h-5 text-purple-500" />
-                <span className="text-xs font-bold">Importer</span>
-              </Button>
+          {/* BARRE INFÉRIEURE : Catégorie | Saisie | Générer */}
+          <div className="flex items-center gap-2 w-full max-w-sm mx-auto">
+            {/* Bouton catégorie — icône seule */}
+            <button
+              onClick={() => setIsCategoryDrawerOpen(true)}
+              className="flex-shrink-0 w-12 h-12 rounded-full bg-black/30 backdrop-blur-3xl border border-white/10 flex items-center justify-center text-white/70 active:scale-90 transition-all shadow-lg"
+              aria-label="Catégories"
+            >
+              <LayoutGrid className="w-5 h-5" />
+            </button>
+
+            {/* Champ de saisie inline — élargi */}
+            <div className="flex-1 flex items-center gap-2 bg-black/30 backdrop-blur-3xl rounded-full border border-white/10 px-3 h-12 shadow-lg">
+              <Search className="w-4 h-4 text-white/40 flex-shrink-0" />
+              <input
+                value={topic}
+                onChange={(e) => setTopic(e.target.value)}
+                onKeyDown={(e) => { if (e.key === 'Enter') { (e.target as HTMLInputElement).blur(); handleGenerateAiContent(); } }}
+                placeholder="Thème : patience, amour..."
+                className="flex-1 bg-transparent text-white/90 text-sm placeholder:text-white/25 outline-none font-medium min-w-0"
+              />
+              {topic && (
+                <button onClick={() => setTopic('')} className="flex-shrink-0 text-white/30 hover:text-white/60 transition-colors">
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              )}
             </div>
+
+            {/* Bouton Générer / Premium */}
+            <button
+              onClick={handleGenerateAiContent}
+              disabled={isGenerating}
+              className="flex-shrink-0 w-12 h-12 rounded-full bg-emerald-500/90 border border-emerald-400/30 shadow-[0_0_20px_rgba(16,185,129,0.4)] flex items-center justify-center text-white active:scale-90 transition-all"
+              aria-label="Générer"
+            >
+              {isGenerating
+                ? <Loader2 className="w-5 h-5 animate-spin" />
+                : <Sparkles className="w-5 h-5" />
+              }
+            </button>
           </div>
-        )}
+        </div>
+      </div>
 
-        {activeMobileTool === 'signature' && (
-          <div className="space-y-4">
-            <Label className="text-[10px] uppercase tracking-widest font-bold text-gray-500">Votre Signature</Label>
-            <Input
-              value={signature}
-              onChange={(e) => setSignature(e.target.value)}
-              placeholder="@votre_pseudo"
-              className="h-12 rounded-2xl bg-muted/30 border-none ring-1 ring-border focus-visible:ring-primary"
-            />
-            <p className="text-[10px] text-muted-foreground italic">
-              Cette signature apparaîtra en bas à gauche de vos créations.
-            </p>
-          </div>
-        )}
+      {/* Legacy Mobile Components (Kept for desktop or potential reuse, hidden by layout logic if needed) */}
+      <div className="hidden">
+        <MobileLeftToolbar
+          onRandom={handleRandomBackground}
+          onUpload={() => document.getElementById('file-upload')?.click()}
+          onShare={handleShareImage}
+          onDownload={handleDownloadImage}
+          onFavorite={handleFavorite}
+          isLiked={content ? favorites.includes(getFavoriteKey(content)) : false}
+        />
 
-      </MobileDrawer>
-
-      <BottomControls
-        category={category}
-        setCategory={setCategory}
-        onGenerate={handleGenerateAiContent}
-        isGenerating={isGenerating}
-        onRandom={handleRandomBackground}
-        onUpload={() => document.getElementById('file-upload')?.click()}
-        onDownload={handleDownloadImage}
-        onRessources={() => window.location.href = '/ressources'}
-        onOpenCategoryDrawer={() => setIsCategoryDrawerOpen(true)}
-        onOpenToolsDrawer={() => setIsToolsDrawerOpen(true)}
-      />
+        <BottomControls
+          category={category}
+          setCategory={setCategory}
+          onGenerate={handleGenerateAiContent}
+          isGenerating={isGenerating}
+          onRandom={handleRandomBackground}
+          onUpload={() => document.getElementById('file-upload')?.click()}
+          onDownload={handleDownloadImage}
+          onRessources={() => window.location.href = '/ressources'}
+          onOpenCategoryDrawer={() => setIsCategoryDrawerOpen(true)}
+          onOpenToolsDrawer={() => setIsToolsDrawerOpen(true)}
+        />
+      </div>
 
       {/* Category Drawer */}
       <CategoryDrawer
         isOpen={isCategoryDrawerOpen}
-        onClose={() => setIsCategoryDrawerOpen(false)}
+        onClose={() => setIsCategoryDrawerOpen(false)
+        }
         category={category}
-        onSelectCategory={setCategory}
+        onSelectCategory={(cat) => {
+          setCategory(cat);
+          setContentBuffer([]);
+          fillBuffer(cat, topic, 3);
+        }}
       />
 
       {/* Tools Drawer */}
@@ -800,12 +988,53 @@ export default function GeneratorPage() {
       <CloudinaryGallery
         isOpen={isGalleryOpen}
         onClose={() => setIsGalleryOpen(false)}
+        currentBackground={background}
         onSelect={(url: string) => {
           setBackground(url);
           setIsGalleryOpen(false);
         }}
       />
 
+
+      {/* Onboarding Screen */}
+      <AnimatePresence>
+        {showOnboarding && (
+          <OnboardingScreen onComplete={() => {
+            setShowOnboarding(false);
+            localStorage.setItem('hasSeenOnboarding', 'true');
+          }} />
+        )}
+      </AnimatePresence>
+
+      {/* Sidebar / Settings */}
+      <Sheet open={isSidebarOpen} onOpenChange={setIsSidebarOpen}>
+        <Sidebar
+          topic={topic}
+          setTopic={setTopic}
+          onRandomBackground={handleRandomBackground}
+          onUploadClick={() => document.getElementById('file-upload')?.click()}
+          user={user}
+          onSignIn={() => setShowSignInPopup(true)}
+          onSignOut={() => signOut(auth)}
+          onShare={handleShareImage}
+          isStudio={true}
+          format={format}
+          setFormat={setFormat}
+          fontFamily={fontFamily as any}
+          setFontFamily={setFontFamily as any}
+          fontSize={fontSize}
+          setFontSize={setFontSize}
+          signature={signature}
+          setSignature={setSignature}
+          brightness={brightness}
+          setBrightness={setBrightness}
+          contrast={contrast}
+          setContrast={setContrast}
+          saturation={saturation}
+          setSaturation={setSaturation}
+          isMobile={true}
+        />
+      </Sheet>
 
       {/* Auth Popups & Overlays */}
       <AlertDialog open={showSignInPopup} onOpenChange={(open) => {
@@ -820,7 +1049,7 @@ export default function GeneratorPage() {
           <Button
             variant="ghost"
             size="icon"
-            className="absolute right-2 top-2 rounded-full bg-red-100 hover:bg-red-200 text-red-600 transition-colors z-50"
+            className="absolute right-3 top-3 rounded-full w-9 h-9 bg-muted hover:bg-red-100 hover:text-red-600 text-muted-foreground border border-border transition-all z-50 shadow-sm"
             onClick={() => setShowSignInPopup(false)}
           >
             <X className="h-5 w-5" />

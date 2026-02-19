@@ -1,13 +1,11 @@
 'use client';
 
 import React from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import {
     Image as ImageIcon,
     Upload,
     Share2,
     Download,
-    ChevronUp,
     Heart
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -22,62 +20,50 @@ interface MobileLeftToolbarProps {
 }
 
 export function MobileLeftToolbar({ onRandom, onUpload, onShare, onDownload, onFavorite, isLiked }: MobileLeftToolbarProps) {
+    const btnBase = "w-12 h-12 rounded-full flex items-center justify-center shadow-[0_4px_20px_rgba(0,0,0,0.3)] bg-black/30 backdrop-blur-xl text-white border border-white/10 active:scale-95 transition-all";
+
     return (
         <div
-            className="fixed left-4 top-1/2 -translate-y-1/2 z-30 flex flex-col gap-4 md:hidden pointer-events-auto"
+            className="fixed left-4 z-30 flex flex-col gap-3 md:hidden pointer-events-auto"
+            style={{ top: 'calc(50% + max(0px, env(safe-area-inset-top) / 2))', transform: 'translateY(-50%)' }}
         >
             <button
-                onClick={(e) => {
-                    e.stopPropagation();
-                    onRandom();
-                }}
-                className="w-14 h-14 rounded-full flex items-center justify-center shadow-[0_10px_40px_rgba(0,0,0,0.3)] bg-purple-500 text-white border-2 border-purple-400 active:scale-95 transition-all"
+                onClick={(e) => { e.stopPropagation(); onRandom(); }}
+                className={btnBase}
                 aria-label="Image au hasard"
             >
-                <ImageIcon className="w-7 h-7" />
+                <ImageIcon className="w-5 h-5" />
             </button>
             <button
-                onClick={(e) => {
-                    e.stopPropagation();
-                    onUpload();
-                }}
-                className="w-14 h-14 rounded-full flex items-center justify-center shadow-[0_10px_40px_rgba(0,0,0,0.3)] bg-purple-500 text-white border-2 border-purple-400 active:scale-95 transition-all"
+                onClick={(e) => { e.stopPropagation(); onUpload(); }}
+                className={btnBase}
                 aria-label="Importer une image"
             >
-                <Upload className="w-7 h-7" />
+                <Upload className="w-5 h-5" />
             </button>
             <button
-                onClick={(e) => {
-                    e.stopPropagation();
-                    onFavorite?.();
-                }}
+                onClick={(e) => { e.stopPropagation(); onFavorite?.(); }}
                 className={cn(
-                    "w-14 h-14 rounded-full flex items-center justify-center shadow-[0_10px_40px_rgba(0,0,0,0.3)] border-2 active:scale-95 transition-all text-white",
-                    isLiked ? "bg-red-500 border-red-400" : "bg-purple-500 border-purple-400"
+                    btnBase,
+                    isLiked && "bg-red-500/80 border-red-400/30 shadow-[0_4px_20px_rgba(239,68,68,0.4)]"
                 )}
                 aria-label="Ajouter aux favoris"
             >
-                <Heart className={cn("w-7 h-7", isLiked && "fill-current")} />
+                <Heart className={cn("w-5 h-5", isLiked && "fill-current")} />
             </button>
             <button
-                onClick={(e) => {
-                    e.stopPropagation();
-                    onShare();
-                }}
-                className="w-14 h-14 rounded-full flex items-center justify-center shadow-[0_10px_40px_rgba(0,0,0,0.3)] bg-pink-600 text-white border-2 border-pink-400 active:scale-95 transition-all"
+                onClick={(e) => { e.stopPropagation(); onShare(); }}
+                className={btnBase}
                 aria-label="Partager"
             >
-                <Share2 className="w-7 h-7" />
+                <Share2 className="w-5 h-5" />
             </button>
             <button
-                onClick={(e) => {
-                    e.stopPropagation();
-                    onDownload();
-                }}
-                className="w-14 h-14 rounded-full flex items-center justify-center shadow-[0_10px_40px_rgba(0,0,0,0.3)] bg-blue-600 text-white border-2 border-blue-400 active:scale-95 transition-all"
+                onClick={(e) => { e.stopPropagation(); onDownload(); }}
+                className={btnBase}
                 aria-label="Télécharger"
             >
-                <Download className="w-7 h-7" />
+                <Download className="w-5 h-5" />
             </button>
         </div>
     );

@@ -1,20 +1,21 @@
 'use client';
 
 import React from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     BookOpen,
     BookMarked,
     Moon,
-    Search,
     Check,
     X,
     LayoutGrid,
-    Sparkles
+    Sparkles,
+    Heart
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-type Category = 'hadith' | 'ramadan' | 'thematique' | 'coran' | 'recherche-ia' | 'citadelle';
+type Category = 'hadith' | 'ramadan' | 'thematique' | 'coran' | 'recherche-ia' | 'citadelle' | 'rabbana';
 
 interface CategoryDrawerProps {
     isOpen: boolean;
@@ -30,33 +31,33 @@ export function CategoryDrawer({ isOpen, onClose, category, onSelectCategory }: 
             icon: BookOpen,
             label: 'Hadith',
             description: 'Paroles du Prophète ﷺ',
-            color: 'bg-blue-500',
-            hoverColor: 'hover:bg-blue-600',
-            borderColor: 'border-blue-500',
-            shadowColor: 'shadow-blue-500/50',
-            textColor: 'text-blue-500'
+            color: 'bg-emerald-600',
+            hoverColor: 'hover:bg-emerald-700',
+            borderColor: 'border-emerald-600',
+            shadowColor: 'shadow-emerald-600/50',
+            textColor: 'text-emerald-600'
         },
         {
             id: 'coran' as Category,
             icon: BookMarked,
             label: 'Coran',
             description: 'Versets du Livre Sacré',
-            color: 'bg-purple-500',
-            hoverColor: 'hover:bg-purple-600',
-            borderColor: 'border-purple-500',
-            shadowColor: 'shadow-purple-500/50',
-            textColor: 'text-purple-500'
+            color: 'bg-emerald-700',
+            hoverColor: 'hover:bg-emerald-800',
+            borderColor: 'border-emerald-700',
+            shadowColor: 'shadow-emerald-700/50',
+            textColor: 'text-emerald-700'
         },
         {
             id: 'ramadan' as Category,
             icon: Moon,
             label: 'Ramadan',
             description: 'Rappels du mois béni',
-            color: 'bg-indigo-600',
-            hoverColor: 'hover:bg-indigo-700',
-            borderColor: 'border-indigo-600',
-            shadowColor: 'shadow-indigo-600/50',
-            textColor: 'text-indigo-600'
+            color: 'bg-orange-500',
+            hoverColor: 'hover:bg-orange-600',
+            borderColor: 'border-orange-500',
+            shadowColor: 'shadow-orange-500/50',
+            textColor: 'text-orange-500'
         },
         {
             id: 'thematique' as Category,
@@ -70,35 +71,43 @@ export function CategoryDrawer({ isOpen, onClose, category, onSelectCategory }: 
             textColor: 'text-emerald-600'
         },
         {
-            id: 'recherche-ia' as Category,
-            icon: Search,
-            label: 'Agent IA',
-            description: 'Recherche personnalisée',
-            color: 'bg-orange-600',
-            hoverColor: 'hover:bg-orange-700',
-            borderColor: 'border-orange-600',
-            shadowColor: 'shadow-orange-600/50',
-            textColor: 'text-orange-600'
-        },
-        {
             id: 'citadelle' as Category,
             icon: Sparkles,
             label: 'Citadelle',
             description: 'Douas & Invocations',
-            color: 'bg-teal-600',
-            hoverColor: 'hover:bg-teal-700',
-            borderColor: 'border-teal-600',
-            shadowColor: 'shadow-teal-600/50',
-            textColor: 'text-teal-600'
+            color: 'bg-emerald-500',
+            hoverColor: 'hover:bg-emerald-600',
+            borderColor: 'border-emerald-500',
+            shadowColor: 'shadow-emerald-500/50',
+            textColor: 'text-emerald-500'
+        },
+        {
+            id: 'rabbana' as Category,
+            icon: Heart,
+            label: 'Les 40 Rabbana',
+            description: 'Invocations coraniques',
+            color: 'bg-rose-500',
+            hoverColor: 'hover:bg-rose-600',
+            borderColor: 'border-rose-500',
+            shadowColor: 'shadow-rose-500/50',
+            textColor: 'text-rose-500'
         },
     ];
+
+    const [mounted, setMounted] = React.useState(false);
+
+    React.useEffect(() => {
+        setMounted(true);
+    }, []);
 
     const handleSelect = (cat: Category) => {
         onSelectCategory(cat);
         onClose();
     };
 
-    return (
+    if (!mounted) return null;
+
+    return createPortal(
         <AnimatePresence>
             {isOpen && (
                 <>
@@ -108,7 +117,7 @@ export function CategoryDrawer({ isOpen, onClose, category, onSelectCategory }: 
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         onClick={onClose}
-                        className="fixed inset-0 bg-black/40 backdrop-blur-sm z-40"
+                        className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[100]"
                     />
 
                     {/* Drawer */}
@@ -117,7 +126,7 @@ export function CategoryDrawer({ isOpen, onClose, category, onSelectCategory }: 
                         animate={{ y: 0 }}
                         exit={{ y: '100%' }}
                         transition={{ type: 'spring', damping: 30, stiffness: 300 }}
-                        className="fixed bottom-0 left-0 right-0 z-50 bg-background rounded-t-3xl shadow-2xl max-h-[70vh] overflow-hidden"
+                        className="fixed bottom-0 left-0 right-0 z-[101] bg-background rounded-t-3xl shadow-2xl max-h-[85vh] overflow-hidden"
                     >
                         {/* Header */}
                         <div className="relative flex items-center justify-between px-6 py-4 border-b border-border/50">
@@ -135,7 +144,7 @@ export function CategoryDrawer({ isOpen, onClose, category, onSelectCategory }: 
                         </div>
 
                         {/* Categories Grid */}
-                        <div className="p-6 pb-12 safe-area-bottom overflow-y-auto max-h-[calc(70vh-80px)]">
+                        <div className="p-6 pb-24 safe-area-bottom overflow-y-auto max-h-[calc(85vh-80px)]">
                             <div className="grid grid-cols-2 gap-4">
                                 {categories.map((cat) => {
                                     const isSelected = category === cat.id;
@@ -211,6 +220,7 @@ export function CategoryDrawer({ isOpen, onClose, category, onSelectCategory }: 
                     </motion.div>
                 </>
             )}
-        </AnimatePresence>
+        </AnimatePresence>,
+        document.body
     );
 }

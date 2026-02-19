@@ -24,6 +24,7 @@ interface HadithDatabase {
   ramadan_content: LocalVerse[];
   citadelle: LocalVerse[];
   authentiques: LocalHadith[];
+  rabbana: LocalVerse[];
 }
 
 // Cache pour la base de données
@@ -33,10 +34,11 @@ async function loadDatabase(): Promise<HadithDatabase> {
   if (cachedDatabase) return cachedDatabase;
 
   try {
-    const [hadithsResponse, citadelleResponse, authentiquesResponse] = await Promise.all([
+    const [hadithsResponse, citadelleResponse, authentiquesResponse, rabbanaResponse] = await Promise.all([
       fetch('/data/hadiths.json'),
       fetch('/data/hisn-al-muslim.json'),
-      fetch('/data/hadiths-authentiques.json')
+      fetch('/data/hadiths-authentiques.json'),
+      fetch('/data/rabbana.json')
     ]);
 
     if (!hadithsResponse.ok) throw new Error('Failed to load hadiths database');
@@ -44,24 +46,47 @@ async function loadDatabase(): Promise<HadithDatabase> {
     const hadithsData = await hadithsResponse.json();
     let citadelleData = { citadelle: [] };
     let authentiquesData = { hadiths: [] };
+    let rabbanaData = { rabbana: [] };
 
     if (citadelleResponse.ok) citadelleData = await citadelleResponse.json();
     if (authentiquesResponse.ok) authentiquesData = await authentiquesResponse.json();
+    if (rabbanaResponse.ok) rabbanaData = await rabbanaResponse.json();
 
     cachedDatabase = {
       ...hadithsData,
       ...citadelleData,
-      authentiques: authentiquesData.hadiths
+      authentiques: authentiquesData.hadiths,
+      rabbana: rabbanaData.rabbana
     };
     return cachedDatabase!;
   } catch (error) {
-    console.error('Error loading local database:', error);
     throw error;
   }
 }
 
-function getRandomItem<T>(array: T[]): T {
-  return array[Math.floor(Math.random() * array.length)];
+// Track recently shown items to avoid repeats
+const recentlyShown = new Set<string>();
+const MAX_RECENT = 10;
+
+function getRandomItem<T extends { content: string }>(array: T[]): T {
+  if (array.length <= 1) return array[0];
+
+  // Filter out recently shown items
+  const available = array.filter(item => !recentlyShown.has(item.content));
+
+  // If all items were recently shown, clear history and use full array
+  const pool = available.length > 0 ? available : array;
+
+  const item = pool[Math.floor(Math.random() * pool.length)];
+
+  // Track this item
+  recentlyShown.add(item.content);
+  if (recentlyShown.size > MAX_RECENT) {
+    const first = recentlyShown.values().next().value;
+    if (first) recentlyShown.delete(first);
+  }
+
+  return item;
 }
 
 function filterByTopic<T extends { content: string; category: string }>(
@@ -79,12 +104,14 @@ function filterByTopic<T extends { content: string; category: string }>(
   return filtered.length > 0 ? filtered : items;
 }
 
-const categoryLabels = {
+const categoryLabels: Record<string, string> = {
   hadith: 'Hadith',
   ramadan: 'Conseil ou invocation du Ramadan',
-  'thematique': 'Verset coranique trouvé par l\'Agent',
+  thematique: 'Verset coranique trouvé par l\'Agent',
   coran: 'Verset du Coran',
   citadelle: 'Citadelle du Musulman',
+  'recherche-ia': 'Agent Hikma',
+  rabbana: 'Les 40 Rabbana',
 };
 
 export const GenerateHadithInputSchema = z.object({
@@ -136,9 +163,14 @@ async function generateFromLocal(
       return { content: item.content, source: item.source };
     }
 
+    if (category === 'rabbana') {
+      const filtered = filterByTopic(db.rabbana, topic);
+      const item = getRandomItem(filtered);
+      return { content: item.content, source: item.source };
+    }
+
     return null;
-  } catch (error) {
-    console.error('Error generating from local:', error);
+  } catch {
     return null;
   }
 }
@@ -154,25 +186,51 @@ async function generateFromAI(
     throw new Error("Clé API Gemini manquante.");
   }
 
+  const randomSeed = Math.random().toString(36).substring(7);
   const baseRules = `### RÈGLES OBLIGATOIRES :
 - Utilise TOUJOURS "Allah" (JAMAIS "Dieu").
 - Après le Prophète Muhammad, ajoute "(ﷺ)".
 - LANGUE : Français uniquement.
 - Réponds UNIQUEMENT en JSON valide.
 - FORMAT : Retourne UN SEUL OBJET (pas de tableau).
-- CONTENU STRICT : Le champ "content" doit contenir UNIQUEMENT le texte sacré. PAS D'EXPLICATION, PAS DE COMMENTAIRE.`;
+- CONTENU STRICT : Le champ "content" doit contenir UNIQUEMENT le texte sacré. PAS D'EXPLICATION, PAS DE COMMENTAIRE.
+- VARIÉTÉ : Token de hasard : ${randomSeed}. PROPOSE UN CONTENU DIFFÉRENT À CHAQUE FOIS.`;
 
-  const getPromptByCategory = () => {
+  const getPrompt = () => {
+    if (category === 'recherche-ia' || category === 'auto') {
+      return `Tu es l'Agent Hikma, expert en sciences islamiques. L'utilisateur cherche une inspiration puissante sur : "${topic || 'un rappel au hasard'}". 
+      
+      TA MISSION : Trouve le rappel le plus PERCUTANT, UNIVERSEL et SPIRITUEL parmi ces sources AUTHENTIQUES :
+      1. Un VERS DU CORAN (avec le texte arabe obligatoire).
+      2. Un HADITH Court (Bukhari ou Muslim uniquement).
+      3. Une INVOCATION (Citadelle du Musulman).
+      4. Un CONSEIL ou RAPPEL sur le mois de RAMADAN.
+      
+      RÈGLES :
+      - Le texte doit être court, percutant et parler au cœur (universel). Max 450 caractères.
+      - Si le thème est une émotion, privilégie une Invocation ou un Verset.
+      - Si le thème est un comportement, privilégie un Hadith.
+      - Si le thème concerne le jeûne ou le mois sacré, privilégie le Ramadan.
+      
+      ${baseRules}
+      
+      {
+        "arabe": "Texte en arabe (si verset ou courte invocation)",
+        "content": "Le texte sacré en français uniquement",
+        "source": "Référence précise (ex: Sourate 2, Verset 255 ou Sahih Bukhari n°...)",
+        "surah": 0,
+        "ayah": 0
+      }`;
+    }
+
     if (category === 'hadith') {
-      return `Tu es un expert des Hadiths. Donne-moi UN hadith AUTHENTIQUE issu EXCLUSIVEMENT de SAHIH AL-BUKHARI ou SAHIH MUSLIM.
-${topic ? `Thème : ${topic}` : 'Choisis un thème varié (évite les trop connus) : comportement, purification, aumône, mort, paradis, enfer, invocation.'}
+      return `Tu es un expert des Hadiths. Donne-moi UN hadith extrêmement PERCUTANT et UNIVERSEL issu EXCLUSIVEMENT de SAHIH AL-BUKHARI ou SAHIH MUSLIM.
+${topic ? `Thème : ${topic}` : 'Choisis un thème varié et puissant : comportement, purification, aumône, mort, paradis, invocation.'}
 
 IMPORTANT :
-1. SOURCE OBLIGATOIRE : Sahih Al-Bukhari ou Sahih Muslim.
-2. LONGUEUR : Le hadith doit être COURT (max 250 caractères).
-3. VARIÉTÉ : Choisis des hadiths moins souvent cités pour surprendre l'utilisateur.
-
-Si le hadith est long, coupe-le intelligemment avec "(...)" pour ne garder que la phrase clé.
+1. SOURCE STRICTE : Uniquement Sahih Al-Bukhari ou Sahih Muslim.
+2. TONE : Le hadith doit être court et avoir un impact spirituel immédiat (max 450 caractères).
+3. FORMAT : Pas d'explication. Juste le texte.
 
 ${baseRules}
 
@@ -183,54 +241,65 @@ ${baseRules}
     }
 
     if (category === 'ramadan') {
-      return `Tu es un spécialiste du Ramadan. Donne-moi UN hadith ou UNE invocation AUTHENTIQUE sur le Ramadan.
-${topic ? `Thème : ${topic}` : 'Choisis parmi : jeûne, iftar, suhur, Laylat al-Qadr, prière de nuit, récompenses du Ramadan.'}
+      return `Tu es un spécialiste du Ramadan. Donne-moi UN rappel STRICTEMENT lié au RAMADAN (Hadith ou Dua authentique).
+${topic ? `Thème spécifique : ${topic}` : 'Choisis parmi : jeûne, iftar, récompenses, spirituel.'}
 
-IMPORTANT : Le hadith/invocation doit être CONCIS (maximum 300 caractères).
-Privilégie les invocations courtes et percutantes.
+IMPORTANT : Le contenu doit être CONCIS (max 450 caractères) et porter exclusivement sur le mois de Ramadan.
 
 ${baseRules}
 
 {
-  "content": "Le hadith ou l'invocation en français (max 300 caractères)",
-  "source": "Rapporté par Boukhari, n°XXXX"
+  "content": "Le texte en français",
+  "source": "Source authentique (Bukhari, Muslim, Tirmidhi...)"
 }`;
     }
 
-    if (category === 'coran' || category === 'thematique') {
-      return `Tu es un guide spirituel. Donne-moi UN verset du Coran ou une sagesse islamique très courte.
-${topic ? `Thème spécifique et contexte : ${topic}` : 'Choisis un rappel inspirant.'}
+    if (category === 'coran') {
+      return `Tu es un guide expert du Coran. Donne-moi UN verset du Coran extrêmement PUISSANT, UNIVERSEL et PERCUTANT.
+${topic ? `Thème : ${topic}` : 'Choisis un verset qui touche l\'âme.'}
 
 IMPORTANT :
-1. TEXTE ARABE : Inclus TOUJOURS le texte original en arabe si c'est un verset ou hadith.
-2. LONGUEUR : Très court (max 200 caractères pour le français).
-3. FORMAT : JSON uniquement.
+1. SOURCE STRICTE : Uniquement un verset du Saint Coran.
+2. TEXTE ARABE : Inclus TOUJOURS le texte original en arabe.
+3. IMPACT : Le verset doit être court et universellement inspirant (max 450 caractères).
 
 ${baseRules}
 
 {
   "arabe": "Le texte en arabe",
-  "content": "Le texte traduit en français",
-  "source": "Référence exacte (Sourate, Hadith n°...)",
+  "content": "La traduction en français",
+  "source": "Sourate X, Verset Y",
   "surah": 1,
   "ayah": 1
 }`;
     }
 
     if (category === 'citadelle') {
-      return `Tu es un expert de la "Citadelle du Musulman" (Hisn al-Muslim). Donne-moi UNE invocation authentique issue de ce livre.
-${topic ? `Thème : ${topic}` : 'Choisis un thème courant : matin, soir, sommeil, protection, tristesse, prière.'}
+      return `Tu es un expert de la "Citadelle du Musulman" (Hisn al-Muslim). Donne-moi UNE invocation précise issue de ce livre.
+${topic ? `Thème : ${topic}` : 'Choisis une invocation puissante (matin, soir, protection, tristesse).'}
 
 IMPORTANT :
-1. SOURCE OBLIGATOIRE : Doit être une invocation reconnue de la Citadelle du Musulman.
-2. FORMAT : Donne le texte en français.
-3. PRÉCISION : Indique la source exacte ou le moment recommandé (ex: "Invocation du matin").
+1. SOURCE STRICTE : Doit provenir exclusivement de la Citadelle du Musulman.
+2. TONE : Doit être une invocation directe (max 450 caractères).
 
 ${baseRules}
 
 {
-  "content": "L'invocation en français (max 400 caractères)",
-  "source": "Citadelle du Musulman - [Moment/Chapitre]"
+  "arabe": "Le texte en arabe",
+  "content": "L'invocation en français",
+  "source": "Citadelle du Musulman - [Chapitre]"
+}`;
+    }
+
+    if (category === 'thematique') {
+      return `Tu es l'Agent Hikma. Donne-moi une sagesse ou un rappel islamique PUISSANT sur le thème : "${topic || 'la vie'}".
+Ceci peut être un verset, un hadith ou une parole de compagnon, mais cela doit être extrêmement percutant.
+
+${baseRules}
+
+{
+  "content": "Le texte",
+  "source": "La source exacte"
 }`;
     }
 
@@ -242,46 +311,54 @@ ${baseRules}
 }`;
   };
 
-  const prompt = getPromptByCategory();
+  const prompt = getPrompt();
 
-  const response = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-001:generateContent?key=${apiKey}`,
-    {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        contents: [{ parts: [{ text: prompt }] }],
-        generationConfig: {
-          response_mime_type: 'application/json',
-          response_schema: {
-            type: 'object',
-            properties: {
-              content: { type: 'string' },
-              source: { type: 'string' },
-              surah: { type: 'number' },
-              ayah: { type: 'number' }
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 15000);
+
+  let response: Response;
+  try {
+    response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-001:generateContent?key=${apiKey}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        signal: controller.signal,
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: prompt }] }],
+          generationConfig: {
+            response_mime_type: 'application/json',
+            response_schema: {
+              type: 'object',
+              properties: {
+                content: { type: 'string' },
+                source: { type: 'string' },
+                surah: { type: 'number' },
+                ayah: { type: 'number' }
+              },
+              required: ['content', 'source']
             },
-            required: ['content', 'source']
+            temperature: 0.8
           },
-          temperature: 0.7
-        },
-        safetySettings: [
-          { category: "HARM_CATEGORY_HARASSMENT", threshold: "BLOCK_NONE" },
-          { category: "HARM_CATEGORY_HATE_SPEECH", threshold: "BLOCK_NONE" },
-          { category: "HARM_CATEGORY_SEXUALLY_EXPLICIT", threshold: "BLOCK_NONE" },
-          { category: "HARM_CATEGORY_DANGEROUS_CONTENT", threshold: "BLOCK_NONE" }
-        ]
-      }),
-    }
-  );
+          safetySettings: [
+            { category: "HARM_CATEGORY_HARASSMENT", threshold: "BLOCK_MEDIUM_AND_ABOVE" },
+            { category: "HARM_CATEGORY_HATE_SPEECH", threshold: "BLOCK_MEDIUM_AND_ABOVE" },
+            { category: "HARM_CATEGORY_SEXUALLY_EXPLICIT", threshold: "BLOCK_MEDIUM_AND_ABOVE" },
+            { category: "HARM_CATEGORY_DANGEROUS_CONTENT", threshold: "BLOCK_MEDIUM_AND_ABOVE" }
+          ]
+        }),
+      }
+    );
+  } finally {
+    clearTimeout(timeoutId);
+  }
 
   if (!response.ok) {
     const errorData = await response.json();
     const errorMessage = errorData.error?.message || "Erreur lors de l'appel à Gemini";
-    console.error("Détails erreur Gemini:", errorData);
 
     if (errorMessage.includes("leaked")) {
-      throw new Error("Clé API Gemini bloquée car elle a été divulguée (leaked). Veuillez générer une nouvelle clé sur Google AI Studio et mettre à jour votre fichier .env.local.");
+      throw new Error("Clé API Gemini bloquée. Veuillez générer une nouvelle clé sur Google AI Studio.");
     }
 
     throw new Error(errorMessage);
@@ -300,7 +377,6 @@ ${baseRules}
     // Si l'IA renvoie un tableau au lieu d'un objet (cela arrive parfois avec certains modèles),
     // on prend le premier élément du tableau.
     if (Array.isArray(parsed)) {
-      console.warn("L'IA a renvoyé un tableau au lieu d'un objet, utilisation du premier élément.");
       parsed = parsed[0];
     }
 
@@ -309,9 +385,7 @@ ${baseRules}
     }
 
     return GenerateHadithOutputSchema.parse(parsed);
-  } catch (parseError) {
-    console.error("Erreur de parsing ou de validation JSON. Texte reçu:", text);
-    console.error("Détails de l'erreur:", parseError);
+  } catch {
     throw new Error("Le format de réponse de l'IA est invalide.");
   }
 }
@@ -353,30 +427,39 @@ Ta mission :
   "ayah": 1
 }`;
 
-  const response = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-001:generateContent?key=${apiKey}`,
-    {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        contents: [{ parts: [{ text: prompt }] }],
-        generationConfig: {
-          response_mime_type: 'application/json',
-          response_schema: {
-            type: 'object',
-            properties: {
-              content: { type: 'string' },
-              source: { type: 'string' },
-              surah: { type: 'number' },
-              ayah: { type: 'number' }
+  const analysisController = new AbortController();
+  const analysisTimeoutId = setTimeout(() => analysisController.abort(), 15000);
+
+  let response: Response;
+  try {
+    response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-001:generateContent?key=${apiKey}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        signal: analysisController.signal,
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: prompt }] }],
+          generationConfig: {
+            response_mime_type: 'application/json',
+            response_schema: {
+              type: 'object',
+              properties: {
+                content: { type: 'string' },
+                source: { type: 'string' },
+                surah: { type: 'number' },
+                ayah: { type: 'number' }
+              },
+              required: ['content', 'source']
             },
-            required: ['content', 'source']
-          },
-          temperature: 0.3
-        }
-      }),
-    }
-  );
+            temperature: 0.3
+          }
+        }),
+      }
+    );
+  } finally {
+    clearTimeout(analysisTimeoutId);
+  }
 
   if (!response.ok) throw new Error("Erreur AI");
 
@@ -392,50 +475,42 @@ export async function generateHadith(
 ): Promise<GenerateHadithOutput> {
   const { category, topic } = input;
 
-  // Si c'est une recherche IA avec un thème, on cherche UNIQUEMENT dans notre fichier hadiths-authentiques.json
-  if (category === 'recherche-ia' && topic && topic.trim() !== '') {
-    try {
-      const db = await loadDatabase();
-
-      // Recherche locale dans hadiths-authentiques.json
-      const localMatches = filterByTopic(db.authentiques, topic);
-
-      if (localMatches.length > 0) {
-        // Prendre un hadith ALÉATOIRE parmi les résultats trouvés
-        const randomMatch = getRandomItem(localMatches);
-
-        // Demander à l'IA d'analyser ce hadith spécifique
-        return await generateAnalysisFromAI(randomMatch.content, randomMatch.source, topic);
-      }
-
-      // Si aucune correspondance locale stricte, on peut éventuellement fallback sur l'IA générative
-      // ou retourner rien pour forcer l'IA à dire qu'elle n'a pas trouvé dans les sources authentiques.
-      // Pour l'instant, on laisse le flux continue vers le fallback IA standard si on ne trouve rien.
-    } catch (error) {
-      console.error("Local search failed for AI research:", error);
-    }
-  }
-
-  // Pour "thematique" avec un thème spécifique, toujours utiliser l'Agent
-  if (category === 'thematique' && topic && topic.trim() !== '') {
-    try {
-      return await generateFromAI(category, topic);
-    } catch (error) {
-      console.error("Agent Hikma generation failed, falling back to local:", error);
-    }
-  }
-
-  // Essayer d'abord la base locale
-  const localResult = await generateFromLocal(category, topic);
-  if (localResult) {
-    return localResult;
-  }
-
-  // Fallback vers l'IA si la base locale échoue
+  // Priorité absolue à l'IA pour garantir un contenu "infini" et percutant
+  // Sauf si on veut explicitement forcer le local (non implémenté ici pour maximiser l'expérience Agent)
   try {
+    // 0. Pour la catégorie rabbana, on utilise uniquement la base locale
+    if (category === 'rabbana') {
+      const localResult = await generateFromLocal(category, topic);
+      if (localResult) return localResult;
+      throw new Error('Impossible de charger les Rabbana.');
+    }
+
+    // 1. Pour les thèmes spécifiques ou Agent Universel, on utilise toujours l'IA
+    if (category === 'recherche-ia' || category === 'auto' || (category === 'thematique' && topic && topic.trim() !== '')) {
+      if (topic) {
+        const db = await loadDatabase();
+        const localMatches = filterByTopic(db.authentiques, topic);
+        if (localMatches.length > 0) {
+          const randomMatch = getRandomItem(localMatches);
+          // On passe par l'IA pour "formater" et garantir le ton percutant même pour le local
+          return await generateAnalysisFromAI(randomMatch.content, randomMatch.source, topic || '');
+        }
+      }
+      return await generateFromAI(category, topic);
+    }
+
+    // 2. Pour les catégories classiques (coran, hadith, ramadan, citadelle), 
+    // on tente TOUJOURS l'IA en premier pour assurer la variété infinie demandée.
     return await generateFromAI(category, topic);
+
   } catch (error) {
-    console.error("Erreur AI détaillée:", error);
+
+    // Fallback vers la base locale uniquement si l'IA échoue
+    const localResult = await generateFromLocal(category, topic);
+    if (localResult) {
+      return localResult;
+    }
+
     throw error;
   }
 }
@@ -485,8 +560,7 @@ Reste concis mais complet (environ 200 mots).`;
     const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
 
     return text || "Impossible de générer une explication.";
-  } catch (error) {
-    console.error("Erreur explication:", error);
+  } catch {
     return "Une erreur est survenue lors de l'explication.";
   }
 }

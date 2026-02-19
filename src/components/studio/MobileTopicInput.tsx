@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, Search, Sparkles, Check } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 
 interface MobileTopicInputProps {
     value: string;
@@ -12,9 +13,10 @@ interface MobileTopicInputProps {
     isVisible: boolean;
     placeholder?: string;
     onEnter?: () => void;
+    position?: 'top' | 'bottom';
 }
 
-export function MobileTopicInput({ value, onChange, isVisible, placeholder, onEnter }: MobileTopicInputProps) {
+export function MobileTopicInput({ value, onChange, isVisible, placeholder, onEnter, position = 'bottom' }: MobileTopicInputProps) {
     const inputRef = useRef<HTMLInputElement>(null);
 
     const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -38,71 +40,71 @@ export function MobileTopicInput({ value, onChange, isVisible, placeholder, onEn
         }
     }, [isVisible]);
 
+    const isTop = position === 'top';
+
     return (
         <AnimatePresence>
             {isVisible && (
                 <motion.div
-                    initial={{ opacity: 0, y: 20, scale: 0.95 }}
+                    initial={{ opacity: 0, y: isTop ? -16 : 16, scale: 0.97 }}
                     animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                    className="fixed bottom-28 left-4 right-4 z-30 md:hidden"
+                    exit={{ opacity: 0, y: isTop ? -8 : 8, scale: 0.97 }}
+                    transition={{ type: 'spring', damping: 28, stiffness: 300 }}
+                    className={cn(
+                        "fixed left-4 right-4 z-50 md:hidden",
+                        isTop ? "top-14" : "bottom-24"
+                    )}
                 >
-                    <div className="relative group">
-                        {/* Enhanced Glassmorphism Container */}
-                        <div className="bg-white/95 dark:bg-gray-900/95 backdrop-blur-2xl rounded-2xl border-2 border-purple-500/30 shadow-[0_12px_40px_rgba(0,0,0,0.2)]">
-                            <div className="flex items-center gap-2 p-4">
-                                <div className="flex-shrink-0 w-10 h-10 rounded-full bg-purple-500/10 flex items-center justify-center">
-                                    <Search className="w-5 h-5 text-purple-500" />
-                                </div>
+                    {/* Glow ambiance */}
+                    <div className="absolute inset-0 rounded-full blur-xl bg-emerald-500/5 -z-10" />
 
-                                <div className="flex-1 flex flex-col gap-1">
-                                    <Input
-                                        ref={inputRef}
-                                        value={value}
-                                        onChange={(e) => onChange(e.target.value)}
-                                        onKeyDown={handleKeyDown}
-                                        placeholder={placeholder || "Ex: La patience, la gratitude..."}
-                                        className="border-none bg-transparent focus-visible:ring-0 text-base h-12 px-0 placeholder:text-muted-foreground/60 font-medium text-foreground"
-                                    />
-                                    <span className="text-[10px] text-muted-foreground/70 pl-0">
-                                        Appuyez sur ✓ pour générer
-                                    </span>
-                                </div>
-
-                                {value && (
-                                    <>
-                                        <Button
-                                            variant="ghost"
-                                            size="icon"
-                                            onClick={() => onChange('')}
-                                            className="h-9 w-9 rounded-full hover:bg-muted/50 transition-colors flex-shrink-0"
-                                        >
-                                            <X className="w-4 h-4 text-muted-foreground" />
-                                        </Button>
-                                        <Button
-                                            onClick={handleSubmit}
-                                            className="h-10 w-10 rounded-full bg-purple-500 hover:bg-purple-600 transition-colors flex-shrink-0 shadow-lg"
-                                            size="icon"
-                                        >
-                                            <Check className="w-5 h-5 text-white" />
-                                        </Button>
-                                    </>
-                                )}
-
-                                {!value && (
-                                    <motion.div
-                                        animate={{ rotate: [0, 15, 0] }}
-                                        transition={{ repeat: Infinity, duration: 2 }}
-                                        className="pr-2"
-                                    >
-                                        <Sparkles className="w-5 h-5 text-purple-500/40" />
-                                    </motion.div>
-                                )}
+                    <div className="bg-black/30 backdrop-blur-3xl rounded-full border border-white/8 shadow-[0_8px_32px_rgba(0,0,0,0.4)]">
+                        <div className="flex items-center gap-2 px-3 py-1">
+                            {/* Icône recherche */}
+                            <div className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center">
+                                <Search className="w-4 h-4 text-white/40" />
                             </div>
-                        </div>
 
-                        {/* Visual indicator that it belongs to the dock */}
-                        <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-5 h-5 bg-white/90 dark:bg-gray-900/90 backdrop-blur-2xl border-r-2 border-b-2 border-purple-500/30 rotate-45 -z-10" />
+                            {/* Champ de saisie */}
+                            <div className="flex-1">
+                                <Input
+                                    ref={inputRef}
+                                    value={value}
+                                    onChange={(e) => onChange(e.target.value)}
+                                    onKeyDown={handleKeyDown}
+                                    placeholder={placeholder || "Thème : patience, gratitude..."}
+                                    className="border-none bg-transparent focus-visible:ring-0 text-sm h-9 px-0 placeholder:text-white/25 text-white/90 font-medium"
+                                />
+                            </div>
+
+                            {value ? (
+                                <div className="flex items-center gap-1 flex-shrink-0">
+                                    <Button
+                                        variant="ghost"
+                                        size="icon"
+                                        onClick={() => onChange('')}
+                                        className="h-7 w-7 rounded-full hover:bg-white/10 text-white/40 hover:text-white/70 transition-colors"
+                                    >
+                                        <X className="w-3.5 h-3.5" />
+                                    </Button>
+                                    <Button
+                                        onClick={handleSubmit}
+                                        size="icon"
+                                        className="h-8 w-8 rounded-full bg-emerald-500/80 hover:bg-emerald-500 border border-emerald-400/30 shadow-[0_0_12px_rgba(16,185,129,0.3)] text-white transition-all"
+                                    >
+                                        <Check className="w-3.5 h-3.5" />
+                                    </Button>
+                                </div>
+                            ) : (
+                                <motion.div
+                                    animate={{ opacity: [0.2, 0.5, 0.2] }}
+                                    transition={{ repeat: Infinity, duration: 3 }}
+                                    className="flex-shrink-0 pr-1"
+                                >
+                                    <Sparkles className="w-3.5 h-3.5 text-white/25" />
+                                </motion.div>
+                            )}
+                        </div>
                     </div>
                 </motion.div>
             )}
