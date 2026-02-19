@@ -849,7 +849,7 @@ export default function GeneratorPage() {
         <div className="absolute bottom-6 left-0 right-0 z-40 flex flex-col items-center gap-3 px-4">
 
           {/* QUICK CATEGORY TILES — grille 3 colonnes */}
-          <div className="grid grid-cols-3 gap-2 w-full max-w-sm">
+          <div className="grid grid-cols-3 gap-2 w-full max-w-sm mx-auto">
             {[
               { id: 'coran',       icon: BookMarked, label: 'Coran'    },
               { id: 'hadith',      icon: BookOpen,   label: 'Hadith'   },
@@ -875,7 +875,7 @@ export default function GeneratorPage() {
           </div>
 
           {/* BARRE INFÉRIEURE : Catégorie | Saisie | Premium + Générer */}
-          <div className="flex items-center gap-2 w-full max-w-sm">
+          <div className="flex items-center gap-2 w-full max-w-sm mx-auto">
             {/* Bouton catégorie */}
             <button
               onClick={() => setIsCategoryDrawerOpen(true)}
