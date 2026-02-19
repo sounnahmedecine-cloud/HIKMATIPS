@@ -1045,7 +1045,7 @@ export default function GeneratorPage() {
           <Button
             variant="ghost"
             size="icon"
-            className="absolute right-2 top-2 rounded-full bg-red-100 hover:bg-red-200 text-red-600 transition-colors z-50"
+            className="absolute right-3 top-3 rounded-full w-9 h-9 bg-muted hover:bg-red-100 hover:text-red-600 text-muted-foreground border border-border transition-all z-50 shadow-sm"
             onClick={() => setShowSignInPopup(false)}
           >
             <X className="h-5 w-5" />
