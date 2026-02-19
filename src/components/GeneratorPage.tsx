@@ -984,6 +984,7 @@ export default function GeneratorPage() {
       <CloudinaryGallery
         isOpen={isGalleryOpen}
         onClose={() => setIsGalleryOpen(false)}
+        currentBackground={background}
         onSelect={(url: string) => {
           setBackground(url);
           setIsGalleryOpen(false);
