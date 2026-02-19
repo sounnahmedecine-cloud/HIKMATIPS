@@ -23,7 +23,8 @@ import {
     BookMarked,
     BookOpen,
     Moon,
-    Loader2
+    Loader2,
+    Search
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { CloudinaryGallery } from "@/components/studio/CloudinaryGallery"
