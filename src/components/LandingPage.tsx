@@ -243,7 +243,7 @@ export default function LandingPage() {
               "Le rappel profite aux croyants"
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-4">
               <Button
                 onClick={scrollToApp}
                 size="lg"
@@ -262,6 +262,33 @@ export default function LandingPage() {
                 Télécharger Android
               </Button>
             </div>
+
+            {/* APK Download Button */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.5 }}
+              className="flex justify-center"
+            >
+              <a
+                href="https://drive.google.com/file/d/1GYA5vctET6ekvrGbgsZM2a1D95MtPot3/view?usp=sharing"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group inline-flex items-center gap-3 px-7 py-3.5 rounded-full font-bold text-base transition-all duration-300
+                  bg-black text-emerald-400 border-2 border-emerald-400
+                  shadow-[0_0_20px_rgba(52,211,153,0.4),0_0_40px_rgba(52,211,153,0.2)]
+                  hover:shadow-[0_0_30px_rgba(52,211,153,0.7),0_0_60px_rgba(52,211,153,0.4)]
+                  hover:bg-emerald-400 hover:text-black
+                  active:scale-95"
+              >
+                <Download className="w-5 h-5 group-hover:animate-bounce" />
+                <span>Télécharger l'APK</span>
+                <span className="text-xs font-normal opacity-70 ml-1">v1.2.60</span>
+              </a>
+            </motion.div>
+            <p className="text-xs text-muted-foreground mt-2 text-center">
+              Installez directement sans passer par le Play Store
+            </p>
           </motion.div>
 
           {/* Hero Image/Preview */}
