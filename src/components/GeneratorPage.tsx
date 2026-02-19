@@ -846,7 +846,7 @@ export default function GeneratorPage() {
         </div >
 
         {/* BOTTOM TOOLS: Main Action (Generate) */}
-        <div className="absolute bottom-6 left-0 right-0 z-40 flex flex-col items-center gap-3 px-4">
+        <div className="absolute bottom-0 left-0 right-0 z-40 flex flex-col items-center gap-3 px-4 pb-8" style={{ paddingBottom: 'max(2rem, env(safe-area-inset-bottom) + 1rem)' }}>
 
           {/* QUICK CATEGORY TILES — grille 3 colonnes */}
           <div className="grid grid-cols-3 gap-2 w-full max-w-sm mx-auto">
@@ -874,9 +874,9 @@ export default function GeneratorPage() {
             ))}
           </div>
 
-          {/* BARRE INFÉRIEURE : Catégorie | Saisie | Premium + Générer */}
+          {/* BARRE INFÉRIEURE : Catégorie | Saisie | Générer */}
           <div className="flex items-center gap-2 w-full max-w-sm mx-auto">
-            {/* Bouton catégorie */}
+            {/* Bouton catégorie — icône seule */}
             <button
               onClick={() => setIsCategoryDrawerOpen(true)}
               className="flex-shrink-0 w-12 h-12 rounded-full bg-black/30 backdrop-blur-3xl border border-white/10 flex items-center justify-center text-white/70 active:scale-90 transition-all shadow-lg"
