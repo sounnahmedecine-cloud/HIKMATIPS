@@ -223,7 +223,7 @@ export default function LandingPage() {
               transition={{ duration: 0.8, delay: 0.2 }}
               className="mb-8"
             >
-              <h2 className="text-4xl sm:text-6xl lg:text-7xl font-arabic text-primary/40 leading-relaxed dir-rtl mb-2">
+              <h2 className="text-4xl sm:text-6xl lg:text-7xl font-arabic text-foreground/25 leading-relaxed dir-rtl mb-2">
                 بِسْمِ ٱللَّٰهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ
               </h2>
               <div className="h-0.5 w-24 bg-gradient-to-r from-transparent via-primary/20 to-transparent mx-auto" />
@@ -342,7 +342,7 @@ export default function LandingPage() {
       </section>
 
       {/* Agent Hikma - Chatbot Search Section */}
-      <section className="py-24 px-4 bg-purple-900 text-white relative overflow-hidden">
+      <section className="py-24 px-4 bg-card text-foreground relative overflow-hidden border-t border-border">
         <div className="absolute inset-0 opacity-10 pointer-events-none">
           <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/arabesque.png')] opacity-30" />
           <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary rounded-full blur-[120px] mix-blend-screen" />
@@ -351,33 +351,33 @@ export default function LandingPage() {
         <div className="container mx-auto max-w-4xl relative z-10">
           <div className="flex flex-col lg:flex-row gap-12 items-center">
             <div className="flex-1 space-y-6">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-700/50 border border-purple-600 text-purple-100 text-xs font-medium">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/50 text-primary text-xs font-medium">
                 <Sparkles className="h-3 w-3" />
                 Agent Interactif
               </div>
               <h2 className="text-3xl sm:text-4xl font-bold leading-tight">
-                "Vous vous rappelez d'un Hadith mais <span className="text-purple-400">pas de la suite ?</span>"
+                "Vous vous rappelez d'un Hadith mais <span className="text-primary">pas de la suite ?</span>"
               </h2>
-              <p className="text-purple-100/80 text-lg leading-relaxed italic">
+              <p className="text-muted-foreground text-lg leading-relaxed italic">
                 "Vous vous rappelez d'un Hadith ou n'avez que le début ? Je peux vous aider à le retrouver parmi les milliers de paroles prophétiques."
               </p>
 
               <form onSubmit={handleChatSearch} className="flex gap-2">
                 <div className="relative flex-1">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-purple-400" />
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-primary" />
                   <Input
                     placeholder="Tapez le début du hadith ou un thème..."
                     value={chatQuery}
                     onChange={(e) => setChatQuery(e.target.value)}
-                    className="pl-11 h-12 bg-purple-700/30 border-purple-600/50 text-white placeholder:text-purple-400/50 rounded-xl focus-visible:ring-purple-500"
+                    className="pl-11 h-12 bg-muted border-border text-foreground placeholder:text-muted-foreground rounded-xl focus-visible:ring-primary"
                   />
                 </div>
                 <Button
                   type="submit"
-                  className="h-12 px-6 bg-purple-500 hover:bg-purple-400 text-purple-900 font-bold rounded-xl"
+                  className="h-12 px-6 bg-primary hover:bg-primary/90 text-primary-foreground font-bold rounded-xl"
                   disabled={isSearchingChat}
                 >
-                  {isSearchingChat ? <span className="animate-spin h-5 w-5 border-2 border-purple-900 border-t-transparent rounded-full" /> : "Chercher"}
+                  {isSearchingChat ? <span className="animate-spin h-5 w-5 border-2 border-primary-foreground border-t-transparent rounded-full" /> : "Chercher"}
                 </Button>
               </form>
 
@@ -388,28 +388,28 @@ export default function LandingPage() {
                     animate={{ opacity: 1, y: 0 }}
                     className="mt-6 space-y-4"
                   >
-                    <div className="flex items-center justify-between text-xs text-purple-300 font-medium px-1">
+                    <div className="flex items-center justify-between text-xs text-primary font-medium px-1">
                       <span>{chatResults.length} hadith(s) trouvé(s)</span>
                       <button onClick={() => setHasSearched(false)} className="hover:text-white underline text-xs">Fermer</button>
                     </div>
-                    <ScrollArea className="h-64 rounded-xl border border-purple-600/50 bg-purple-700/20">
+                    <ScrollArea className="h-64 rounded-xl border border-border bg-muted/40">
                       <div className="p-4 space-y-4">
                         {chatResults.length === 0 ? (
                           <div className="text-center py-8 px-4 space-y-4">
                             <div className="opacity-40">
                               <HelpCircle className="h-12 w-12 mx-auto mb-2" />
                             </div>
-                            <p className="text-sm italic text-purple-100/90 leading-relaxed">
+                            <p className="text-sm italic text-foreground/80 leading-relaxed">
                               "Je n'ai pas trouvé ce hadith dans ma base de données actuelle. Allahu A'lam."
                             </p>
-                            <div className="p-4 rounded-xl bg-purple-500/10 border border-purple-500/20 text-xs space-y-3">
-                              <p className="text-purple-300 font-bold uppercase tracking-wider">Conseil de l'Agent :</p>
-                              <p className="text-purple-200/80 leading-relaxed">
+                            <div className="p-4 rounded-xl bg-primary/5 border border-primary/20 text-xs space-y-3">
+                              <p className="text-primary font-bold uppercase tracking-wider">Conseil de l'Agent :</p>
+                              <p className="text-muted-foreground leading-relaxed">
                                 Pour les recherches complexes ou les points de jurisprudence, je vous invite à vous rapprocher des gens de science fiables et des plateformes reconnues comme :
                               </p>
                               <div className="flex flex-wrap justify-center gap-2">
                                 {['3ilmchar3i', 'La Voie Droite', 'La Science Légiférée'].map(site => (
-                                  <span key={site} className="px-2 py-1 bg-purple-700/50 rounded text-purple-400 font-medium">
+                                  <span key={site} className="px-2 py-1 bg-primary/10 rounded text-primary font-medium">
                                     {site}
                                   </span>
                                 ))}
@@ -418,18 +418,18 @@ export default function LandingPage() {
                           </div>
                         ) : (
                           chatResults.map((r, i) => (
-                            <div key={i} className="p-3 bg-purple-700/40 rounded-lg border border-purple-600/30">
-                              <p className="text-sm italic text-purple-50 leading-relaxed mb-2">"{r.french}"</p>
+                            <div key={i} className="p-3 bg-primary/5 rounded-lg border border-primary/20">
+                              <p className="text-sm italic text-foreground leading-relaxed mb-2">"{r.french}"</p>
                               <div className="flex gap-2">
                                 <Button
                                   variant="ghost"
                                   size="sm"
-                                  className="h-6 p-0 px-2 text-[9px] hover:bg-purple-600 text-purple-300"
+                                  className="h-6 p-0 px-2 text-[9px] hover:bg-primary/20 text-primary"
                                   onClick={() => handleExplain(r, i)}
                                   disabled={isExplaining === i}
                                 >
                                   {isExplaining === i ? (
-                                    <span className="animate-spin h-3 w-3 border-2 border-purple-300 border-t-transparent rounded-full" />
+                                    <span className="animate-spin h-3 w-3 border-2 border-primary border-t-transparent rounded-full" />
                                   ) : (
                                     explanation?.id === i ? "Masquer explication" : "Expliquer (Étudiant)"
                                   )}
@@ -437,7 +437,7 @@ export default function LandingPage() {
                                 <Button
                                   variant="ghost"
                                   size="sm"
-                                  className="h-6 p-0 px-2 text-[9px] hover:bg-purple-600 text-purple-300 border border-purple-600/50"
+                                  className="h-6 p-0 px-2 text-[9px] hover:bg-primary/20 text-primary border border-primary/30"
                                   onClick={() => handleUseHadith(r.french)}
                                 >
                                   Utiliser ce Hadith
@@ -448,13 +448,13 @@ export default function LandingPage() {
                                   initial={{ opacity: 0, height: 0 }}
                                   animate={{ opacity: 1, height: 'auto' }}
                                   exit={{ opacity: 0, height: 0 }}
-                                  className="mt-3 p-3 bg-purple-900/50 rounded-lg border border-purple-500/20"
+                                  className="mt-3 p-3 bg-primary/5 rounded-lg border border-primary/20"
                                 >
-                                  <div className="flex items-center gap-2 mb-2 text-purple-400 font-bold text-xs uppercase tracking-wider">
+                                  <div className="flex items-center gap-2 mb-2 text-primary font-bold text-xs uppercase tracking-wider">
                                     <Sparkles className="h-3 w-3" />
                                     <span>Explication Pédagogique</span>
                                   </div>
-                                  <p className="text-xs text-purple-100/90 leading-relaxed whitespace-pre-wrap font-serif">
+                                  <p className="text-xs text-foreground/80 leading-relaxed whitespace-pre-wrap font-serif">
                                     {explanation.text}
                                   </p>
                                 </motion.div>
@@ -470,18 +470,18 @@ export default function LandingPage() {
             </div>
 
             <div className="hidden lg:block w-72 h-72 relative">
-              <div className="absolute inset-0 bg-purple-500/20 blur-[80px] rounded-full" />
-              <div className="relative z-10 w-full h-full border border-purple-400/20 rounded-3xl bg-purple-700/20 backdrop-blur-xl flex flex-col items-center justify-center p-8 text-center border-t-purple-400/40 shadow-2xl overflow-hidden group">
-                <div className="absolute inset-0 bg-gradient-to-tr from-purple-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+              <div className="absolute inset-0 bg-primary/10 blur-[80px] rounded-full" />
+              <div className="relative z-10 w-full h-full border border-primary/20 rounded-3xl bg-primary/5 backdrop-blur-xl flex flex-col items-center justify-center p-8 text-center shadow-2xl overflow-hidden group">
+                <div className="absolute inset-0 bg-gradient-to-tr from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                 <Image
                   src="https://res.cloudinary.com/db2ljqpdt/image/upload/v1770580517/ChatGPT_Image_2_f%C3%A9vr._2026_23_43_44_qmfwbc_1_f4huf1.png"
                   alt="Assistant"
                   width={80}
                   height={80}
-                  className="rounded-2xl mb-6 shadow-2xl relative z-10 ring-2 ring-purple-400/30"
+                  className="rounded-2xl mb-6 shadow-2xl relative z-10 ring-2 ring-primary/30"
                 />
                 <h3 className="text-xl font-bold mb-2 relative z-10">L'Agent Hikma</h3>
-                <p className="text-sm text-purple-200/70 italic relative z-10 leading-relaxed">
+                <p className="text-sm text-muted-foreground italic relative z-10 leading-relaxed">
                   "Au service de l'étudiant en quête de vérité et de sagesse."
                 </p>
               </div>
@@ -553,9 +553,9 @@ export default function LandingPage() {
                   <h3 className="text-2xl font-black mt-2">Al-Bukhari</h3>
                   <p className="text-xs text-muted-foreground mt-3 italic leading-relaxed">"Le plus haut degré d'authenticité après le Coran."</p>
                 </div>
-                <div className="p-8 rounded-[2rem] bg-background shadow-2xl border border-border/50 transition-all hover:-translate-y-2 hover:border-purple-500/30">
-                  <div className="h-2 w-12 bg-purple-500/20 rounded-full mb-4" />
-                  <span className="text-[10px] font-bold text-purple-500 uppercase tracking-[0.2em]">Sunan</span>
+                <div className="p-8 rounded-[2rem] bg-background shadow-2xl border border-border/50 transition-all hover:-translate-y-2 hover:border-secondary/30">
+                  <div className="h-2 w-12 bg-secondary/20 rounded-full mb-4" />
+                  <span className="text-[10px] font-bold text-secondary uppercase tracking-[0.2em]">Sunan</span>
                   <h3 className="text-2xl font-black mt-2">Abu Dawud</h3>
                   <p className="text-xs text-muted-foreground mt-3 italic leading-relaxed">"La quintessence des règles et de la jurisprudence."</p>
                 </div>
