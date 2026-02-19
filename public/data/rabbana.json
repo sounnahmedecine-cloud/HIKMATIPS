@@ -1,0 +1,244 @@
+{
+  "rabbana": [
+    {
+      "id": 1,
+      "content": "Seigneur, accepte notre œuvre. Toi qui entends et sais tout !",
+      "source": "Coran 2:127",
+      "category": "rabbana"
+    },
+    {
+      "id": 2,
+      "content": "Seigneur, fais que nous soyons soumis à Ta volonté, fais que notre postérité soit un peuple résigné à Ta volonté, enseigne-nous les rites sacrés, et accepte notre repentir, car Tu aimes à agréer la pénitence et Tu es Miséricordieux !",
+      "source": "Coran 2:128",
+      "category": "rabbana"
+    },
+    {
+      "id": 3,
+      "content": "Seigneur, donne-nous une belle part dans ce monde et une belle part dans l'Autre, et préserve-nous du châtiment du feu !",
+      "source": "Coran 2:201",
+      "category": "rabbana"
+    },
+    {
+      "id": 4,
+      "content": "Seigneur, arme-nous de patience, affermis nos pas et donne-nous la victoire sur ce peuple infidèle !",
+      "source": "Coran 2:250",
+      "category": "rabbana"
+    },
+    {
+      "id": 5,
+      "content": "Seigneur, ne nous punis pas pour des fautes commises par oubli ou par erreur !",
+      "source": "Coran 2:286",
+      "category": "rabbana"
+    },
+    {
+      "id": 6,
+      "content": "Seigneur, ne nous impose pas le fardeau que Tu avais imposé à ceux qui ont vécu avant nous !",
+      "source": "Coran 2:286",
+      "category": "rabbana"
+    },
+    {
+      "id": 7,
+      "content": "Seigneur, ne nous charge pas de ce que nous ne pouvons supporter. Efface nos péchés, pardonne les nous, aie pitié de nous ! Tu es notre Maître ! Donne-nous la victoire sur les infidèles !",
+      "source": "Coran 2:286",
+      "category": "rabbana"
+    },
+    {
+      "id": 8,
+      "content": "Seigneur ! ne fais pas dévier nos cœurs après que tu nous as guidés ! Accorde-nous Ta miséricorde, car Tu es le Dispensateur Suprême.",
+      "source": "Coran 3:8",
+      "category": "rabbana"
+    },
+    {
+      "id": 9,
+      "content": "Seigneur ! Tu rassembleras le genre humain dans un jour au sujet duquel il n'y a point de doute ! Certes, Allah ne manque point à Ses promesses !",
+      "source": "Coran 3:9",
+      "category": "rabbana"
+    },
+    {
+      "id": 10,
+      "content": "Seigneur, nous avons cru ; pardonne-nous nos péchés et préserve-nous du châtiment du feu !",
+      "source": "Coran 3:16",
+      "category": "rabbana"
+    },
+    {
+      "id": 11,
+      "content": "Seigneur, nous croyons à ce que Tu as révélé, et nous suivons le Prophète ! Inscris-nous au nombre de ceux qui témoignent !",
+      "source": "Coran 3:53",
+      "category": "rabbana"
+    },
+    {
+      "id": 12,
+      "content": "Seigneur, pardonne-nous nos péchés et nos excès. Affermis nos pas et accorde-nous la victoire sur les infidèles !",
+      "source": "Coran 3:147",
+      "category": "rabbana"
+    },
+    {
+      "id": 13,
+      "content": "Seigneur, Tu n'as pas créé tout cela en vain (l'univers) ! Gloire à Toi ! Préserve-nous du châtiment du Feu !",
+      "source": "Coran 3:191",
+      "category": "rabbana"
+    },
+    {
+      "id": 14,
+      "content": "Seigneur, celui que Tu précipites en enfer tombe dans l'ignominie, les pervers ne pourront compter sur aucun secours !",
+      "source": "Coran 3:192",
+      "category": "rabbana"
+    },
+    {
+      "id": 15,
+      "content": "Seigneur, nous avons entendu l'homme qui appelait ; il nous appelait à la Foi, il criait : « Croyez en Dieu », et nous avons cru !",
+      "source": "Coran 3:193",
+      "category": "rabbana"
+    },
+    {
+      "id": 16,
+      "content": "Seigneur, pardonne-nous nos fautes, efface nos péchés, et fais que nous mourions avec les gens charitables.",
+      "source": "Coran 3:193",
+      "category": "rabbana"
+    },
+    {
+      "id": 17,
+      "content": "Seigneur, donne-nous ce que Tu as promis par l'intermédiaire de Tes Messagers ! Fais que nous ne soyons pas humiliés au jour de la résurrection, Toi qui ne manques jamais à Tes promesses !",
+      "source": "Coran 3:194",
+      "category": "rabbana"
+    },
+    {
+      "id": 18,
+      "content": "Seigneur, nous croyons ! Inscris-nous au nombre de ceux qui témoignent !",
+      "source": "Coran 5:83",
+      "category": "rabbana"
+    },
+    {
+      "id": 19,
+      "content": "Seigneur, fais-nous descendre une table du ciel ; qu'elle soit un festin pour le premier et le dernier d'entre nous, et un signe de Ta puissance ! Nourris-nous, car Tu es le meilleur Nourrisseur !",
+      "source": "Coran 5:114",
+      "category": "rabbana"
+    },
+    {
+      "id": 20,
+      "content": "Ô notre Seigneur, nous avons fait du tort à nous-mêmes. Et si Tu ne nous pardonnes pas et ne nous fais pas miséricorde, nous serons très certainement du nombre des perdants.",
+      "source": "Coran 7:23",
+      "category": "rabbana"
+    },
+    {
+      "id": 21,
+      "content": "Seigneur, ne nous place pas avec les injustes !",
+      "source": "Coran 7:47",
+      "category": "rabbana"
+    },
+    {
+      "id": 22,
+      "content": "Seigneur, tranche entre nous et notre peuple. Tu es le meilleur des arbitres !",
+      "source": "Coran 7:89",
+      "category": "rabbana"
+    },
+    {
+      "id": 23,
+      "content": "Seigneur, déverse sur nous l'endurance et fais nous mourir entièrement soumis !",
+      "source": "Coran 7:126",
+      "category": "rabbana"
+    },
+    {
+      "id": 24,
+      "content": "Seigneur, ne fais pas de nous une cible pour les persécutions des injustes ! Par Ta miséricorde, protège-nous des infidèles !",
+      "source": "Coran 10:85",
+      "category": "rabbana"
+    },
+    {
+      "id": 25,
+      "content": "Seigneur, Tu sais ce que nous dissimulons et ce que nous montrons ! Pour Allah, il n'y a rien de caché dans les Cieux et sur la Terre !",
+      "source": "Coran 14:38",
+      "category": "rabbana"
+    },
+    {
+      "id": 26,
+      "content": "Ô mon Seigneur ! Fais que j'accomplisse assidûment la Salat ainsi qu'une partie de ma descendance ; exauce ma prière, ô notre Seigneur.",
+      "source": "Coran 14:40",
+      "category": "rabbana"
+    },
+    {
+      "id": 27,
+      "content": "Seigneur, pardonne-moi, ainsi qu'à mes parents et aux croyants, au jour du Jugement !",
+      "source": "Coran 14:41",
+      "category": "rabbana"
+    },
+    {
+      "id": 28,
+      "content": "Seigneur, accorde-nous Ta miséricorde et assure-nous la droiture de notre conduite.",
+      "source": "Coran 18:10",
+      "category": "rabbana"
+    },
+    {
+      "id": 29,
+      "content": "Seigneur, nous craignons qu'il n'use de violence envers nous, ou qu'il ne commette des impiétés !",
+      "source": "Coran 20:45",
+      "category": "rabbana"
+    },
+    {
+      "id": 30,
+      "content": "Notre Seigneur est Celui qui a donné à chaque chose sa forme, puis Il l'a guidée !",
+      "source": "Coran 20:50",
+      "category": "rabbana"
+    },
+    {
+      "id": 31,
+      "content": "Seigneur, nous croyons en Toi, pardonne nous, fais-nous miséricorde, Tu es le plus miséricordieux !",
+      "source": "Coran 23:109",
+      "category": "rabbana"
+    },
+    {
+      "id": 32,
+      "content": "Seigneur, éloigne-nous du supplice de l'enfer, qui est vraiment le plus atroce des supplices, ainsi qu'un mauvais lieu pour y séjourner et pour s'y arrêter !",
+      "source": "Coran 25:65",
+      "category": "rabbana"
+    },
+    {
+      "id": 33,
+      "content": "Seigneur, fais que la vue de nos épouses et de nos enfants nous remplisse de joie ! Et fais que nous marchions à la tête des pieux !",
+      "source": "Coran 25:74",
+      "category": "rabbana"
+    },
+    {
+      "id": 34,
+      "content": "Notre Seigneur est indulgent et reconnaissant !",
+      "source": "Coran 35:34",
+      "category": "rabbana"
+    },
+    {
+      "id": 35,
+      "content": "Seigneur, Tu embrasses tout de Ta miséricorde et de Ta science, pardonne à ceux qui se repentent et suivent Ton sentier ! Préserve-les du supplice de l'enfer !",
+      "source": "Coran 40:7",
+      "category": "rabbana"
+    },
+    {
+      "id": 36,
+      "content": "Seigneur, introduis-les dans les jardins d'Éden que Tu leur as promis, ainsi que leurs parents, leurs épouses et leurs enfants vertueux ! Tu es le Puissant, le Sage ! Préserve-les du mal ! Tu auras pitié de celui qui se gardera des mauvaises actions, et c'est un bonheur immense !",
+      "source": "Coran 40:8-9",
+      "category": "rabbana"
+    },
+    {
+      "id": 37,
+      "content": "Seigneur, pardonne-nous et pardonne à nos frères qui nous ont devancés dans la Foi, et ne mets point dans nos cœurs de rancune contre ceux qui croient ! Seigneur, Tu es compatissant et miséricordieux !",
+      "source": "Coran 59:10",
+      "category": "rabbana"
+    },
+    {
+      "id": 38,
+      "content": "Seigneur, nous mettons notre confiance en Toi, nous revenons à Toi. C'est à Toi que tout aboutit !",
+      "source": "Coran 60:4",
+      "category": "rabbana"
+    },
+    {
+      "id": 39,
+      "content": "Seigneur, ne nous induis pas en tentation pour ceux qui ne croient pas ! Pardonne-nous, Tu es puissant et sage !",
+      "source": "Coran 60:5",
+      "category": "rabbana"
+    },
+    {
+      "id": 40,
+      "content": "Seigneur, rends parfaite notre lumière, et pardonne-nous ! Tu es Tout-Puissant !",
+      "source": "Coran 66:8",
+      "category": "rabbana"
+    }
+  ]
+}

@@ -77,9 +77,9 @@ type Content = {
   ayah?: number;
 };
 
-const category: Category[] = ['hadith', 'ramadan', 'thematique', 'coran', 'recherche-ia', 'citadelle'];
+const category: Category[] = ['hadith', 'ramadan', 'thematique', 'coran', 'recherche-ia', 'citadelle', 'rabbana'];
 
-type Category = 'hadith' | 'ramadan' | 'thematique' | 'coran' | 'recherche-ia' | 'citadelle';
+type Category = 'hadith' | 'ramadan' | 'thematique' | 'coran' | 'recherche-ia' | 'citadelle' | 'rabbana';
 
 export default function GeneratorPage() {
   const [content, setContent] = useState<Content | null>({
@@ -727,17 +727,17 @@ export default function GeneratorPage() {
             <Button
               variant="ghost"
               onClick={() => setIsCategoryDrawerOpen(true)}
-              className="h-11 px-5 rounded-full bg-[#FFFDD0]/10 backdrop-blur-md border border-[#FFFDD0]/20 text-[#FFFDD0] font-bold flex items-center gap-2 group shadow-xl"
+              className="h-11 px-5 rounded-full bg-black/40 dark:bg-black/60 backdrop-blur-md border border-white/20 dark:border-white/10 text-white font-bold flex items-center gap-2 group shadow-xl"
               aria-label="Sélectionner la source"
             >
-              <Sparkles className="w-4 h-4 text-[#FFFDD0] group-hover:rotate-12 transition-transform" />
+              <Sparkles className="w-4 h-4 text-emerald-400 group-hover:rotate-12 transition-transform" />
               <span className="text-[10px] uppercase font-bold tracking-widest">{category === 'recherche-ia' ? "Agent Hikma" : category}</span>
             </Button>
 
             <Button
               variant="ghost"
               onClick={() => setIsSidebarOpen(true)}
-              className="h-11 px-5 rounded-full bg-[#FFFDD0]/10 backdrop-blur-md border border-[#FFFDD0]/20 text-[#FFFDD0] font-bold flex items-center gap-2 group shadow-xl"
+              className="h-11 px-5 rounded-full bg-primary/20 dark:bg-primary/10 backdrop-blur-md border border-primary/30 dark:border-primary/20 text-primary-foreground dark:text-primary font-bold flex items-center gap-2 group shadow-xl"
               aria-label="Paramètres"
             >
               <Settings className="w-4 h-4 group-hover:rotate-45 transition-transform" />
@@ -745,7 +745,7 @@ export default function GeneratorPage() {
             </Button>
           </div>
 
-          <Button variant="ghost" size="icon" className="pointer-events-auto w-11 h-11 rounded-2xl bg-black/40 backdrop-blur-md border border-white/10 text-yellow-400 shadow-xl" aria-label="Premium">
+          <Button variant="ghost" size="icon" className="pointer-events-auto w-11 h-11 rounded-2xl bg-black/40 backdrop-blur-md border border-white/10 text-yellow-500 shadow-xl" aria-label="Premium">
             <Crown className="w-5 h-5" />
           </Button>
         </div >
@@ -754,21 +754,21 @@ export default function GeneratorPage() {
         < div className="absolute left-6 bottom-32 z-40 flex flex-col gap-4" >
           <button
             onClick={() => setIsGalleryOpen(true)}
-            className="w-12 h-12 rounded-full bg-[#FFFDD0]/10 backdrop-blur-md border border-[#FFFDD0]/20 text-[#FFFDD0] shadow-2xl flex items-center justify-center active:scale-90 transition-all font-bold"
+            className="w-12 h-12 rounded-full bg-primary/20 dark:bg-primary/10 backdrop-blur-md border border-primary/30 dark:border-primary/20 text-primary-foreground dark:text-primary shadow-2xl flex items-center justify-center active:scale-90 transition-all font-bold"
             aria-label="Galerie"
           >
             <ImageIcon className="w-5 h-5" />
           </button>
           <button
             onClick={() => setIsToolsDrawerOpen(true)}
-            className="w-12 h-12 rounded-full bg-[#FFFDD0]/10 backdrop-blur-md border border-[#FFFDD0]/20 text-[#FFFDD0] shadow-2xl flex items-center justify-center active:scale-90 transition-all font-bold"
+            className="w-12 h-12 rounded-full bg-primary/20 dark:bg-primary/10 backdrop-blur-md border border-primary/30 dark:border-primary/20 text-primary-foreground dark:text-primary shadow-2xl flex items-center justify-center active:scale-90 transition-all font-bold"
             aria-label="Outils de design"
           >
             <Palette className="w-5 h-5" />
           </button>
           <button
             onClick={handleRandomBackground}
-            className="w-12 h-12 rounded-full bg-[#FFFDD0]/10 backdrop-blur-md border border-[#FFFDD0]/20 text-[#FFFDD0] shadow-2xl flex items-center justify-center active:scale-90 transition-all"
+            className="w-12 h-12 rounded-full bg-primary/20 dark:bg-primary/10 backdrop-blur-md border border-primary/30 dark:border-primary/20 text-primary-foreground dark:text-primary shadow-2xl flex items-center justify-center active:scale-90 transition-all"
             aria-label="Fond aléatoire"
           >
             <RefreshCw className="w-5 h-5" />
@@ -779,21 +779,26 @@ export default function GeneratorPage() {
         < div className="absolute right-6 bottom-32 z-40 flex flex-col gap-4" >
           <button
             onClick={handleFavorite}
-            className="w-12 h-12 rounded-full bg-[#FFFDD0]/10 backdrop-blur-md border border-[#FFFDD0]/20 text-[#FFFDD0] shadow-2xl flex items-center justify-center active:scale-90 transition-all"
+            className={cn(
+              "w-12 h-12 rounded-full backdrop-blur-md border shadow-2xl flex items-center justify-center active:scale-90 transition-all",
+              favorites.includes(content?.content || '')
+                ? "bg-red-500/20 border-red-500/50 text-red-600 dark:text-red-500"
+                : "bg-primary/20 dark:bg-primary/10 border-primary/30 dark:border-primary/20 text-primary-foreground dark:text-primary"
+            )}
             aria-label="Favori"
           >
-            <Heart className={cn("w-5 h-5 transition-colors", favorites.includes(content?.content || '') ? "fill-[#FFFDD0] text-[#FFFDD0]" : "")} />
+            <Heart className={cn("w-5 h-5 transition-colors", favorites.includes(content?.content || '') ? "fill-current" : "")} />
           </button>
           <button
             onClick={handleShareImage}
-            className="w-12 h-12 rounded-full bg-[#FFFDD0]/10 backdrop-blur-md border border-[#FFFDD0]/20 text-[#FFFDD0] shadow-2xl flex items-center justify-center active:scale-90 transition-all"
+            className="w-12 h-12 rounded-full bg-primary/20 dark:bg-primary/10 backdrop-blur-md border border-primary/30 dark:border-primary/20 text-primary-foreground dark:text-primary shadow-2xl flex items-center justify-center active:scale-90 transition-all"
             aria-label="Partager"
           >
             <Share2 className="w-5 h-5" />
           </button>
           <button
             onClick={handleDownloadImage}
-            className="w-12 h-12 rounded-full bg-[#FFFDD0]/10 backdrop-blur-md border border-[#FFFDD0]/20 text-[#FFFDD0] shadow-2xl flex items-center justify-center active:scale-90 transition-all"
+            className="w-12 h-12 rounded-full bg-primary/20 dark:bg-primary/10 backdrop-blur-md border border-primary/30 dark:border-primary/20 text-primary-foreground dark:text-primary shadow-2xl flex items-center justify-center active:scale-90 transition-all"
             aria-label="Télécharger"
           >
             <Download className="w-5 h-5" />

@@ -24,6 +24,7 @@ interface HadithDatabase {
   ramadan_content: LocalVerse[];
   citadelle: LocalVerse[];
   authentiques: LocalHadith[];
+  rabbana: LocalVerse[];
 }
 
 // Cache pour la base de données
@@ -33,10 +34,11 @@ async function loadDatabase(): Promise<HadithDatabase> {
   if (cachedDatabase) return cachedDatabase;
 
   try {
-    const [hadithsResponse, citadelleResponse, authentiquesResponse] = await Promise.all([
+    const [hadithsResponse, citadelleResponse, authentiquesResponse, rabbanaResponse] = await Promise.all([
       fetch('/data/hadiths.json'),
       fetch('/data/hisn-al-muslim.json'),
-      fetch('/data/hadiths-authentiques.json')
+      fetch('/data/hadiths-authentiques.json'),
+      fetch('/data/rabbana.json')
     ]);
 
     if (!hadithsResponse.ok) throw new Error('Failed to load hadiths database');
@@ -44,14 +46,17 @@ async function loadDatabase(): Promise<HadithDatabase> {
     const hadithsData = await hadithsResponse.json();
     let citadelleData = { citadelle: [] };
     let authentiquesData = { hadiths: [] };
+    let rabbanaData = { rabbana: [] };
 
     if (citadelleResponse.ok) citadelleData = await citadelleResponse.json();
     if (authentiquesResponse.ok) authentiquesData = await authentiquesResponse.json();
+    if (rabbanaResponse.ok) rabbanaData = await rabbanaResponse.json();
 
     cachedDatabase = {
       ...hadithsData,
       ...citadelleData,
-      authentiques: authentiquesData.hadiths
+      authentiques: authentiquesData.hadiths,
+      rabbana: rabbanaData.rabbana
     };
     return cachedDatabase!;
   } catch (error) {
@@ -157,6 +162,12 @@ async function generateFromLocal(
       return { content: item.content, source: item.source };
     }
 
+    if (category === 'rabbana') {
+      const filtered = filterByTopic(db.rabbana, topic);
+      const item = getRandomItem(filtered);
+      return { content: item.content, source: item.source };
+    }
+
     return null;
   } catch (error) {
     console.error('Error generating from local:', error);
@@ -175,13 +186,15 @@ async function generateFromAI(
     throw new Error("Clé API Gemini manquante.");
   }
 
+  const randomSeed = Math.random().toString(36).substring(7);
   const baseRules = `### RÈGLES OBLIGATOIRES :
 - Utilise TOUJOURS "Allah" (JAMAIS "Dieu").
 - Après le Prophète Muhammad, ajoute "(ﷺ)".
 - LANGUE : Français uniquement.
 - Réponds UNIQUEMENT en JSON valide.
 - FORMAT : Retourne UN SEUL OBJET (pas de tableau).
-- CONTENU STRICT : Le champ "content" doit contenir UNIQUEMENT le texte sacré. PAS D'EXPLICATION, PAS DE COMMENTAIRE.`;
+- CONTENU STRICT : Le champ "content" doit contenir UNIQUEMENT le texte sacré. PAS D'EXPLICATION, PAS DE COMMENTAIRE.
+- VARIÉTÉ : Token de hasard : ${randomSeed}. PROPOSE UN CONTENU DIFFÉRENT À CHAQUE FOIS.`;
 
   const getPrompt = () => {
     if (category === 'recherche-ia' || category === 'auto') {
@@ -191,11 +204,13 @@ async function generateFromAI(
       1. Un VERS DU CORAN (avec le texte arabe obligatoire).
       2. Un HADITH Court (Bukhari ou Muslim uniquement).
       3. Une INVOCATION (Citadelle du Musulman).
+      4. Un CONSEIL ou RAPPEL sur le mois de RAMADAN.
       
       RÈGLES :
       - Le texte doit être court, percutant et parler au cœur (universel). Max 450 caractères.
       - Si le thème est une émotion, privilégie une Invocation ou un Verset.
       - Si le thème est un comportement, privilégie un Hadith.
+      - Si le thème concerne le jeûne ou le mois sacré, privilégie le Ramadan.
       
       ${baseRules}
       
@@ -317,7 +332,7 @@ ${baseRules}
             },
             required: ['content', 'source']
           },
-          temperature: 0.7
+          temperature: 0.8
         },
         safetySettings: [
           { category: "HARM_CATEGORY_HARASSMENT", threshold: "BLOCK_NONE" },
@@ -449,6 +464,13 @@ export async function generateHadith(
   // Priorité absolue à l'IA pour garantir un contenu "infini" et percutant
   // Sauf si on veut explicitement forcer le local (non implémenté ici pour maximiser l'expérience Agent)
   try {
+    // 0. Pour la catégorie rabbana, on utilise uniquement la base locale
+    if (category === 'rabbana') {
+      const localResult = await generateFromLocal(category, topic);
+      if (localResult) return localResult;
+      throw new Error('Impossible de charger les Rabbana.');
+    }
+
     // 1. Pour les thèmes spécifiques ou Agent Universel, on utilise toujours l'IA
     if (category === 'recherche-ia' || category === 'auto' || (category === 'thematique' && topic && topic.trim() !== '')) {
       if (topic) {

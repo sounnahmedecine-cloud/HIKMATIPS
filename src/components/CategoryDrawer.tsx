@@ -11,11 +11,12 @@ import {
     Check,
     X,
     LayoutGrid,
-    Sparkles
+    Sparkles,
+    Heart
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-type Category = 'hadith' | 'ramadan' | 'thematique' | 'coran' | 'recherche-ia' | 'citadelle';
+type Category = 'hadith' | 'ramadan' | 'thematique' | 'coran' | 'recherche-ia' | 'citadelle' | 'rabbana';
 
 interface CategoryDrawerProps {
     isOpen: boolean;
@@ -91,6 +92,17 @@ export function CategoryDrawer({ isOpen, onClose, category, onSelectCategory }: 
             borderColor: 'border-emerald-500',
             shadowColor: 'shadow-emerald-500/50',
             textColor: 'text-emerald-500'
+        },
+        {
+            id: 'rabbana' as Category,
+            icon: Heart,
+            label: 'Les 40 Rabbana',
+            description: 'Invocations coraniques',
+            color: 'bg-rose-500',
+            hoverColor: 'hover:bg-rose-600',
+            borderColor: 'border-rose-500',
+            shadowColor: 'shadow-rose-500/50',
+            textColor: 'text-rose-500'
         },
     ];
 

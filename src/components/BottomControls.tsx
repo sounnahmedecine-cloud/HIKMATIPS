@@ -14,7 +14,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
-type Category = 'hadith' | 'ramadan' | 'thematique' | 'coran' | 'recherche-ia' | 'citadelle';
+type Category = 'hadith' | 'ramadan' | 'thematique' | 'coran' | 'recherche-ia' | 'citadelle' | 'rabbana';
 
 interface BottomControlsProps {
     category: Category;
@@ -93,12 +93,12 @@ export function BottomControls({
                             size="icon"
                         >
                             {isGenerating ? (
-                                <Loader2 className="w-8 h-8 animate-spin text-white" />
+                                <Loader2 className="w-8 h-8 animate-spin text-primary-foreground" />
                             ) : (
-                                <Sparkles className="w-8 h-8 text-white" />
+                                <Sparkles className="w-8 h-8 text-primary-foreground" />
                             )}
                         </Button>
-                        <span className="text-[10px] font-bold text-primary uppercase tracking-tight">Texte</span>
+                        <span className="text-[10px] font-bold text-primary dark:text-emerald-400 uppercase tracking-tight">Texte</span>
                     </div>
 
                     {/* Image/Background Button */}
@@ -108,7 +108,7 @@ export function BottomControls({
                             className="w-16 h-16 rounded-2xl shadow-hikma bg-accent hover:bg-accent/90 active:scale-95 transition-all duration-300 border-4 border-background"
                             size="icon"
                         >
-                            <ImageIcon className="w-8 h-8 text-white" />
+                            <ImageIcon className="w-8 h-8 text-accent-foreground" />
                         </Button>
                         <span className="text-[10px] font-bold text-accent uppercase tracking-tight">Image</span>
                     </div>
