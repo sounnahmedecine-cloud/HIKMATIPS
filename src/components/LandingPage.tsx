@@ -46,18 +46,7 @@ import { ThemeToggle } from '@/components/ThemeToggle';
 import dynamic from 'next/dynamic';
 
 // Import dynamique du générateur
-const GeneratorPage = dynamic(() => import('@/components/GeneratorPage'), {
-  ssr: false,
-  loading: () => (
-    <div className="text-center py-12">
-      <div className="animate-spin h-12 w-12 border-4 border-primary border-t-transparent rounded-full mx-auto mb-4" />
-      <p className="text-muted-foreground">Chargement du générateur...</p>
-    </div>
-  ),
-});
-
 export default function LandingPage() {
-  const [showGenerator, setShowGenerator] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
 
@@ -194,12 +183,6 @@ export default function LandingPage() {
           </div>
           <div className="flex items-center gap-4">
             <ThemeToggle />
-            <Button onClick={scrollToApp} variant="outline" className="hidden sm:flex">
-              Essayer gratuitement
-            </Button>
-            <Button onClick={scrollToApp} className="bg-gradient-to-r from-primary to-accent">
-              Lancer l'app
-            </Button>
           </div>
         </div>
       </nav>
@@ -245,14 +228,6 @@ export default function LandingPage() {
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-4">
               <Button
-                onClick={scrollToApp}
-                size="lg"
-                className="bg-gradient-to-r from-primary to-accent hover:opacity-90 text-lg px-8"
-              >
-                <Sparkles className="mr-2 h-5 w-5" />
-                Essayer maintenant
-              </Button>
-              <Button
                 variant="outline"
                 size="lg"
                 className="text-lg px-8"
@@ -289,6 +264,7 @@ export default function LandingPage() {
             <p className="text-xs text-muted-foreground mt-2 text-center">
               Installez directement sans passer par le Play Store
             </p>
+
           </motion.div>
 
           {/* Hero Image/Preview */}
@@ -749,29 +725,6 @@ export default function LandingPage() {
       </section>
 
 
-      {/* App Section - Embedded Generator */}
-      <section id="app-section" className="py-20 px-4 bg-muted/30 scroll-mt-16">
-        <div className="container mx-auto">
-          {!showGenerator ? (
-            <>
-              <div className="text-center mb-8">
-                <h2 className="text-2xl font-bold mb-2">Essayez maintenant</h2>
-                <p className="text-muted-foreground">Générez votre premier visuel en quelques secondes</p>
-              </div>
-              <div className="text-center py-12 bg-background rounded-2xl border-2 border-dashed border-primary/20">
-                <Sparkles className="h-12 w-12 text-primary mx-auto mb-4" />
-                <p className="text-lg font-medium mb-4">Prêt à diffuser un rappel ?</p>
-                <Button onClick={() => setShowGenerator(true)} size="lg" className="bg-gradient-to-r from-primary to-accent">
-                  <Sparkles className="mr-2 h-4 w-4" />
-                  Lancer le générateur
-                </Button>
-              </div>
-            </>
-          ) : (
-            <GeneratorPage />
-          )}
-        </div>
-      </section>
 
       {/* Contact & Feedback Section */}
       <section className="py-20 px-4 bg-muted/30">
