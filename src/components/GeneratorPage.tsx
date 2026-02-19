@@ -846,61 +846,75 @@ export default function GeneratorPage() {
         </div >
 
         {/* BOTTOM TOOLS: Main Action (Generate) */}
-        < div className="absolute bottom-6 left-0 right-0 z-40 flex flex-col items-center gap-4 px-4" >
-          {/* Unified Search Input */}
-          < div className="w-full max-w-sm" >
-            <MobileTopicInput
-              value={topic}
-              onChange={setTopic}
-              isVisible={true}
-              placeholder={category === 'recherche-ia' ? "Rechercher avec l'Agent (ex: Parents)..." : "Sujet du rappel (patience, amour...)"}
-              onEnter={handleGenerateAiContent}
-              position={category === 'recherche-ia' ? 'top' : 'bottom'}
-            />
-          </div >
+        <div className="absolute bottom-6 left-0 right-0 z-40 flex flex-col items-center gap-3 px-4">
 
-          {/* QUICK CATEGORY TILES (The requested 4 tiles) */}
-          < div className="flex justify-center gap-3 w-full max-w-sm px-2" >
-            {
-              [
-                { id: 'coran', icon: BookMarked, color: 'bg-[#FFFDD0]/10 text-[#FFFDD0] border-[#FFFDD0]/20', label: 'Coran' },
-                { id: 'hadith', icon: BookOpen, color: 'bg-[#FFFDD0]/10 text-[#FFFDD0] border-[#FFFDD0]/20', label: 'Hadith' },
-                { id: 'ramadan', icon: Moon, color: 'bg-[#FFFDD0]/10 text-[#FFFDD0] border-[#FFFDD0]/20', label: 'Mois' },
-                { id: 'citadelle', icon: Sparkles, color: 'bg-[#FFFDD0]/10 text-[#FFFDD0] border-[#FFFDD0]/20', label: 'Douas' },
-              ].map((cat) => (
-                <button
-                  key={cat.id}
-                  onClick={() => setCategory(cat.id as Category)}
-                  className={cn(
-                    "flex-1 py-2 rounded-2xl border flex flex-col items-center gap-1 transition-all active:scale-90",
-                    category === cat.id
-                      ? "bg-[#FFFDD0] text-purple-900 border-[#FFFDD0] ring-4 ring-[#FFFDD0]/20"
-                      : cat.color
-                  )}
-                >
-                  <cat.icon className="w-5 h-5" />
-                  <span className="text-[9px] font-bold uppercase tracking-tighter">{cat.label}</span>
-                </button>
-              ))
-            }
+          {/* QUICK CATEGORY TILES — grille 3 colonnes */}
+          <div className="grid grid-cols-3 gap-2 w-full max-w-sm">
+            {[
+              { id: 'coran',       icon: BookMarked, label: 'Coran'    },
+              { id: 'hadith',      icon: BookOpen,   label: 'Hadith'   },
+              { id: 'ramadan',     icon: Moon,       label: 'Ramadan'  },
+              { id: 'citadelle',   icon: Sparkles,   label: 'Douas'    },
+              { id: 'thematique',  icon: LayoutGrid, label: 'Thème'    },
+              { id: 'rabbana',     icon: Heart,      label: 'Rabbana'  },
+            ].map((cat) => (
+              <button
+                key={cat.id}
+                onClick={() => setCategory(cat.id as Category)}
+                className={cn(
+                  "py-2 rounded-2xl border flex flex-col items-center gap-1 transition-all active:scale-90",
+                  category === cat.id
+                    ? "bg-white/20 text-white border-white/40 shadow-lg"
+                    : "bg-black/20 text-white/50 border-white/10"
+                )}
+              >
+                <cat.icon className="w-4 h-4" />
+                <span className="text-[9px] font-bold uppercase tracking-tighter">{cat.label}</span>
+              </button>
+            ))}
           </div>
 
-          <button
-            onClick={handleGenerateAiContent}
-            disabled={isGenerating}
-            className={cn(
-              "h-14 px-10 rounded-full bg-[#FFFDD0] text-purple-900 flex items-center gap-3 shadow-[0_10px_30px_rgba(255,253,208,0.3)] active:scale-95 transition-all w-full max-w-[280px] font-bold",
-              isGenerating && "opacity-80"
-            )}
-            aria-label="Générer avec l'Agent Hikma"
-          >
-            {isGenerating ? (
-              <Loader2 className="w-6 h-6 animate-spin" />
-            ) : (
-              <Sparkles className="w-6 h-6" />
-            )}
-            <span className="font-bold tracking-tight">Générer avec l'Agent</span>
-          </button>
+          {/* BARRE INFÉRIEURE : Catégorie | Saisie | Premium + Générer */}
+          <div className="flex items-center gap-2 w-full max-w-sm">
+            {/* Bouton catégorie */}
+            <button
+              onClick={() => setIsCategoryDrawerOpen(true)}
+              className="flex-shrink-0 w-12 h-12 rounded-full bg-black/30 backdrop-blur-3xl border border-white/10 flex items-center justify-center text-white/70 active:scale-90 transition-all shadow-lg"
+              aria-label="Catégories"
+            >
+              <LayoutGrid className="w-5 h-5" />
+            </button>
+
+            {/* Champ de saisie inline — élargi */}
+            <div className="flex-1 flex items-center gap-2 bg-black/30 backdrop-blur-3xl rounded-full border border-white/10 px-3 h-12 shadow-lg">
+              <Search className="w-4 h-4 text-white/40 flex-shrink-0" />
+              <input
+                value={topic}
+                onChange={(e) => setTopic(e.target.value)}
+                onKeyDown={(e) => { if (e.key === 'Enter') { (e.target as HTMLInputElement).blur(); handleGenerateAiContent(); } }}
+                placeholder="Thème : patience, amour..."
+                className="flex-1 bg-transparent text-white/90 text-sm placeholder:text-white/25 outline-none font-medium min-w-0"
+              />
+              {topic && (
+                <button onClick={() => setTopic('')} className="flex-shrink-0 text-white/30 hover:text-white/60 transition-colors">
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              )}
+            </div>
+
+            {/* Bouton Générer / Premium */}
+            <button
+              onClick={handleGenerateAiContent}
+              disabled={isGenerating}
+              className="flex-shrink-0 w-12 h-12 rounded-full bg-emerald-500/90 border border-emerald-400/30 shadow-[0_0_20px_rgba(16,185,129,0.4)] flex items-center justify-center text-white active:scale-90 transition-all"
+              aria-label="Générer"
+            >
+              {isGenerating
+                ? <Loader2 className="w-5 h-5 animate-spin" />
+                : <Sparkles className="w-5 h-5" />
+              }
+            </button>
+          </div>
         </div>
       </div>
 
