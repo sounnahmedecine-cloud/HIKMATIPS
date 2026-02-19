@@ -4,41 +4,76 @@
 
 @layer base {
   :root {
-    /* 🌸 HikmaClips Cream Theme - Elegant & Sacred */
-    --background: 60 100% 97%;
-    /* #FFFDD0 base shade */
-    --foreground: 220 20% 20%;
+    /* 🌿 HikmaClips Light Theme - Parchemin Islamique */
+    --background: 45 60% 97%;
+    --foreground: 200 25% 15%;
     --card: 0 0% 100%;
-    --card-foreground: 220 20% 20%;
+    --card-foreground: 200 25% 15%;
     --popover: 0 0% 100%;
-    --popover-foreground: 220 20% 20%;
+    --popover-foreground: 200 25% 15%;
 
-    /* Primary - Cream Pastel #FFFDD0 */
-    --primary: 60 100% 91%;
-    --primary-foreground: 258 90% 20%;
+    /* Primary - Vert Islamique */
+    --primary: 145 45% 30%;
+    --primary-foreground: 0 0% 100%;
 
-    /* Secondary - Hikma Green #2E7D32 */
-    --secondary: 122 45% 34%;
+    /* Secondary - Or Zellige */
+    --secondary: 38 80% 45%;
     --secondary-foreground: 0 0% 100%;
 
-    /* Accent - Hikma Orange #F59E0B */
-    --accent: 38 92% 50%;
+    /* Accent - Or vif */
+    --accent: 38 80% 45%;
     --accent-foreground: 0 0% 100%;
 
     /* Muted */
-    --muted: 60 30% 92%;
-    --muted-foreground: 60 10% 40%;
+    --muted: 45 30% 92%;
+    --muted-foreground: 200 15% 45%;
 
     /* Border & Input */
-    --border: 60 30% 85%;
-    --input: 60 30% 85%;
-    --ring: 122 45% 34%;
+    --border: 45 20% 82%;
+    --input: 45 20% 88%;
+    --ring: 145 45% 30%;
 
     --radius: 9999px;
-    /* Force Rounded FULL everywhere */
 
-    --chart-1: 122 45% 34%;
-    --chart-2: 38 92% 50%;
+    --chart-1: 145 45% 30%;
+    --chart-2: 38 80% 45%;
+  }
+
+  .maroc {
+    /* 🇲🇦 Thème Marocain — Vert Royal & Or Zellige */
+    --background: 150 30% 96%;
+    /* Blanc ivoire chaud */
+    --foreground: 150 40% 10%;
+    --card: 0 0% 100%;
+    --card-foreground: 150 40% 10%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 150 40% 10%;
+
+    /* Primary — Vert Marocain #006233 */
+    --primary: 150 100% 19%;
+    --primary-foreground: 0 0% 100%;
+
+    /* Secondary — Or Zellige #C9A84C */
+    --secondary: 42 54% 54%;
+    --secondary-foreground: 0 0% 100%;
+
+    /* Accent — Or vif #D4A843 */
+    --accent: 43 63% 55%;
+    --accent-foreground: 0 0% 100%;
+
+    /* Muted */
+    --muted: 150 15% 90%;
+    --muted-foreground: 150 15% 40%;
+
+    /* Border & Input */
+    --border: 42 40% 75%;
+    --input: 42 40% 75%;
+    --ring: 150 100% 19%;
+
+    --radius: 9999px;
+
+    --chart-1: 150 100% 19%;
+    --chart-2: 43 63% 55%;
   }
 
   .dark {
@@ -118,9 +153,14 @@
 
   /* Glassmorphism Effect */
   .glass {
-    background: rgba(19, 34, 56, 0.6);
-    border: 1px solid rgba(212, 168, 67, 0.15);
+    background: hsl(var(--card) / 0.85);
+    border: 1px solid hsl(var(--border) / 0.4);
     backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+  .dark .glass {
+    background: rgba(19, 34, 56, 0.7);
+    border: 1px solid rgba(212, 168, 67, 0.15);
   }
 
   /* Smooth Transitions */

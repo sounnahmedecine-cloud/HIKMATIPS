@@ -15,7 +15,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
-type Category = 'hadith' | 'ramadan' | 'thematique' | 'coran' | 'recherche-ia' | 'citadelle' | 'rabbana';
+type Category = 'hadith' | 'ramadan' | 'coran' | 'recherche-ia' | 'citadelle' | 'rabbana';
 
 interface BottomControlsProps {
     category: Category;
@@ -47,7 +47,6 @@ export function BottomControls({
         'coran': { icon: BookMarked, label: 'Coran', color: 'text-primary', bgColor: 'bg-primary', borderColor: 'border-primary' },
         'ramadan': { icon: Moon, label: 'Ramadan', color: 'text-accent', bgColor: 'bg-accent', borderColor: 'border-accent' },
         'recherche-ia': { icon: Search, label: 'Agent', color: 'text-primary', bgColor: 'bg-primary', borderColor: 'border-primary' },
-        'thematique': { icon: BookOpen, label: 'Thème', color: 'text-accent', bgColor: 'bg-accent', borderColor: 'border-accent' },
         'citadelle': { icon: BookOpen, label: 'Citadelle', color: 'text-teal-600', bgColor: 'bg-teal-600', borderColor: 'border-teal-600' },
         'rabbana': { icon: BookMarked, label: 'Rabbana', color: 'text-rose-500', bgColor: 'bg-rose-500', borderColor: 'border-rose-500' },
     };

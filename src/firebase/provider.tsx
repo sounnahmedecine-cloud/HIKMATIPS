@@ -4,7 +4,14 @@ import React, { DependencyList, createContext, useContext, ReactNode, useMemo, u
 import { FirebaseApp } from 'firebase/app';
 import { Firestore } from 'firebase/firestore';
 import { Auth, User, onAuthStateChanged } from 'firebase/auth';
-import { FirebaseErrorListener } from '@/components/FirebaseErrorListener'
+import dynamic from 'next/dynamic';
+
+// Import dynamique pour briser la dépendance circulaire :
+// firebase/index → provider → FirebaseErrorListener → firebase/error-emitter → firebase/index
+const FirebaseErrorListener = dynamic(
+  () => import('@/components/FirebaseErrorListener').then(m => ({ default: m.FirebaseErrorListener })),
+  { ssr: false }
+);
 
 interface FirebaseProviderProps {
   children: ReactNode;
