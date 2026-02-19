@@ -316,13 +316,14 @@ export default function GeneratorPage() {
       } else {
         throw new Error('La génération a échoué ou n\'a retourné aucun contenu.');
       }
-    } catch (error) {
-      console.error("Erreur lors de la génération avec l'Agent Hikma:", error);
+    } catch {
+      const isLocal = ['rabbana', 'coran', 'hadith', 'ramadan', 'citadelle'].includes(category);
       toast({
         variant: 'destructive',
-        title: 'L\'Agent est occupé',
-        description:
-          "Une erreur s'est produite lors de la communication avec l'Assistant Hikma. Veuillez réessayer.",
+        title: isLocal ? 'Erreur de chargement' : 'Service temporairement indisponible',
+        description: isLocal
+          ? 'Impossible de charger le contenu. Réessayez.'
+          : 'Vérifiez votre connexion et réessayez.',
       });
     } finally {
       setIsGenerating(false);
@@ -761,37 +762,25 @@ export default function GeneratorPage() {
 
       {/* 4. MOBILE FLOATING UI (Replaces multiple toolbars) */}
       <div className="md:hidden">
-        {/* TOP TOOLS: Universal Search / Category */}
+        {/* TOP TOOLS: Settings + Crown only */}
         <div className="absolute top-12 left-6 right-6 z-40 flex justify-between items-start pointer-events-none">
-          <div className="flex flex-col gap-2 pointer-events-auto">
-            <Button
-              variant="ghost"
-              onClick={() => setIsCategoryDrawerOpen(true)}
-              className="h-11 px-5 rounded-full bg-black/40 dark:bg-black/60 backdrop-blur-md border border-white/20 dark:border-white/10 text-white font-bold flex items-center gap-2 group shadow-xl"
-              aria-label="Sélectionner la source"
-            >
-              <Sparkles className="w-4 h-4 text-emerald-400 group-hover:rotate-12 transition-transform" />
-              <span className="text-[10px] uppercase font-bold tracking-widest">{category === 'recherche-ia' ? "Agent Hikma" : category}</span>
-            </Button>
+          <Button
+            variant="ghost"
+            onClick={() => setIsSidebarOpen(true)}
+            className="pointer-events-auto h-11 px-4 rounded-full bg-black/30 backdrop-blur-md border border-white/10 text-white/70 flex items-center gap-2 shadow-lg"
+            aria-label="Paramètres"
+          >
+            <Settings className="w-4 h-4" />
+            <span className="text-[10px] uppercase font-bold tracking-widest">Réglages</span>
+          </Button>
 
-            <Button
-              variant="ghost"
-              onClick={() => setIsSidebarOpen(true)}
-              className="h-11 px-5 rounded-full bg-primary/20 dark:bg-primary/10 backdrop-blur-md border border-primary/30 dark:border-primary/20 text-primary-foreground dark:text-primary font-bold flex items-center gap-2 group shadow-xl"
-              aria-label="Paramètres"
-            >
-              <Settings className="w-4 h-4 group-hover:rotate-45 transition-transform" />
-              <span className="text-[10px] uppercase font-bold tracking-widest">Réglages</span>
-            </Button>
-          </div>
-
-          <Button variant="ghost" size="icon" className="pointer-events-auto w-11 h-11 rounded-2xl bg-black/40 backdrop-blur-md border border-white/10 text-yellow-500 shadow-xl" aria-label="Premium">
+          <Button variant="ghost" size="icon" className="pointer-events-auto w-11 h-11 rounded-2xl bg-black/30 backdrop-blur-md border border-white/10 text-yellow-500 shadow-lg" aria-label="Premium">
             <Crown className="w-5 h-5" />
           </Button>
-        </div >
+        </div>
 
         {/* LEFT TOOLS: Design */}
-        < div className="absolute left-6 bottom-32 z-40 flex flex-col gap-4" >
+        <div className="absolute left-4 z-40 flex flex-col gap-3" style={{ bottom: 'calc(max(2rem, env(safe-area-inset-bottom) + 1rem) + 9rem)' }}>
           <button
             onClick={() => setIsGalleryOpen(true)}
             className="w-12 h-12 rounded-full bg-primary/20 dark:bg-primary/10 backdrop-blur-md border border-primary/30 dark:border-primary/20 text-primary-foreground dark:text-primary shadow-2xl flex items-center justify-center active:scale-90 transition-all font-bold"
@@ -813,10 +802,10 @@ export default function GeneratorPage() {
           >
             <RefreshCw className="w-5 h-5" />
           </button>
-        </div >
+        </div>
 
         {/* RIGHT TOOLS: Actions */}
-        < div className="absolute right-6 bottom-32 z-40 flex flex-col gap-4" >
+        <div className="absolute right-4 z-40 flex flex-col gap-3" style={{ bottom: 'calc(max(2rem, env(safe-area-inset-bottom) + 1rem) + 9rem)' }}>
           <button
             onClick={handleFavorite}
             className={cn(
@@ -843,7 +832,7 @@ export default function GeneratorPage() {
           >
             <Download className="w-5 h-5" />
           </button>
-        </div >
+        </div>
 
         {/* BOTTOM TOOLS: Main Action (Generate) */}
         <div className="absolute bottom-0 left-0 right-0 z-40 flex flex-col items-center gap-3 px-4 pb-8" style={{ paddingBottom: 'max(2rem, env(safe-area-inset-bottom) + 1rem)' }}>
