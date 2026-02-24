@@ -59,7 +59,7 @@ export function GenerateClient({ params }: { params: Promise<{ theme: string }> 
             console.log("Generation result:", result);
 
             localStorage.setItem('lastGeneratedHikma', JSON.stringify(result));
-            router.push("/studio");
+            router.push("/");
         } catch (error) {
             console.error("Generation failed:", error);
             alert("Erreur lors de la génération. Vérifiez que votre clé API Gemini est configurée dans .env.local");

@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect, useCallback, useRef } from "react"
+import { useSearchParams } from "next/navigation"
 import { motion, AnimatePresence } from "framer-motion"
 import { useSwipeable } from "react-swipeable";
 import { Share } from '@capacitor/share';
@@ -97,6 +98,7 @@ const ALL_MOCKS: HikmaData[] = [
 ];
 
 export function HomeScreen() {
+    const searchParams = useSearchParams();
     const [currentHikma, setCurrentHikma] = useState(ALL_MOCKS[0]);
     const [background, setBackground] = useState("");
     const [favorites, setFavorites] = useState<string[]>([]);
@@ -276,6 +278,14 @@ export function HomeScreen() {
     });
 
     // Initial setup - runs only once
+    // Lit les params URL (topic, category) passés depuis la page Ressources
+    useEffect(() => {
+        const urlTopic = searchParams.get('topic');
+        const urlCategory = searchParams.get('category');
+        if (urlTopic) setTopic(urlTopic);
+        if (urlCategory) setSelectedCategory(urlCategory);
+    }, [searchParams]);
+
     useEffect(() => {
         const hasSeen = localStorage.getItem('hasSeenOnboarding');
         if (!hasSeen) setShowOnboarding(true);

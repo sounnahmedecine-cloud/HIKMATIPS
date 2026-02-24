@@ -361,7 +361,7 @@ export default function RessourcesPage() {
                               size="sm"
                               className="w-full text-[10px] gap-1 text-primary hover:text-primary hover:bg-primary/10 border border-primary/10"
                               onClick={() => {
-                                window.location.href = `/studio?topic=${encodeURIComponent(hadith.french)}&category=recherche-ia`;
+                                window.location.href = `/?topic=${encodeURIComponent(hadith.french)}&category=recherche-ia`;
                               }}
                             >
                               <Sparkles className="h-3 w-3" />

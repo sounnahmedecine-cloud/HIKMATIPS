@@ -10,11 +10,13 @@ import {
     Check,
     X,
     Sparkles,
-    Heart
+    Heart,
+    Search
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 type Category = 'hadith' | 'ramadan' | 'coran' | 'recherche-ia' | 'citadelle' | 'rabbana';
+
 
 interface CategoryDrawerProps {
     isOpen: boolean;
@@ -79,6 +81,17 @@ export function CategoryDrawer({ isOpen, onClose, category, onSelectCategory }: 
             borderColor: 'border-rose-500',
             shadowColor: 'shadow-rose-500/50',
             textColor: 'text-rose-500'
+        },
+        {
+            id: 'recherche-ia' as Category,
+            icon: Search,
+            label: 'Agent Hikma',
+            description: 'Recherche IA personnalisée',
+            color: 'bg-violet-600',
+            hoverColor: 'hover:bg-violet-700',
+            borderColor: 'border-violet-600',
+            shadowColor: 'shadow-violet-600/50',
+            textColor: 'text-violet-600'
         },
     ];
 
