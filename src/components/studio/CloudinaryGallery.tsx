@@ -1,8 +1,7 @@
 "use client"
 
-import { useState, useMemo, useCallback, useRef } from "react"
-import { X, Image as ImageIcon, Star, ChevronUp } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { useState, useCallback, useRef } from "react"
+import { X, ChevronUp, Star } from "lucide-react"
 import { PlaceHolderImages } from "@/lib/placeholder-images"
 import { motion, AnimatePresence } from "framer-motion"
 import { cn } from "@/lib/utils"
@@ -14,57 +13,13 @@ interface CloudinaryGalleryProps {
     currentBackground?: string
 }
 
-const CATEGORIES = [
-    { id: 'all', label: 'Tous', emoji: '✨' },
-    { id: 'islamic', label: 'Islamique', emoji: '🕌' },
-    { id: 'nature', label: 'Nature', emoji: '🌿' },
-    { id: 'night', label: 'Cosmos', emoji: '🌙' },
-    { id: 'abstract', label: 'Abstraits', emoji: '🎨' },
-];
-
-function matchesCategory(hint: string, category: string): boolean {
-    const h = hint.toLowerCase();
-    switch (category) {
-        case 'all': return true;
-        case 'islamic':
-            return h.includes('islamic') || h.includes('mosque') || h.includes('coran') ||
-                   h.includes('islam') || h.includes('kaaba') || h.includes('ramadan') ||
-                   h.includes('muslim') || h.includes('musulman') || h.includes('calligraphy');
-        case 'nature':
-            return h.includes('nature') || h.includes('mountain') || h.includes('ocean') ||
-                   h.includes('forest') || h.includes('sun') || h.includes('golden') ||
-                   (h.includes('serene') && !h.includes('islamic') && !h.includes('night'));
-        case 'night':
-            return h.includes('night') || h.includes('stars') || h.includes('galaxy') ||
-                   h.includes('astronomy') || h.includes('sky');
-        case 'abstract':
-            return h.includes('abstract') || h.includes('gradient') ||
-                   (h.includes('background') && !h.includes('islamic'));
-        default: return false;
-    }
-}
-
 const isCloudinary = (url: string) => url.includes('cloudinary.com');
 
 export function CloudinaryGallery({ isOpen, onClose, onSelect, currentBackground }: CloudinaryGalleryProps) {
-    const [selectedCategory, setSelectedCategory] = useState('all');
     const [showScrollTop, setShowScrollTop] = useState(false);
     const scrollRef = useRef<HTMLDivElement>(null);
 
     const allImages = PlaceHolderImages;
-
-    const filteredImages = useMemo(() => {
-        return allImages.filter(img => matchesCategory(img.imageHint, selectedCategory));
-    }, [allImages, selectedCategory]);
-
-    const handleCategoryChange = useCallback((catId: string) => {
-        setSelectedCategory(catId);
-        // Scroll to top when changing category
-        if (scrollRef.current) {
-            scrollRef.current.scrollTop = 0;
-        }
-        setShowScrollTop(false);
-    }, []);
 
     const handleScroll = useCallback(() => {
         if (scrollRef.current) {
@@ -72,9 +27,9 @@ export function CloudinaryGallery({ isOpen, onClose, onSelect, currentBackground
         }
     }, []);
 
-    const scrollToTop = () => {
+    const scrollToTop = useCallback(() => {
         scrollRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
-    };
+    }, []);
 
     return (
         <AnimatePresence>
@@ -85,12 +40,12 @@ export function CloudinaryGallery({ isOpen, onClose, onSelect, currentBackground
                     exit={{ opacity: 0 }}
                     className="fixed inset-0 z-[200] bg-background flex flex-col"
                 >
-                    {/* Header compact */}
+                    {/* Header */}
                     <div className="flex-shrink-0 flex items-center justify-between px-4 pt-12 pb-3 bg-background border-b border-border/40">
                         <div>
                             <h3 className="text-lg font-black tracking-tight">Galerie</h3>
                             <p className="text-[11px] text-muted-foreground">
-                                {filteredImages.length} fond{filteredImages.length !== 1 ? 's' : ''}
+                                {allImages.length} fond{allImages.length !== 1 ? 's' : ''}
                             </p>
                         </div>
                         <button
@@ -101,32 +56,7 @@ export function CloudinaryGallery({ isOpen, onClose, onSelect, currentBackground
                         </button>
                     </div>
 
-                    {/* Category Pills — scroll horizontal */}
-                    <div className="flex-shrink-0 flex gap-2 px-3 py-2.5 overflow-x-auto bg-background border-b border-border/20"
-                         style={{ WebkitOverflowScrolling: 'touch', scrollbarWidth: 'none' }}>
-                        {CATEGORIES.map((cat) => (
-                            <button
-                                key={cat.id}
-                                onClick={() => handleCategoryChange(cat.id)}
-                                className={cn(
-                                    "flex-shrink-0 flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold transition-all",
-                                    selectedCategory === cat.id
-                                        ? "bg-emerald-600 text-white"
-                                        : "bg-muted text-muted-foreground"
-                                )}
-                            >
-                                <span>{cat.emoji}</span>
-                                <span>{cat.label}</span>
-                                {selectedCategory === cat.id && (
-                                    <span className="bg-white/25 text-white text-[9px] font-black px-1.5 py-0.5 rounded-full">
-                                        {filteredImages.length}
-                                    </span>
-                                )}
-                            </button>
-                        ))}
-                    </div>
-
-                    {/* Grid — scroll natif plein écran */}
+                    {/* Grid — toutes les images, scroll natif */}
                     <div
                         ref={scrollRef}
                         onScroll={handleScroll}
@@ -137,53 +67,45 @@ export function CloudinaryGallery({ isOpen, onClose, onSelect, currentBackground
                             paddingBottom: 'env(safe-area-inset-bottom)',
                         }}
                     >
-                        {filteredImages.length === 0 ? (
-                            <div className="h-64 flex flex-col items-center justify-center text-muted-foreground opacity-50">
-                                <ImageIcon className="w-12 h-12 mb-2" />
-                                <p className="text-sm">Aucune image dans cette catégorie.</p>
-                            </div>
-                        ) : (
-                            <div className="grid grid-cols-3 gap-1.5 p-2">
-                                {filteredImages.map((img) => {
-                                    const isActive = currentBackground === img.imageUrl;
-                                    return (
-                                        <div
-                                            key={img.id}
-                                            onClick={() => { onSelect(img.imageUrl); onClose(); }}
-                                            className={cn(
-                                                "relative aspect-[9/16] rounded-xl overflow-hidden cursor-pointer active:opacity-70 transition-opacity",
-                                                isActive && "ring-2 ring-emerald-500 ring-offset-1 ring-offset-background"
-                                            )}
-                                        >
-                                            <img
-                                                src={img.imageUrl}
-                                                alt={img.description}
-                                                className="absolute inset-0 w-full h-full object-cover"
-                                                loading="lazy"
-                                                decoding="async"
-                                            />
-                                            {/* Dark overlay */}
-                                            <div className="absolute inset-0 bg-black/20" />
+                        <div className="grid grid-cols-3 gap-1.5 p-2">
+                            {allImages.map((img) => {
+                                const isActive = currentBackground === img.imageUrl;
+                                return (
+                                    <div
+                                        key={img.id}
+                                        onClick={() => { onSelect(img.imageUrl); onClose(); }}
+                                        className={cn(
+                                            "relative aspect-[9/16] rounded-xl overflow-hidden cursor-pointer active:opacity-70 transition-opacity",
+                                            isActive && "ring-2 ring-emerald-500 ring-offset-1 ring-offset-background"
+                                        )}
+                                    >
+                                        <img
+                                            src={img.imageUrl}
+                                            alt={img.description}
+                                            className="absolute inset-0 w-full h-full object-cover"
+                                            loading="lazy"
+                                            decoding="async"
+                                        />
+                                        {/* Dark overlay */}
+                                        <div className="absolute inset-0 bg-black/20" />
 
-                                            {/* Active badge */}
-                                            {isActive && (
-                                                <div className="absolute top-1.5 left-1.5 bg-emerald-500 text-white text-[8px] font-black px-1.5 py-0.5 rounded-full">
-                                                    ✓
-                                                </div>
-                                            )}
+                                        {/* Active badge */}
+                                        {isActive && (
+                                            <div className="absolute top-1.5 left-1.5 bg-emerald-500 text-white text-[8px] font-black px-1.5 py-0.5 rounded-full">
+                                                ✓
+                                            </div>
+                                        )}
 
-                                            {/* Premium star */}
-                                            {isCloudinary(img.imageUrl) && (
-                                                <div className="absolute top-1.5 right-1.5">
-                                                    <Star className="w-2.5 h-2.5 text-amber-400 fill-amber-400 drop-shadow" />
-                                                </div>
-                                            )}
-                                        </div>
-                                    );
-                                })}
-                            </div>
-                        )}
-                        {/* Espace en bas pour la navigation */}
+                                        {/* Premium star */}
+                                        {isCloudinary(img.imageUrl) && (
+                                            <div className="absolute top-1.5 right-1.5">
+                                                <Star className="w-2.5 h-2.5 text-amber-400 fill-amber-400 drop-shadow" />
+                                            </div>
+                                        )}
+                                    </div>
+                                );
+                            })}
+                        </div>
                         <div className="h-6" />
                     </div>
 
