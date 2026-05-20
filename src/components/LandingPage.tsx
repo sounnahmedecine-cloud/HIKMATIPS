@@ -124,7 +124,7 @@ export default function LandingPage() {
       {/* ══════════════════════════════════════════════
           SECTION 0 — GENERATOR (visible dès l'accueil)
       ══════════════════════════════════════════════ */}
-      <section id="app-section" className="relative z-10 py-20 px-4 scroll-mt-16 flex flex-col items-center text-center">
+      <section id="app-section" className="relative z-20 isolate py-20 px-4 scroll-mt-16 flex flex-col items-center text-center bg-emerald-50/40 dark:bg-slate-950">
         <motion.div
           initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
           className="w-full max-w-3xl"
