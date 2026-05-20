@@ -63,12 +63,11 @@ export function HeroModern({ onScrollToApp }: HeroModernProps) {
               <br />
               <span className="bg-gradient-to-r from-foreground via-accent to-primary bg-clip-text text-transparent italic font-light">
                 Sunnah
-              </span>{' '}
-              en viral.
+              </span>
             </h1>
 
             <p className="text-lg text-muted-foreground font-light leading-relaxed max-w-xl mb-10">
-              Génère des hadiths authentiques, des versets coraniques et des invocations (douas) — et publie-les sur TikTok, Instagram et YouTube en quelques secondes.
+              Des hadiths authentiques, des versets coraniques et des invocations (douas) — publie-les sur TikTok, Instagram et YouTube en quelques secondes.
             </p>
 
             <div className="flex flex-col sm:flex-row items-center gap-5 w-full sm:w-auto">
@@ -77,7 +76,7 @@ export function HeroModern({ onScrollToApp }: HeroModernProps) {
                 className="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary text-primary-foreground font-bold text-lg rounded-2xl hover:-translate-y-1 hover:scale-[1.02] active:scale-95 transition-all duration-300 shadow-lg flex items-center justify-center gap-2 group"
               >
                 <Zap className="w-5 h-5 fill-current" />
-                Générer un Hadith
+                Je veux mon hadith du jour
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </button>
 
