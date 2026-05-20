@@ -129,11 +129,6 @@ export default function LandingPage() {
           initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
           className="w-full max-w-3xl"
         >
-          <p className="text-sm font-bold uppercase tracking-widest mb-4 text-primary">Agent IA — Coran & Sunnah</p>
-          <h2 className="text-4xl md:text-6xl font-bold text-zinc-900 dark:text-white tracking-tighter mb-4">
-            Génère un rappel{' '}
-            <span className="text-transparent bg-clip-text" style={{ backgroundImage: 'linear-gradient(135deg,#10B981,#059669)' }}>authentique.</span>
-          </h2>
           <p className="text-zinc-500 dark:text-slate-400 text-lg mb-10">Hadith, verset coranique ou doua — sélectionne la catégorie et publie en quelques secondes.</p>
           <GeneratorPage />
         </motion.div>
