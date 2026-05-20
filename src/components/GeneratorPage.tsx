@@ -897,7 +897,6 @@ export default function GeneratorPage() {
                 { id: 'citadelle',    label: 'Douas'   },
                 { id: 'thematique',   label: 'Thème'   },
                 { id: 'rabbana',      label: 'Rabbana' },
-                { id: 'recherche-ia', label: 'Agent IA'},
               ].map((cat) => (
                 <button
                   key={cat.id}
@@ -963,6 +962,16 @@ export default function GeneratorPage() {
                 )}
               >
                 <Heart className={cn("w-5 h-5 mb-0.5", favorites.includes(content?.content || '') ? "fill-current" : "")} />
+                <span className="text-[9px] font-medium">Aimer</span>
+              </button>
+            </div>
+            <div className="flex items-center flex-1 justify-center">
+              <div className="w-px h-5 bg-white/10 flex-shrink-0 mr-0" />
+              <button
+                onClick={() => router.push('/favoris')}
+                className="flex flex-col items-center justify-center w-full h-14 rounded-xl text-white/40 hover:text-yellow-400 transition-all active:scale-90"
+              >
+                <BookMarked className="w-5 h-5 mb-0.5" />
                 <span className="text-[9px] font-medium">Favoris</span>
               </button>
             </div>
