@@ -841,6 +841,22 @@ export default function GeneratorPage() {
       {/* 4. MOBILE UI — Bottom Sheet ergonomics */}
       <div className="md:hidden">
 
+        {/* TOP BAR: Réglages + Crown */}
+        <div className="absolute top-0 left-0 right-0 z-40 flex justify-between items-center px-5 pt-12 pb-4 pointer-events-none">
+          <Button
+            variant="ghost"
+            onClick={() => setIsSidebarOpen(true)}
+            className="pointer-events-auto h-10 px-4 rounded-full bg-black/30 backdrop-blur-md border border-white/10 text-white/70 flex items-center gap-2 shadow-lg"
+            aria-label="Réglages"
+          >
+            <Settings className="w-4 h-4" />
+            <span className="text-[10px] uppercase font-bold tracking-widest">Réglages</span>
+          </Button>
+          <Button variant="ghost" size="icon" className="pointer-events-auto w-10 h-10 rounded-2xl bg-black/30 backdrop-blur-md border border-white/10 text-yellow-400 shadow-lg" aria-label="Premium">
+            <Crown className="w-4 h-4" />
+          </Button>
+        </div>
+
         {/* BOTTOM SHEET: tout en zone pouce */}
         <div className="absolute bottom-0 left-0 right-0 z-40 bg-black/70 backdrop-blur-2xl rounded-t-[2rem] border-t border-white/10 shadow-[0_-10px_40px_rgba(0,0,0,0.6)]"
           style={{ paddingBottom: 'max(3.5rem, calc(env(safe-area-inset-bottom) + 2rem))' }}
@@ -897,10 +913,11 @@ export default function GeneratorPage() {
           {/* TOOLBAR SECONDAIRE */}
           <div className="mx-4 mb-4 bg-white/5 border border-white/10 rounded-2xl flex justify-between items-center px-1">
             {[
-              { icon: ImageIcon, label: 'Galerie',  onClick: () => setIsGalleryOpen(true),  color: 'hover:text-primary' },
-              { icon: RefreshCw, label: 'Fond',     onClick: handleRandomBackground,         color: 'hover:text-primary', loading: isLoadingBg },
-              { icon: Share2,    label: 'Partager', onClick: handleShareImage,               color: 'hover:text-blue-400' },
-              { icon: Download,  label: 'Sauver',   onClick: handleDownloadImage,            color: 'hover:text-white'   },
+              { icon: ImageIcon, label: 'Galerie',  onClick: () => setIsGalleryOpen(true),       color: 'hover:text-primary' },
+              { icon: Palette,   label: 'Design',   onClick: () => setIsToolsDrawerOpen(true),   color: 'hover:text-primary' },
+              { icon: RefreshCw, label: 'Fond',     onClick: handleRandomBackground,              color: 'hover:text-primary', loading: isLoadingBg },
+              { icon: Share2,    label: 'Partager', onClick: handleShareImage,                    color: 'hover:text-blue-400' },
+              { icon: Download,  label: 'Sauver',   onClick: handleDownloadImage,                 color: 'hover:text-white'   },
             ].map((action, i, arr) => (
               <div key={action.label} className="flex items-center flex-1 justify-center">
                 <button
@@ -914,6 +931,19 @@ export default function GeneratorPage() {
                 {i < arr.length - 1 && <div className="w-px h-5 bg-white/10 flex-shrink-0" />}
               </div>
             ))}
+            <div className="flex items-center flex-1 justify-center">
+              <div className="w-px h-5 bg-white/10 flex-shrink-0 mr-0" />
+              <button
+                onClick={handleFavorite}
+                className={cn(
+                  "flex flex-col items-center justify-center w-full h-14 rounded-xl transition-all active:scale-90",
+                  favorites.includes(content?.content || '') ? "text-red-400" : "text-white/40 hover:text-red-400"
+                )}
+              >
+                <Heart className={cn("w-5 h-5 mb-0.5", favorites.includes(content?.content || '') ? "fill-current" : "")} />
+                <span className="text-[9px] font-medium">Favoris</span>
+              </button>
+            </div>
           </div>
 
           {/* BOUTON GÉNÉRER — pleine largeur */}
