@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useCallback, useEffect } from 'react';
+import { useState, useRef, useCallback, useEffect, useMemo } from 'react';
 import Image from 'next/image';
 import {
   Sparkles,
@@ -103,6 +103,10 @@ export default function GeneratorPage() {
   const [animationKey, setAnimationKey] = useState(0);
   const [isGenerating, setIsGenerating] = useState(false);
   const [topic, setTopic] = useState('');
+  const [isSheetOpen, setIsSheetOpen] = useState(false);
+  const sheetRef = useRef<HTMLDivElement>(null);
+  const [sheetHeight, setSheetHeight] = useState(320);
+  const PEEK = 88; // hauteur visible quand fermé (handle + bouton générer)
 
   // Buffer de rappels pré-chargés
   const [contentBuffer, setContentBuffer] = useState<Content[]>([]);
@@ -857,12 +861,30 @@ export default function GeneratorPage() {
           </Button>
         </div>
 
-        {/* BOTTOM SHEET: tout en zone pouce */}
-        <div className="absolute bottom-0 left-0 right-0 z-40 bg-black/70 backdrop-blur-2xl rounded-t-[2rem] border-t border-white/10 shadow-[0_-10px_40px_rgba(0,0,0,0.6)]"
+        {/* BOTTOM SHEET: swipeable */}
+        <motion.div
+          ref={sheetRef}
+          className="absolute bottom-0 left-0 right-0 z-40 bg-black/75 backdrop-blur-2xl rounded-t-[2rem] border-t border-white/10 shadow-[0_-10px_40px_rgba(0,0,0,0.6)] cursor-grab active:cursor-grabbing"
           style={{ paddingBottom: 'max(3.5rem, calc(env(safe-area-inset-bottom) + 2rem))' }}
+          initial={{ y: sheetHeight - PEEK }}
+          animate={{ y: isSheetOpen ? 0 : sheetHeight - PEEK }}
+          transition={{ type: 'spring', damping: 32, stiffness: 320 }}
+          drag="y"
+          dragConstraints={{ top: 0, bottom: sheetHeight - PEEK }}
+          dragElastic={0.08}
+          onDragEnd={(_, info) => {
+            if (info.velocity.y < -300 || info.offset.y < -60) setIsSheetOpen(true);
+            if (info.velocity.y > 300 || info.offset.y > 60) setIsSheetOpen(false);
+          }}
+          onLayoutMeasure={(measured) => setSheetHeight(measured.height)}
         >
-          {/* Handle */}
-          <div className="w-10 h-1 bg-white/20 rounded-full mx-auto mt-3 mb-4" />
+          {/* Handle — tap pour ouvrir/fermer */}
+          <div
+            className="flex flex-col items-center pt-3 pb-2 cursor-pointer"
+            onClick={() => setIsSheetOpen(v => !v)}
+          >
+            <div className="w-10 h-1 bg-white/30 rounded-full" />
+          </div>
 
           {/* CATÉGORIES — pills scrollables */}
           <div className="relative mb-4">
@@ -955,11 +977,11 @@ export default function GeneratorPage() {
             >
               {isGenerating
                 ? <><Loader2 className="w-5 h-5 animate-spin" /> Génération...</>
-                : <><Sparkles className="w-5 h-5" /> Je veux mon hadith du jour</>
+                : <><Sparkles className="w-5 h-5" /> Je veux mon rappel du jour</>
               }
             </button>
           </div>
-        </div>
+        </motion.div>
       </div>
 
       {/* Legacy Mobile Components (Kept for desktop or potential reuse, hidden by layout logic if needed) */}
