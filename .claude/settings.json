@@ -1,7 +1,12 @@
 {
   "permissions": {
     "allow": [
-      "Bash(npx -y @aidesigner/agent-skills init)"
+      "Bash(npx -y @aidesigner/agent-skills init)",
+      "Bash(git -C \"d:/MES PROJETS/HIKMATIPS-main\" branch -a)",
+      "Bash(git -C \"d:/MES PROJETS/HIKMATIPS-main\" fetch origin)",
+      "Bash(git -C \"d:/MES PROJETS/HIKMATIPS-main\" fetch origin mobile)",
+      "Bash(git -C \"d:/MES PROJETS/HIKMATIPS-main\" log --oneline origin/mobile -20)",
+      "Bash(git -C \"d:/MES PROJETS/HIKMATIPS-main\" show origin/mobile:src/components/LandingPage.tsx)"
     ]
   }
 }

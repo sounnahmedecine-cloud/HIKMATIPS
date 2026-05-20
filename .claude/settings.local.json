@@ -5,7 +5,24 @@
       "Bash(git commit:*)",
       "Bash(npm run build:cap:*)",
       "Bash(npx cap sync:*)",
-      "Bash(./gradlew bundleRelease:*)"
+      "Bash(./gradlew bundleRelease:*)",
+      "PowerShell($paths = @\\(\"$env:LOCALAPPDATA\\\\Android\\\\Sdk\", \"$env:USERPROFILE\\\\AppData\\\\Local\\\\Android\\\\Sdk\", \"C:\\\\Android\\\\Sdk\", \"C:\\\\Users\\\\ABDER\\\\AppData\\\\Local\\\\Android\\\\Sdk\"\\); foreach \\($p in $paths\\) { if \\(Test-Path $p\\) { Write-Host \"FOUND: $p\" } else { Write-Host \"NOT FOUND: $p\" } })",
+      "PowerShell(Get-Command adb -ErrorAction SilentlyContinue)",
+      "PowerShell($env:ANDROID_HOME)",
+      "PowerShell($env:ANDROID_SDK_ROOT)",
+      "mcp__aidesigner__get_credit_status",
+      "mcp__aidesigner__generate_design",
+      "Bash(PUPPETEER_SKIP_DOWNLOAD=true npm install --save-dev puppeteer)",
+      "Bash(npx -y @aidesigner/agent-skills preview --id \"2026-05-17T17-34-58-777Z-hikmaclips-landing-page-non-hero-sec\")",
+      "Bash(npx puppeteer *)",
+      "PowerShell(Get-ChildItem \"$env:LOCALAPPDATA\\\\ms-playwright\" -ErrorAction SilentlyContinue | Select-Object Name; Get-ChildItem \"$env:LOCALAPPDATA\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe\" -ErrorAction SilentlyContinue | Select-Object FullName)",
+      "PowerShell(Start-Process \"d:\\\\MES PROJETS\\\\HIKMATIPS-main\\\\.aidesigner\\\\mcp-latest.html\")",
+      "Read(//c/Program Files/Android/Android Studio/bin/**)",
+      "Bash(git add *)",
+      "Bash(git -C \"d:/MES PROJETS/HIKMATIPS-main\" remote set-url origin https://github.com/sounnahmedecine-cloud/HIKMATIPS.git)",
+      "Bash(git -C \"d:/MES PROJETS/HIKMATIPS-main\" config --list)",
+      "PowerShell(cmdkey /delete:LegacyGeneric:target=git:https://github.com 2>&1)",
+      "PowerShell(cmdkey /delete:LegacyGeneric:target=https://github.com 2>&1)"
     ]
   }
 }

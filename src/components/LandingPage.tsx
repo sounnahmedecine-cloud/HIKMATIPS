@@ -21,6 +21,8 @@ import {
     Maximize,
     Volume2,
     ArrowRight,
+    Share2,
+    Smartphone,
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { initializeFirebase } from '@/firebase';
@@ -393,6 +395,94 @@ export default function LandingPage() {
               </motion.div>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════════════
+          SECTION — COMMENT ÇA MARCHE (STORYTELLING)
+      ══════════════════════════════════════════════ */}
+      <section id="comment" className="relative z-10 py-24 px-4 bg-white dark:bg-slate-900">
+        <div className="max-w-5xl mx-auto">
+          <motion.div
+            variants={{ hidden: { opacity: 0, y: 28 }, visible: { opacity: 1, y: 0, transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1] } } }}
+            initial="hidden" whileInView="visible" viewport={{ once: true }}
+            className="text-center mb-14"
+          >
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#ede9fe] text-[#7c3aed] text-xs font-bold uppercase tracking-widest mb-4">
+              Comment ça marche ?
+            </div>
+            <h2 className="text-3xl sm:text-4xl font-black text-zinc-900 dark:text-white mb-4">
+              3 étapes pour votre premier clip
+            </h2>
+            <p className="text-zinc-500 dark:text-slate-400 max-w-xl mx-auto text-lg">
+              De l&apos;idée au partage en moins de 30 secondes.
+            </p>
+          </motion.div>
+
+          <div className="grid md:grid-cols-3 gap-8 relative">
+            <div className="hidden md:block absolute top-10 left-[20%] right-[20%] h-px bg-gradient-to-r from-transparent via-[#d1fae5] to-transparent" />
+            {[
+              { step: '01', icon: BookOpen, title: 'Choisissez votre source', desc: "Sélectionnez parmi Coran, Hadiths, Invocations, ou laissez l'Agent IA choisir selon votre thème." },
+              { step: '02', icon: Sparkles, title: 'Générez votre visuel', desc: 'En 1 clic, un visuel islamique professionnel est créé avec le texte, la source et l\'image adaptée.' },
+              { step: '03', icon: Share2, title: 'Partagez en 1 clic', desc: 'Téléchargez en HD ou partagez directement sur Instagram, WhatsApp, Reels et toutes vos plateformes.' },
+            ].map((s, i) => (
+              <motion.div key={i}
+                variants={{ hidden: { opacity: 0, y: 28 }, visible: { opacity: 1, y: 0, transition: { duration: 0.55, delay: i * 0.15, ease: [0.22, 1, 0.36, 1] } } }}
+                initial="hidden" whileInView="visible" viewport={{ once: true }}
+              >
+                <div className="flex flex-col items-center text-center p-6">
+                  <div className="relative mb-6">
+                    <div className="w-20 h-20 rounded-[1.5rem] bg-[#059669] flex items-center justify-center shadow-lg shadow-emerald-200">
+                      <s.icon className="w-9 h-9 text-white" />
+                    </div>
+                    <div className="absolute -top-3 -right-3 w-7 h-7 rounded-full bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 text-[10px] font-black flex items-center justify-center">
+                      {s.step}
+                    </div>
+                  </div>
+                  <h3 className="text-lg font-bold text-zinc-900 dark:text-white mb-3">{s.title}</h3>
+                  <p className="text-sm text-zinc-500 dark:text-slate-400 leading-relaxed">{s.desc}</p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════════════
+          SECTION — TÉLÉCHARGER L'APP
+      ══════════════════════════════════════════════ */}
+      <section className="relative z-10 py-24 px-4 bg-[#059669]">
+        <div className="max-w-3xl mx-auto text-center">
+          <motion.div
+            variants={{ hidden: { opacity: 0, y: 28 }, visible: { opacity: 1, y: 0, transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1] } } }}
+            initial="hidden" whileInView="visible" viewport={{ once: true }}
+            className="space-y-7"
+          >
+            <div className="text-white/70 text-sm font-bold uppercase tracking-[0.2em]">Téléchargement gratuit</div>
+            <h2 className="text-4xl sm:text-5xl font-black text-white leading-tight">
+              Commencez à diffuser la sagesse islamique aujourd&apos;hui
+            </h2>
+            <p className="text-white/70 text-lg max-w-xl mx-auto">
+              Rejoignez des centaines d&apos;utilisateurs qui partagent la sagesse de l&apos;Islam avec leurs proches chaque jour.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <button
+                onClick={() => window.open('https://play.google.com/store/apps/details?id=com.hikmatips.app', '_blank')}
+                className="flex items-center justify-center gap-2 bg-white text-[#059669] font-black px-8 py-4 rounded-full text-base hover:-translate-y-0.5 hover:shadow-xl transition-all shadow-lg"
+              >
+                <Smartphone className="w-5 h-5" />
+                Google Play Store
+              </button>
+              <a href="https://drive.google.com/file/d/1GYA5vctET6ekvrGbgsZM2a1D95MtPot3/view?usp=sharing"
+                target="_blank" rel="noopener noreferrer"
+                className="flex items-center justify-center gap-2 border-2 border-white/40 hover:border-white text-white font-bold px-8 py-4 rounded-full text-base transition-all"
+              >
+                <Download className="w-5 h-5" />
+                Télécharger l&apos;APK
+              </a>
+            </div>
+            <p className="text-white/50 text-xs">Gratuit · Sans inscription · Disponible sur Android</p>
+          </motion.div>
         </div>
       </section>
 
