@@ -129,6 +129,7 @@ export default function LandingPage() {
           initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
           className="w-full max-w-3xl"
         >
+          <p className="text-sm font-bold uppercase tracking-widest mb-4 text-primary">Coran & Sunnah</p>
           <p className="text-zinc-500 dark:text-slate-400 text-lg mb-10">Hadith, verset coranique ou doua — sélectionne la catégorie et publie en quelques secondes.</p>
           <GeneratorPage />
         </motion.div>
