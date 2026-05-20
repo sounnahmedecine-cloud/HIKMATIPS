@@ -33,3 +33,8 @@ env:
     availability:
       - BUILD
       - RUNTIME
+  - variable: NEXT_PUBLIC_UNSPLASH_ACCESS_KEY
+    value: Bppbs8JwxHz9HMlsl_cMNaR01iLqor0rof02opqIqTI
+    availability:
+      - BUILD
+      - RUNTIME

@@ -31,6 +31,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
+import { fetchUnsplashBackground } from '@/lib/unsplash-service';
 import html2canvas from 'html2canvas';
 import { useAuth, useUser } from '@/firebase';
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from 'firebase/auth';
@@ -381,24 +382,23 @@ export default function GeneratorPage() {
     }
   };
 
-  const handleRandomBackground = () => {
-    // Prioritize Cloudinary images that match the category
-    const cloudinaryImages = PlaceHolderImages.filter(img => img.imageUrl.includes('cloudinary'));
+  const [isLoadingBg, setIsLoadingBg] = useState(false);
 
-    const relevantImages = (cloudinaryImages.length > 0 ? cloudinaryImages : PlaceHolderImages).filter(img => {
-      const hint = img.imageHint.toLowerCase();
-      if (category === 'hadith' || category === 'coran' || category === 'thematique') {
-        return hint.includes('islamic') || hint.includes('nature') || hint.includes('serene') || hint.includes('abstract');
+  const handleRandomBackground = async () => {
+    setIsLoadingBg(true);
+    try {
+      const url = await fetchUnsplashBackground(category);
+      if (url) {
+        setBackground(url);
+        return;
       }
-      if (category === 'ramadan') {
-        return hint.includes('ramadan') || hint.includes('islamic') || hint.includes('mosque') || hint.includes('lantern');
-      }
-      return true;
-    });
-
-    const pool = relevantImages.length > 0 ? relevantImages : (cloudinaryImages.length > 0 ? cloudinaryImages : PlaceHolderImages);
-    const randomIndex = Math.floor(Math.random() * pool.length);
-    setBackground(pool[randomIndex].imageUrl);
+    } catch { /* fall through */ }
+    finally {
+      setIsLoadingBg(false);
+    }
+    // Fallback : images locales
+    const pool = PlaceHolderImages;
+    setBackground(pool[Math.floor(Math.random() * pool.length)].imageUrl);
   };
 
   const generateCanvas = async () => {
@@ -875,10 +875,11 @@ export default function GeneratorPage() {
           </button>
           <button
             onClick={handleRandomBackground}
-            className="w-12 h-12 rounded-full bg-primary/20 dark:bg-primary/10 backdrop-blur-md border border-primary/30 dark:border-primary/20 text-primary-foreground dark:text-primary shadow-2xl flex items-center justify-center active:scale-90 transition-all"
-            aria-label="Fond aléatoire"
+            disabled={isLoadingBg}
+            className="w-12 h-12 rounded-full bg-primary/20 dark:bg-primary/10 backdrop-blur-md border border-primary/30 dark:border-primary/20 text-primary-foreground dark:text-primary shadow-2xl flex items-center justify-center active:scale-90 transition-all disabled:opacity-60"
+            aria-label="Fond aléatoire Unsplash"
           >
-            <RefreshCw className="w-5 h-5" />
+            <RefreshCw className={`w-5 h-5 ${isLoadingBg ? 'animate-spin' : ''}`} />
           </button>
         </div>
 
