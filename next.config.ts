@@ -2,11 +2,12 @@ import type { NextConfig } from 'next';
 import withPWA from '@ducanh2912/next-pwa';
 
 const isGHPages = process.env.GITHUB_ACTIONS === 'true';
+const isStaticExport = isGHPages || process.env.NEXT_PUBLIC_EXPORT === 'true';
 const BASE_PATH = isGHPages ? '/HIKMATIPS' : '';
 
 const nextConfig: NextConfig = {
-  output: 'export',
-  trailingSlash: true,
+  output: isStaticExport ? 'export' : 'standalone',
+  ...(isStaticExport ? { trailingSlash: true } : {}),
   ...(isGHPages ? { basePath: BASE_PATH, assetPrefix: BASE_PATH } : {}),
   env: {
     NEXT_PUBLIC_BASE_PATH: BASE_PATH,
