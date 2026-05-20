@@ -859,7 +859,7 @@ export default function GeneratorPage() {
 
         {/* BOTTOM SHEET: tout en zone pouce */}
         <div className="absolute bottom-0 left-0 right-0 z-40 bg-black/70 backdrop-blur-2xl rounded-t-[2rem] border-t border-white/10 shadow-[0_-10px_40px_rgba(0,0,0,0.6)]"
-          style={{ paddingBottom: 'max(1.5rem, env(safe-area-inset-bottom))' }}
+          style={{ paddingBottom: 'max(3.5rem, calc(env(safe-area-inset-bottom) + 2rem))' }}
         >
           {/* Handle */}
           <div className="w-10 h-1 bg-white/20 rounded-full mx-auto mt-3 mb-4" />
