@@ -838,148 +838,127 @@ export default function GeneratorPage() {
         </div>
       </div>
 
-      {/* 4. MOBILE FLOATING UI (Replaces multiple toolbars) */}
+      {/* 4. MOBILE UI — Bottom Sheet ergonomics */}
       <div className="md:hidden">
-        {/* TOP TOOLS: Settings + Crown only */}
-        <div className="absolute top-12 left-6 right-6 z-40 flex justify-between items-start pointer-events-none">
+
+        {/* TOP BAR: Logo + Settings + Crown */}
+        <div className="absolute top-0 left-0 right-0 z-40 flex justify-between items-center px-5 pt-12 pb-4 pointer-events-none">
           <Button
             variant="ghost"
             onClick={() => setIsSidebarOpen(true)}
-            className="pointer-events-auto h-11 px-4 rounded-full bg-black/30 backdrop-blur-md border border-white/10 text-white/70 flex items-center gap-2 shadow-lg"
-            aria-label="Paramètres"
+            className="pointer-events-auto h-10 px-4 rounded-full bg-black/30 backdrop-blur-md border border-white/10 text-white/70 flex items-center gap-2 shadow-lg"
+            aria-label="Réglages"
           >
             <Settings className="w-4 h-4" />
             <span className="text-[10px] uppercase font-bold tracking-widest">Réglages</span>
           </Button>
-
-          <Button variant="ghost" size="icon" className="pointer-events-auto w-11 h-11 rounded-2xl bg-black/30 backdrop-blur-md border border-white/10 text-yellow-500 shadow-lg" aria-label="Premium">
-            <Crown className="w-5 h-5" />
+          <Button variant="ghost" size="icon" className="pointer-events-auto w-10 h-10 rounded-2xl bg-black/30 backdrop-blur-md border border-white/10 text-yellow-400 shadow-lg" aria-label="Premium">
+            <Crown className="w-4 h-4" />
           </Button>
         </div>
 
-        {/* LEFT TOOLS: Design */}
-        <div className="absolute left-4 z-40 flex flex-col gap-3" style={{ bottom: 'calc(max(2rem, env(safe-area-inset-bottom) + 1rem) + 9rem)' }}>
-          <button
-            onClick={() => setIsGalleryOpen(true)}
-            className="w-12 h-12 rounded-full bg-primary/20 dark:bg-primary/10 backdrop-blur-md border border-primary/30 dark:border-primary/20 text-primary-foreground dark:text-primary shadow-2xl flex items-center justify-center active:scale-90 transition-all font-bold"
-            aria-label="Galerie"
-          >
-            <ImageIcon className="w-5 h-5" />
-          </button>
-          <button
-            onClick={() => setIsToolsDrawerOpen(true)}
-            className="w-12 h-12 rounded-full bg-primary/20 dark:bg-primary/10 backdrop-blur-md border border-primary/30 dark:border-primary/20 text-primary-foreground dark:text-primary shadow-2xl flex items-center justify-center active:scale-90 transition-all font-bold"
-            aria-label="Outils de design"
-          >
-            <Palette className="w-5 h-5" />
-          </button>
-          <button
-            onClick={handleRandomBackground}
-            disabled={isLoadingBg}
-            className="w-12 h-12 rounded-full bg-primary/20 dark:bg-primary/10 backdrop-blur-md border border-primary/30 dark:border-primary/20 text-primary-foreground dark:text-primary shadow-2xl flex items-center justify-center active:scale-90 transition-all disabled:opacity-60"
-            aria-label="Fond aléatoire Unsplash"
-          >
-            <RefreshCw className={`w-5 h-5 ${isLoadingBg ? 'animate-spin' : ''}`} />
-          </button>
-        </div>
+        {/* BOTTOM SHEET: tout en zone pouce */}
+        <div className="absolute bottom-0 left-0 right-0 z-40 bg-black/70 backdrop-blur-2xl rounded-t-[2rem] border-t border-white/10 shadow-[0_-10px_40px_rgba(0,0,0,0.6)]"
+          style={{ paddingBottom: 'max(1.5rem, env(safe-area-inset-bottom))' }}
+        >
+          {/* Handle */}
+          <div className="w-10 h-1 bg-white/20 rounded-full mx-auto mt-3 mb-4" />
 
-        {/* RIGHT TOOLS: Actions */}
-        <div className="absolute right-4 z-40 flex flex-col gap-3" style={{ bottom: 'calc(max(2rem, env(safe-area-inset-bottom) + 1rem) + 9rem)' }}>
-          <button
-            onClick={handleFavorite}
-            className={cn(
-              "w-12 h-12 rounded-full backdrop-blur-md border shadow-2xl flex items-center justify-center active:scale-90 transition-all",
-              favorites.includes(content?.content || '')
-                ? "bg-red-500/20 border-red-500/50 text-red-600 dark:text-red-500"
-                : "bg-primary/20 dark:bg-primary/10 border-primary/30 dark:border-primary/20 text-primary-foreground dark:text-primary"
-            )}
-            aria-label="Favori"
-          >
-            <Heart className={cn("w-5 h-5 transition-colors", favorites.includes(content?.content || '') ? "fill-current" : "")} />
-          </button>
-          <button
-            onClick={handleShareImage}
-            className="w-12 h-12 rounded-full bg-primary/20 dark:bg-primary/10 backdrop-blur-md border border-primary/30 dark:border-primary/20 text-primary-foreground dark:text-primary shadow-2xl flex items-center justify-center active:scale-90 transition-all"
-            aria-label="Partager"
-          >
-            <Share2 className="w-5 h-5" />
-          </button>
-          <button
-            onClick={handleDownloadImage}
-            className="w-12 h-12 rounded-full bg-primary/20 dark:bg-primary/10 backdrop-blur-md border border-primary/30 dark:border-primary/20 text-primary-foreground dark:text-primary shadow-2xl flex items-center justify-center active:scale-90 transition-all"
-            aria-label="Télécharger"
-          >
-            <Download className="w-5 h-5" />
-          </button>
-        </div>
-
-        {/* BOTTOM TOOLS: Main Action (Generate) */}
-        <div className="absolute bottom-0 left-0 right-0 z-40 flex flex-col items-center gap-3 px-4 pb-8" style={{ paddingBottom: 'max(2rem, env(safe-area-inset-bottom) + 1rem)' }}>
-
-          {/* QUICK CATEGORY TILES — grille 3 colonnes */}
-          <div className="grid grid-cols-3 gap-2 w-full max-w-sm mx-auto">
-            {[
-              { id: 'coran',       icon: BookMarked, label: 'Coran'    },
-              { id: 'hadith',      icon: BookOpen,   label: 'Hadith'   },
-              { id: 'ramadan',     icon: Moon,       label: 'Ramadan'  },
-              { id: 'citadelle',   icon: Sparkles,   label: 'Douas'    },
-              { id: 'thematique',  icon: LayoutGrid, label: 'Thème'    },
-              { id: 'rabbana',     icon: Heart,      label: 'Rabbana'  },
-            ].map((cat) => (
-              <button
-                key={cat.id}
-                onClick={() => setCategory(cat.id as Category)}
-                className={cn(
-                  "py-2 rounded-2xl border flex flex-col items-center gap-1 transition-all active:scale-90",
-                  category === cat.id
-                    ? "bg-white/20 text-white border-white/40 shadow-lg"
-                    : "bg-black/20 text-white/50 border-white/10"
-                )}
-              >
-                <cat.icon className="w-4 h-4" />
-                <span className="text-[9px] font-bold uppercase tracking-tighter">{cat.label}</span>
-              </button>
-            ))}
+          {/* CATÉGORIES — pills scrollables */}
+          <div className="relative mb-4">
+            <div className="absolute right-0 top-0 h-full w-8 bg-gradient-to-l from-black/70 to-transparent z-10 pointer-events-none" />
+            <div className="flex overflow-x-auto gap-2 px-4 pb-1 scrollbar-hide" style={{ scrollbarWidth: 'none' }}>
+              {[
+                { id: 'coran',        label: 'Coran'   },
+                { id: 'hadith',       label: 'Hadith'  },
+                { id: 'ramadan',      label: 'Ramadan' },
+                { id: 'citadelle',    label: 'Douas'   },
+                { id: 'thematique',   label: 'Thème'   },
+                { id: 'rabbana',      label: 'Rabbana' },
+                { id: 'recherche-ia', label: 'Agent IA'},
+              ].map((cat) => (
+                <button
+                  key={cat.id}
+                  onClick={() => { setCategory(cat.id as Category); setContentBuffer([]); fillBuffer(cat.id as Category, topic, 3); }}
+                  className={cn(
+                    "flex-shrink-0 px-4 py-2 rounded-2xl text-sm font-semibold transition-all active:scale-95",
+                    category === cat.id
+                      ? "bg-primary text-white shadow-[0_4px_12px_rgba(16,185,129,0.35)]"
+                      : "bg-white/8 border border-white/10 text-white/60"
+                  )}
+                >
+                  {cat.label}
+                </button>
+              ))}
+            </div>
           </div>
 
-          {/* BARRE INFÉRIEURE : Catégorie | Saisie | Générer */}
-          <div className="flex items-center gap-2 w-full max-w-sm mx-auto">
-            {/* Bouton catégorie — icône seule */}
-            <button
-              onClick={() => setIsCategoryDrawerOpen(true)}
-              className="flex-shrink-0 w-12 h-12 rounded-full bg-black/30 backdrop-blur-3xl border border-white/10 flex items-center justify-center text-white/70 active:scale-90 transition-all shadow-lg"
-              aria-label="Catégories"
-            >
-              <LayoutGrid className="w-5 h-5" />
-            </button>
+          {/* INPUT THÈME */}
+          <div className="mx-4 mb-4 flex items-center gap-2 bg-white/5 border border-white/10 rounded-2xl px-4 h-12">
+            <Search className="w-4 h-4 text-white/30 flex-shrink-0" />
+            <input
+              value={topic}
+              onChange={(e) => setTopic(e.target.value)}
+              onKeyDown={(e) => { if (e.key === 'Enter') { (e.target as HTMLInputElement).blur(); handleGenerateAiContent(); } }}
+              placeholder="Thème : patience, gratitude..."
+              className="flex-1 bg-transparent text-white/90 text-sm placeholder:text-white/25 outline-none min-w-0"
+            />
+            {topic && (
+              <button onClick={() => setTopic('')} className="flex-shrink-0 text-white/30 active:text-white/60">
+                <X className="w-3.5 h-3.5" />
+              </button>
+            )}
+          </div>
 
-            {/* Champ de saisie inline — élargi */}
-            <div className="flex-1 flex items-center gap-2 bg-black/30 backdrop-blur-3xl rounded-full border border-white/10 px-3 h-12 shadow-lg">
-              <Search className="w-4 h-4 text-white/40 flex-shrink-0" />
-              <input
-                value={topic}
-                onChange={(e) => setTopic(e.target.value)}
-                onKeyDown={(e) => { if (e.key === 'Enter') { (e.target as HTMLInputElement).blur(); handleGenerateAiContent(); } }}
-                placeholder="Thème : patience, amour..."
-                className="flex-1 bg-transparent text-white/90 text-sm placeholder:text-white/25 outline-none font-medium min-w-0"
-              />
-              {topic && (
-                <button onClick={() => setTopic('')} className="flex-shrink-0 text-white/30 hover:text-white/60 transition-colors">
-                  <X className="w-3.5 h-3.5" />
+          {/* TOOLBAR SECONDAIRE */}
+          <div className="mx-4 mb-4 bg-white/5 border border-white/8 rounded-2xl flex justify-between items-center px-1">
+            {[
+              { icon: ImageIcon, label: 'Galerie',  onClick: () => setIsGalleryOpen(true),       color: 'hover:text-primary' },
+              { icon: Palette,   label: 'Design',   onClick: () => setIsToolsDrawerOpen(true),   color: 'hover:text-primary' },
+              { icon: RefreshCw, label: 'Fond',     onClick: handleRandomBackground,              color: 'hover:text-primary', loading: isLoadingBg },
+              { icon: Share2,    label: 'Partager', onClick: handleShareImage,                    color: 'hover:text-blue-400' },
+              { icon: Download,  label: 'Sauver',   onClick: handleDownloadImage,                 color: 'hover:text-white'   },
+            ].map((action, i, arr) => (
+              <div key={action.label} className="flex items-center">
+                <button
+                  onClick={action.onClick}
+                  disabled={'loading' in action && action.loading}
+                  className={cn("flex flex-col items-center justify-center w-14 h-14 rounded-xl text-white/40 transition-all active:scale-90 disabled:opacity-40", action.color)}
+                >
+                  <action.icon className={cn("w-5 h-5 mb-0.5", 'loading' in action && action.loading ? 'animate-spin' : '')} />
+                  <span className="text-[9px] font-medium">{action.label}</span>
                 </button>
-              )}
+                {i < arr.length - 1 && <div className="w-px h-5 bg-white/8" />}
+              </div>
+            ))}
+            {/* Favori — traitement spécial pour l'état actif */}
+            <div className="flex items-center">
+              <div className="w-px h-5 bg-white/8" />
+              <button
+                onClick={handleFavorite}
+                className={cn(
+                  "flex flex-col items-center justify-center w-14 h-14 rounded-xl transition-all active:scale-90",
+                  favorites.includes(content?.content || '')
+                    ? "text-red-400"
+                    : "text-white/40 hover:text-red-400"
+                )}
+              >
+                <Heart className={cn("w-5 h-5 mb-0.5", favorites.includes(content?.content || '') ? "fill-current" : "")} />
+                <span className="text-[9px] font-medium">Favoris</span>
+              </button>
             </div>
+          </div>
 
-            {/* Bouton Générer / Premium */}
+          {/* BOUTON GÉNÉRER — pleine largeur */}
+          <div className="mx-4">
             <button
               onClick={handleGenerateAiContent}
               disabled={isGenerating}
-              className="flex-shrink-0 w-12 h-12 rounded-full bg-emerald-500/90 border border-emerald-400/30 shadow-[0_0_20px_rgba(16,185,129,0.4)] flex items-center justify-center text-white active:scale-90 transition-all"
-              aria-label="Générer"
+              className="w-full bg-primary hover:bg-primary/90 text-white font-bold text-base py-4 rounded-2xl transition-all active:scale-[0.98] shadow-[0_8px_24px_rgba(16,185,129,0.35)] flex items-center justify-center gap-2 disabled:opacity-60"
             >
               {isGenerating
-                ? <Loader2 className="w-5 h-5 animate-spin" />
-                : <Sparkles className="w-5 h-5" />
+                ? <><Loader2 className="w-5 h-5 animate-spin" /> Génération...</>
+                : <><Sparkles className="w-5 h-5" /> Je veux mon hadith du jour</>
               }
             </button>
           </div>
