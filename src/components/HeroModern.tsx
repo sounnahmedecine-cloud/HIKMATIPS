@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, ArrowRight, Heart, Share2, ChevronLeft, ChevronRight, Zap } from 'lucide-react';
+import { Sparkles, ArrowRight, Heart, Share2, ChevronLeft, ChevronRight, Zap, Download } from 'lucide-react';
 
 interface HeroModernProps {
   onScrollToApp: () => void;
@@ -79,6 +79,17 @@ export function HeroModern({ onScrollToApp }: HeroModernProps) {
                 Je veux mon hadith du jour
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </button>
+
+              <a
+                href="https://drive.google.com/file/d/1B3H4V_qviAaSQX_DzhVSvGTPKT4b9WmX/view?usp=sharing"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full sm:w-auto px-6 py-4 bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 hover:border-zinc-500 text-white font-bold text-base rounded-2xl hover:-translate-y-1 active:scale-95 transition-all duration-300 shadow-lg flex items-center justify-center gap-2.5 group"
+              >
+                <Download className="w-5 h-5 group-hover:-translate-y-0.5 transition-transform" />
+                <span>Télécharger l'APK</span>
+                <span className="text-xs text-zinc-400 font-normal">Android</span>
+              </a>
 
               <div className="flex items-center gap-3 text-sm text-muted-foreground font-medium">
                 <div className="flex -space-x-2">
