@@ -667,7 +667,7 @@ export default function GeneratorPage() {
                 )}
 
                 {content && (
-                  <div className="absolute inset-0 flex items-center justify-center p-8 sm:p-10 overflow-hidden">
+                  <div className="absolute inset-0 flex items-center justify-center p-8 sm:p-10 overflow-hidden md:pb-8 pb-[300px]">
                     <div className="text-center w-full max-w-4xl max-h-full flex flex-col justify-center">
                       <div
                         className="font-extrabold leading-tight tracking-tight px-4 text-white drop-shadow-lg"
