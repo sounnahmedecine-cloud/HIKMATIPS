@@ -1,7 +1,7 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'com.hikmatips.app',
+  appId: 'fr.hikmatips.app',
   appName: 'HikmaClips',
   webDir: 'out'
 };

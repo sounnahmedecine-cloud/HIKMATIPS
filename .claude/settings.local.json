@@ -22,7 +22,18 @@
       "Bash(git -C \"d:/MES PROJETS/HIKMATIPS-main\" remote set-url origin https://github.com/sounnahmedecine-cloud/HIKMATIPS.git)",
       "Bash(git -C \"d:/MES PROJETS/HIKMATIPS-main\" config --list)",
       "PowerShell(cmdkey /delete:LegacyGeneric:target=git:https://github.com 2>&1)",
-      "PowerShell(cmdkey /delete:LegacyGeneric:target=https://github.com 2>&1)"
+      "PowerShell(cmdkey /delete:LegacyGeneric:target=https://github.com 2>&1)",
+      "Bash(cat .github/workflows/*.yml)",
+      "Bash(cat firebase.json)",
+      "Bash(cat .firebaserc)",
+      "Bash(firebase apphosting:secrets:grantaccess NEXT_PUBLIC_FIREBASE_API_KEY)",
+      "Bash(firebase apphosting:secrets:list)",
+      "Bash(firebase apphosting:secrets:grantaccess NEXT_PUBLIC_GOOGLE_GENAI_API_KEY --backend studio)",
+      "Bash(firebase apphosting:secrets:access NEXT_PUBLIC_FIREBASE_API_KEY)",
+      "Bash(firebase apphosting:secrets:grantaccess NEXT_PUBLIC_FIREBASE_API_KEY --backend studio)",
+      "Bash(firebase apphosting:backends:get studio)",
+      "Bash(gcloud secrets *)",
+      "Bash(where gcloud *)"
     ]
   }
 }

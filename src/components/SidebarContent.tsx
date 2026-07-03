@@ -10,6 +10,7 @@ import {
     RectangleHorizontal,
     BookOpen,
     Share2,
+    Search,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/ThemeToggle';
@@ -220,8 +221,11 @@ export function SidebarContent({
         <div className="space-y-6 pb-10 px-2">
 
             <div className="flex items-center justify-around bg-muted/30 rounded-2xl p-1 border border-border/50">
-                <Button variant="ghost" size="icon" className="w-12 h-12 rounded-xl" onClick={() => window.location.href = '/'}>
+                <Button variant="ghost" size="icon" className="w-12 h-12 rounded-xl" onClick={() => window.location.href = '/generateur'}>
                     <Home className="w-5 h-5 text-primary" />
+                </Button>
+                <Button variant="ghost" size="icon" className="w-12 h-12 rounded-xl" onClick={() => window.location.href = '/recherche-hadiths'} title="Agent Hadith">
+                    <Search className="w-5 h-5 text-emerald-500" />
                 </Button>
                 {user ? (
                     <Button variant="ghost" size="icon" className="w-12 h-12 rounded-xl" onClick={onSignOut}>

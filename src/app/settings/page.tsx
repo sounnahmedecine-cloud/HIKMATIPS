@@ -111,7 +111,7 @@ export default function ParametresPage() {
                 <p className="text-sm text-muted-foreground">
                   Connectez-vous pour synchroniser vos favoris et vos rappels.
                 </p>
-                <Button className="w-full bg-purple-500 hover:bg-purple-500" onClick={() => window.location.href = '/'}>
+                <Button className="w-full bg-purple-500 hover:bg-purple-500" onClick={() => window.location.href = '/generateur'}>
                   S'identifier
                 </Button>
               </div>

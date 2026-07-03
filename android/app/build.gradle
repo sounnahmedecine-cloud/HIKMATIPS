@@ -7,7 +7,7 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
-    namespace = "com.hikmatips.app"
+    namespace = "fr.hikmatips.app"
     compileSdk = rootProject.ext.compileSdkVersion
 
     signingConfigs {
@@ -22,11 +22,11 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.hikmatips.app"
+        applicationId "fr.hikmatips.app"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 111
-        versionName "1.2.56"
+        versionCode 112
+        versionName "1.3.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.

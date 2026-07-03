@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { Loader2 } from 'lucide-react';
 import dynamic from 'next/dynamic';
 
@@ -19,6 +20,20 @@ const LandingPage = dynamic(() => import('@/components/LandingPage'), {
   ssr: false,
 });
 
+const GeneratorPage = dynamic(() => import('@/components/GeneratorPage'), {
+  loading: () => <LoadingScreen />,
+  ssr: false,
+});
+
 export default function Home() {
-  return <LandingPage />;
+  const [isNativeApp, setIsNativeApp] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    setIsNativeApp(!!(window as any).Capacitor?.isNativePlatform?.());
+  }, []);
+
+  // Sur mobile (Capacitor), on ouvre directement l'application.
+  // Sur le web, "/" reste la landing page marketing.
+  if (isNativeApp === null) return <LoadingScreen />;
+  return isNativeApp ? <GeneratorPage /> : <LandingPage />;
 }

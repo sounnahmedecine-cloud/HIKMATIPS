@@ -586,7 +586,7 @@ export default function GeneratorPage() {
             </Sheet>
             {/* Center Logo on Mobile */}
             <div className="absolute left-1/2 -translate-x-1/2 md:static md:translate-x-0 md:ml-4">
-              <a href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity active:scale-95">
+              <a href="/generateur" className="flex items-center gap-2 hover:opacity-80 transition-opacity active:scale-95">
                 <Image src="https://res.cloudinary.com/db2ljqpdt/image/upload/v1770580517/ChatGPT_Image_2_f%C3%A9vr._2026_23_43_44_qmfwbc_1_f4huf1.png" alt="HikmaClips" width={32} height={32} className="rounded-lg shadow-sm" />
                 <span className="text-base sm:text-lg font-bold text-hikma-gradient tracking-tight font-display md:hidden">HikmaClips</span>
               </a>

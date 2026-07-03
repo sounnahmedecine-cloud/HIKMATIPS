@@ -1,4 +1,4 @@
-package com.hikmatips.app;
+package fr.hikmatips.app;
 
 import com.getcapacitor.BridgeActivity;
 

@@ -1,24 +1,16 @@
 'use client';
 
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { Moon } from 'lucide-react';
-import dynamic from 'next/dynamic';
+import { Moon, ArrowRight } from 'lucide-react';
 import { HeroModern } from '@/components/HeroModern';
 
-const GeneratorPage = dynamic(() => import('@/components/GeneratorPage'), {
-  ssr: false,
-  loading: () => (
-    <div className="text-center py-12">
-      <div className="animate-spin h-12 w-12 border-4 border-primary border-t-transparent rounded-full mx-auto mb-4" />
-      <p className="text-muted-foreground">Chargement du générateur...</p>
-    </div>
-  ),
-});
-
 export default function LandingPage() {
-  const scrollToApp = () => {
-    document.getElementById('app-section')?.scrollIntoView({ behavior: 'smooth' });
+  const router = useRouter();
+
+  const goToApp = () => {
+    router.push('/generateur');
   };
 
   return (
@@ -28,9 +20,9 @@ export default function LandingPage() {
       <div className="fixed bottom-0 -left-64 w-[500px] h-[500px] rounded-full pointer-events-none z-0" style={{ background: 'radial-gradient(circle,rgba(240,192,64,0.06) 0%,transparent 70%)', filter: 'blur(80px)' }} />
 
       {/* ── HERO ── */}
-      <HeroModern onScrollToApp={scrollToApp} />
+      <HeroModern onScrollToApp={goToApp} />
 
-      {/* ── GENERATOR ── */}
+      {/* ── APP CTA ── */}
       <section id="app-section" className="relative z-20 isolate py-20 px-4 scroll-mt-16 flex flex-col items-center text-center bg-emerald-50/40 dark:bg-slate-950">
         <motion.div
           initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
@@ -38,7 +30,13 @@ export default function LandingPage() {
         >
           <p className="text-sm font-bold uppercase tracking-widest mb-4 text-primary">Coran & Sunnah</p>
           <p className="text-zinc-500 dark:text-slate-400 text-lg mb-10">Hadith, verset coranique ou doua — sélectionne la catégorie et publie en quelques secondes.</p>
-          <GeneratorPage />
+          <button
+            onClick={goToApp}
+            className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary text-primary-foreground font-bold text-lg rounded-2xl hover:-translate-y-1 hover:scale-[1.02] active:scale-95 transition-all duration-300 shadow-lg group"
+          >
+            Ouvrir le générateur
+            <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+          </button>
         </motion.div>
       </section>
 
