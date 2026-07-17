@@ -463,7 +463,7 @@ export function HomeScreen() {
         );
 
         if (validImages.length > 0) {
-            const bgIndex = dateSeed % validImages.length;
+            const bgIndex = Math.floor(Math.random() * validImages.length);
             setBackground(validImages[bgIndex].imageUrl);
         }
 
@@ -578,7 +578,7 @@ export function HomeScreen() {
                 <div className="absolute inset-0 bg-black/40" />
                 <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/70" />
 
-                <div className="absolute inset-0 flex flex-col items-center justify-center p-8 text-center">
+                <div className="absolute inset-0 flex flex-col items-center justify-center p-8 pt-32 pb-8 text-center">
                     {isGenerating && (
                         <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/20 backdrop-blur-sm z-50">
                             <Loader2 className="w-10 h-10 animate-spin text-white mb-2" />

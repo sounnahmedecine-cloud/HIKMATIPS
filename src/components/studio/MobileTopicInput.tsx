@@ -58,7 +58,7 @@ export function MobileTopicInput({ value, onChange, isVisible, placeholder, onEn
                     {/* Glow ambiance */}
                     <div className="absolute inset-0 rounded-full blur-xl bg-emerald-500/5 -z-10" />
 
-                    <div className="bg-black/30 backdrop-blur-3xl rounded-full border border-white/8 shadow-[0_8px_32px_rgba(0,0,0,0.4)]">
+                    <div className="bg-emerald-600/40 backdrop-blur-3xl rounded-full border border-white/20 shadow-[0_8px_32px_rgba(16,185,129,0.35)]">
                         <div className="flex items-center gap-2 px-3 py-1">
                             {/* Icône recherche */}
                             <div className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center">

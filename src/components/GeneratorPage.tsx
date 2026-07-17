@@ -25,6 +25,8 @@ import {
   Mail,
   Menu,
   X,
+  PanelLeftClose,
+  PanelLeftOpen,
 } from 'lucide-react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -117,6 +119,7 @@ export default function GeneratorPage() {
   const [activeMobileTool, setActiveMobileTool] = useState<'font' | 'format' | 'background' | 'signature' | null>(null);
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isDesktopSidebarOpen, setIsDesktopSidebarOpen] = useState(false);
   const [isCategoryDrawerOpen, setIsCategoryDrawerOpen] = useState(false);
   const [isToolsDrawerOpen, setIsToolsDrawerOpen] = useState(false);
 
@@ -549,7 +552,7 @@ export default function GeneratorPage() {
   }
 
   return (
-    <div className="fixed inset-0 w-full h-full bg-black overflow-hidden select-none md:relative md:flex md:flex-col md:bg-background">
+    <div className="fixed inset-0 w-full h-full bg-gradient-to-br from-emerald-500 via-teal-500 to-amber-400 overflow-hidden select-none md:relative md:flex md:flex-col md:bg-background">
       {/* Hidden file input for background upload */}
       <input
         type="file"
@@ -593,6 +596,15 @@ export default function GeneratorPage() {
             </div>
 
             <div className="flex items-center gap-2">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="hidden md:flex"
+                onClick={() => setIsDesktopSidebarOpen((v) => !v)}
+                title={isDesktopSidebarOpen ? 'Fermer le panneau de réglages' : 'Ouvrir le panneau de réglages'}
+              >
+                {isDesktopSidebarOpen ? <PanelLeftClose className="w-5 h-5" /> : <PanelLeftOpen className="w-5 h-5" />}
+              </Button>
               <ThemeToggle />
               <div className="w-10 h-10 md:hidden" />
             </div>
@@ -600,8 +612,13 @@ export default function GeneratorPage() {
         </div>
       </header>
       <div className="flex-1 flex pt-0 md:pt-14 overflow-hidden safe-area-top">
-        {/* Persistent Sidebar for Desktop */}
-        <aside className="hidden md:block w-80 border-r bg-background/50 backdrop-blur-sm overflow-y-auto custom-scrollbar p-6">
+        {/* Persistent Sidebar for Desktop — collapsible via header toggle */}
+        <aside
+          className={cn(
+            "hidden md:block border-r bg-background/50 backdrop-blur-sm custom-scrollbar overflow-x-hidden transition-all duration-300 ease-in-out shrink-0",
+            isDesktopSidebarOpen ? "w-80 p-6 opacity-100 overflow-y-auto" : "w-0 p-0 opacity-0 pointer-events-none border-r-0 overflow-y-hidden"
+          )}
+        >
           <SidebarContent
             topic={topic}
             setTopic={setTopic}
@@ -639,7 +656,7 @@ export default function GeneratorPage() {
               onTouchStart={handleTouchStart}
               onTouchEnd={handleTouchEnd}
               className={cn(
-                "bg-neutral-900 p-0 md:p-2 shadow-2xl transition-all duration-300 relative overflow-hidden",
+                "bg-gradient-to-br from-emerald-500 via-teal-500 to-amber-400 p-0 md:p-2 shadow-2xl transition-all duration-300 relative overflow-hidden",
                 "fixed inset-0 md:relative",
                 format === 'story'
                   ? "md:h-[673px] md:w-[320px] lg:w-[340px] lg:h-[715px] md:rounded-[40px]"
@@ -649,7 +666,7 @@ export default function GeneratorPage() {
               <div
                 ref={previewRef}
                 className={cn(
-                  "relative h-full w-full overflow-hidden bg-black",
+                  "relative h-full w-full overflow-hidden bg-gradient-to-br from-emerald-500 via-teal-500 to-amber-400",
                   "md:rounded-[32px]"
                 )}
               >
@@ -661,7 +678,7 @@ export default function GeneratorPage() {
                   crossOrigin="anonymous"
                   key={background}
                 />
-                <div className="absolute inset-0 bg-black/50" />
+                <div className="absolute inset-0 bg-gradient-to-b from-emerald-900/25 via-transparent to-amber-900/40" />
 
                 {(isGenerating && !content) && (
                   <div className="absolute inset-0 flex flex-col items-center justify-center p-8 text-white/80">
@@ -771,7 +788,12 @@ export default function GeneratorPage() {
       </div>
 
       {/* ── DESKTOP BOTTOM BAR ── */}
-      <div className="hidden md:flex fixed bottom-0 left-80 right-0 z-50 bg-background/95 backdrop-blur-md border-t border-border/50 px-6 py-3 items-center gap-4">
+      <div
+        className={cn(
+          "hidden md:flex fixed bottom-0 right-0 z-50 bg-background/95 backdrop-blur-md border-t border-border/50 px-6 py-3 items-center gap-4 transition-all duration-300 ease-in-out",
+          isDesktopSidebarOpen ? "left-80" : "left-0"
+        )}
+      >
         {/* Category tabs */}
         <div className="flex items-center gap-1.5 flex-shrink-0">
           {[
@@ -850,13 +872,13 @@ export default function GeneratorPage() {
           <Button
             variant="ghost"
             onClick={() => setIsSidebarOpen(true)}
-            className="pointer-events-auto h-10 px-4 rounded-full bg-black/30 backdrop-blur-md border border-white/10 text-white/70 flex items-center gap-2 shadow-lg"
+            className="pointer-events-auto h-10 px-4 rounded-full bg-emerald-900/30 backdrop-blur-md border border-white/20 text-white flex items-center gap-2 shadow-lg"
             aria-label="Réglages"
           >
             <Settings className="w-4 h-4" />
             <span className="text-[10px] uppercase font-bold tracking-widest">Réglages</span>
           </Button>
-          <Button variant="ghost" size="icon" className="pointer-events-auto w-10 h-10 rounded-2xl bg-black/30 backdrop-blur-md border border-white/10 text-yellow-400 shadow-lg" aria-label="Premium">
+          <Button variant="ghost" size="icon" className="pointer-events-auto w-10 h-10 rounded-2xl bg-amber-900/30 backdrop-blur-md border border-white/20 text-yellow-300 shadow-lg" aria-label="Premium">
             <Crown className="w-4 h-4" />
           </Button>
         </div>
@@ -864,7 +886,7 @@ export default function GeneratorPage() {
         {/* BOTTOM SHEET: swipeable */}
         <motion.div
           ref={sheetRef}
-          className="absolute bottom-0 left-0 right-0 z-40 bg-black/75 backdrop-blur-2xl rounded-t-[2rem] border-t border-white/10 shadow-[0_-10px_40px_rgba(0,0,0,0.6)] cursor-grab active:cursor-grabbing"
+          className="absolute bottom-0 left-0 right-0 z-40 bg-gradient-to-t from-emerald-700/95 via-emerald-600/90 to-teal-600/85 backdrop-blur-2xl rounded-t-[2rem] border-t border-white/20 shadow-[0_-10px_40px_rgba(16,185,129,0.35)] cursor-grab active:cursor-grabbing"
           style={{ paddingBottom: 'max(3.5rem, calc(env(safe-area-inset-bottom) + 2rem))' }}
           initial={{ y: sheetHeight - PEEK }}
           animate={{ y: isSheetOpen ? 0 : sheetHeight - PEEK }}
@@ -888,7 +910,7 @@ export default function GeneratorPage() {
 
           {/* CATÉGORIES — pills scrollables */}
           <div className="relative mb-4">
-            <div className="absolute right-0 top-0 h-full w-8 bg-gradient-to-l from-black/70 to-transparent z-10 pointer-events-none" />
+            <div className="absolute right-0 top-0 h-full w-8 bg-gradient-to-l from-emerald-700/90 to-transparent z-10 pointer-events-none" />
             <div className="flex overflow-x-auto gap-2 px-4 pb-1 scrollbar-hide" style={{ scrollbarWidth: 'none' }}>
               {[
                 { id: 'coran',        label: 'Coran'   },

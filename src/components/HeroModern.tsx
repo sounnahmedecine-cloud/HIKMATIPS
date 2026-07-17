@@ -15,9 +15,9 @@ const QUOTES = [
 ];
 
 const BG_CLASSES = [
-  'from-emerald-900/80 via-slate-900 to-slate-950',
-  'from-purple-900/70 via-slate-900 to-slate-950',
-  'from-blue-900/70 via-slate-900 to-slate-950',
+  'from-emerald-500 via-teal-500 to-amber-400',
+  'from-fuchsia-500 via-rose-500 to-amber-400',
+  'from-sky-500 via-emerald-500 to-lime-400',
 ];
 
 export function HeroModern({ onScrollToApp }: HeroModernProps) {
@@ -84,7 +84,7 @@ export function HeroModern({ onScrollToApp }: HeroModernProps) {
                 href="https://drive.google.com/file/d/1B3H4V_qviAaSQX_DzhVSvGTPKT4b9WmX/view?usp=sharing"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-full sm:w-auto px-6 py-4 bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 hover:border-zinc-500 text-white font-bold text-base rounded-2xl hover:-translate-y-1 active:scale-95 transition-all duration-300 shadow-lg flex items-center justify-center gap-2.5 group"
+                className="w-full sm:w-auto px-6 py-4 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 border border-amber-300/40 text-white font-bold text-base rounded-2xl hover:-translate-y-1 active:scale-95 transition-all duration-300 shadow-lg flex items-center justify-center gap-2.5 group"
               >
                 <Download className="w-5 h-5 group-hover:-translate-y-0.5 transition-transform" />
                 <span>Télécharger l'APK</span>
@@ -205,7 +205,7 @@ export function HeroModern({ onScrollToApp }: HeroModernProps) {
                   </div>
 
                   {/* Bottom nav */}
-                  <div className="absolute bottom-0 left-0 right-0 h-11 bg-black/30 backdrop-blur-md flex items-center justify-around px-2 border-t border-white/5 z-10">
+                  <div className="absolute bottom-0 left-0 right-0 h-11 bg-emerald-600/40 backdrop-blur-md flex items-center justify-around px-2 border-t border-white/15 z-10">
                     {[['🏠', 'Accueil'], ['⚡', 'Générer'], ['❤️', 'Favoris'], ['⚙️', 'Réglages']].map(([icon, label], i) => (
                       <div key={i} className={`flex flex-col items-center gap-0.5 ${i === 0 ? 'opacity-100' : 'opacity-30'}`}>
                         <span className="text-[11px]">{icon}</span>

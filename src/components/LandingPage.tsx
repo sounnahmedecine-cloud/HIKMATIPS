@@ -2,8 +2,7 @@
 
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { motion } from 'framer-motion';
-import { Moon, ArrowRight } from 'lucide-react';
+import { Moon } from 'lucide-react';
 import { HeroModern } from '@/components/HeroModern';
 
 export default function LandingPage() {
@@ -21,24 +20,6 @@ export default function LandingPage() {
 
       {/* ── HERO ── */}
       <HeroModern onScrollToApp={goToApp} />
-
-      {/* ── APP CTA ── */}
-      <section id="app-section" className="relative z-20 isolate py-20 px-4 scroll-mt-16 flex flex-col items-center text-center bg-emerald-50/40 dark:bg-slate-950">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-          className="w-full max-w-3xl"
-        >
-          <p className="text-sm font-bold uppercase tracking-widest mb-4 text-primary">Coran & Sunnah</p>
-          <p className="text-zinc-500 dark:text-slate-400 text-lg mb-10">Hadith, verset coranique ou doua — sélectionne la catégorie et publie en quelques secondes.</p>
-          <button
-            onClick={goToApp}
-            className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary text-primary-foreground font-bold text-lg rounded-2xl hover:-translate-y-1 hover:scale-[1.02] active:scale-95 transition-all duration-300 shadow-lg group"
-          >
-            Ouvrir le générateur
-            <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-          </button>
-        </motion.div>
-      </section>
 
       {/* ── FOOTER ── */}
       <footer className="relative z-10 border-t border-emerald-100 dark:border-slate-800 mt-16 bg-white/80 dark:bg-slate-900/80">

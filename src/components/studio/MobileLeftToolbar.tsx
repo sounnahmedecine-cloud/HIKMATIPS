@@ -20,7 +20,7 @@ interface MobileLeftToolbarProps {
 }
 
 export function MobileLeftToolbar({ onRandom, onUpload, onShare, onDownload, onFavorite, isLiked }: MobileLeftToolbarProps) {
-    const btnBase = "w-12 h-12 rounded-full flex items-center justify-center shadow-[0_4px_20px_rgba(0,0,0,0.3)] bg-black/30 backdrop-blur-xl text-white border border-white/10 active:scale-95 transition-all";
+    const btnBase = "w-12 h-12 rounded-full flex items-center justify-center shadow-[0_4px_20px_rgba(16,185,129,0.35)] bg-emerald-600/40 backdrop-blur-xl text-white border border-white/25 active:scale-95 transition-all";
 
     return (
         <div
