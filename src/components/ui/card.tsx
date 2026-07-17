@@ -1,6 +1,6 @@
 /**
- * Enhanced Card Component with Glassmorphism
- * Apple-inspired minimal design
+ * Enhanced Card Component
+ * Notion-inspired premium design — flat surface, subtle border, restrained elevation
  */
 
 import * as React from "react"
@@ -16,11 +16,11 @@ const Card = React.forwardRef<
   <div
     ref={ref}
     className={cn(
-      "rounded-2xl transition-smooth",
+      "rounded-lg transition-smooth",
       glass
-        ? "glass shadow-hikma"
-        : "bg-card shadow-hikma border border-border",
-      hover && "hover:shadow-hikma-lg hover:scale-[1.01]",
+        ? "glass shadow-premium-2"
+        : "bg-card border border-border",
+      hover && "hover:shadow-premium-2 hover:border-border",
       className
     )}
     {...props}

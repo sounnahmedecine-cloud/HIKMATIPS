@@ -10,8 +10,8 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        body: ['Roboto', 'sans-serif'],
-        headline: ['Roboto', 'sans-serif'],
+        body: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+        headline: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
         code: ['monospace'],
       },
       colors: {
@@ -71,9 +71,16 @@ export default {
         },
       },
       borderRadius: {
+        xl: 'calc(var(--radius) + 4px)',
         lg: 'var(--radius)',
-        md: 'calc(var(--radius) - 2px)',
-        sm: 'calc(var(--radius) - 4px)',
+        md: 'calc(var(--radius) - 4px)',
+        sm: 'calc(var(--radius) - 6px)',
+      },
+      boxShadow: {
+        'premium-1': '0 1px 2px rgba(15, 15, 15, 0.04)',
+        'premium-2': '0 4px 12px rgba(15, 15, 15, 0.08)',
+        'premium-3': '0 16px 48px -8px rgba(15, 15, 15, 0.16)',
+        'premium-4': '0 24px 48px -8px rgba(15, 15, 15, 0.20)',
       },
       keyframes: {
         'accordion-down': {

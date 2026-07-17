@@ -4,36 +4,37 @@
 
 @layer base {
   :root {
-    /* HikmaClips — Emerald & Oriental Gold Theme */
-    --background: 150 20% 97%;
-    --foreground: 160 30% 10%;
+    /* HikmaClips Premium — warm neutral canvas + Emerald & Oriental Gold */
+    --background: 40 14% 98%;
+    --foreground: 160 15% 10%;
     --card: 0 0% 100%;
-    --card-foreground: 160 30% 10%;
+    --card-foreground: 160 15% 10%;
     --popover: 0 0% 100%;
-    --popover-foreground: 160 30% 10%;
+    --popover-foreground: 160 15% 10%;
 
     /* Primary — Emerald Green #10B981 */
     --primary: 160 84% 39%;
     --primary-foreground: 0 0% 100%;
 
-    /* Secondary — Deep Emerald #059669 */
-    --secondary: 161 94% 30%;
-    --secondary-foreground: 0 0% 100%;
+    /* Secondary — subtle warm surface (Notion-style secondary surface) */
+    --secondary: 40 12% 95%;
+    --secondary-foreground: 160 15% 10%;
 
     /* Accent — Oriental Gold #F0C040 */
     --accent: 45 86% 60%;
     --accent-foreground: 160 30% 10%;
 
     /* Muted */
-    --muted: 150 15% 92%;
-    --muted-foreground: 150 10% 40%;
+    --muted: 40 10% 94%;
+    --muted-foreground: 150 6% 42%;
 
-    /* Border & Input */
-    --border: 150 20% 85%;
-    --input: 150 20% 85%;
+    /* Border & Input — subtle hairline, no heavy shadows */
+    --border: 40 10% 88%;
+    --input: 40 10% 86%;
     --ring: 160 84% 39%;
 
-    --radius: 9999px;
+    /* Rectangular premium radius scale: 12px cards / 8px buttons+inputs / 6px small */
+    --radius: 0.75rem;
 
     --chart-1: 160 84% 39%;
     --chart-2: 45 86% 60%;
@@ -66,7 +67,7 @@
     --border: 160 15% 12%;
     --input: 160 15% 12%;
     --ring: 160 84% 39%;
-    --radius: 1.25rem;
+    --radius: 0.75rem;
   }
 }
 
@@ -81,8 +82,7 @@
     overflow-x: hidden;
     position: relative;
     width: 100%;
-    /* Apple-style system fonts */
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
       'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -107,17 +107,17 @@
 
 @layer components {
 
-  /* Hikma-style Shadows */
+  /* Hikma-style Shadows — subtle, premium (Notion-inspired elevation) */
   .shadow-hikma-sm {
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 1px 2px rgba(15, 15, 15, 0.04);
   }
 
   .shadow-hikma {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 4px 12px rgba(15, 15, 15, 0.08);
   }
 
   .shadow-hikma-lg {
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 16px 48px -8px rgba(15, 15, 15, 0.16);
   }
 
   /* Glassmorphism Effect */
@@ -137,10 +137,10 @@
     @apply active:scale-95 transition-transform duration-150;
   }
 
-  /* Force rounded for all buttons by default */
+  /* Rectangular premium geometry by default — pills reserved for badges/tabs */
   button,
   .button {
-    @apply rounded-full;
+    @apply rounded-md;
   }
 
   /* Global Hover Effects */
@@ -369,7 +369,7 @@
   animation: pulseSoft 2s ease-in-out infinite;
 }
 
-/* Base Body Styles for Redesign */
+/* Base Body Styles — flat warm canvas (premium, no candy gradient) */
 body {
-  @apply min-h-screen bg-gradient-to-br from-emerald-50 to-yellow-50 dark:from-emerald-950 dark:to-emerald-900;
+  @apply min-h-screen bg-background;
 }
