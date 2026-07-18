@@ -891,11 +891,10 @@ export default function GeneratorPage() {
               size="icon"
               onClick={() => {
                 resetFirstTime();
-                setIsSheetOpen(true);
-                setTimeout(() => setShowTooltipGuide(true), 400);
+                setShowOnboarding(true);
               }}
               className="w-10 h-10 rounded-2xl bg-sky-900/30 backdrop-blur-md border border-white/20 text-sky-300 shadow-lg"
-              aria-label="Revoir le tutoriel"
+              aria-label="Revoir la présentation"
             >
               <HelpCircle className="w-4 h-4" />
             </Button>
@@ -1099,8 +1098,7 @@ export default function GeneratorPage() {
             setIsSidebarOpen(true);
           } else if (tool === 'tutorial') {
             resetFirstTime();
-            setIsSheetOpen(true);
-            setTimeout(() => setShowTooltipGuide(true), 400);
+            setShowOnboarding(true);
           }
         }}
       />
