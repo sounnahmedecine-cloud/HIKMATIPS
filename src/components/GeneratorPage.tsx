@@ -125,7 +125,7 @@ export default function GeneratorPage() {
   const [isToolsDrawerOpen, setIsToolsDrawerOpen] = useState(false);
 
   // First-time user guidance
-  const { isFirstTime, markAsGenerated, resetFirstTime } = useFirstTimeUser();
+  const { isFirstTime, markAsGenerated } = useFirstTimeUser();
   const [showTooltipGuide, setShowTooltipGuide] = useState(false);
 
   // Studio Settings States
@@ -180,6 +180,11 @@ export default function GeneratorPage() {
     const hasSeenOnboarding = localStorage.getItem('hasSeenOnboarding');
     if (!hasSeenOnboarding) {
       setShowOnboarding(true);
+    } else {
+      // Utilisateur déjà passé par les slides : on relance les infobulles
+      // à chaque démarrage de l'app (sans rejouer les slides).
+      setIsSheetOpen(true);
+      setTimeout(() => setShowTooltipGuide(true), 800);
     }
 
     // Handle URL parameters
@@ -890,11 +895,11 @@ export default function GeneratorPage() {
               variant="ghost"
               size="icon"
               onClick={() => {
-                resetFirstTime();
-                setShowOnboarding(true);
+                setIsSheetOpen(true);
+                setTimeout(() => setShowTooltipGuide(true), 400);
               }}
               className="w-10 h-10 rounded-2xl bg-sky-900/30 backdrop-blur-md border border-white/20 text-sky-300 shadow-lg"
-              aria-label="Revoir la présentation"
+              aria-label="Revoir le tutoriel"
             >
               <HelpCircle className="w-4 h-4" />
             </Button>
@@ -1097,8 +1102,8 @@ export default function GeneratorPage() {
           } else if (tool === 'settings') {
             setIsSidebarOpen(true);
           } else if (tool === 'tutorial') {
-            resetFirstTime();
-            setShowOnboarding(true);
+            setIsSheetOpen(true);
+            setTimeout(() => setShowTooltipGuide(true), 400);
           }
         }}
       />
@@ -1263,7 +1268,7 @@ export default function GeneratorPage() {
 
       {/* Tooltip Guide for first-time users */}
       <TooltipGuide
-        isActive={showTooltipGuide && isFirstTime}
+        isActive={showTooltipGuide}
         onComplete={() => setShowTooltipGuide(false)}
         onSkip={() => setShowTooltipGuide(false)}
       />
