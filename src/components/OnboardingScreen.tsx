@@ -22,9 +22,9 @@ const slides = [
       <div className="relative w-64 h-64 flex items-center justify-center">
         <div className="absolute inset-0 bg-emerald-500/10 blur-[60px] rounded-full animate-pulse-soft" />
         <img
-          src="https://res.cloudinary.com/db2ljqpdt/image/upload/v1770580517/ChatGPT_Image_2_f%C3%A9vr._2026_23_43_44_qmfwbc_1_f4huf1.png"
+          src="/logo-hikmaclips.png"
           alt="HikmaClips Logo"
-          className="w-48 h-48 rounded-[40px] shadow-2xl relative z-10"
+          className="w-56 h-56 object-contain relative z-10"
         />
       </div>
     ),

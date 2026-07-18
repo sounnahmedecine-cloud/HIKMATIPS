@@ -9,6 +9,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://studio--studio-5790524114-6339d.us-central1.hosted.app"),
   title: "HikmaClips — Sagesse Islamique Quotidienne",
   description: "Découvrez des hadiths, versets coraniques et invocations authentiques générés par intelligence artificielle. Partagez la sagesse islamique avec de belles images.",
   keywords: ["hadith", "islam", "coran", "sagesse", "hikma", "invocation", "dua", "rappel spirituel"],
@@ -24,15 +25,22 @@ export const metadata: Metadata = {
     type: "website",
     locale: "fr_FR",
     siteName: "HikmaClips",
+    images: ["/og-image.png"],
   },
   twitter: {
     card: "summary_large_image",
     title: "HikmaClips",
     description: "Sagesse islamique quotidienne par IA",
+    images: ["/og-image.png"],
   },
   icons: {
-    icon: "https://res.cloudinary.com/db2ljqpdt/image/upload/v1770108678/ChatGPT_Image_2_f%C3%A9vr._2026_23_43_44_qmfwbc.png",
-    apple: "https://res.cloudinary.com/db2ljqpdt/image/upload/v1770108678/ChatGPT_Image_2_f%C3%A9vr._2026_23_43_44_qmfwbc.png",
+    icon: [
+      { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+      { url: "/android-chrome-192x192.png", sizes: "192x192", type: "image/png" },
+      { url: "/android-chrome-512x512.png", sizes: "512x512", type: "image/png" },
+    ],
+    apple: "/apple-touch-icon.png",
   },
 };
 

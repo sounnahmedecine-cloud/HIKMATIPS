@@ -124,7 +124,7 @@ export default function GeneratorPage() {
   const [isToolsDrawerOpen, setIsToolsDrawerOpen] = useState(false);
 
   // First-time user guidance
-  const { isFirstTime, markAsGenerated } = useFirstTimeUser();
+  const { isFirstTime, markAsGenerated, resetFirstTime } = useFirstTimeUser();
   const [showTooltipGuide, setShowTooltipGuide] = useState(false);
 
   // Studio Settings States
@@ -196,6 +196,8 @@ export default function GeneratorPage() {
   const handleCompleteOnboarding = () => {
     localStorage.setItem('hasSeenOnboarding', 'true');
     setShowOnboarding(false);
+    // Ouvre la feuille du bas pour que tous les éléments du tutoriel soient visibles
+    setIsSheetOpen(true);
     // Show tooltip guide after onboarding for first-time users
     setTimeout(() => setShowTooltipGuide(true), 500);
   };
@@ -593,7 +595,7 @@ export default function GeneratorPage() {
             {/* Center Logo on Mobile */}
             <div className="absolute left-1/2 -translate-x-1/2 md:static md:translate-x-0 md:ml-4">
               <a href="/generateur" className="flex items-center gap-2 hover:opacity-80 transition-opacity active:scale-95">
-                <Image src="https://res.cloudinary.com/db2ljqpdt/image/upload/v1770580517/ChatGPT_Image_2_f%C3%A9vr._2026_23_43_44_qmfwbc_1_f4huf1.png" alt="HikmaClips" width={32} height={32} className="rounded-lg shadow-sm" />
+                <Image src="/logo-hikmaclips.png" alt="HikmaClips" width={32} height={32} className="rounded-lg shadow-sm object-contain" />
                 <span className="text-base sm:text-lg font-bold text-hikma-gradient tracking-tight font-display md:hidden">HikmaClips</span>
               </a>
             </div>
@@ -873,6 +875,7 @@ export default function GeneratorPage() {
         {/* TOP BAR: Réglages + Crown */}
         <div className="absolute top-0 left-0 right-0 z-40 flex justify-between items-center px-5 pt-12 pb-4 pointer-events-none">
           <Button
+            id="tuto-settings"
             variant="ghost"
             onClick={() => setIsSidebarOpen(true)}
             className="pointer-events-auto h-10 px-4 rounded-full bg-emerald-900/30 backdrop-blur-md border border-white/20 text-white flex items-center gap-2 shadow-lg"
@@ -912,7 +915,7 @@ export default function GeneratorPage() {
           </div>
 
           {/* CATÉGORIES — pills scrollables */}
-          <div className="relative mb-4">
+          <div id="tuto-categories" className="relative mb-4">
             <div className="absolute right-0 top-0 h-full w-8 bg-gradient-to-l from-emerald-700/90 to-transparent z-10 pointer-events-none" />
             <div className="flex overflow-x-auto gap-2 px-4 pb-1 scrollbar-hide" style={{ scrollbarWidth: 'none' }}>
               {[
@@ -940,7 +943,7 @@ export default function GeneratorPage() {
           </div>
 
           {/* INPUT THÈME */}
-          <div className="mx-4 mb-4 flex items-center gap-2 bg-white/5 border border-white/10 rounded-2xl px-4 h-12">
+          <div id="tuto-topic" className="mx-4 mb-4 flex items-center gap-2 bg-white/5 border border-white/10 rounded-2xl px-4 h-12">
             <Search className="w-4 h-4 text-white/30 flex-shrink-0" />
             <input
               value={topic}
@@ -957,7 +960,7 @@ export default function GeneratorPage() {
           </div>
 
           {/* TOOLBAR SECONDAIRE */}
-          <div className="mx-4 mb-4 bg-white/5 border border-white/10 rounded-2xl flex justify-between items-center px-1">
+          <div id="tuto-toolbar" className="mx-4 mb-4 bg-white/5 border border-white/10 rounded-2xl flex justify-between items-center px-1">
             {[
               { icon: ImageIcon, label: 'Galerie',  onClick: () => setIsGalleryOpen(true),       color: 'hover:text-primary' },
               { icon: Palette,   label: 'Design',   onClick: () => setIsToolsDrawerOpen(true),   color: 'hover:text-primary' },
@@ -1005,6 +1008,7 @@ export default function GeneratorPage() {
           {/* BOUTON GÉNÉRER — pleine largeur */}
           <div className="mx-4">
             <button
+              id="tuto-generate"
               onClick={handleGenerateAiContent}
               disabled={isGenerating}
               className="w-full bg-primary hover:bg-primary/90 text-white font-bold text-base py-4 rounded-2xl transition-all active:scale-[0.98] shadow-[0_8px_24px_rgba(16,185,129,0.35)] flex items-center justify-center gap-2 disabled:opacity-60"
@@ -1077,6 +1081,10 @@ export default function GeneratorPage() {
             setActiveMobileTool('signature');
           } else if (tool === 'settings') {
             setIsSidebarOpen(true);
+          } else if (tool === 'tutorial') {
+            resetFirstTime();
+            setIsSheetOpen(true);
+            setTimeout(() => setShowTooltipGuide(true), 400);
           }
         }}
       />

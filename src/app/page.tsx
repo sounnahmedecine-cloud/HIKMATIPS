@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { Loader2 } from 'lucide-react';
 import dynamic from 'next/dynamic';
+import { StartupVideo } from '@/components/StartupVideo';
 
 function LoadingScreen() {
   return (
@@ -27,6 +28,7 @@ const GeneratorPage = dynamic(() => import('@/components/GeneratorPage'), {
 
 export default function Home() {
   const [isNativeApp, setIsNativeApp] = useState<boolean | null>(null);
+  const [showSplash, setShowSplash] = useState(true);
 
   useEffect(() => {
     setIsNativeApp(!!(window as any).Capacitor?.isNativePlatform?.());
@@ -35,5 +37,11 @@ export default function Home() {
   // Sur mobile (Capacitor), on ouvre directement l'application.
   // Sur le web, "/" reste la landing page marketing.
   if (isNativeApp === null) return <LoadingScreen />;
+
+  // Vidéo de démarrage à chaque lancement de l'app mobile
+  if (isNativeApp && showSplash) {
+    return <StartupVideo onComplete={() => setShowSplash(false)} />;
+  }
+
   return isNativeApp ? <GeneratorPage /> : <LandingPage />;
 }

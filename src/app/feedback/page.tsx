@@ -13,7 +13,7 @@ export default function FeedbackPage() {
                 <div className="container mx-auto flex h-16 items-center justify-between px-4">
                     <Link href="/" className="flex items-center gap-2">
                         <Image
-                            src="https://res.cloudinary.com/db2ljqpdt/image/upload/v1770580517/ChatGPT_Image_2_f%C3%A9vr._2026_23_43_44_qmfwbc_1_f4huf1.png"
+                            src="/logo-hikmaclips.png"
                             alt="HikmaClips"
                             width={32}
                             height={32}

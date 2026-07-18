@@ -11,14 +11,15 @@ import {
     MessageCircle,
     X,
     Image as ImageIcon,
-    AtSign
+    AtSign,
+    HelpCircle
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface ToolsDrawerProps {
     isOpen: boolean;
     onClose: () => void;
-    onToolSelect: (tool: 'font' | 'format' | 'resources' | 'settings' | 'updates' | 'feedback' | 'signature' | 'gallery') => void;
+    onToolSelect: (tool: 'font' | 'format' | 'resources' | 'settings' | 'updates' | 'feedback' | 'signature' | 'gallery' | 'tutorial') => void;
 }
 
 export function ToolsDrawer({ isOpen, onClose, onToolSelect }: ToolsDrawerProps) {
@@ -78,6 +79,14 @@ export function ToolsDrawer({ isOpen, onClose, onToolSelect }: ToolsDrawerProps)
             description: 'Configuration',
             color: 'bg-orange-600',
             hoverColor: 'hover:bg-orange-700',
+        },
+        {
+            id: 'tutorial' as const,
+            icon: HelpCircle,
+            label: 'Tutoriel',
+            description: 'Revoir le guide',
+            color: 'bg-sky-600',
+            hoverColor: 'hover:bg-sky-700',
         },
     ];
 
