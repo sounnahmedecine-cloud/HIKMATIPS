@@ -209,16 +209,6 @@ export default function LandingPage() {
             </a>
           </div>
 
-          <div className="mb-1.5 flex items-center gap-3.5">
-            <div className="flex">
-              {['photo-1507003211169-0a1dd7228f2d', 'photo-1544005313-94ddf0286df2', 'photo-1500648767791-00dcc994a43e'].map((p) => (
-                <img key={p} src={`https://images.unsplash.com/${p}?auto=format&fit=crop&w=100&q=80`} alt="" className="-mr-2.5 h-[34px] w-[34px] rounded-full border-2 border-[#FBFAF7] object-cover" />
-              ))}
-              <span className="flex h-[34px] w-[34px] items-center justify-center rounded-full border-2 border-[#FBFAF7] text-[10px] font-extrabold text-white" style={{ background: 'linear-gradient(135deg,#2E9E44,#F5960F)' }}>+2k</span>
-            </div>
-            <span className="text-[13.5px] font-medium text-[#6B776F]">Rejoint par plus de 2 000 croyants engagés</span>
-          </div>
-
           <div className="mt-[30px] flex gap-9 border-t border-[#EAE6DD] pt-[26px]">
             {[
               ['32 400+', 'Hadiths authentiques'],
