@@ -479,6 +479,48 @@
       "description": "Background image - Nature & Astronomy.",
       "imageUrl": "https://res.cloudinary.com/dk93srhfb/image/upload/v1770828768/156fe60f49ee8f87ce04edbdd4015036_oyqjo8.jpg",
       "imageHint": "nature astronomy background serene"
+    },
+    {
+      "id": "hero-aube",
+      "description": "Mosquée à l'aube, croissant de lune et lumière naissante.",
+      "imageUrl": "/hero-aube.png",
+      "imageHint": "islamic mosque dawn night moon serene"
+    },
+    {
+      "id": "hero-matin",
+      "description": "Mosquée baignée de lumière matinale, ciel bleu et oiseaux.",
+      "imageUrl": "/hero-matin.png",
+      "imageHint": "islamic mosque sunrise morning nature"
+    },
+    {
+      "id": "hero-apres-midi",
+      "description": "Mosquée sous un ciel bleu d'après-midi, végétation verdoyante.",
+      "imageUrl": "/hero-apres-midi.png",
+      "imageHint": "islamic mosque afternoon sunlight nature"
+    },
+    {
+      "id": "hero-maghrib",
+      "description": "Mosquée au coucher du soleil (Maghrib), reflets sur le lac.",
+      "imageUrl": "/hero-maghrib.png",
+      "imageHint": "islamic mosque sunset maghrib serene"
+    },
+    {
+      "id": "hero-soir",
+      "description": "Mosquée illuminée de nuit, croissant de lune et étoiles.",
+      "imageUrl": "/hero-soir.png",
+      "imageHint": "islamic mosque night stars moon"
+    },
+    {
+      "id": "mosque-illustration-sunset",
+      "description": "Illustration stylisée d'une mosquée au coucher du soleil.",
+      "imageUrl": "/dbf7daeb-12dc-4c05-9fd4-17f73f95b528.png",
+      "imageHint": "islamic mosque illustration sunset serene"
+    },
+    {
+      "id": "priere-silhouette-coucher-soleil",
+      "description": "Silhouette en prière (doua) au coucher du soleil.",
+      "imageUrl": "/79756b65fbdbf142396e8ab50b551fea_aywvyt.jpg",
+      "imageHint": "islamic prayer dua sunset silhouette"
     }
   ]
 }

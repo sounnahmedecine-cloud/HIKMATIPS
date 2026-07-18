@@ -100,7 +100,7 @@ export default function GeneratorPage() {
 
   const [category, setCategory] = useState<Category>('rabbana');
   const [background, setBackground] = useState<string>(
-    PlaceHolderImages[0]?.imageUrl || 'https://picsum.photos/seed/1/1080/1920'
+    '/79756b65fbdbf142396e8ab50b551fea_aywvyt.jpg'
   );
   const [animationKey, setAnimationKey] = useState(0);
   const [isGenerating, setIsGenerating] = useState(false);
@@ -552,7 +552,7 @@ export default function GeneratorPage() {
   }
 
   return (
-    <div className="fixed inset-0 w-full h-full bg-gradient-to-br from-emerald-500 via-teal-500 to-amber-400 overflow-hidden select-none md:relative md:flex md:flex-col md:bg-background">
+    <div className="fixed inset-0 w-full h-full bg-gradient-to-br from-emerald-500 via-teal-500 to-amber-400 overflow-hidden select-none md:flex md:flex-col md:bg-background">
       {/* Hidden file input for background upload */}
       <input
         type="file"

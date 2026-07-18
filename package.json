@@ -10,7 +10,8 @@
     "build:cap": "cross-env NEXT_PUBLIC_EXPORT=true next build",
     "start": "next start",
     "lint": "next lint",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "postinstall": "patch-package"
   },
   "dependencies": {
     "@capacitor/android": "^8.0.1",
