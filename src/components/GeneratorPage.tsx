@@ -298,6 +298,9 @@ export default function GeneratorPage() {
       return;
     }
 
+    // Nouvelle image à chaque génération, en parallèle du texte
+    handleRandomBackground();
+
     // Consomme le buffer si disponible → réponse instantanée
     if (contentBuffer.length > 0) {
       const [next, ...rest] = contentBuffer;
