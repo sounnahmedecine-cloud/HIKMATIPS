@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface StartupVideoProps {
@@ -9,6 +10,7 @@ interface StartupVideoProps {
 
 export function StartupVideo({ onComplete }: StartupVideoProps) {
     const [isVisible, setIsVisible] = useState(true);
+    const [mounted, setMounted] = useState(false);
     const videoRef = useRef<HTMLVideoElement>(null);
 
     const finish = () => {
@@ -17,13 +19,19 @@ export function StartupVideo({ onComplete }: StartupVideoProps) {
     };
 
     useEffect(() => {
+        setMounted(true);
         // Filet de sécurité : si la vidéo ne se termine/charge jamais, on continue quand même
         const failSafe = setTimeout(finish, 6000);
         return () => clearTimeout(failSafe);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    return (
+    if (!mounted) return null;
+
+    // Rendu via portail directement dans <body> : évite que la vidéo hérite
+    // de l'animation (opacity/transform) du wrapper de page, qui casserait
+    // son positionnement plein écran et provoquait un flash disgracieux.
+    return createPortal(
         <AnimatePresence>
             {isVisible && (
                 <motion.div
@@ -51,7 +59,8 @@ export function StartupVideo({ onComplete }: StartupVideoProps) {
                     </button>
                 </motion.div>
             )}
-        </AnimatePresence>
+        </AnimatePresence>,
+        document.body
     );
 }
 
