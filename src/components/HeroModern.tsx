@@ -40,7 +40,7 @@ export function HeroModern({ onScrollToApp }: HeroModernProps) {
       <div className="absolute top-[-10%] left-[-10%] w-96 h-96 rounded-full bg-primary/20 blur-3xl pointer-events-none" />
       <div className="absolute bottom-[-10%] right-[-10%] w-96 h-96 rounded-full bg-accent/20 blur-3xl pointer-events-none" />
 
-      <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+      <div className="relative z-10 w-full px-6 sm:px-10 lg:px-16 xl:px-24">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
 
           {/* ── LEFT: Text ── */}
@@ -81,7 +81,7 @@ export function HeroModern({ onScrollToApp }: HeroModernProps) {
               </button>
 
               <a
-                href="https://drive.google.com/file/d/1B3H4V_qviAaSQX_DzhVSvGTPKT4b9WmX/view?usp=sharing"
+                href="https://drive.google.com/file/d/1p8C42qFhkHdZEdVIcIC59z6tCyVDMi_a/view?usp=sharing"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-full sm:w-auto px-6 py-4 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 border border-amber-300/40 text-white font-bold text-base rounded-2xl hover:-translate-y-1 active:scale-95 transition-all duration-300 shadow-lg flex items-center justify-center gap-2.5 group"
