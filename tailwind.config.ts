@@ -13,6 +13,7 @@ export default {
         body: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
         headline: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
         code: ['monospace'],
+        display: ['var(--font-display)', 'sans-serif'],
       },
       colors: {
         background: 'hsl(var(--background))',

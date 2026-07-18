@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { Space_Grotesk } from "next/font/google";
 import { Toaster } from "@/components/ui/toaster";
 import { OfflineBanner } from "@/components/OfflineBanner";
 import { FirebaseClientProvider } from "@/firebase/client-provider";
@@ -7,6 +8,12 @@ import "./globals.css";
 
 import { ThemeProvider } from "@/components/theme-provider";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
+
+const spaceGrotesk = Space_Grotesk({
+  subsets: ["latin"],
+  weight: ["500", "600", "700"],
+  variable: "--font-display",
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://studio--studio-5790524114-6339d.us-central1.hosted.app"),
@@ -68,7 +75,7 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body className="font-body antialiased min-h-screen">
+      <body className={`${spaceGrotesk.variable} font-body antialiased min-h-screen`}>
         <FirebaseClientProvider>
           <ThemeProvider
             attribute="class"
