@@ -27,6 +27,7 @@ import {
   X,
   PanelLeftClose,
   PanelLeftOpen,
+  HelpCircle,
 } from 'lucide-react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -884,9 +885,24 @@ export default function GeneratorPage() {
             <Settings className="w-4 h-4" />
             <span className="text-[10px] uppercase font-bold tracking-widest">Réglages</span>
           </Button>
-          <Button variant="ghost" size="icon" className="pointer-events-auto w-10 h-10 rounded-2xl bg-amber-900/30 backdrop-blur-md border border-white/20 text-yellow-300 shadow-lg" aria-label="Premium">
-            <Crown className="w-4 h-4" />
-          </Button>
+          <div className="pointer-events-auto flex items-center gap-2">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => {
+                resetFirstTime();
+                setIsSheetOpen(true);
+                setTimeout(() => setShowTooltipGuide(true), 400);
+              }}
+              className="w-10 h-10 rounded-2xl bg-sky-900/30 backdrop-blur-md border border-white/20 text-sky-300 shadow-lg"
+              aria-label="Revoir le tutoriel"
+            >
+              <HelpCircle className="w-4 h-4" />
+            </Button>
+            <Button variant="ghost" size="icon" className="w-10 h-10 rounded-2xl bg-amber-900/30 backdrop-blur-md border border-white/20 text-yellow-300 shadow-lg" aria-label="Premium">
+              <Crown className="w-4 h-4" />
+            </Button>
+          </div>
         </div>
 
         {/* BOTTOM SHEET: swipeable */}
