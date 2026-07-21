@@ -1,112 +1,112 @@
-"use client"
+'use client';
 
-import { useState, useEffect } from "react"
-import { Card, CardContent } from "@/components/ui/card"
-import { motion, AnimatePresence } from "framer-motion"
-import { Share2, Trash2, Bookmark } from "lucide-react"
-import { getFavorites, toggleFavorite, Hikma } from "@/lib/utils"
-import { useToast } from "@/hooks/use-toast"
-import { Skeleton } from "@/components/ui/skeleton"
+import { useEffect, useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { Bookmark, Share2, Trash2 } from 'lucide-react';
+import { getFavorites, toggleFavorite, type Hikma } from '@/lib/utils';
+import { useToast } from '@/hooks/use-toast';
+import { Skeleton } from '@/components/ui/skeleton';
+import { HikmaAppDock } from '@/components/HikmaAppDock';
+import { HikmaLibraryHeader } from '@/components/HikmaLibraryHeader';
 
 export default function FavorisPage() {
-    const [favorites, setFavorites] = useState<Hikma[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
-    const { toast } = useToast();
+  const [favorites, setFavorites] = useState<Hikma[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const { toast } = useToast();
 
-    useEffect(() => {
-        setFavorites(getFavorites());
-        setIsLoading(false);
-    }, []);
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    setFavorites(getFavorites());
+    setIsLoading(false);
+  }, []);
 
-    const handleRemove = (hikma: Hikma) => {
-        toggleFavorite(hikma);
-        setFavorites(getFavorites());
-    };
+  const handleRemove = (hikma: Hikma) => {
+    toggleFavorite(hikma);
+    setFavorites(getFavorites());
+  };
 
-    return (
-        <div className="max-w-2xl mx-auto space-y-8 pb-32">
-            <header className="text-center pt-8">
-                <h1 className="text-4xl font-black text-slate-900 dark:text-purple-50 tracking-tight">
-                    Mes <span className="text-purple-400">Favoris</span>
-                </h1>
-                <p className="text-slate-500 mt-2">Tes pépites de sagesse enregistrées</p>
-            </header>
+  const handleShare = async (hikma: Hikma) => {
+    const text = `${hikma.fr}\n— ${hikma.source}\n\nvia HikmaClips`;
+    if (navigator.share) await navigator.share({ title: 'Sagesse Islamique', text });
+    else {
+      await navigator.clipboard.writeText(text);
+      toast({ title: 'Copié !', description: 'La citation a été copiée.' });
+    }
+  };
 
-            {isLoading ? (
-                <div className="grid gap-4">
-                    {[0, 1, 2].map((i) => (
-                        <Skeleton key={i} className="h-24 rounded-3xl" />
-                    ))}
-                </div>
-            ) : null}
+  return (
+    <div className="fixed inset-0 z-10 overflow-y-auto bg-[#FBFAF7] text-[#14201A] [font-family:var(--font-hikma-ui)]">
+      <HikmaLibraryHeader active="favorites" />
 
-            <AnimatePresence mode="popLayout">
-                {!isLoading && favorites.length === 0 ? (
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        className="text-center py-20 bg-slate-50 dark:bg-slate-900/50 rounded-[2rem] border-2 border-dashed border-slate-200 dark:border-slate-800"
-                    >
-                        <Bookmark className="w-12 h-12 mx-auto text-slate-300 mb-4" />
-                        <p className="text-slate-500">Aucun favori pour le moment.</p>
-                    </motion.div>
-                ) : (
-                    <div className="grid gap-4">
-                        {favorites.map((hikma, idx) => (
-                            <motion.div
-                                key={hikma.fr}
-                                layout
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                exit={{ opacity: 0, scale: 0.9 }}
-                                transition={{ delay: idx * 0.05 }}
-                            >
-                                <Card className="group border-none shadow-md hover:shadow-xl transition-all duration-300 rounded-3xl overflow-hidden bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm">
-                                    <CardContent className="p-6 flex items-center gap-6">
-                                        <div className="flex-1 space-y-2">
-                                            <p className="text-lg font-arabic text-purple-600 dark:text-purple-400 leading-relaxed line-clamp-1">
-                                                {hikma.arabe}
-                                            </p>
-                                            <p className="text-slate-700 dark:text-slate-200 font-medium line-clamp-2">
-                                                {hikma.fr}
-                                            </p>
-                                            <div className="flex items-center gap-2">
-                                                <span className="text-[10px] uppercase font-bold tracking-widest text-slate-400">
-                                                    {hikma.source}
-                                                </span>
-                                            </div>
-                                        </div>
-                                        <div className="flex gap-2">
-                                            <button
-                                                className="p-3 text-slate-500 hover:text-red-500 transition-colors bg-slate-100 dark:bg-slate-800 rounded-full"
-                                                onClick={() => handleRemove(hikma)}
-                                                aria-label="Supprimer"
-                                            >
-                                                <Trash2 className="w-5 h-5" />
-                                            </button>
-                                            <button
-                                                className="p-3 text-slate-500 hover:text-purple-600 transition-colors bg-slate-100 dark:bg-slate-800 rounded-full"
-                                                aria-label="Partager"
-                                                onClick={async () => {
-                                                    const text = `${hikma.fr}\n— ${hikma.source}\n\nvia HikmaClips`;
-                                                    if (navigator.share) {
-                                                        await navigator.share({ title: 'Sagesse Islamique', text });
-                                                    } else {
-                                                        await navigator.clipboard.writeText(text);
-                                                        toast({ title: 'Copié !', description: 'La citation a été copiée.' });
-                                                    }
-                                                }}
-                                            >
-                                                <Share2 className="w-5 h-5" />
-                                            </button>
-                                        </div>
-                                    </CardContent>
-                                </Card>
-                            </motion.div>
-                        ))}
+      <main className="relative mx-auto -mt-4 min-h-[calc(100vh-158px)] max-w-2xl rounded-t-[30px] bg-[#FBFAF7] px-4 pb-32 pt-7">
+        <p className="mb-3 text-[10px] font-extrabold uppercase tracking-[0.2em] text-[#9AA39B]">
+          {favorites.length} pépite{favorites.length === 1 ? '' : 's'} enregistrée{favorites.length === 1 ? '' : 's'}
+        </p>
+
+        {isLoading && (
+          <div className="grid gap-3">
+            {[0, 1, 2].map((i) => <Skeleton key={i} className="h-32 rounded-[20px]" />)}
+          </div>
+        )}
+
+        <AnimatePresence mode="popLayout">
+          {!isLoading && favorites.length === 0 ? (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="mt-4 rounded-[20px] border-2 border-dashed border-[#DCD8CE] px-6 py-16 text-center"
+            >
+              <span className="mx-auto mb-4 grid h-14 w-14 place-items-center rounded-2xl bg-[#E8F5EC] text-[#2E9E44]">
+                <Bookmark className="h-6 w-6" />
+              </span>
+              <p className="font-bold">Aucun favori pour le moment</p>
+              <p className="mt-1 text-sm text-[#7A857D]">Les rappels aimés apparaîtront ici.</p>
+            </motion.div>
+          ) : (
+            <div className="grid gap-3">
+              {favorites.map((hikma, index) => (
+                <motion.article
+                  key={hikma.fr}
+                  layout
+                  initial={{ opacity: 0, y: 14 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.96 }}
+                  transition={{ delay: index * 0.035 }}
+                  className="rounded-[20px] border border-[#ECE8DF] bg-white p-4 shadow-[0_8px_22px_-10px_rgba(16,61,36,0.18)]"
+                >
+                  {hikma.arabe && (
+                    <p dir="rtl" className="mb-2 text-right text-[19px] leading-[1.8] text-[#15703A] [font-family:Amiri,serif]">
+                      {hikma.arabe}
+                    </p>
+                  )}
+                  <p className="text-[13px] font-medium leading-[1.55] text-[#333F38]">{hikma.fr}</p>
+                  <div className="mt-3 flex items-center justify-between border-t border-[#F0ECE3] pt-3">
+                    <span className="text-[9px] font-extrabold uppercase tracking-[0.16em] text-[#B96C05]">{hikma.source}</span>
+                    <div className="flex gap-1.5">
+                      <button
+                        onClick={() => handleShare(hikma)}
+                        aria-label="Partager"
+                        className="grid h-8 w-8 place-items-center rounded-[10px] bg-[#F5F1E8] text-[#7A857D] hover:text-[#15703A]"
+                      >
+                        <Share2 className="h-3.5 w-3.5" />
+                      </button>
+                      <button
+                        onClick={() => handleRemove(hikma)}
+                        aria-label="Retirer des favoris"
+                        className="grid h-8 w-8 place-items-center rounded-[10px] bg-red-50 text-red-400 hover:bg-red-100"
+                      >
+                        <Trash2 className="h-3.5 w-3.5" />
+                      </button>
                     </div>
-                )}
-            </AnimatePresence>
-        </div>
-    )
+                  </div>
+                </motion.article>
+              ))}
+            </div>
+          )}
+        </AnimatePresence>
+      </main>
+
+      <HikmaAppDock active="library" />
+    </div>
+  );
 }

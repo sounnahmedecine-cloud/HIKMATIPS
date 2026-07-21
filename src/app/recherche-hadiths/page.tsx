@@ -21,7 +21,6 @@ import {
   ShieldCheck,
   Bot,
   GraduationCap,
-  Library,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -36,6 +35,7 @@ import {
 } from '@/ai/flows/search-hadith-agent';
 import { Share } from '@capacitor/share';
 import Link from 'next/link';
+import { HikmaAppDock } from '@/components/HikmaAppDock';
 
 // ─── Quick suggestions ────────────────────────────────────────────
 const SUGGESTIONS = [
@@ -139,7 +139,7 @@ function ResultCard({
       animate={{ opacity: 1, y: 0, scale: 1 }}
       transition={{ duration: 0.35, delay: index * 0.06, ease: 'easeOut' }}
     >
-      <Card className="group border-none shadow-lg hover:shadow-2xl transition-all duration-500 rounded-[1.8rem] overflow-hidden bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl relative">
+      <Card className="group relative overflow-hidden rounded-[20px] border border-[#ECE8DF] bg-white shadow-[0_8px_22px_-10px_rgba(16,61,36,0.18)] transition-shadow hover:shadow-[0_14px_30px_-10px_rgba(16,61,36,0.24)]">
         {/* Fiability badge */}
         <div className="absolute top-4 right-4 z-10">
           <span
@@ -162,7 +162,7 @@ function ResultCard({
           {/* Arabic text */}
           {result.textArabe && (
             <p
-              className="text-xl font-arabic text-slate-800 dark:text-slate-200 leading-loose text-right"
+              className="text-right text-xl leading-loose text-[#15703A] [font-family:Amiri,serif]"
               dir="rtl"
             >
               {result.textArabe}
@@ -170,7 +170,7 @@ function ResultCard({
           )}
 
           {/* French text */}
-          <p className="text-[15px] text-slate-700 dark:text-slate-200 font-medium leading-relaxed">
+          <p className="text-[15px] font-medium leading-relaxed text-[#333F38]">
             {displayText}
           </p>
 
@@ -188,8 +188,8 @@ function ResultCard({
           )}
 
           {/* Source & meta */}
-          <div className="flex items-center gap-3 pt-3 border-t border-slate-100 dark:border-slate-800">
-            <div className="w-9 h-9 rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center shadow-md shadow-emerald-500/20">
+          <div className="flex items-center gap-3 border-t border-[#F0ECE3] pt-3">
+            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[linear-gradient(160deg,#15703A_0%,#2E9E44_55%,#F5960F_132%)] shadow-md shadow-emerald-500/20">
               <BookOpen className="h-4 w-4 text-white" />
             </div>
             <div className="flex-1 min-w-0">
@@ -215,7 +215,7 @@ function ResultCard({
             </button>
             <button
               onClick={handleShare}
-              className="p-2.5 text-slate-400 hover:text-purple-500 hover:bg-purple-50 dark:hover:bg-purple-900/20 rounded-xl transition-all active:scale-90"
+              className="rounded-xl p-2.5 text-[#9AA39B] transition-all hover:bg-[#E8F5EC] hover:text-[#2E9E44] active:scale-90"
               title="Partager"
             >
               <Share2 className="h-4 w-4" />
@@ -281,6 +281,7 @@ export default function RechercheHadithsPage() {
 
   // Load history & favorites on mount
   useEffect(() => {
+    window.scrollTo(0, 0);
     setSearchHistory(loadSearchHistory());
     setFavorites(getFavorites().map((f: any) => f.fr));
   }, []);
@@ -361,51 +362,37 @@ export default function RechercheHadithsPage() {
   };
 
   return (
-    <div className="max-w-3xl mx-auto space-y-6 pb-32 relative">
+    <div className="fixed inset-0 z-10 overflow-y-auto bg-[#FBFAF7] text-[#14201A] [font-family:var(--font-hikma-ui)]">
       {/* ─── Header ─── */}
-      <header className="text-center pt-4 space-y-3">
-        <div className="flex items-center justify-between">
-          <Link href="/generateur" className="p-2 rounded-xl hover:bg-muted transition-colors">
-            <ArrowLeft className="w-5 h-5 text-muted-foreground" />
-          </Link>
-          <div className="flex-1" />
-          <button
-            onClick={() => setShowHistory(!showHistory)}
-            className={cn(
-              'p-2 rounded-xl transition-colors relative',
-              showHistory ? 'bg-primary/10 text-primary' : 'hover:bg-muted text-muted-foreground'
-            )}
-          >
-            <History className="w-5 h-5" />
-            {searchHistory.length > 0 && (
-              <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-primary text-white text-[8px] font-bold rounded-full flex items-center justify-center">
-                {searchHistory.length}
-              </span>
-            )}
-          </button>
-        </div>
-
-        <div className="space-y-2">
-          <div className="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br from-emerald-400 via-teal-500 to-cyan-600 flex items-center justify-center shadow-lg shadow-emerald-500/30">
-            <Library className="w-8 h-8 text-white" />
+      <header className="relative h-[184px] overflow-hidden bg-[linear-gradient(160deg,#15703A_0%,#2E9E44_55%,#F5960F_132%)] px-5 pt-[max(2.5rem,env(safe-area-inset-top))] text-white">
+        <div className="absolute left-1/2 top-0 h-56 w-56 -translate-x-1/2 rounded-full bg-white/10 blur-[54px]" />
+        <div className="relative mx-auto max-w-3xl">
+          <div className="flex items-center justify-between">
+            <Link href="/generateur" className="grid h-8 w-8 place-items-center rounded-full bg-white/10 hover:bg-white/20" aria-label="Retour aux clips">
+              <ArrowLeft className="h-4 w-4" />
+            </Link>
+            <button
+              onClick={() => setShowHistory(!showHistory)}
+              className={cn('relative grid h-8 w-8 place-items-center rounded-full', showHistory ? 'bg-white text-[#15703A]' : 'bg-white/10 text-white hover:bg-white/20')}
+              aria-label="Historique"
+            >
+              <History className="h-4 w-4" />
+              {searchHistory.length > 0 && <span className="absolute -right-1 -top-1 grid h-4 w-4 place-items-center rounded-full bg-[#F5960F] text-[8px] font-bold text-white">{searchHistory.length}</span>}
+            </button>
           </div>
-          <h1 className="text-3xl font-black text-slate-900 dark:text-white tracking-tight">
-            Agent <span className="bg-gradient-to-r from-emerald-500 to-teal-500 bg-clip-text text-transparent">Hadith</span>
-          </h1>
-          <p className="text-sm text-slate-500 dark:text-slate-400 max-w-md mx-auto leading-relaxed">
-            Tapez le début ou une partie d&apos;un hadith. L&apos;Agent cherche dans{' '}
-            <span className="font-bold text-emerald-600 dark:text-emerald-400">6 recueils authentiques</span>{' '}
-            (~32 400 hadiths) et complète votre recherche.
-          </p>
+          <h1 className="mt-3 text-[26px] font-bold tracking-[-0.6px] [font-family:var(--font-display)]">Agent Hadith</h1>
+          <p className="mt-1 text-xs font-medium text-white/80">6 recueils authentiques · ~32 400 hadiths</p>
         </div>
       </header>
 
+      <main className="relative mx-auto -mt-[30px] min-h-[calc(100vh-154px)] max-w-3xl rounded-t-[30px] bg-[#FBFAF7] px-4 pb-32 pt-0">
+
       {/* ─── Search Bar ─── */}
-      <div className="relative">
-        <div className="relative group">
-          <div className="absolute -inset-1 bg-gradient-to-r from-emerald-400/20 via-teal-400/20 to-cyan-400/20 rounded-2xl blur-lg opacity-0 group-focus-within:opacity-100 transition-opacity duration-500" />
-          <div className="relative flex items-center bg-white dark:bg-slate-900 border-2 border-slate-200/80 dark:border-slate-700/80 focus-within:border-emerald-400 dark:focus-within:border-emerald-500 rounded-2xl shadow-lg transition-all duration-300">
-            <Search className="w-5 h-5 text-slate-400 ml-4 shrink-0" />
+      <div className="relative z-10 mb-1 -translate-y-1/2">
+        <div className="group relative">
+          <div className="absolute -inset-1 rounded-2xl bg-[#2E9E44]/15 opacity-0 blur-lg transition-opacity group-focus-within:opacity-100" />
+          <div className="relative flex items-center rounded-2xl border border-[#ECE8DF] bg-white shadow-[0_14px_30px_-10px_rgba(16,61,36,0.25)] focus-within:border-[#2E9E44]">
+            <Search className="ml-4 h-5 w-5 shrink-0 text-[#9AA39B]" />
             <input
               ref={inputRef}
               type="text"
@@ -415,7 +402,7 @@ export default function RechercheHadithsPage() {
                 if (e.key === 'Enter') handleSearch();
               }}
               placeholder='Tapez le début d&apos;un hadith...'
-              className="flex-1 h-14 px-3 bg-transparent border-none outline-none text-sm text-slate-800 dark:text-slate-200 placeholder:text-slate-400/70"
+              className="h-14 flex-1 border-none bg-transparent px-3 text-sm text-[#26302B] outline-none placeholder:text-[#B7BEB8]"
               id="hadith-search-input"
             />
             {query && (
@@ -432,7 +419,7 @@ export default function RechercheHadithsPage() {
             <Button
               onClick={() => handleSearch()}
               disabled={isSearching || query.trim().length < 3}
-              className="h-10 px-5 mr-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-bold shadow-lg shadow-emerald-500/30 disabled:opacity-50 transition-all active:scale-95"
+              className="mr-2 h-10 rounded-xl bg-[linear-gradient(160deg,#15703A_0%,#2E9E44_55%,#F5960F_132%)] px-5 font-bold text-white shadow-[0_8px_18px_rgba(46,158,68,0.30)] transition-all active:scale-95 disabled:opacity-50"
               id="hadith-search-button"
             >
               {isSearching ? (
@@ -509,7 +496,7 @@ export default function RechercheHadithsPage() {
           </div>
 
           {/* Info cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-6">
+          <div className="mt-6 grid grid-cols-1 gap-3">
             <Card className="border-none shadow-md rounded-2xl bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20">
               <CardContent className="p-4 flex gap-3">
                 <div className="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-800/40 flex items-center justify-center shrink-0">
@@ -521,21 +508,6 @@ export default function RechercheHadithsPage() {
                   </p>
                   <p className="text-[10px] text-emerald-600/70 dark:text-emerald-400/60 mt-0.5 leading-relaxed">
                     Bukhari, Muslim, Abu Dawud, Nasa&apos;i, Ibn Majah, Malik
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-            <Card className="border-none shadow-md rounded-2xl bg-gradient-to-br from-violet-50 to-purple-50 dark:from-violet-900/20 dark:to-purple-900/20">
-              <CardContent className="p-4 flex gap-3">
-                <div className="w-10 h-10 rounded-xl bg-violet-100 dark:bg-violet-800/40 flex items-center justify-center shrink-0">
-                  <Bot className="w-5 h-5 text-violet-600 dark:text-violet-400" />
-                </div>
-                <div>
-                  <p className="text-xs font-bold text-violet-800 dark:text-violet-300">
-                    IA comme renfort
-                  </p>
-                  <p className="text-[10px] text-violet-600/70 dark:text-violet-400/60 mt-0.5 leading-relaxed">
-                    Si la base locale ne suffit pas, l&apos;Agent IA identifie le hadith.
                   </p>
                 </div>
               </CardContent>
@@ -554,7 +526,7 @@ export default function RechercheHadithsPage() {
             className="flex flex-col items-center justify-center py-16 space-y-4"
           >
             <div className="relative">
-              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center shadow-lg shadow-emerald-500/30 animate-pulse">
+              <div className="flex h-16 w-16 animate-pulse items-center justify-center rounded-2xl bg-[linear-gradient(160deg,#15703A_0%,#2E9E44_55%,#F5960F_132%)] shadow-lg shadow-emerald-500/30">
                 <Search className="w-7 h-7 text-white" />
               </div>
               <div className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-white dark:bg-slate-900 flex items-center justify-center shadow-md">
@@ -658,7 +630,7 @@ export default function RechercheHadithsPage() {
               <div className="p-5">
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-[linear-gradient(160deg,#15703A_0%,#2E9E44_55%,#F5960F_132%)]">
                       <GraduationCap className="w-4 h-4 text-white" />
                     </div>
                     <span className="text-sm font-bold text-slate-800 dark:text-white">
@@ -678,7 +650,7 @@ export default function RechercheHadithsPage() {
                 <ScrollArea className="max-h-[50vh]">
                   {isExplaining ? (
                     <div className="flex items-center gap-3 py-8 justify-center">
-                      <Loader2 className="w-5 h-5 animate-spin text-violet-500" />
+                      <Loader2 className="h-5 w-5 animate-spin text-[#2E9E44]" />
                       <span className="text-sm text-slate-500">L&apos;Agent prépare l&apos;explication...</span>
                     </div>
                   ) : explanation ? (
@@ -696,6 +668,8 @@ export default function RechercheHadithsPage() {
           </motion.div>
         )}
       </AnimatePresence>
+      </main>
+      <HikmaAppDock active="search" />
     </div>
   );
 }

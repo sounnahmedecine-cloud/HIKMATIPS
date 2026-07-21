@@ -1,248 +1,266 @@
-"use client"
+'use client';
 
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useTheme } from 'next-themes';
 import { useRouter } from 'next/navigation';
-import { Settings, Moon, Sun, Shield, FileText, Info, ExternalLink, User, LogOut, Bell, Palette } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Switch } from '@/components/ui/switch';
-import { Label } from '@/components/ui/label';
-import { Button } from '@/components/ui/button';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { useUser } from '@/firebase';
+import { Bell, ExternalLink, FileText, Flame, Heart, Info, LogOut, Moon, Palette, Shield, Sparkles, Sun, User } from 'lucide-react';
 import { signOut } from 'firebase/auth';
-import { useAuth } from '@/firebase';
-import { NotificationService } from '@/lib/notifications';
+import { useAuth, useUser } from '@/firebase';
+import {
+  DEFAULT_REMINDER_PREFERENCES,
+  NotificationService,
+  REMINDER_DEFINITIONS,
+  type ReminderKey,
+  type ReminderPreferences,
+} from '@/lib/notifications';
 import { getUserStats, type UserStats } from '@/lib/utils';
+import { HikmaAppDock } from '@/components/HikmaAppDock';
+import { Switch } from '@/components/ui/switch';
+import { useToast } from '@/hooks/use-toast';
 
-const reminderTimes = {
-  'Fajr': { hour: 5, minute: 30 },
-  'Midi': { hour: 12, minute: 0 },
-  'Isha': { hour: 20, minute: 30 },
-};
+const themeOptions = [
+  { value: 'light', label: 'Clair', icon: Sun },
+  { value: 'dark', label: 'Nuit', icon: Moon },
+  { value: 'maroc', label: 'Zellige', icon: Sparkles },
+];
 
-export default function ParametresPage() {
+export default function SettingsPage() {
   const { theme, setTheme } = useTheme();
   const router = useRouter();
   const [mounted, setMounted] = useState(false);
-  const [notifications, setNotifications] = useState(true);
-  const [selectedReminder, setSelectedReminder] = useState<string | null>(null);
+  const [notifications, setNotifications] = useState(false);
+  const [reminders, setReminders] = useState<ReminderPreferences>(DEFAULT_REMINDER_PREFERENCES);
+  const [isSavingNotifications, setIsSavingNotifications] = useState(false);
   const [stats, setStats] = useState<UserStats>({ streak: 0, lastVisit: '', totalVisits: 0, favoritesCount: 0 });
   const { user, isUserLoading } = useUser();
   const auth = useAuth();
+  const { toast } = useToast();
 
   useEffect(() => {
+    window.scrollTo(0, 0);
     setMounted(true);
-    checkNotificationStatus();
-    const savedReminder = localStorage.getItem('hikma_reminder_time');
-    if (savedReminder) setSelectedReminder(savedReminder);
+    setReminders(NotificationService.getPreferences());
+    void NotificationService.isEnabled().then(setNotifications).catch(() => setNotifications(false));
     setStats(getUserStats());
   }, []);
 
-  const checkNotificationStatus = async () => {
-    const enabled = await NotificationService.isEnabled();
-    setNotifications(enabled);
+  const handleNotificationToggle = async (checked: boolean) => {
+    setIsSavingNotifications(true);
+    try {
+      if (checked) {
+        const next = REMINDER_DEFINITIONS.some(({ key }) => reminders[key].enabled)
+          ? reminders
+          : DEFAULT_REMINDER_PREFERENCES;
+        setReminders(next);
+        const enabled = await NotificationService.scheduleDailyReminders(next);
+        setNotifications(enabled);
+        toast({
+          title: enabled ? 'Rappels activés' : 'Notifications refusées',
+          description: enabled
+            ? 'Vos Hikma du Fajr, de midi et d’Isha sont programmées.'
+            : 'Autorisez les notifications dans les réglages du téléphone.',
+          variant: enabled ? 'default' : 'destructive',
+        });
+      } else {
+        await NotificationService.cancelDailyReminders();
+        setNotifications(false);
+        toast({ title: 'Rappels en pause', description: 'Vos horaires sont conservés.' });
+      }
+    } catch {
+      setNotifications(false);
+      toast({
+        variant: 'destructive',
+        title: 'Programmation impossible',
+        description: 'Vérifiez les autorisations de notification de l’application.',
+      });
+    } finally {
+      setIsSavingNotifications(false);
+    }
   };
 
-  const handleNotificationToggle = async (checked: boolean) => {
-    if (checked) {
-      const success = await NotificationService.scheduleDailyReminder();
-      setNotifications(success);
-    } else {
-      await NotificationService.cancelDailyReminders();
-      setNotifications(false);
+  const updateReminder = async (key: ReminderKey, patch: Partial<ReminderPreferences[ReminderKey]>) => {
+    const next: ReminderPreferences = {
+      ...reminders,
+      [key]: { ...reminders[key], ...patch },
+    };
+    setReminders(next);
+    NotificationService.savePreferences(next);
+
+    if (!notifications) return;
+
+    setIsSavingNotifications(true);
+    try {
+      const hasActiveReminder = REMINDER_DEFINITIONS.some(({ key: reminderKey }) => next[reminderKey].enabled);
+      if (hasActiveReminder) {
+        const enabled = await NotificationService.scheduleDailyReminders(next);
+        setNotifications(enabled);
+      } else {
+        await NotificationService.cancelDailyReminders();
+        setNotifications(false);
+      }
+    } catch {
+      toast({
+        variant: 'destructive',
+        title: 'Horaire non enregistré',
+        description: 'Réessayez ou vérifiez les autorisations du téléphone.',
+      });
+    } finally {
+      setIsSavingNotifications(false);
     }
   };
 
   if (!mounted) return null;
 
-  const handleSignOut = async () => {
-    if (!auth) return;
-    try {
-      await signOut(auth);
-    } catch (e) {
-      console.error('Erreur de déconnexion:', e);
-    }
-  };
+  const userName = user?.displayName || user?.email?.split('@')[0] || 'Invité HikmaClips';
+  const userEmail = user?.email || 'Connectez-vous pour synchroniser vos favoris';
+  const initial = user?.email?.[0]?.toUpperCase() || 'H';
 
   return (
-    <div className="min-h-full pb-32 max-w-2xl mx-auto p-4">
-      <div className="mb-8 pt-6">
-        <h1 className="text-3xl font-bold text-slate-900 dark:text-purple-50 mb-2">Paramètres</h1>
-        <p className="text-slate-500 dark:text-slate-400">Gérez vos préférences et votre routine spirituelle.</p>
-      </div>
-
-      <div className="space-y-6">
-        {/* Account Section */}
-        <Card className="border-none bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm rounded-3xl overflow-hidden shadow-xl shadow-slate-200/50 dark:shadow-none">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-lg flex items-center gap-2">
-              <User className="h-5 w-5 text-purple-500" />
-              Compte
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            {isUserLoading ? (
-              <div className="flex justify-center py-4">
-                <div className="animate-spin h-6 w-6 border-2 border-purple-500 border-t-transparent rounded-full" />
-              </div>
-            ) : user ? (
-              <div className="space-y-4">
-                <div className="flex items-center gap-4">
-                  <div className="h-14 w-14 rounded-full bg-purple-100 dark:bg-purple-800/30 flex items-center justify-center text-xl font-bold text-purple-500">
-                    {user.email?.[0]?.toUpperCase() || 'U'}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <h2 className="font-semibold truncate">{user.displayName || 'Utilisateur'}</h2>
-                    <p className="text-sm text-muted-foreground truncate">{user.email}</p>
-                  </div>
-                </div>
-                <Button
-                  variant="outline"
-                  className="w-full flex items-center gap-2 text-destructive border-red-100 dark:border-red-900/30 hover:bg-red-50 dark:hover:bg-red-900/20"
-                  onClick={handleSignOut}
-                >
-                  <LogOut className="h-4 w-4" />
-                  Se déconnecter
-                </Button>
-              </div>
+    <div className="fixed inset-0 z-10 overflow-y-auto bg-[#FBFAF7] text-[#14201A] [font-family:var(--font-hikma-ui)]">
+      <header className="relative h-[200px] overflow-hidden bg-[linear-gradient(160deg,#15703A_0%,#2E9E44_55%,#F5960F_132%)] px-5 pt-[max(2.5rem,env(safe-area-inset-top))] text-white">
+        <div className="absolute left-1/2 top-0 h-60 w-60 -translate-x-1/2 rounded-full bg-white/10 blur-[55px]" />
+        <div className="relative mx-auto max-w-2xl">
+          <h1 className="text-[26px] font-bold tracking-[-0.6px] [font-family:var(--font-display)]">Réglages</h1>
+          <div className="mt-4 flex items-center gap-3 rounded-2xl border border-white/25 bg-white/15 p-3 backdrop-blur-xl">
+            <div className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-white text-lg font-extrabold text-[#15703A] [font-family:var(--font-display)]">{initial}</div>
+            <div className="min-w-0 flex-1">
+              <p className="truncate text-[13px] font-bold">{isUserLoading ? 'Chargement…' : userName}</p>
+              <p className="mt-0.5 truncate text-[11px] text-white/80">{userEmail}</p>
+            </div>
+            {user ? (
+              <button onClick={() => auth && signOut(auth)} aria-label="Se déconnecter" className="grid h-8 w-8 place-items-center rounded-full bg-black/10 text-white/80">
+                <LogOut className="h-4 w-4" />
+              </button>
             ) : (
-              <div className="text-center py-4 space-y-4">
-                <p className="text-sm text-muted-foreground">
-                  Connectez-vous pour synchroniser vos favoris et vos rappels.
-                </p>
-                <Button className="w-full bg-purple-500 hover:bg-purple-500" onClick={() => window.location.href = '/generateur'}>
-                  S'identifier
-                </Button>
-              </div>
+              <button onClick={() => router.push('/generateur')} className="rounded-full bg-white px-3 py-2 text-[10px] font-bold text-[#15703A]">S’identifier</button>
             )}
-          </CardContent>
-        </Card>
+          </div>
+        </div>
+      </header>
 
-        {/* Customization Section */}
-        <Card className="border-none bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm rounded-3xl overflow-hidden shadow-xl shadow-slate-200/50 dark:shadow-none">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-lg flex items-center gap-2">
-              <Palette className="h-5 w-5 text-purple-500" />
-              Personnalisation
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            <div className="space-y-2">
-              <Label>Thème Visuel</Label>
-              <Select value={theme} onValueChange={setTheme}>
-                <SelectTrigger className="w-full h-12 rounded-xl border-purple-100 dark:border-purple-700 bg-white/50 dark:bg-slate-900/50">
-                  <SelectValue placeholder="Choisir un thème" />
-                </SelectTrigger>
-                <SelectContent className="rounded-xl border-purple-100 dark:border-purple-700">
-                  <SelectItem value="light">Classique (Clair)</SelectItem>
-                  <SelectItem value="dark">Sombre (Nuit)</SelectItem>
-                  <SelectItem value="system">Système</SelectItem>
-                  <SelectItem value="maroc">Marocain (Vert/Or Zellige)</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </CardContent>
-        </Card>
+      <main className="relative mx-auto -mt-[18px] min-h-[calc(100vh-182px)] max-w-2xl rounded-t-[30px] bg-[#FBFAF7] px-4 pb-32 pt-6">
+        <section className="mb-3 rounded-[20px] border border-[#ECE8DF] bg-white p-4 shadow-[0_8px_22px_-10px_rgba(16,61,36,0.18)]">
+          <h2 className="mb-3 flex items-center gap-2 text-[10px] font-extrabold uppercase tracking-[0.16em] text-[#9AA39B]">
+            <Palette className="h-4 w-4 text-[#2E9E44]" /> Personnalisation
+          </h2>
+          <div className="grid grid-cols-3 gap-2">
+            {themeOptions.map((option) => {
+              const Icon = option.icon;
+              const selected = theme === option.value;
+              return (
+                <button
+                  key={option.value}
+                  onClick={() => setTheme(option.value)}
+                  className={`flex items-center justify-center gap-1.5 rounded-[11px] py-2.5 text-[11px] font-semibold transition-all ${selected ? 'bg-[linear-gradient(160deg,#15703A_0%,#2E9E44_55%,#F5960F_132%)] text-white shadow-md' : 'bg-[#F5F1E8] text-[#9AA39B]'}`}
+                >
+                  <Icon className="h-3.5 w-3.5" /> {option.label}
+                </button>
+              );
+            })}
+          </div>
+        </section>
 
-        {/* Notifications Section */}
-        <Card className="border-none bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm rounded-3xl overflow-hidden shadow-xl shadow-slate-200/50 dark:shadow-none">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-lg flex items-center gap-2">
-              <Bell className="h-5 w-5 text-purple-500" />
-              Notifications & Rappels
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            <div className="flex items-center justify-between">
-              <div className="space-y-0.5">
-                <Label>Rappels Quotidiens</Label>
-                <p className="text-xs text-muted-foreground">Recevez une Hikma chaque jour.</p>
+        <section className="mb-3 overflow-hidden rounded-[20px] border border-[#DDEBDF] bg-white shadow-[0_10px_26px_-12px_rgba(16,61,36,0.22)]">
+          <div className="relative overflow-hidden bg-[linear-gradient(145deg,#15703A_0%,#2E9E44_72%,#F5960F_150%)] px-4 py-4 text-white">
+            <div className="absolute -right-8 -top-14 h-32 w-32 rounded-full bg-white/15 blur-[2px]" />
+            <div className="relative flex items-center gap-3">
+              <div className="grid h-10 w-10 shrink-0 place-items-center rounded-[14px] border border-white/20 bg-white/15 backdrop-blur-md">
+                <Bell className="h-5 w-5" />
               </div>
-              <Switch checked={notifications} onCheckedChange={handleNotificationToggle} />
-            </div>
-
-            <div className="space-y-3 pt-2">
-              <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Moments Clés</Label>
-              <div className="grid grid-cols-3 gap-2">
-                {(['Fajr', 'Midi', 'Isha'] as const).map((time) => (
-                  <Button
-                    key={time}
-                    variant={selectedReminder === time ? 'default' : 'outline'}
-                    size="sm"
-                    className="rounded-full h-10 border-purple-100 dark:border-purple-700 hover:bg-purple-50 dark:hover:bg-purple-800/20"
-                    onClick={async () => {
-                      const { hour, minute } = reminderTimes[time];
-                      await NotificationService.scheduleDailyReminder(hour, minute);
-                      localStorage.setItem('hikma_reminder_time', time);
-                      setSelectedReminder(time);
-                    }}
-                  >
-                    {time}
-                  </Button>
-                ))}
-              </div>
-              {selectedReminder && (
-                <p className="text-xs text-muted-foreground text-center">
-                  Rappel actif : {selectedReminder} — {reminderTimes[selectedReminder as keyof typeof reminderTimes].hour}h{String(reminderTimes[selectedReminder as keyof typeof reminderTimes].minute).padStart(2, '0')}
+              <div className="min-w-0 flex-1">
+                <h2 className="text-[14px] font-bold">Hikma au bon moment</h2>
+                <p className="mt-0.5 text-[10px] font-medium text-white/75">
+                  {notifications
+                    ? `${REMINDER_DEFINITIONS.filter(({ key }) => reminders[key].enabled).length} rappels programmés chaque jour`
+                    : 'Activez vos rappels spirituels quotidiens'}
                 </p>
-              )}
+              </div>
+              <Switch
+                checked={notifications}
+                onCheckedChange={handleNotificationToggle}
+                disabled={isSavingNotifications}
+                aria-label="Activer tous les rappels quotidiens"
+                className="data-[state=checked]:bg-white data-[state=unchecked]:bg-black/20 [&>span]:data-[state=checked]:bg-[#2E9E44]"
+              />
             </div>
-          </CardContent>
-        </Card>
+          </div>
 
-        {/* Stats Section */}
-        <Card className="border-none bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm rounded-3xl overflow-hidden shadow-xl shadow-slate-200/50 dark:shadow-none">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-lg flex items-center gap-2">
-              <span className="text-purple-500 text-xl">📊</span>
-              Mes Statistiques
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-3 gap-3">
-              <div className="text-center p-4 rounded-2xl bg-purple-50 dark:bg-purple-900/20">
-                <p className="text-2xl font-black text-purple-500">🔥 {stats.streak}</p>
-                <p className="text-xs text-muted-foreground mt-1 font-medium">Jours consécutifs</p>
-              </div>
-              <div className="text-center p-4 rounded-2xl bg-emerald-50 dark:bg-emerald-900/20">
-                <p className="text-2xl font-black text-emerald-500">{stats.totalVisits}</p>
-                <p className="text-xs text-muted-foreground mt-1 font-medium">Visites totales</p>
-              </div>
-              <div className="text-center p-4 rounded-2xl bg-rose-50 dark:bg-rose-900/20">
-                <p className="text-2xl font-black text-rose-500">❤️ {stats.favoritesCount}</p>
-                <p className="text-xs text-muted-foreground mt-1 font-medium">Favoris</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+          <div className="divide-y divide-[#F0ECE3] px-4">
+            {REMINDER_DEFINITIONS.map((definition) => {
+              const preference = reminders[definition.key];
+              const MomentIcon = definition.key === 'fajr' ? Sparkles : definition.key === 'midi' ? Sun : Moon;
+              const iconClass = definition.key === 'fajr'
+                ? 'bg-[#FFF4DE] text-[#F5960F]'
+                : definition.key === 'midi'
+                  ? 'bg-[#FFF8D9] text-[#D79B00]'
+                  : 'bg-[#E8F0EC] text-[#15703A]';
 
-        {/* Legal Section */}
-        <Card className="border-none bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm rounded-3xl overflow-hidden shadow-xl shadow-slate-200/50 dark:shadow-none">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-lg flex items-center gap-2">
-              <Shield className="h-5 w-5 text-purple-500" />
-              Légal & Info
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="p-0">
-            <div className="divide-y divide-purple-50 dark:divide-purple-800/30">
-              <button className="w-full h-14 px-6 flex items-center justify-between hover:bg-purple-50 dark:hover:bg-purple-800/10 transition-colors" onClick={() => router.push('/privacy-policy')}>
-                <span className="flex items-center gap-3 text-sm font-medium">
-                  <FileText className="h-4 w-4" /> Politique de confidentialité
-                </span>
-                <ExternalLink className="h-4 w-4 opacity-30" />
-              </button>
-              <button className="w-full h-14 px-6 flex items-center justify-between hover:bg-purple-50 dark:hover:bg-purple-800/10 transition-colors" onClick={() => router.push('/updates')}>
-                <span className="flex items-center gap-3 text-sm font-medium">
-                  <Info className="h-4 w-4" /> À propos de HikmaClips
-                </span>
-                <span className="text-xs opacity-40">v1.2.0</span>
-              </button>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+              return (
+                <div key={definition.key} className="flex items-center gap-3 py-3.5">
+                  <div className={`grid h-10 w-10 shrink-0 place-items-center rounded-[13px] ${iconClass}`}>
+                    <MomentIcon className="h-[18px] w-[18px]" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-2">
+                      <p className="text-[12px] font-bold text-[#26302B]">{definition.label}</p>
+                      <input
+                        type="time"
+                        value={preference.time}
+                        onChange={(event) => void updateReminder(definition.key, { time: event.target.value })}
+                        disabled={isSavingNotifications || !preference.enabled}
+                        aria-label={`Horaire du rappel ${definition.label}`}
+                        className="h-7 rounded-lg border border-[#E5E1D8] bg-[#F8F6F0] px-2 text-[10px] font-bold text-[#15703A] outline-none focus:border-[#2E9E44] disabled:opacity-45"
+                      />
+                    </div>
+                    <p className="mt-1 truncate text-[9px] font-medium text-[#9AA39B]">{definition.moment}</p>
+                  </div>
+                  <Switch
+                    checked={preference.enabled}
+                    onCheckedChange={(enabled) => void updateReminder(definition.key, { enabled })}
+                    disabled={isSavingNotifications}
+                    aria-label={`Activer le rappel ${definition.label}`}
+                  />
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="border-t border-[#F0ECE3] bg-[#FBFAF7] px-4 py-3">
+            <p className="text-[9px] font-medium leading-relaxed text-[#8A948D]">
+              {NotificationService.isNative()
+                ? 'Les rappels sont envoyés même lorsque l’application est fermée. Ajustez Fajr et Isha selon votre ville et la saison.'
+                : 'Les horaires sont enregistrés et seront appliqués dans l’application mobile. Ajustez Fajr et Isha selon votre ville et la saison.'}
+            </p>
+          </div>
+        </section>
+
+        <section className="mb-3 grid grid-cols-3 gap-2">
+          <div className="rounded-[18px] border border-[#ECE8DF] bg-white p-3 text-center shadow-[0_8px_22px_-12px_rgba(16,61,36,0.18)]">
+            <p className="flex items-center justify-center gap-1 text-xl font-extrabold text-[#2E9E44] [font-family:var(--font-display)]"><Flame className="h-4 w-4" /> {stats.streak}</p>
+            <p className="mt-1 text-[9px] font-semibold text-[#9AA39B]">Jours</p>
+          </div>
+          <div className="rounded-[18px] border border-[#ECE8DF] bg-white p-3 text-center shadow-[0_8px_22px_-12px_rgba(16,61,36,0.18)]">
+            <p className="text-xl font-extrabold text-[#15703A] [font-family:var(--font-display)]">{stats.totalVisits}</p>
+            <p className="mt-1 text-[9px] font-semibold text-[#9AA39B]">Visites</p>
+          </div>
+          <div className="rounded-[18px] border border-[#ECE8DF] bg-white p-3 text-center shadow-[0_8px_22px_-12px_rgba(16,61,36,0.18)]">
+            <p className="flex items-center justify-center gap-1 text-xl font-extrabold text-[#F5960F] [font-family:var(--font-display)]"><Heart className="h-4 w-4" fill="currentColor" /> {stats.favoritesCount}</p>
+            <p className="mt-1 text-[9px] font-semibold text-[#9AA39B]">Favoris</p>
+          </div>
+        </section>
+
+        <section className="overflow-hidden rounded-[20px] border border-[#ECE8DF] bg-white shadow-[0_8px_22px_-10px_rgba(16,61,36,0.18)]">
+          <h2 className="flex items-center gap-2 px-4 pb-2 pt-4 text-[10px] font-extrabold uppercase tracking-[0.16em] text-[#9AA39B]"><Shield className="h-4 w-4 text-[#2E9E44]" /> Informations</h2>
+          <button onClick={() => router.push('/privacy-policy')} className="flex w-full items-center justify-between border-b border-[#F0ECE3] px-4 py-3.5 text-left text-xs font-semibold hover:bg-[#F8F6F0]">
+            <span className="flex items-center gap-2"><FileText className="h-4 w-4 text-[#7A857D]" /> Confidentialité</span><ExternalLink className="h-3.5 w-3.5 text-[#C4CBC5]" />
+          </button>
+          <button onClick={() => router.push('/updates')} className="flex w-full items-center justify-between px-4 py-3.5 text-left text-xs font-semibold hover:bg-[#F8F6F0]">
+            <span className="flex items-center gap-2"><Info className="h-4 w-4 text-[#7A857D]" /> À propos de HikmaClips</span><span className="text-[10px] text-[#B7BEB8]">v1.3.0</span>
+          </button>
+        </section>
+      </main>
+
+      <HikmaAppDock active="settings" />
     </div>
   );
 }

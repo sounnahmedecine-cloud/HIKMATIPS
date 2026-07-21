@@ -52,10 +52,7 @@ async function searchWithAI(
     localResults: HadithSearchResult[]
 ): Promise<HadithSearchResult[]> {
     const apiKey = GEMINI_API_KEY;
-    if (!apiKey) {
-        console.error('Clé API Gemini manquante pour la recherche IA');
-        return [];
-    }
+    if (!apiKey) return [];
 
     const localContext = localResults.length > 0
         ? `\nJ'ai déjà trouvé ces résultats dans ma base locale :\n${localResults.slice(0, 3).map((r, i) =>
@@ -192,8 +189,8 @@ export async function searchHadithAgent(
         };
     }
 
-    // Step 3: AI fallback / enrichment
-    const aiResults = await searchWithAI(query, localResults);
+    // Step 3: AI fallback / enrichment, uniquement lorsqu'une clé est configurée.
+    const aiResults = GEMINI_API_KEY ? await searchWithAI(query, localResults) : [];
 
     // Step 4: Deduplicate (prefer local over AI)
     const localTexts = new Set(
@@ -209,11 +206,11 @@ export async function searchHadithAgent(
     return {
         results: combined,
         totalFound: combined.length,
-        searchMethod: localResults.length > 0 && uniqueAiResults.length > 0
+        searchMethod: uniqueAiResults.length > 0 && localResults.length > 0
             ? 'mixed'
-            : localResults.length > 0
-                ? 'local'
-                : 'ai',
+            : uniqueAiResults.length > 0
+                ? 'ai'
+                : 'local',
         query,
     };
 }
@@ -228,7 +225,7 @@ export async function explainHadith(
     source: string
 ): Promise<string> {
     const apiKey = GEMINI_API_KEY;
-    if (!apiKey) return "Clé API manquante.";
+    if (!apiKey) return "L’explication IA est temporairement indisponible. La recherche dans les recueils authentiques reste active.";
 
     const prompt = `Tu es un enseignant en sciences islamiques (Talib 'Ilm).
 Explique ce hadith de manière pédagogique, simple et inspirante pour un étudiant.

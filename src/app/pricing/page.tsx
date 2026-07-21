@@ -1,145 +1,56 @@
-import { Metadata } from 'next';
+import type { Metadata } from 'next';
 import Link from 'next/link';
-import { Check, Zap, Crown, Heart } from 'lucide-react';
+import { Check, Clapperboard, Crown, PenLine, Sparkles, X, Zap } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'Tarifs — HikmaClips',
-  description: 'Accès gratuit et premium à HikmaClips, votre app de sagesse islamique quotidienne.',
+  title: 'Premium — HikmaClips',
+  description: 'Passez à HikmaClips Premium et diffusez la science sans limites.',
 };
 
-const freePlan = {
-  name: 'Gratuit',
-  price: '0€',
-  period: 'pour toujours',
-  description: 'Pour découvrir HikmaClips',
-  features: [
-    '10 générations IA par session',
-    '3 favoris sauvegardés',
-    'Toutes les catégories (Hadith, Coran, Citadelle...)',
-    'Partage de sagesse',
-    'Rappels quotidiens',
-  ],
-  cta: 'Commencer gratuitement',
-  href: '/',
-  highlighted: false,
-};
-
-const premiumPlan = {
-  name: 'Premium',
-  price: '2,99€',
-  period: 'par mois',
-  description: 'Pour une expérience spirituelle complète',
-  features: [
-    'Générations IA illimitées',
-    'Favoris illimités',
-    'Sync cloud de vos favoris',
-    'Collections personnalisées',
-    'Arrière-plans exclusifs',
-    'Signature personnalisée',
-    'Export haute qualité',
-    'Support prioritaire',
-  ],
-  cta: 'Bientôt disponible',
-  href: '#',
-  highlighted: true,
-};
+const features = [
+  { label: 'Export HD sans filigrane', icon: Clapperboard },
+  { label: 'Fonds & calligraphies exclusifs', icon: Sparkles },
+  { label: 'Générations illimitées', icon: Zap },
+  { label: 'Signature personnalisée', icon: PenLine },
+];
 
 export default function PricingPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-purple-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
-      <header className="border-b border-emerald-100 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md">
-        <div className="container mx-auto flex h-16 items-center justify-between px-4">
-          <Link href="/" className="text-xl font-black bg-gradient-to-r from-emerald-600 to-purple-600 bg-clip-text text-transparent">
-            HikmaClips
-          </Link>
-          <Link href="/" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-            ← Retour
-          </Link>
-        </div>
-      </header>
+    <main className="fixed inset-0 z-10 overflow-y-auto bg-[linear-gradient(160deg,#15703A_0%,#2E9E44_55%,#F5960F_132%)] px-5 py-[max(1.5rem,env(safe-area-inset-top))] text-white [font-family:var(--font-hikma-ui)]">
+      <div className="absolute left-1/2 top-[14%] h-72 w-72 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white/10 blur-[64px]" />
+      <div className="relative mx-auto flex min-h-full max-w-md flex-col">
+        <Link href="/generateur" className="grid h-9 w-9 place-items-center rounded-full bg-white/10 text-white/85 backdrop-blur-xl" aria-label="Fermer">
+          <X className="h-4 w-4" />
+        </Link>
 
-      <main className="container mx-auto px-4 py-16">
-        <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 rounded-full px-4 py-1.5 text-sm font-medium mb-6">
-            <Heart className="w-4 h-4" />
-            Simple et transparent
+        <section className="flex flex-1 flex-col justify-center pb-5 pt-3 text-center">
+          <div className="mx-auto grid h-16 w-16 place-items-center rounded-[20px] border border-white/30 bg-white/15 shadow-[0_16px_36px_rgba(0,0,0,0.20)] backdrop-blur-xl">
+            <Crown className="h-7 w-7" />
           </div>
-          <h1 className="text-4xl sm:text-5xl font-black text-slate-900 dark:text-white mb-4">
-            Choisissez votre{' '}
-            <span className="bg-gradient-to-r from-emerald-500 to-purple-500 bg-clip-text text-transparent">
-              chemin spirituel
-            </span>
-          </h1>
-          <p className="text-lg text-slate-500 dark:text-slate-400 max-w-xl mx-auto">
-            Commencez gratuitement. Évoluez vers Premium quand vous êtes prêt.
-          </p>
-        </div>
+          <p className="mt-4 text-[9px] font-extrabold uppercase tracking-[0.22em] text-white/80">HikmaClips Premium</p>
+          <h1 className="mt-2 text-[28px] font-bold leading-[1.12] tracking-[-0.7px] [font-family:var(--font-display)]">Passe à la vitesse supérieure</h1>
 
-        <div className="grid md:grid-cols-2 gap-8 max-w-3xl mx-auto">
-          {[freePlan, premiumPlan].map((plan) => (
-            <div
-              key={plan.name}
-              className={`relative rounded-3xl p-8 flex flex-col ${
-                plan.highlighted
-                  ? 'bg-gradient-to-br from-emerald-600 to-purple-600 text-white shadow-2xl shadow-emerald-500/30 scale-105'
-                  : 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 shadow-xl'
-              }`}
-            >
-              {plan.highlighted && (
-                <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-                  <span className="bg-yellow-400 text-yellow-900 text-xs font-black px-4 py-1.5 rounded-full flex items-center gap-1">
-                    <Crown className="w-3 h-3" /> RECOMMANDÉ
-                  </span>
-                </div>
-              )}
-
-              <div className="mb-6">
-                <h2 className={`text-xl font-bold mb-1 ${plan.highlighted ? 'text-white' : 'text-slate-900 dark:text-white'}`}>
-                  {plan.name}
-                </h2>
-                <p className={`text-sm mb-4 ${plan.highlighted ? 'text-white/70' : 'text-slate-500'}`}>
-                  {plan.description}
-                </p>
-                <div className="flex items-baseline gap-1">
-                  <span className={`text-5xl font-black ${plan.highlighted ? 'text-white' : 'text-slate-900 dark:text-white'}`}>
-                    {plan.price}
-                  </span>
-                  <span className={`text-sm ${plan.highlighted ? 'text-white/70' : 'text-slate-500'}`}>
-                    /{plan.period}
-                  </span>
-                </div>
+          <div className="mt-7 rounded-[20px] border border-white/20 bg-white/10 px-4 py-1 text-left backdrop-blur-xl">
+            {features.map(({ label, icon: Icon }, index) => (
+              <div key={label} className={`flex items-center gap-3 py-3.5 text-[13px] font-semibold ${index < features.length - 1 ? 'border-b border-white/15' : ''}`}>
+                <Icon className="h-[18px] w-[18px]" /> {label}
               </div>
+            ))}
+          </div>
+        </section>
 
-              <ul className="space-y-3 flex-1 mb-8">
-                {plan.features.map((feature) => (
-                  <li key={feature} className="flex items-start gap-3">
-                    <Check className={`w-5 h-5 mt-0.5 flex-shrink-0 ${plan.highlighted ? 'text-white' : 'text-emerald-500'}`} />
-                    <span className={`text-sm ${plan.highlighted ? 'text-white/90' : 'text-slate-600 dark:text-slate-300'}`}>
-                      {feature}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-
-              <Link
-                href={plan.href}
-                className={`block text-center py-3.5 px-6 rounded-2xl font-bold text-sm transition-all ${
-                  plan.highlighted
-                    ? 'bg-white text-emerald-600 hover:bg-white/90 shadow-lg'
-                    : 'bg-emerald-500 hover:bg-emerald-600 text-white'
-                }`}
-              >
-                <Zap className="w-4 h-4 inline mr-2" />
-                {plan.cta}
-              </Link>
+        <section className="pb-[max(0.5rem,env(safe-area-inset-bottom))]">
+          <div className="mb-3 flex items-center justify-between rounded-[16px] bg-white px-4 py-3.5 text-left text-[#14201A] shadow-lg">
+            <div>
+              <p className="text-[13px] font-bold">Annuel · <span className="text-[#2E9E44]">2 mois offerts</span></p>
+              <p className="mt-1 text-[10px] font-medium text-[#9AA39B]">19,99 €/an — soit 1,67 €/mois</p>
             </div>
-          ))}
-        </div>
-
-        <p className="text-center text-sm text-muted-foreground mt-12">
-          Paiement sécurisé — Annulation à tout moment — Aucun engagement
-        </p>
-      </main>
-    </div>
+            <span className="grid h-6 w-6 place-items-center rounded-full bg-[linear-gradient(160deg,#15703A_0%,#2E9E44_55%,#F5960F_132%)] text-white"><Check className="h-3.5 w-3.5" /></span>
+          </div>
+          <button className="h-14 w-full rounded-[18px] bg-white text-[15px] font-bold text-[#15703A] shadow-[0_14px_30px_rgba(0,0,0,0.28)]">Commencer l’essai gratuit</button>
+          <p className="mt-3 text-center text-[10px] font-medium text-white/70">7 jours offerts · Restaurer mes achats</p>
+        </section>
+      </div>
+    </main>
   );
 }

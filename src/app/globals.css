@@ -4,6 +4,7 @@
 
 @layer base {
   :root {
+    --font-hikma-ui: 'Plus Jakarta Sans', system-ui, sans-serif;
     /* HikmaClips Premium — warm neutral canvas + Emerald & Oriental Gold */
     --background: 40 14% 98%;
     --foreground: 160 15% 10%;

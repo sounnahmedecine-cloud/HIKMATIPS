@@ -28,6 +28,9 @@ import {
   PanelLeftClose,
   PanelLeftOpen,
   HelpCircle,
+  Copy,
+  Check,
+  Zap,
 } from 'lucide-react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -77,6 +80,7 @@ import { getFavorites, toggleFavorite, cn } from '@/lib/utils';
 type Content = {
   content: string;
   source: string;
+  arabe?: string;
   surah?: number;
   ayah?: number;
 };
@@ -89,6 +93,7 @@ export default function GeneratorPage() {
   const [content, setContent] = useState<Content | null>({
     content: "Et rappelle, car le rappel profite aux croyants",
     source: "Sourate Adh-Dhâriyât, v. 55",
+    arabe: "وَذَكِّرْ فَإِنَّ الذِّكْرَىٰ تَنفَعُ الْمُؤْمِنِينَ",
     surah: 51,
     ayah: 55
   });
@@ -98,6 +103,7 @@ export default function GeneratorPage() {
   const [historyIndex, setHistoryIndex] = useState(-1);
   const touchStartY = useRef<number | null>(null);
   const touchStartX = useRef<number | null>(null);
+  const handledGenerateParam = useRef(false);
 
   const [category, setCategory] = useState<Category>('rabbana');
   const [background, setBackground] = useState<string>(
@@ -129,12 +135,15 @@ export default function GeneratorPage() {
   const [showTooltipGuide, setShowTooltipGuide] = useState(false);
 
   // Studio Settings States
-  const [fontSize, setFontSize] = useState(20);
-  const [fontFamily, setFontFamily] = useState("'Amiri', serif");
+  const [fontSize, setFontSize] = useState(22);
+  const [fontFamily, setFontFamily] = useState("var(--font-display), sans-serif");
   const [format, setFormat] = useState<'story' | 'square'>('story');
   const [signature, setSignature] = useState('hikmaclips.woosenteur.fr');
   const [favorites, setFavorites] = useState<string[]>([]);
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
+  const [isShareSheetOpen, setIsShareSheetOpen] = useState(false);
+  const [isPremiumSheetOpen, setIsPremiumSheetOpen] = useState(false);
+  const [hasCopied, setHasCopied] = useState(false);
 
   useEffect(() => {
     setFavorites(getFavorites().map(f => f.fr));
@@ -196,6 +205,14 @@ export default function GeneratorPage() {
     }
     if (urlCategory) {
       setCategory(urlCategory as Category);
+    }
+
+    if (searchParams.get('generate') === '1' && !handledGenerateParam.current) {
+      handledGenerateParam.current = true;
+      window.setTimeout(() => {
+        void handleGenerateAiContent();
+        router.replace('/generateur');
+      }, 250);
     }
   }, [searchParams]);
 
@@ -415,7 +432,8 @@ export default function GeneratorPage() {
       setIsLoadingBg(false);
     }
     // Fallback : images locales
-    const pool = PlaceHolderImages;
+    const candidates = PlaceHolderImages.filter((item) => item.imageUrl !== background);
+    const pool = candidates.length > 0 ? candidates : PlaceHolderImages;
     setBackground(pool[Math.floor(Math.random() * pool.length)].imageUrl);
   };
 
@@ -554,6 +572,14 @@ export default function GeneratorPage() {
     }
   }, [content, toast]);
 
+  const handleCopyText = useCallback(async () => {
+    if (!content) return;
+    await navigator.clipboard.writeText(`“${content.content}”\n— ${content.source}\n\nvia HikmaClips`);
+    setHasCopied(true);
+    toast({ title: 'Texte copié', description: 'La sagesse et sa source sont dans le presse-papiers.' });
+    window.setTimeout(() => setHasCopied(false), 1800);
+  }, [content, toast]);
+
   if (showOnboarding) {
     return (
       <OnboardingScreen
@@ -563,7 +589,7 @@ export default function GeneratorPage() {
   }
 
   return (
-    <div className="fixed inset-0 w-full h-full bg-gradient-to-br from-emerald-500 via-teal-500 to-amber-400 overflow-hidden select-none md:flex md:flex-col md:bg-background">
+    <div className="fixed inset-0 w-full h-full bg-[linear-gradient(160deg,#15703A_0%,#2E9E44_55%,#F5960F_132%)] overflow-hidden select-none md:flex md:flex-col md:bg-background">
       {/* Hidden file input for background upload */}
       <input
         type="file"
@@ -667,7 +693,7 @@ export default function GeneratorPage() {
               onTouchStart={handleTouchStart}
               onTouchEnd={handleTouchEnd}
               className={cn(
-                "bg-gradient-to-br from-emerald-500 via-teal-500 to-amber-400 p-0 md:p-2 shadow-2xl transition-all duration-300 relative overflow-hidden",
+                "bg-[linear-gradient(160deg,#15703A_0%,#2E9E44_55%,#F5960F_132%)] p-0 md:p-2 shadow-2xl transition-all duration-300 relative overflow-hidden",
                 "fixed inset-0 md:relative",
                 format === 'story'
                   ? "md:h-[673px] md:w-[320px] lg:w-[340px] lg:h-[715px] md:rounded-[40px]"
@@ -677,19 +703,20 @@ export default function GeneratorPage() {
               <div
                 ref={previewRef}
                 className={cn(
-                  "relative h-full w-full overflow-hidden bg-gradient-to-br from-emerald-500 via-teal-500 to-amber-400",
+                  "relative h-full w-full overflow-hidden bg-[linear-gradient(160deg,#15703A_0%,#2E9E44_55%,#F5960F_132%)]",
                   "md:rounded-[32px]"
                 )}
               >
                 <img
                   src={background}
                   alt="Arrière-plan"
-                  className="absolute inset-0 w-full h-full object-cover transition-all duration-300"
+                  className="absolute inset-0 h-full w-full object-cover transition-all duration-500"
                   style={{ filter: `brightness(${brightness}%) contrast(${contrast}%) saturate(${saturation}%)` }}
                   crossOrigin="anonymous"
                   key={background}
                 />
-                <div className="absolute inset-0 bg-gradient-to-b from-emerald-900/25 via-transparent to-amber-900/40" />
+                <div className="absolute inset-0 bg-gradient-to-b from-black/25 via-black/5 to-black/45 md:from-emerald-900/25 md:via-transparent md:to-amber-900/40" />
+                <div className="absolute left-1/2 top-[32%] h-[220px] w-[220px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-white/15 blur-[46px] md:hidden" />
 
                 {(isGenerating && !content) && (
                   <div className="absolute inset-0 flex flex-col items-center justify-center p-8 text-white/80">
@@ -699,10 +726,15 @@ export default function GeneratorPage() {
                 )}
 
                 {content && (
-                  <div className="absolute inset-0 flex items-center justify-center px-8 sm:px-10 pt-28 pb-32 overflow-hidden md:pt-10 md:pb-10">
-                    <div className="text-center w-full max-w-4xl max-h-full flex flex-col justify-center">
+                  <div className="absolute inset-0 flex items-center justify-center overflow-hidden px-7 pb-40 pr-20 pt-28 md:px-10 md:pb-10 md:pt-10">
+                    <div className="flex max-h-full w-full max-w-4xl flex-col items-start justify-center text-left md:items-center md:text-center">
+                      {content.arabe && (
+                        <p dir="rtl" className="mb-2.5 w-full pr-2 text-right text-[20px] leading-[1.5] text-white/90 [font-family:Amiri,serif] md:text-center md:text-[23px]">
+                          {content.arabe}
+                        </p>
+                      )}
                       <div
-                        className="font-extrabold leading-tight tracking-tight px-4 text-white drop-shadow-lg"
+                        className="px-0 font-bold leading-[1.08] tracking-[-0.035em] text-white drop-shadow-lg md:px-4"
                         style={{ fontSize: `${fontSize}px`, fontFamily }}
                       >
                         <AnimatePresence mode="wait">
@@ -757,12 +789,12 @@ export default function GeneratorPage() {
                             duration: 0.8,
                             ease: "easeOut"
                           }}
-                          className="mt-6 text-sm sm:text-lg font-bold italic tracking-widest uppercase opacity-70 text-white/90"
+                          className="mt-6 flex items-center gap-3 text-[10px] font-extrabold uppercase tracking-[0.2em] text-white/85 before:h-0.5 before:w-7 before:bg-white/70 before:content-[''] md:text-sm"
                         >
                           — {content?.source} —
                         </motion.p>
                       ) : (
-                        <p className="mt-6 text-sm sm:text-lg font-bold italic tracking-widest uppercase opacity-70 text-white/90">
+                        <p className="mt-6 flex items-center gap-3 text-[10px] font-extrabold uppercase tracking-[0.2em] text-white/85 before:h-0.5 before:w-7 before:bg-white/70 before:content-[''] md:text-sm">
                           — {content?.source} —
                         </p>
                       )}
@@ -876,12 +908,12 @@ export default function GeneratorPage() {
       </div>
 
       {/* 4. MOBILE UI — Bottom Sheet ergonomics */}
-      <div className="md:hidden">
+      <div className="hidden">
 
         {/* TOP BAR: Réglages + Crown */}
         <div className="absolute top-0 left-0 right-0 z-40 flex justify-between items-center px-5 pt-12 pb-4 pointer-events-none">
           <Button
-            id="tuto-settings"
+            id="legacy-tour-settings"
             variant="ghost"
             onClick={() => setIsSidebarOpen(true)}
             className="pointer-events-auto h-10 px-4 rounded-full bg-emerald-900/30 backdrop-blur-md border border-white/20 text-white flex items-center gap-2 shadow-lg"
@@ -924,7 +956,7 @@ export default function GeneratorPage() {
             if (info.velocity.y < -300 || info.offset.y < -60) setIsSheetOpen(true);
             if (info.velocity.y > 300 || info.offset.y > 60) setIsSheetOpen(false);
           }}
-          onLayoutMeasure={(measured) => setSheetHeight(measured.height)}
+          onLayoutMeasure={(measured) => setSheetHeight(measured.y.max - measured.y.min)}
         >
           {/* Handle — tap pour ouvrir/fermer */}
           <div
@@ -935,7 +967,7 @@ export default function GeneratorPage() {
           </div>
 
           {/* CATÉGORIES — pills scrollables */}
-          <div id="tuto-categories" className="relative mb-4">
+          <div id="legacy-tour-categories" className="relative mb-4">
             <div className="absolute right-0 top-0 h-full w-8 bg-gradient-to-l from-emerald-700/90 to-transparent z-10 pointer-events-none" />
             <div className="flex overflow-x-auto gap-2 px-4 pb-1 scrollbar-hide" style={{ scrollbarWidth: 'none' }}>
               {[
@@ -963,7 +995,7 @@ export default function GeneratorPage() {
           </div>
 
           {/* INPUT THÈME */}
-          <div id="tuto-topic" className="mx-4 mb-4 flex items-center gap-2 bg-white/5 border border-white/10 rounded-2xl px-4 h-12">
+          <div id="legacy-tour-topic" className="mx-4 mb-4 flex items-center gap-2 bg-white/5 border border-white/10 rounded-2xl px-4 h-12">
             <Search className="w-4 h-4 text-white/30 flex-shrink-0" />
             <input
               value={topic}
@@ -980,7 +1012,7 @@ export default function GeneratorPage() {
           </div>
 
           {/* TOOLBAR SECONDAIRE */}
-          <div id="tuto-toolbar" className="mx-4 mb-4 bg-white/5 border border-white/10 rounded-2xl flex justify-between items-center px-1">
+          <div id="legacy-tour-toolbar" className="mx-4 mb-4 bg-white/5 border border-white/10 rounded-2xl flex justify-between items-center px-1">
             {[
               { icon: ImageIcon, label: 'Galerie',  onClick: () => setIsGalleryOpen(true),       color: 'hover:text-primary' },
               { icon: Palette,   label: 'Design',   onClick: () => setIsToolsDrawerOpen(true),   color: 'hover:text-primary' },
@@ -1028,7 +1060,7 @@ export default function GeneratorPage() {
           {/* BOUTON GÉNÉRER — pleine largeur */}
           <div className="mx-4">
             <button
-              id="tuto-generate"
+              id="legacy-tour-generate"
               onClick={handleGenerateAiContent}
               disabled={isGenerating}
               className="w-full bg-primary hover:bg-primary/90 text-white font-bold text-base py-4 rounded-2xl transition-all active:scale-[0.98] shadow-[0_8px_24px_rgba(16,185,129,0.35)] flex items-center justify-center gap-2 disabled:opacity-60"
@@ -1041,6 +1073,205 @@ export default function GeneratorPage() {
           </div>
         </motion.div>
       </div>
+
+      {/* MOBILE UI — port fidèle de la direction « Gradient expressif » */}
+      <div className="md:hidden [font-family:var(--font-hikma-ui)]">
+        <div className="pointer-events-none absolute left-0 right-0 top-0 z-40 flex items-center justify-between px-4 pb-4 pt-[max(3.25rem,calc(env(safe-area-inset-top)+1.25rem))]">
+          <button
+            id="tour-agent"
+            onClick={() => setIsCategoryDrawerOpen(true)}
+            className="pointer-events-auto flex h-8 items-center gap-2 rounded-full border border-white/25 bg-white/15 px-3 text-white shadow-sm backdrop-blur-[10px] active:scale-95"
+            aria-label="Choisir une catégorie"
+          >
+            <span className="h-2 w-2 rounded-full bg-white shadow-[0_0_0_3px_rgba(255,255,255,.3)]" />
+            <span className="text-[9px] font-extrabold uppercase tracking-[0.16em]">Agent en direct</span>
+          </button>
+          <button
+            id="tour-premium"
+            onClick={() => setIsPremiumSheetOpen(true)}
+            className="pointer-events-auto flex h-8 items-center gap-1.5 rounded-full border border-white/25 bg-black/20 px-3 text-[9px] font-extrabold uppercase tracking-[0.08em] text-white backdrop-blur-[10px] active:scale-95"
+            aria-label="Découvrir Premium"
+          >
+            <Crown className="h-3.5 w-3.5 text-[#FFD27A]" /> Premium
+          </button>
+        </div>
+
+        <div id="tour-actions" className="absolute right-4 top-[42%] z-40 flex flex-col gap-3">
+          <button
+            onClick={() => setIsGalleryOpen(true)}
+            className="relative grid h-[46px] w-[46px] place-items-center rounded-full border border-white/35 bg-black/20 text-white shadow-[0_8px_20px_rgba(0,0,0,.16)] backdrop-blur-[8px] transition active:scale-90"
+            aria-label="Choisir une image de fond"
+          >
+            <ImageIcon className="h-5 w-5" />
+            <span className="absolute -right-0.5 -top-0.5 h-2.5 w-2.5 rounded-full border-2 border-white bg-[#F5960F]" aria-hidden="true" />
+          </button>
+          <button
+            onClick={handleFavorite}
+            className={cn(
+              "grid h-[46px] w-[46px] place-items-center rounded-full border backdrop-blur-[8px] transition active:scale-90",
+              favorites.includes(content?.content || '')
+                ? "border-red-200/60 bg-red-500/30 text-red-200"
+                : "border-white/30 bg-white/15 text-white"
+            )}
+            aria-label={favorites.includes(content?.content || '') ? 'Retirer des favoris' : 'Ajouter aux favoris'}
+          >
+            <Heart className={cn("h-5 w-5", favorites.includes(content?.content || '') && "fill-current")} />
+          </button>
+          <button
+            onClick={() => setIsShareSheetOpen(true)}
+            className="grid h-[46px] w-[46px] place-items-center rounded-full border border-white bg-white text-[#15703A] shadow-[0_8px_20px_rgba(0,0,0,.22)] transition active:scale-90"
+            aria-label="Partager ce clip"
+          >
+            <Share2 className="h-5 w-5" />
+          </button>
+        </div>
+
+        <p className="pointer-events-none absolute bottom-[6.75rem] left-0 right-0 z-30 text-center text-[10px] font-semibold tracking-[0.03em] text-white/85">
+          swipe ↑ · nouveau clip
+        </p>
+
+        <nav
+          id="tour-dock"
+          className="absolute left-3.5 right-3.5 z-50 flex h-16 items-center justify-around rounded-[24px] border border-[#ECE8DF] bg-white px-1 shadow-[0_14px_32px_rgba(16,61,36,.24)]"
+          style={{ bottom: 'max(1rem, env(safe-area-inset-bottom, 0px))' }}
+          aria-label="Navigation principale"
+        >
+          <button onClick={() => router.push('/generateur')} className="flex h-full flex-1 flex-col items-center justify-center gap-1 text-[#2E9E44]" aria-current="page">
+            <Sparkles className="h-[18px] w-[18px]" />
+            <span className="text-[8px] font-extrabold">Clips</span>
+          </button>
+          <button onClick={() => router.push('/recherche-hadiths')} className="flex h-full flex-1 flex-col items-center justify-center gap-1 text-[#9AA39B]">
+            <Search className="h-[18px] w-[18px]" />
+            <span className="text-[8px] font-bold">Recherche</span>
+          </button>
+          <div className="relative h-full flex-1">
+            <button
+              id="tour-generate"
+              onClick={handleGenerateAiContent}
+              disabled={isGenerating}
+              className="absolute left-1/2 top-0 grid h-[54px] w-[54px] -translate-x-1/2 -translate-y-3.5 place-items-center rounded-[18px] border-[3px] border-white bg-[linear-gradient(160deg,#15703A_0%,#2E9E44_55%,#F5960F_132%)] text-white shadow-[0_10px_22px_rgba(46,158,68,.5)] transition active:scale-90 disabled:opacity-60"
+              aria-label="Générer un nouveau clip"
+            >
+              {isGenerating ? <Loader2 className="h-5 w-5 animate-spin" /> : <Zap className="h-5 w-5" fill="currentColor" />}
+            </button>
+          </div>
+          <button onClick={() => router.push('/favoris')} className="flex h-full flex-1 flex-col items-center justify-center gap-1 text-[#9AA39B]">
+            <BookMarked className="h-[18px] w-[18px]" />
+            <span className="text-[8px] font-bold">Biblio</span>
+          </button>
+          <button onClick={() => router.push('/settings')} className="flex h-full flex-1 flex-col items-center justify-center gap-1 text-[#9AA39B]">
+            <Settings className="h-[18px] w-[18px]" />
+            <span className="text-[8px] font-bold">Réglages</span>
+          </button>
+        </nav>
+      </div>
+
+      <AnimatePresence>
+        {isShareSheetOpen && (
+          <motion.div
+            className="fixed inset-0 z-[90] flex items-end bg-[#061009]/60 backdrop-blur-sm md:hidden"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setIsShareSheetOpen(false)}
+          >
+            <motion.section
+              initial={{ y: '100%' }}
+              animate={{ y: 0 }}
+              exit={{ y: '100%' }}
+              transition={{ type: 'spring', stiffness: 320, damping: 34 }}
+              className="w-full rounded-t-[32px] bg-[#FBFAF7] px-5 pb-[max(1.75rem,calc(env(safe-area-inset-bottom)+1rem))] text-[#14201A] [font-family:var(--font-hikma-ui)]"
+              onClick={(event) => event.stopPropagation()}
+              aria-label="Partager ce clip"
+            >
+              <div className="mx-auto mb-4 mt-3 h-1.5 w-10 rounded-full bg-[#E2DDD2]" />
+              <div className="flex items-center justify-between">
+                <h2 className="text-base font-bold [font-family:var(--font-display)]">Partager ce clip</h2>
+                <button onClick={() => setIsShareSheetOpen(false)} className="grid h-8 w-8 place-items-center rounded-full bg-[#F0ECE3] text-[#7A857D]" aria-label="Fermer">
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
+
+              <div className="relative mt-4 overflow-hidden rounded-[18px] bg-[linear-gradient(160deg,#15703A_0%,#2E9E44_55%,#F5960F_132%)] px-5 py-6 text-center text-white">
+                <div className="absolute left-1/2 top-[40%] h-36 w-36 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white/15 blur-[30px]" />
+                <p className="relative text-lg font-bold leading-snug [font-family:var(--font-display)]">“{content?.content}”</p>
+                <p className="relative mt-3 text-[8px] font-extrabold uppercase tracking-[0.2em] text-white/80">{content?.source}</p>
+                <p className="relative mt-3 text-[8px] font-bold text-white/50">@hikmaclips</p>
+              </div>
+
+              <div className="mt-5 grid grid-cols-4 gap-3">
+                {[
+                  { label: 'WhatsApp', color: '#25D366', mark: 'W' },
+                  { label: 'Instagram', color: '#E1306C', mark: '◎' },
+                  { label: 'TikTok', color: '#111111', mark: '♪' },
+                  { label: 'Plus', color: '#FFFFFF', mark: '•••' },
+                ].map((network) => (
+                  <button key={network.label} onClick={handleShareImage} className="flex flex-col items-center gap-2 text-[#3D4A42]">
+                    <span className="grid h-12 w-12 place-items-center rounded-2xl border border-black/5 text-base font-bold text-white shadow-sm" style={{ background: network.color, color: network.label === 'Plus' ? '#3D4A42' : '#FFFFFF' }}>{network.mark}</span>
+                    <span className="text-[9px] font-semibold">{network.label}</span>
+                  </button>
+                ))}
+              </div>
+
+              <button onClick={handleDownloadImage} className="mt-5 flex h-[52px] w-full items-center justify-center gap-2 rounded-2xl bg-[linear-gradient(160deg,#15703A_0%,#2E9E44_55%,#F5960F_132%)] text-sm font-bold text-white shadow-[0_12px_26px_rgba(46,158,68,.4)]">
+                <Download className="h-4 w-4" /> Enregistrer en HD (9:16)
+              </button>
+              <button onClick={handleCopyText} className="mt-2.5 flex h-12 w-full items-center justify-center gap-2 rounded-2xl border border-[#ECE8DF] bg-white text-[13px] font-bold text-[#3D4A42]">
+                {hasCopied ? <Check className="h-4 w-4 text-[#2E9E44]" /> : <Copy className="h-4 w-4" />}
+                {hasCopied ? 'Texte copié' : 'Copier le texte & la source'}
+              </button>
+            </motion.section>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {isPremiumSheetOpen && (
+          <motion.div
+            className="fixed inset-0 z-[90] flex items-end bg-[#061009]/60 backdrop-blur-sm md:hidden"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setIsPremiumSheetOpen(false)}
+          >
+            <motion.section
+              initial={{ y: '100%' }}
+              animate={{ y: 0 }}
+              exit={{ y: '100%' }}
+              transition={{ type: 'spring', stiffness: 320, damping: 34 }}
+              className="relative w-full rounded-t-[32px] bg-[#FBFAF7] px-5 pb-[max(1.75rem,calc(env(safe-area-inset-bottom)+1rem))] text-[#14201A] [font-family:var(--font-hikma-ui)]"
+              onClick={(event) => event.stopPropagation()}
+              aria-label="HikmaClips Premium"
+            >
+              <div className="mx-auto mt-3 h-1.5 w-10 rounded-full bg-[#E2DDD2]" />
+              <button onClick={() => setIsPremiumSheetOpen(false)} className="absolute right-5 top-4 grid h-8 w-8 place-items-center rounded-full bg-[#F0ECE3] text-[#7A857D]" aria-label="Fermer">
+                <X className="h-4 w-4" />
+              </button>
+              <div className="mx-auto -mt-9 grid h-16 w-16 place-items-center rounded-[20px] border-4 border-[#FBFAF7] bg-[linear-gradient(160deg,#15703A_0%,#2E9E44_55%,#F5960F_132%)] text-white shadow-[0_12px_26px_rgba(46,158,68,.5)]">
+                <Crown className="h-7 w-7" />
+              </div>
+              <div className="mt-3 text-center">
+                <h2 className="text-[23px] font-bold tracking-tight [font-family:var(--font-display)]"><span className="text-[#15703A]">Hikma</span><span className="text-[#F5960F]">Clips</span> Premium</h2>
+                <p className="mt-1 text-xs font-medium text-[#7A857D]">Diffuse la science sans limites.</p>
+              </div>
+              <div className="mt-5 space-y-3">
+                {['Export HD 9:16 sans filigrane', 'Fonds & calligraphies exclusifs', "Générations illimitées par l'Agent", 'Signature personnalisée'].map((feature) => (
+                  <div key={feature} className="flex items-center gap-3 text-[13px] font-semibold text-[#26302B]">
+                    <span className="grid h-7 w-7 place-items-center rounded-lg bg-[#E8F5EC] text-[#2E9E44]"><Check className="h-4 w-4" /></span>
+                    {feature}
+                  </div>
+                ))}
+              </div>
+              <div className="mt-5 grid grid-cols-2 gap-2.5">
+                <div className="rounded-[15px] border border-[#ECE8DF] bg-white p-3"><p className="text-[10px] font-semibold text-[#9AA39B]">Mensuel</p><p className="mt-1 text-[17px] font-extrabold [font-family:var(--font-display)]">2,99 €<span className="text-[9px] font-semibold text-[#9AA39B]">/mois</span></p></div>
+                <div className="relative rounded-[15px] border-2 border-[#2E9E44] bg-[#F3FAF4] p-3"><span className="absolute -top-2 right-2 rounded-full bg-[#2E9E44] px-2 py-0.5 text-[8px] font-extrabold text-white">-44%</span><p className="text-[10px] font-semibold text-[#2E9E44]">Annuel</p><p className="mt-1 text-[17px] font-extrabold [font-family:var(--font-display)]">19,99 €<span className="text-[9px] font-semibold text-[#9AA39B]">/an</span></p></div>
+              </div>
+              <button onClick={() => router.push('/pricing')} className="mt-4 flex h-[52px] w-full items-center justify-center gap-2 rounded-2xl bg-[linear-gradient(160deg,#15703A_0%,#2E9E44_55%,#F5960F_132%)] text-[15px] font-bold text-white shadow-[0_12px_26px_rgba(46,158,68,.45)]">Essai gratuit 7 jours <span aria-hidden>→</span></button>
+              <p className="mt-3 text-center text-[10px] font-medium text-[#9AA39B]">Puis 19,99 €/an · Résiliable à tout moment</p>
+            </motion.section>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Legacy Mobile Components (Kept for desktop or potential reuse, hidden by layout logic if needed) */}
       <div className="hidden">
@@ -1168,101 +1399,119 @@ export default function GeneratorPage() {
           setAuthPassword('');
         }
       }}>
-        <AlertDialogContent className="max-w-md overflow-hidden bg-background/95 backdrop-blur-xl border-purple-500/20">
-          <Button
-            variant="ghost"
-            size="icon"
-            className="absolute right-3 top-3 rounded-full w-9 h-9 bg-muted hover:bg-red-100 hover:text-red-600 text-muted-foreground border border-border transition-all z-50 shadow-sm"
-            onClick={() => setShowSignInPopup(false)}
-          >
-            <X className="h-5 w-5" />
-            <span className="sr-only">Fermer</span>
-          </Button>
-          <AlertDialogHeader>
-            <div className="flex justify-center mb-4">
-              <Sparkles className="w-12 h-12 text-purple-500 animate-pulse" />
-            </div>
-            <AlertDialogTitle className="text-2xl font-display text-center text-purple-800 dark:text-purple-100">
-              Débloquez l'expérience complète
-            </AlertDialogTitle>
-            <AlertDialogDescription className="text-center text-muted-foreground pt-2">
-              Salam Aleykoum ! Vous avez atteint la limite de 10 générations gratuites.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
+        <AlertDialogContent className="!bottom-3 !left-3 !right-3 !top-auto !w-auto !max-w-none !translate-x-0 !translate-y-0 gap-0 overflow-hidden rounded-[30px] border border-white/30 bg-[#FBFAF7] p-0 text-[#14201A] shadow-[0_28px_80px_rgba(3,34,17,.45)] [font-family:var(--font-hikma-ui)] md:!bottom-auto md:!left-1/2 md:!right-auto md:!top-1/2 md:!w-[440px] md:!-translate-x-1/2 md:!-translate-y-1/2">
+          <section className="relative overflow-hidden bg-[linear-gradient(145deg,#0F5E32_0%,#2E9E44_62%,#F5960F_145%)] px-5 pb-5 pt-5 text-white">
+            <div className="absolute -right-14 -top-16 h-48 w-48 rounded-full bg-white/15 blur-[2px]" />
+            <div className="absolute -bottom-20 -left-12 h-44 w-44 rounded-full bg-[#F5960F]/30 blur-[30px]" />
 
-          <div className="space-y-6 py-4">
-            {/* Avantages */}
-            <div className="space-y-3 bg-purple-50/50 dark:bg-purple-800/10 p-4 rounded-2xl border border-purple-100 dark:border-purple-700">
-              <h4 className="font-bold text-sm text-purple-700 dark:text-purple-200 flex items-center gap-2">
-                <span className="bg-purple-200 dark:bg-purple-700 p-1 rounded-full text-[10px]">VIP</span>
-                Pourquoi s'inscrire ?
-              </h4>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li className="flex items-center gap-2">
-                  <span className="text-purple-500">✓</span> Générations illimitées avec l'IA
-                </li>
-                <li className="flex items-center gap-2">
-                  <span className="text-purple-500">✓</span> Accès aux thèmes exclusifs
-                </li>
-                <li className="flex items-center gap-2">
-                  <span className="text-purple-500">✓</span> Sauvegarde de vos créations (Bientôt)
-                </li>
-              </ul>
+            <button
+              type="button"
+              onClick={() => setShowSignInPopup(false)}
+              className="absolute right-4 top-4 z-10 grid h-9 w-9 place-items-center rounded-full border border-white/20 bg-black/15 text-white/85 backdrop-blur-md transition hover:bg-black/25"
+              aria-label="Fermer la paywall"
+            >
+              <X className="h-4 w-4" />
+            </button>
+
+            <AlertDialogHeader className="relative items-start space-y-0 pr-11 text-left">
+              <div className="mb-4 flex items-center gap-3">
+                <span className="grid h-12 w-12 place-items-center rounded-[16px] border border-white/25 bg-white/15 shadow-[0_10px_26px_rgba(0,0,0,.16)] backdrop-blur-xl">
+                  <Crown className="h-6 w-6" />
+                </span>
+                <div>
+                  <p className="text-[9px] font-extrabold uppercase tracking-[0.22em] text-white/75">HikmaClips Premium</p>
+                  <p className="mt-1 inline-flex items-center gap-1.5 rounded-full bg-white/15 px-2.5 py-1 text-[9px] font-bold text-white/90">
+                    <Zap className="h-3 w-3" fill="currentColor" /> 10 clips offerts utilisés
+                  </p>
+                </div>
+              </div>
+              <AlertDialogTitle className="max-w-[310px] text-[27px] font-bold leading-[1.08] tracking-[-0.7px] text-white [font-family:var(--font-display)]">
+                Continuez à diffuser la sagesse
+              </AlertDialogTitle>
+              <AlertDialogDescription className="mt-2 max-w-[330px] text-[12px] font-medium leading-relaxed text-white/75">
+                Passez en illimité et créez vos prochains clips sans interrompre votre inspiration.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+
+            <div className="relative mt-4 grid grid-cols-3 gap-2">
+              {[
+                ['∞', 'Clips illimités'],
+                ['HD', 'Sans filigrane'],
+                ['✦', 'Styles exclusifs'],
+              ].map(([mark, label]) => (
+                <div key={label} className="rounded-[14px] border border-white/15 bg-white/10 px-2 py-2.5 text-center backdrop-blur-md">
+                  <p className="text-[13px] font-extrabold">{mark}</p>
+                  <p className="mt-1 text-[8px] font-bold leading-tight text-white/75">{label}</p>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          <section className="max-h-[54vh] overflow-y-auto px-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] pt-4 md:max-h-[48vh]">
+            <button
+              type="button"
+              onClick={() => {
+                setShowSignInPopup(false);
+                router.push('/pricing');
+              }}
+              className="flex w-full items-center justify-between rounded-[18px] bg-[#14201A] px-4 py-3.5 text-left text-white shadow-[0_12px_26px_rgba(20,32,26,.2)] transition active:scale-[.99]"
+            >
+              <span>
+                <span className="block text-[13px] font-bold">Essayer Premium gratuitement</span>
+                <span className="mt-1 block text-[9px] font-medium text-white/60">7 jours offerts · puis 19,99 €/an</span>
+              </span>
+              <span className="grid h-8 w-8 place-items-center rounded-full bg-[linear-gradient(145deg,#2E9E44,#F5960F)] text-base">→</span>
+            </button>
+
+            <div className="my-4 flex items-center gap-3 text-[8px] font-extrabold uppercase tracking-[0.16em] text-[#A0A9A2] before:h-px before:flex-1 before:bg-[#E7E3DB] after:h-px after:flex-1 after:bg-[#E7E3DB]">
+              Déjà membre ?
             </div>
 
-            {/* Message d'invitation */}
-            <div className="text-center space-y-2">
-              <p className="text-sm font-medium text-purple-600 dark:text-purple-400">
-                🚀 Soutenez le projet en invitant vos proches à tester HikmaClips !
-              </p>
-            </div>
-
-            {/* Formulaire Auth */}
-            <div className="space-y-3 pt-2 border-t border-border/50">
+            <div className="grid grid-cols-2 gap-2.5">
               <Input
                 type="email"
-                placeholder="Votre Email"
+                autoComplete="email"
+                aria-label="Adresse email"
+                placeholder="Votre email"
                 value={authEmail}
                 onChange={(e) => setAuthEmail(e.target.value)}
                 disabled={isConnecting}
-                className="bg-background/50"
+                className="h-11 rounded-[14px] border-[#E7E3DB] bg-white px-3 text-[11px] shadow-none placeholder:text-[#A0A9A2] focus-visible:ring-[#2E9E44]"
               />
               <Input
                 type="password"
-                placeholder="Votre Mot de passe"
+                autoComplete={authMode === 'signup' ? 'new-password' : 'current-password'}
+                aria-label="Mot de passe"
+                placeholder="Mot de passe"
                 value={authPassword}
                 onChange={(e) => setAuthPassword(e.target.value)}
                 disabled={isConnecting}
                 onKeyDown={(e) => e.key === 'Enter' && handleEmailAuth()}
-                className="bg-background/50"
+                className="h-11 rounded-[14px] border-[#E7E3DB] bg-white px-3 text-[11px] shadow-none placeholder:text-[#A0A9A2] focus-visible:ring-[#2E9E44]"
               />
-
-              {authError && (
-                <p className="text-xs text-red-500 text-center font-medium animate-shake">{authError}</p>
-              )}
-
-              <Button
-                onClick={handleEmailAuth}
-                className="w-full bg-purple-500 hover:bg-purple-600 text-white font-bold h-12 rounded-xl shadow-lg shadow-purple-500/20"
-                disabled={isConnecting}
-              >
-                {isConnecting ? (
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                ) : (
-                  <Mail className="mr-2 h-4 w-4" />
-                )}
-                {authMode === 'signup' ? "Créer mon compte gratuit" : 'Se connecter'}
-              </Button>
-
-              <p className="text-center text-xs text-muted-foreground mt-2">
-                {authMode === 'signup' ? (
-                  <>Déjà inscrit ? <button onClick={() => setAuthMode('login')} className="text-purple-500 font-bold hover:underline">Connexion</button></>
-                ) : (
-                  <>Pas de compte ? <button onClick={() => setAuthMode('signup')} className="text-purple-500 font-bold hover:underline">S'inscrire gratuitement</button></>
-                )}
-              </p>
             </div>
-          </div>
+
+            {authError && (
+              <p className="mt-2 text-center text-[10px] font-semibold text-red-600 animate-shake">{authError}</p>
+            )}
+
+            <Button
+              onClick={handleEmailAuth}
+              className="mt-2.5 h-11 w-full rounded-[14px] bg-[#E8F5EC] text-[12px] font-bold text-[#15703A] shadow-none hover:bg-[#DDF0E3]"
+              disabled={isConnecting}
+            >
+              {isConnecting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Mail className="mr-2 h-4 w-4" />}
+              {authMode === 'signup' ? 'Créer mon compte' : 'Se connecter'}
+            </Button>
+
+            <p className="mt-3 text-center text-[10px] font-medium text-[#8A948D]">
+              {authMode === 'signup' ? (
+                <>Déjà inscrit ? <button onClick={() => setAuthMode('login')} className="font-bold text-[#15703A] hover:underline">Connexion</button></>
+              ) : (
+                <>Nouveau ici ? <button onClick={() => setAuthMode('signup')} className="font-bold text-[#15703A] hover:underline">Créer un compte</button></>
+              )}
+            </p>
+          </section>
         </AlertDialogContent>
       </AlertDialog>
 

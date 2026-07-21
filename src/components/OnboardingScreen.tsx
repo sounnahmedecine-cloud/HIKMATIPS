@@ -1,208 +1,112 @@
 'use client';
 
 import { useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { Bell, ChevronRight, Heart, Sparkles } from 'lucide-react';
 import { useSwipeable } from 'react-swipeable';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Button } from '@/components/ui/button';
-import { ChevronRight, Heart, Bell, Sparkles, Smartphone } from 'lucide-react';
-import { cn } from '@/lib/utils';
 
 interface OnboardingScreenProps {
   onComplete: () => void;
 }
 
-// ... (Illustrations kept as is, but adding new ones if needed or using Lucide icons for simplicity in new slides)
-
 const slides = [
   {
-    id: 1,
-    title: "Bienvenue sur HikmaClips",
-    subtitle: "Diffusez la sagesse de l'Islam avec une touche moderne et percutante.",
-    Illustration: () => (
-      <div className="relative w-64 h-64 flex items-center justify-center">
-        <div className="absolute inset-0 bg-emerald-500/10 blur-[60px] rounded-full animate-pulse-soft" />
-        <img
-          src="/logo-hikmaclips.png"
-          alt="HikmaClips Logo"
-          className="w-56 h-56 object-contain relative z-10"
-        />
-      </div>
-    ),
+    title: 'Diffuse la sagesse, en un clip.',
+    subtitle: 'Hadiths, versets et invocations transformés en visuels prêts à publier.',
+    illustration: 'logo',
   },
   {
-    id: 2,
-    title: "Contenu Infini",
-    subtitle: "Swipez vers le HAUT sur l'écran principal pour générer de nouveaux rappels et images à l'infini.",
-    Illustration: () => (
-      <div className="relative w-64 h-64 flex items-center justify-center">
-        <div className="absolute inset-0 bg-orange-500/10 blur-[60px] rounded-full" />
-        <div className="relative z-10 flex flex-col items-center">
-          <motion.div
-            animate={{ y: [0, -20, 0] }}
-            transition={{ repeat: Infinity, duration: 2 }}
-            className="bg-white/10 backdrop-blur-md p-6 rounded-3xl border border-white/20 shadow-2xl"
-          >
-            <Sparkles className="w-16 h-16 text-orange-500" />
-          </motion.div>
-          <motion.div
-            animate={{ y: [20, 0, 20], opacity: [0.3, 1, 0.3] }}
-            transition={{ repeat: Infinity, duration: 2 }}
-            className="mt-4"
-          >
-            <ChevronRight className="w-8 h-8 text-emerald-500 rotate-[-90deg]" />
-          </motion.div>
-        </div>
-      </div>
-    ),
+    title: 'Une source de rappels sans fin.',
+    subtitle: 'Glissez vers le haut pour découvrir une nouvelle Hikma, pensée pour le partage.',
+    illustration: 'sparkles',
   },
   {
-    id: 3,
-    title: "Sauvegardez vos Favoris",
-    subtitle: "Un rappel vous touche ? Cliquez sur le cœur pour l'ajouter à vos favoris et le retrouver à tout moment.",
-    Illustration: () => (
-      <div className="relative w-64 h-64 flex items-center justify-center">
-        <div className="absolute inset-0 bg-red-500/10 blur-[60px] rounded-full" />
-        <motion.div
-          animate={{ scale: [1, 1.2, 1] }}
-          transition={{ repeat: Infinity, duration: 1.5 }}
-          className="bg-white/10 backdrop-blur-md p-8 rounded-full border border-white/20 shadow-2xl relative z-10"
-        >
-          <Heart className="w-20 h-20 text-red-500 fill-red-500" />
-        </motion.div>
-      </div>
-    ),
+    title: 'Gardez les mots qui vous touchent.',
+    subtitle: 'Ajoutez vos rappels aux favoris et organisez-les dans vos collections.',
+    illustration: 'heart',
   },
   {
-    id: 4,
-    title: "Routine Spirituelle",
-    subtitle: "Recevez une dose de sagesse chaque matin à 9h. Activez les notifications dans les réglages.",
-    Illustration: () => (
-      <div className="relative w-64 h-64 flex items-center justify-center">
-        <div className="absolute inset-0 bg-blue-500/10 blur-[60px] rounded-full" />
-        <motion.div
-          animate={{ rotate: [-10, 10, -10] }}
-          transition={{ repeat: Infinity, duration: 2 }}
-          className="bg-white/10 backdrop-blur-md p-8 rounded-3xl border border-white/20 shadow-2xl relative z-10"
-        >
-          <Bell className="w-20 h-20 text-yellow-500 fill-yellow-500/20" />
-        </motion.div>
-      </div>
-    ),
+    title: 'Installez une routine spirituelle.',
+    subtitle: 'Recevez chaque jour une dose de sagesse au moment qui vous convient.',
+    illustration: 'bell',
   },
 ];
 
+function SlideIllustration({ type }: { type: string }) {
+  if (type === 'logo') {
+    return (
+      <div className="grid h-32 w-32 place-items-center rounded-[32px] bg-white shadow-[0_22px_50px_rgba(0,0,0,0.28)]">
+        <img src="/logo-hikmaclips.png" alt="HikmaClips" className="h-28 w-28 rounded-3xl object-contain" />
+      </div>
+    );
+  }
+
+  const Icon = type === 'heart' ? Heart : type === 'bell' ? Bell : Sparkles;
+  return (
+    <motion.div
+      animate={type === 'heart' ? { scale: [1, 1.08, 1] } : type === 'bell' ? { rotate: [-5, 5, -5] } : { y: [0, -8, 0] }}
+      transition={{ repeat: Infinity, duration: 2.2 }}
+      className="grid h-32 w-32 place-items-center rounded-[32px] border border-white/30 bg-white/15 text-white shadow-[0_22px_50px_rgba(0,0,0,0.2)] backdrop-blur-xl"
+    >
+      <Icon className="h-14 w-14" fill={type === 'heart' ? 'currentColor' : 'none'} />
+    </motion.div>
+  );
+}
+
 export default function OnboardingScreen({ onComplete }: OnboardingScreenProps) {
   const [currentSlide, setCurrentSlide] = useState(0);
-
-  const nextSlide = () => {
-    if (currentSlide < slides.length - 1) {
-      setCurrentSlide(currentSlide + 1);
-    } else {
-      onComplete();
-    }
-  };
-
-  const prevSlide = () => {
-    if (currentSlide > 0) {
-      setCurrentSlide(currentSlide - 1);
-    }
-  };
-
-  const handlers = useSwipeable({
-    onSwipedLeft: () => nextSlide(),
-    onSwipedRight: () => prevSlide(),
-    trackMouse: true
-  });
-
   const isLastSlide = currentSlide === slides.length - 1;
-  const CurrentIllustration = slides[currentSlide].Illustration;
+  const nextSlide = () => (isLastSlide ? onComplete() : setCurrentSlide((value) => value + 1));
+  const previousSlide = () => setCurrentSlide((value) => Math.max(0, value - 1));
+  const handlers = useSwipeable({ onSwipedLeft: nextSlide, onSwipedRight: previousSlide, trackMouse: true });
+  const slide = slides[currentSlide];
 
   return (
     <div
       {...handlers}
-      className="fixed inset-0 z-[100] bg-background flex flex-col items-center justify-between overflow-hidden safe-area"
-      style={{
-        paddingTop: 'max(24px, env(safe-area-inset-top))',
-        paddingBottom: 'max(100px, env(safe-area-inset-bottom))' // Increased padding for bottom nav/bars
-      }}
+      className="fixed inset-0 z-[120] overflow-hidden bg-[linear-gradient(160deg,#15703A_0%,#2E9E44_55%,#F5960F_132%)] text-white [font-family:var(--font-hikma-ui)]"
     >
-      {/* Skip button */}
-      <div className="w-full flex justify-end px-6 pt-4">
-        {!isLastSlide && (
-          <Button
-            variant="ghost"
-            onClick={onComplete}
-            className="text-muted-foreground hover:text-foreground text-sm font-medium"
-          >
-            Passer
-          </Button>
-        )}
-      </div>
+      <div className="absolute left-1/2 top-[22%] h-72 w-72 -translate-x-1/2 rounded-full bg-white/10 blur-[65px]" />
+      {!isLastSlide && (
+        <button onClick={onComplete} className="absolute right-5 top-[max(1.5rem,env(safe-area-inset-top))] z-20 text-xs font-semibold text-white/80">Passer</button>
+      )}
 
-      {/* Content */}
-      <div className="flex-1 flex flex-col items-center justify-center w-full max-w-md px-8">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={currentSlide}
-            initial={{ opacity: 0, x: 50 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -50 }}
-            transition={{ type: "spring", damping: 25, stiffness: 200 }}
-            className="flex flex-col items-center text-center w-full"
-          >
-            {/* Illustration */}
-            <div className="mb-10">
-              <CurrentIllustration />
-            </div>
+      <div className="relative flex h-full flex-col px-8 pb-[max(2.5rem,env(safe-area-inset-bottom))] pt-[max(4.5rem,calc(env(safe-area-inset-top)+3rem))]">
+        <div className="flex flex-1 items-center justify-center">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={currentSlide}
+              initial={{ opacity: 0, x: 42 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -42 }}
+              transition={{ duration: 0.28, ease: 'easeOut' }}
+              className="flex max-w-sm flex-col items-center text-center"
+            >
+              <SlideIllustration type={slide.illustration} />
+              <h1 className="mt-9 text-[28px] font-bold leading-[1.12] tracking-[-0.8px] [font-family:var(--font-display)]">{slide.title}</h1>
+              <p className="mt-4 max-w-[280px] text-sm font-medium leading-[1.65] text-white/85">{slide.subtitle}</p>
+            </motion.div>
+          </AnimatePresence>
+        </div>
 
-            {/* Title */}
-            <h1 className="text-2xl sm:text-3xl font-bold mb-4 text-hikma-gradient tracking-tight px-4 leading-tight">
-              {slides[currentSlide].title}
-            </h1>
-
-            {/* Subtitle */}
-            <p className="text-muted-foreground text-base sm:text-lg mb-8 leading-relaxed max-w-[280px]">
-              {slides[currentSlide].subtitle}
-            </p>
-          </motion.div>
-        </AnimatePresence>
-      </div>
-
-      {/* Footer Navigation */}
-      <div className="w-full max-w-md px-8 space-y-6">
-        {/* Dots indicator */}
-        <div className="flex flex-col items-center gap-3">
-          <div className="flex justify-center gap-2.5">
+        <div className="mx-auto w-full max-w-sm">
+          <div className="mb-5 flex justify-center gap-2">
             {slides.map((_, index) => (
               <button
                 key={index}
                 onClick={() => setCurrentSlide(index)}
-                className={cn(
-                  "h-2 rounded-full transition-all duration-300",
-                  index === currentSlide
-                    ? "w-10 bg-emerald-600 shadow-[0_0_10px_rgba(5,150,105,0.4)]"
-                    : "w-2 bg-emerald-600/20"
-                )}
+                aria-label={`Étape ${index + 1}`}
+                className={`h-[7px] rounded-full transition-all ${index === currentSlide ? 'w-7 bg-white' : 'w-[7px] bg-white/40'}`}
               />
             ))}
           </div>
-          {!isLastSlide && (
-            <p className="text-xs text-muted-foreground/50 tracking-wide">
-              ← Swipez pour naviguer →
-            </p>
-          )}
-        </div>
-
-        {/* Button — only on last slide */}
-        {isLastSlide && (
-          <Button
-            onClick={onComplete}
-            className="w-full bg-emerald-600 hover:bg-emerald-700 text-white h-14 text-lg font-bold rounded-2xl shadow-lg shadow-emerald-600/20 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
+          <button
+            onClick={nextSlide}
+            className="flex h-14 w-full items-center justify-center gap-2 rounded-[18px] bg-white text-[15px] font-bold text-[#15703A] shadow-[0_14px_30px_rgba(0,0,0,0.25)] transition-transform active:scale-[0.98]"
           >
-            C&apos;est parti !
-            <ChevronRight className="w-5 h-5" />
-          </Button>
-        )}
+            {isLastSlide ? 'Commencer' : 'Continuer'} <ChevronRight className="h-4 w-4" />
+          </button>
+        </div>
       </div>
     </div>
   );
