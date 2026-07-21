@@ -1098,6 +1098,31 @@ export default function GeneratorPage() {
           </button>
         </div>
 
+        {/* Champ de saisie du thème */}
+        <div
+          id="tour-topic"
+          className="pointer-events-none absolute left-4 right-4 z-40 flex items-center gap-2 rounded-full border border-white/25 bg-white/15 px-4 h-10 backdrop-blur-[10px] shadow-sm"
+          style={{ top: 'max(6.25rem, calc(env(safe-area-inset-top) + 4.25rem))' }}
+        >
+          <Search className="h-4 w-4 text-white/70 flex-shrink-0" />
+          <input
+            value={topic}
+            onChange={(e) => setTopic(e.target.value)}
+            onKeyDown={(e) => { if (e.key === 'Enter') { (e.target as HTMLInputElement).blur(); handleGenerateAiContent(); } }}
+            placeholder="Thème : patience, gratitude, amour..."
+            className="pointer-events-auto flex-1 bg-transparent text-sm text-white placeholder:text-white/55 outline-none min-w-0"
+          />
+          {topic && (
+            <button
+              onClick={() => setTopic('')}
+              className="pointer-events-auto flex-shrink-0 text-white/60 hover:text-white active:scale-90"
+              aria-label="Effacer le thème"
+            >
+              <X className="h-3.5 w-3.5" />
+            </button>
+          )}
+        </div>
+
         <div id="tour-actions" className="absolute right-4 top-[42%] z-40 flex flex-col gap-3">
           <button
             onClick={() => setIsGalleryOpen(true)}
