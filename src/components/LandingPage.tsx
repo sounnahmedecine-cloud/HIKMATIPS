@@ -198,7 +198,7 @@ export default function LandingPage() {
               <ArrowRight className="h-[18px] w-[18px]" />
             </button>
             <a
-              href="https://drive.google.com/file/d/1p8C42qFhkHdZEdVIcIC59z6tCyVDMi_a/view?usp=sharing"
+              href="https://drive.google.com/file/d/17rXCrMZ_JogLbVB24lXqkKUC3ompOwKz/view?usp=sharing"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2.5 rounded-xl border-[1.5px] border-[#F0C58A] bg-white px-6 py-3.5 text-[15.5px] font-bold text-[#B96C05] shadow-[0_8px_22px_rgba(245,150,15,0.12)] transition-colors hover:border-[#F5960F] hover:bg-[#FFF9F0]"
