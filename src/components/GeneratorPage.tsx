@@ -189,11 +189,6 @@ export default function GeneratorPage() {
     const hasSeenOnboarding = localStorage.getItem('hasSeenOnboarding');
     if (!hasSeenOnboarding) {
       setShowOnboarding(true);
-    } else {
-      // Utilisateur déjà passé par les slides : on relance les infobulles
-      // à chaque démarrage de l'app (sans rejouer les slides).
-      setIsSheetOpen(true);
-      setTimeout(() => setShowTooltipGuide(true), 800);
     }
 
     // Handle URL parameters
