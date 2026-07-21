@@ -600,12 +600,12 @@ export default function GeneratorPage() {
       />
 
       {/* Header with Sidebar Trigger */}
-      <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-primary/10 shadow-sm overflow-hidden safe-area-top hidden md:flex">
+      <header className="fixed top-0 left-0 right-0 z-50 bg-[#FBFAF7]/90 backdrop-blur-md border-b border-[#ECE8DF] shadow-sm overflow-hidden safe-area-top hidden md:flex [font-family:var(--font-hikma-ui)]">
         <div className="container mx-auto flex min-h-14 items-center justify-between px-3 sm:px-4 relative">
           <div className="flex items-center gap-2 sm:gap-3">
             <Sheet open={isSidebarOpen} onOpenChange={setIsSidebarOpen}>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="-ml-2 hidden md:flex">
+                <Button variant="ghost" size="icon" className="-ml-2 hidden md:flex text-[#3D4A42] hover:bg-[#F0ECE3] hover:text-[#14201A]">
                   <Menu className="w-6 h-6" />
                 </Button>
               </SheetTrigger>
@@ -628,7 +628,9 @@ export default function GeneratorPage() {
             <div className="absolute left-1/2 -translate-x-1/2 md:static md:translate-x-0 md:ml-4">
               <a href="/generateur" className="flex items-center gap-2 hover:opacity-80 transition-opacity active:scale-95">
                 <Image src="/logo-hikmaclips.png" alt="HikmaClips" width={32} height={32} className="rounded-lg shadow-sm object-contain" />
-                <span className="text-base sm:text-lg font-bold text-hikma-gradient tracking-tight font-display md:hidden">HikmaClips</span>
+                <span className="text-base sm:text-lg font-bold tracking-tight [font-family:var(--font-display)] md:hidden">
+                  <span className="text-[#2E9E44]">Hikma</span><span className="text-[#F5960F]">Clips</span>
+                </span>
               </a>
             </div>
 
@@ -636,7 +638,7 @@ export default function GeneratorPage() {
               <Button
                 variant="ghost"
                 size="icon"
-                className="hidden md:flex"
+                className="hidden md:flex text-[#3D4A42] hover:bg-[#F0ECE3] hover:text-[#14201A]"
                 onClick={() => setIsDesktopSidebarOpen((v) => !v)}
                 title={isDesktopSidebarOpen ? 'Fermer le panneau de réglages' : 'Ouvrir le panneau de réglages'}
               >
@@ -652,7 +654,7 @@ export default function GeneratorPage() {
         {/* Persistent Sidebar for Desktop — collapsible via header toggle */}
         <aside
           className={cn(
-            "hidden md:block border-r bg-background/50 backdrop-blur-sm custom-scrollbar overflow-x-hidden transition-all duration-300 ease-in-out shrink-0",
+            "hidden md:block border-r border-[#ECE8DF] bg-[#FBFAF7]/80 backdrop-blur-sm custom-scrollbar overflow-x-hidden transition-all duration-300 ease-in-out shrink-0 [font-family:var(--font-hikma-ui)]",
             isDesktopSidebarOpen ? "w-80 p-6 opacity-100 overflow-y-auto" : "w-0 p-0 opacity-0 pointer-events-none border-r-0 overflow-y-hidden"
           )}
         >
@@ -833,7 +835,7 @@ export default function GeneratorPage() {
       {/* ── DESKTOP BOTTOM BAR ── */}
       <div
         className={cn(
-          "hidden md:flex fixed bottom-0 right-0 z-50 bg-background/95 backdrop-blur-md border-t border-border/50 px-6 py-3 items-center gap-4 transition-all duration-300 ease-in-out",
+          "hidden md:flex fixed bottom-0 right-0 z-50 bg-white/95 backdrop-blur-md border-t border-[#ECE8DF] px-6 py-3 items-center gap-4 transition-all duration-300 ease-in-out shadow-[0_-8px_24px_rgba(16,61,36,0.08)] [font-family:var(--font-hikma-ui)]",
           isDesktopSidebarOpen ? "left-80" : "left-0"
         )}
       >
@@ -853,8 +855,8 @@ export default function GeneratorPage() {
               className={cn(
                 "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold border transition-all",
                 category === cat.id
-                  ? "bg-primary text-primary-foreground border-primary shadow-md"
-                  : "bg-muted/60 text-muted-foreground border-transparent hover:border-primary/30 hover:text-foreground"
+                  ? "bg-[#2E9E44] text-white border-[#2E9E44] shadow-md"
+                  : "bg-[#F5F1E8] text-[#7A857D] border-transparent hover:border-[#2E9E44]/30 hover:text-[#14201A]"
               )}
             >
               <cat.icon className="w-3.5 h-3.5" />
@@ -864,16 +866,16 @@ export default function GeneratorPage() {
         </div>
 
         {/* Topic input */}
-        <div className="flex-1 flex items-center gap-2 bg-muted/60 rounded-full border border-border px-4 h-9">
-          <Search className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+        <div className="flex-1 flex items-center gap-2 bg-[#F5F1E8] rounded-full border border-[#ECE8DF] px-4 h-9">
+          <Search className="w-4 h-4 text-[#9AA39B] flex-shrink-0" />
           <input
             value={topic}
             onChange={(e) => setTopic(e.target.value)}
             onKeyDown={(e) => { if (e.key === 'Enter') handleGenerateAiContent(); }}
             placeholder="Thème : patience, gratitude, amour..."
-            className="flex-1 bg-transparent text-sm placeholder:text-muted-foreground/50 outline-none"
+            className="flex-1 bg-transparent text-sm text-[#14201A] placeholder:text-[#9AA39B] outline-none"
           />
-          {topic && <button onClick={() => setTopic('')} className="text-muted-foreground/50 hover:text-foreground"><X className="w-3.5 h-3.5" /></button>}
+          {topic && <button onClick={() => setTopic('')} className="text-[#9AA39B] hover:text-[#14201A]"><X className="w-3.5 h-3.5" /></button>}
         </div>
 
         {/* Action buttons */}
@@ -882,16 +884,16 @@ export default function GeneratorPage() {
             onClick={handleFavorite}
             className={cn("w-9 h-9 rounded-full border flex items-center justify-center transition-all hover:scale-110",
               content && favorites.includes(content.content)
-                ? "bg-red-500/20 border-red-400/50 text-red-500"
-                : "bg-muted/60 border-border text-muted-foreground hover:text-foreground"
+                ? "bg-red-50 border-red-200 text-red-500"
+                : "bg-[#F5F1E8] border-[#ECE8DF] text-[#7A857D] hover:text-[#14201A]"
             )}
           >
             <Heart className={cn("w-4 h-4", content && favorites.includes(content.content) ? "fill-current" : "")} />
           </button>
-          <button onClick={handleDownloadImage} className="w-9 h-9 rounded-full bg-muted/60 border border-border flex items-center justify-center text-muted-foreground hover:text-foreground transition-all hover:scale-110">
+          <button onClick={handleDownloadImage} className="w-9 h-9 rounded-full bg-[#F5F1E8] border border-[#ECE8DF] flex items-center justify-center text-[#7A857D] hover:text-[#14201A] transition-all hover:scale-110">
             <Download className="w-4 h-4" />
           </button>
-          <button onClick={handleShareImage} className="w-9 h-9 rounded-full bg-muted/60 border border-border flex items-center justify-center text-muted-foreground hover:text-foreground transition-all hover:scale-110">
+          <button onClick={handleShareImage} className="w-9 h-9 rounded-full bg-[#F5F1E8] border border-[#ECE8DF] flex items-center justify-center text-[#7A857D] hover:text-[#14201A] transition-all hover:scale-110">
             <Share2 className="w-4 h-4" />
           </button>
 
@@ -899,7 +901,7 @@ export default function GeneratorPage() {
           <button
             onClick={handleGenerateAiContent}
             disabled={isGenerating}
-            className="flex items-center gap-2 px-5 h-9 rounded-full bg-primary text-primary-foreground font-bold text-sm hover:bg-primary/90 active:scale-95 transition-all shadow-lg shadow-primary/25 disabled:opacity-60"
+            className="flex items-center gap-2 px-5 h-9 rounded-full bg-[linear-gradient(160deg,#15703A_0%,#2E9E44_55%,#F5960F_132%)] text-white font-bold text-sm hover:opacity-90 active:scale-95 transition-all shadow-lg shadow-[#2E9E44]/25 disabled:opacity-60"
           >
             {isGenerating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
             {isGenerating ? 'Génération...' : 'Générer'}
