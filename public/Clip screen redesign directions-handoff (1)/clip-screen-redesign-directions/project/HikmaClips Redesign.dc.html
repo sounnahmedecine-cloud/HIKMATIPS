@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  body{margin:0;background:#e9e6df;font-family:'Plus Jakarta Sans',system-ui,sans-serif}
+  *{box-sizing:border-box}
+  .dv-turn{padding:44px 48px 36px;border-bottom:1px solid rgba(0,0,0,.08)}
+  .dv-thd{display:flex;align-items:baseline;gap:10px;margin:0 0 8px}
+  .dv-tid{font:600 10px ui-monospace,Menlo,monospace;padding:3px 7px;background:#15703A;color:#fff;border-radius:4px;text-decoration:none}
+  .dv-tname{font:700 14px/1.2 'Space Grotesk',sans-serif;color:#14201A}
+  .dv-tsub{font:400 13px/1.5 'Plus Jakarta Sans';color:#5b6660;max-width:720px;margin:0 0 26px}
+  .dv-opts{display:flex;flex-wrap:wrap;gap:40px;align-items:flex-start}
+  .dv-opt{flex:none;display:flex;flex-direction:column;gap:12px;scroll-margin-top:16px}
+  .dv-oid{font:600 10.5px ui-monospace,Menlo,monospace;padding:3px 7px;background:rgba(0,0,0,.08);color:#14201A;border-radius:5px;text-decoration:none}
+  .dv-olabel{display:flex;align-items:center;gap:9px;font:500 12px/1.3 'Plus Jakarta Sans';color:#3d4a42}
+  .dv-otag{font:600 11px/1.3 'Space Grotesk';color:#14201A}
+  .dv-opt:target .dv-oid{background:#2E9E44;color:#fff}
+  .dv-next{margin:30px 0 0;font:13px/1.6 'Plus Jakarta Sans';color:#5b6660}
+  .dv-next a{color:#25873a;text-decoration:none;font-weight:600}
+  a{color:#25873a}
+  a:hover{color:#F5960F}
+
+  /* phone shell */
+  .phone{width:300px;padding:7px;border-radius:48px;background:linear-gradient(160deg,#2b3733,#171f1c);box-shadow:0 40px 80px -20px rgba(16,61,36,.5),0 0 0 1px rgba(0,0,0,.4)}
+  .screen{position:relative;width:100%;aspect-ratio:9/19.5;border-radius:42px;overflow:hidden;background:#0b120e}
+  .notch{position:absolute;top:11px;left:50%;transform:translateX(-50%);width:96px;height:26px;background:#000;border-radius:14px;z-index:40}
+  .sbar{position:absolute;top:0;left:0;right:0;height:42px;display:flex;align-items:flex-end;justify-content:space-between;padding:0 22px 5px;z-index:35;font:700 12px 'Plus Jakarta Sans'}
+  .abs{position:absolute}
+  @keyframes ping{75%,100%{transform:scale(2);opacity:0}}
+
+  /* 1c system helpers */
+  .grad{background:linear-gradient(160deg,#15703A 0%,#2E9E44 55%,#F5960F 132%)}
+  .sheet{position:absolute;left:0;right:0;border-radius:30px 30px 0 0;background:#FBFAF7}
+  .navdock{position:absolute;left:14px;right:14px;bottom:16px;height:62px;border-radius:24px;background:#fff;border:1px solid #ece8df;box-shadow:0 14px 32px rgba(16,61,36,.2);display:flex;align-items:center;justify-content:space-around;z-index:40}
+  .ni{display:flex;flex-direction:column;align-items:center;gap:3px;color:#9aa39b;font:600 8px 'Plus Jakarta Sans';flex:1}
+  .ni.on{color:#2E9E44;font-weight:800}
+  .ni span:first-child{font-size:17px;line-height:1}
+  .fab{width:52px;height:52px;border-radius:18px;display:grid;place-items:center;color:#fff;font-size:20px;transform:translateY(-14px);box-shadow:0 10px 22px rgba(46,158,68,.5);border:3px solid #fff}
+  .hcard{background:#fff;border:1px solid #ece8df;border-radius:20px;box-shadow:0 8px 22px -10px rgba(16,61,36,.18)}
+  .htitle{font:700 25px 'Space Grotesk';letter-spacing:-.5px;color:#fff;margin:0}
+  .hsub{font:500 12px 'Plus Jakarta Sans';color:rgba(255,255,255,.82);margin:5px 0 0}
+</style>
+</helmet>
+
+<section class="dv-turn" id="t3">
+  <div class="dv-thd"><a class="dv-tid" href="#t3">3</a><span class="dv-tname">Écran Premium / Paywall — direction <a class="dv-oid" href="#1c">1c</a></span></div>
+  <p class="dv-tsub">Le paywall HikmaClips Premium dans le même système. <a class="dv-oid" href="#3a">3a</a> : feuille modale (surgit par-dessus l'app) — conversion rapide. <a class="dv-oid" href="#3b">3b</a> : plein écran dégradé immersif avec comparatif mensuel / annuel — pour l'onboarding ou l'onglet couronne.</p>
+  <div class="dv-opts">
+
+    <!-- 3a Paywall — bottom sheet modal -->
+    <div class="dv-opt" id="3a">
+      <div class="dv-olabel"><a class="dv-oid" href="#3a">3a</a><span class="dv-otag">Modale</span> · feuille de conversion rapide</div>
+      <div class="phone"><div class="screen" style="background:#0b120e;color:#14201A">
+        <img class="abs" src="assets/hero-soir.png" alt="" style="inset:0;width:100%;height:100%;object-fit:cover;opacity:.5">
+        <div class="abs" style="inset:0;background:rgba(6,14,9,.55)"></div>
+        <div class="notch"></div>
+        <div class="sbar" style="color:#fff"><span>9:41</span><span style="letter-spacing:1px">✦ ▾ ▮</span></div>
+        <!-- blurred app peeking behind -->
+        <div class="abs" style="top:56px;left:26px;right:26px;text-align:center;color:rgba(255,255,255,.85);z-index:5;font-family:'Amiri',serif;font-size:22px" dir="rtl">وَذَكِّرْ</div>
+        <!-- sheet -->
+        <div class="sheet" style="top:150px;bottom:0;padding:0 20px 26px;overflow:hidden;box-shadow:0 -20px 50px rgba(0,0,0,.35)">
+          <div style="width:38px;height:5px;border-radius:9px;background:#e2ddd2;margin:11px auto 0"></div>
+          <div class="abs" style="top:-26px;left:50%;transform:translateX(-50%);width:60px;height:60px;border-radius:20px;display:grid;place-items:center;color:#fff;font-size:26px;box-shadow:0 12px 26px rgba(46,158,68,.5);border:4px solid #FBFAF7" class="grad">♔</div>
+          <div style="text-align:center;margin-top:26px">
+            <h1 style="font:700 23px 'Space Grotesk';letter-spacing:-.5px;margin:0"><span style="color:#15703A">Hikma</span><span style="color:#F5960F">Clips</span> Premium</h1>
+            <p style="font:500 12.5px/1.5 'Plus Jakarta Sans';color:#7a857d;margin:7px 0 0">Diffuse la science sans limites.</p>
+          </div>
+          <div style="margin-top:18px;display:flex;flex-direction:column;gap:11px">
+            <div style="display:flex;align-items:center;gap:11px"><span style="width:26px;height:26px;border-radius:8px;display:grid;place-items:center;background:#E8F5EC;color:#2E9E44;font-size:13px">✓</span><span style="font:600 12.5px 'Plus Jakarta Sans';color:#26302b">Export HD 9:16 sans filigrane</span></div>
+            <div style="display:flex;align-items:center;gap:11px"><span style="width:26px;height:26px;border-radius:8px;display:grid;place-items:center;background:#E8F5EC;color:#2E9E44;font-size:13px">✓</span><span style="font:600 12.5px 'Plus Jakarta Sans';color:#26302b">Fonds &amp; calligraphies exclusifs</span></div>
+            <div style="display:flex;align-items:center;gap:11px"><span style="width:26px;height:26px;border-radius:8px;display:grid;place-items:center;background:#E8F5EC;color:#2E9E44;font-size:13px">✓</span><span style="font:600 12.5px 'Plus Jakarta Sans';color:#26302b">Générations illimitées par l'Agent</span></div>
+            <div style="display:flex;align-items:center;gap:11px"><span style="width:26px;height:26px;border-radius:8px;display:grid;place-items:center;background:#E8F5EC;color:#2E9E44;font-size:13px">✓</span><span style="font:600 12.5px 'Plus Jakarta Sans';color:#26302b">Signature personnalisée</span></div>
+          </div>
+          <div style="margin-top:18px;display:flex;gap:9px">
+            <div style="flex:1;border:1px solid #ece8df;border-radius:15px;padding:12px 11px;background:#fff"><p style="font:600 10px 'Plus Jakarta Sans';color:#9aa39b;margin:0">Mensuel</p><p style="font:800 17px 'Space Grotesk';color:#14201A;margin:4px 0 0">2,99 €<span style="font:600 9px 'Plus Jakarta Sans';color:#9aa39b">/mois</span></p></div>
+            <div style="flex:1;border:2px solid #2E9E44;border-radius:15px;padding:12px 11px;background:#F3FAF4;position:relative"><span style="position:absolute;top:-9px;right:10px;padding:2px 8px;border-radius:999px;color:#fff;font:800 7.5px 'Plus Jakarta Sans';letter-spacing:.5px" class="grad">-44%</span><p style="font:600 10px 'Plus Jakarta Sans';color:#2E9E44;margin:0">Annuel</p><p style="font:800 17px 'Space Grotesk';color:#14201A;margin:4px 0 0">19,99 €<span style="font:600 9px 'Plus Jakarta Sans';color:#9aa39b">/an</span></p></div>
+          </div>
+          <div style="margin-top:15px;display:flex;align-items:center;justify-content:center;gap:8px;height:52px;border-radius:16px;color:#fff;font:700 15px 'Plus Jakarta Sans';box-shadow:0 12px 26px rgba(46,158,68,.45)" class="grad">Essai gratuit 7 jours →</div>
+          <p style="text-align:center;font:500 10px 'Plus Jakarta Sans';color:#9aa39b;margin:11px 0 0">Puis 19,99 €/an · Résiliable à tout moment</p>
+        </div>
+      </div></div>
+    </div>
+
+    <!-- 3b Paywall — full-screen immersive -->
+    <div class="dv-opt" id="3b">
+      <div class="dv-olabel"><a class="dv-oid" href="#3b">3b</a><span class="dv-otag">Plein écran</span> · immersif dégradé</div>
+      <div class="phone"><div class="screen" style="color:#fff">
+        <div class="abs grad" style="inset:0"></div>
+        <div class="abs" style="left:50%;top:14%;width:210px;height:210px;transform:translate(-50%,-50%);border-radius:999px;background:rgba(255,255,255,.09);filter:blur(50px)"></div>
+        <div class="notch"></div>
+        <div class="sbar"><span>9:41</span><span style="letter-spacing:1px">✦ ▾ ▮</span></div>
+        <div class="abs" style="top:50px;left:20px;color:rgba(255,255,255,.85);font-size:18px;z-index:10">✕</div>
+        <div class="abs" style="top:76px;left:26px;right:26px;text-align:center;z-index:10">
+          <div style="width:60px;height:60px;border-radius:20px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.3);backdrop-filter:blur(10px);display:grid;place-items:center;font-size:27px;margin:0 auto 14px;box-shadow:0 16px 36px rgba(0,0,0,.2)">♔</div>
+          <span style="font:800 8.5px 'Plus Jakarta Sans';letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.8)">HikmaClips Premium</span>
+          <h1 style="font:700 23px/1.12 'Space Grotesk';letter-spacing:-.6px;margin:9px 0 0;text-shadow:0 2px 14px rgba(0,0,0,.25)">Passe à la vitesse supérieure</h1>
+        </div>
+        <div class="abs" style="top:242px;left:22px;right:22px;z-index:10;padding:6px 16px;border-radius:18px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);backdrop-filter:blur(8px)">
+          <div style="display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid rgba(255,255,255,.14)"><span style="font-size:17px">🎬</span><span style="font:600 12.5px 'Plus Jakarta Sans'">Export HD sans filigrane</span></div>
+          <div style="display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid rgba(255,255,255,.14)"><span style="font-size:17px">✨</span><span style="font:600 12.5px 'Plus Jakarta Sans'">Fonds &amp; calligraphies exclusifs</span></div>
+          <div style="display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid rgba(255,255,255,.14)"><span style="font-size:17px">⚡</span><span style="font:600 12.5px 'Plus Jakarta Sans'">Générations illimitées</span></div>
+          <div style="display:flex;align-items:center;gap:12px;padding:11px 0"><span style="font-size:17px">🖋️</span><span style="font:600 12.5px 'Plus Jakarta Sans'">Signature personnalisée</span></div>
+        </div>
+        <div class="abs" style="left:20px;right:20px;bottom:26px;z-index:10">
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:13px 16px;border-radius:16px;background:#fff;color:#14201A;margin-bottom:11px"><div><p style="font:700 13px 'Plus Jakarta Sans';margin:0">Annuel · <span style="color:#2E9E44">2 mois offerts</span></p><p style="font:500 10.5px 'Plus Jakarta Sans';color:#9aa39b;margin:2px 0 0">19,99 €/an — soit 1,67 €/mois</p></div><span style="width:22px;height:22px;border-radius:999px;display:grid;place-items:center;color:#fff;font-size:12px" class="grad">✓</span></div>
+          <div style="display:flex;align-items:center;justify-content:center;gap:8px;height:54px;border-radius:18px;background:#fff;color:#15703A;font:700 15px 'Plus Jakarta Sans';box-shadow:0 14px 30px rgba(0,0,0,.28)">Commencer l'essai gratuit</div>
+          <p style="text-align:center;font:500 10px 'Plus Jakarta Sans';color:rgba(255,255,255,.7);margin:11px 0 0">7 jours offerts · Restaurer mes achats</p>
+        </div>
+      </div></div>
+    </div>
+
+  </div>
+  <p class="dv-next">Essayez ensuite : « fusionne <a class="dv-oid" href="#3a">3a</a> et <a class="dv-oid" href="#3b">3b</a> » · « ajoute un plan à vie » · « mets le paywall en mode sombre » · « prototype interactif »</p>
+</section>
+<section class="dv-turn" id="t2">
+  <div class="dv-thd"><a class="dv-tid" href="#t2">2</a><span class="dv-tname">Direction <a class="dv-oid" href="#1c">1c</a> déclinée sur toute l'app</span></div>
+  <p class="dv-tsub">Système « Gradient expressif » complet. L'écran Clips reste immersif ; les écrans de liste posent le dégradé de marque en héros puis une feuille claire lisible. Navigation unifiée : dock blanc flottant (Clips · Recherche · Biblio · Réglages) avec bouton Générer dégradé au centre. Bibliothèque = Favoris + Collections via un sélecteur segmenté.</p>
+  <div class="dv-opts">
+
+    <!-- 2a Clips -->
+    <div class="dv-opt" id="2a">
+      <div class="dv-olabel"><a class="dv-oid" href="#2a">2a</a><span class="dv-otag">Clips</span> · générateur immersif</div>
+      <div class="phone"><div class="screen" style="color:#fff">
+        <div class="abs grad" style="inset:0"></div>
+        <div class="abs" style="left:50%;top:34%;width:220px;height:220px;transform:translate(-50%,-50%);border-radius:999px;background:rgba(255,255,255,.16);filter:blur(46px)"></div>
+        <div class="notch"></div>
+        <div class="sbar"><span>9:41</span><span style="letter-spacing:1px">✦ ▾ ▮</span></div>
+        <div class="abs" style="top:50px;left:16px;right:16px;display:flex;align-items:center;justify-content:space-between;z-index:20">
+          <div style="display:flex;align-items:center;gap:6px;height:30px;padding:0 12px;border-radius:999px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.25);backdrop-filter:blur(10px)"><span style="width:7px;height:7px;border-radius:999px;background:#fff;box-shadow:0 0 0 3px rgba(255,255,255,.3)"></span><span style="font:800 8.5px 'Plus Jakarta Sans';letter-spacing:1.4px;text-transform:uppercase">Agent en direct</span></div>
+          <div style="height:30px;padding:0 12px;border-radius:999px;background:rgba(0,0,0,.18);border:1px solid rgba(255,255,255,.25);backdrop-filter:blur(10px);display:flex;align-items:center;font:800 8.5px 'Plus Jakarta Sans';letter-spacing:.5px">✦ PREMIUM</div>
+        </div>
+        <div class="abs" style="inset:0;display:flex;flex-direction:column;justify-content:center;padding:0 26px 74px;z-index:15">
+          <p style="font-family:'Amiri',serif;font-size:27px;line-height:1.6;opacity:.92;margin:0 0 18px" dir="rtl">فَاصْبِرْ صَبْرًا جَمِيلًا</p>
+          <p style="font:700 33px/1.08 'Space Grotesk';letter-spacing:-1px;margin:0;text-shadow:0 3px 18px rgba(0,0,0,.22)">Endure d'une belle patience.</p>
+          <div style="display:flex;align-items:center;gap:9px;margin-top:22px"><span style="width:26px;height:2px;background:rgba(255,255,255,.7)"></span><span style="font:800 9px 'Plus Jakarta Sans';letter-spacing:2px;text-transform:uppercase;opacity:.85">Al-Ma'arij 70:5</span></div>
+        </div>
+        <div class="abs" style="right:16px;top:43%;display:flex;flex-direction:column;gap:11px;z-index:20">
+          <div style="width:42px;height:42px;border-radius:999px;display:grid;place-items:center;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);backdrop-filter:blur(8px);font-size:18px">♥</div>
+          <div style="width:42px;height:42px;border-radius:999px;display:grid;place-items:center;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);backdrop-filter:blur(8px);font-size:16px">↗</div>
+          <div style="width:42px;height:42px;border-radius:999px;display:grid;place-items:center;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);backdrop-filter:blur(8px);font-size:16px">🔊</div>
+        </div>
+        <div class="abs" style="left:0;right:0;bottom:88px;text-align:center;z-index:20;font:600 10px 'Plus Jakarta Sans';color:rgba(255,255,255,.85);letter-spacing:.3px">swipe ↑ · nouveau clip</div>
+        <div class="navdock">
+          <div class="ni on"><span>✦</span>Clips</div>
+          <div class="ni"><span>🔍</span>Recherche</div>
+          <div class="fab grad">⚡</div>
+          <div class="ni"><span>▤</span>Biblio</div>
+          <div class="ni"><span>⚙</span>Réglages</div>
+        </div>
+      </div></div>
+    </div>
+
+    <!-- 2b Recherche -->
+    <div class="dv-opt" id="2b">
+      <div class="dv-olabel"><a class="dv-oid" href="#2b">2b</a><span class="dv-otag">Recherche</span> · Agent Hadith</div>
+      <div class="phone"><div class="screen" style="background:#FBFAF7;color:#14201A">
+        <div class="abs grad" style="top:0;left:0;right:0;height:180px"></div>
+        <div class="notch"></div>
+        <div class="sbar" style="color:#fff"><span>9:41</span><span style="letter-spacing:1px">✦ ▾ ▮</span></div>
+        <div class="abs" style="top:52px;left:20px;right:20px;color:#fff;z-index:10">
+          <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:18px">←</span><span style="font-size:16px;opacity:.85">↺</span></div>
+          <h1 class="htitle" style="margin-top:14px">Agent Hadith</h1>
+          <p class="hsub">6 recueils authentiques · ~32 400 hadiths</p>
+        </div>
+        <div class="sheet" style="top:150px;bottom:0;padding:0 16px 92px;overflow:hidden">
+          <div style="display:flex;align-items:center;gap:10px;height:52px;margin-top:-26px;padding:0 8px 0 16px;border-radius:16px;background:#fff;border:1px solid #ece8df;box-shadow:0 14px 30px -10px rgba(16,61,36,.25)">
+            <span style="color:#9aa39b;font-size:15px">🔍</span>
+            <span style="flex:1;font:500 13px 'Plus Jakarta Sans';color:#b7beb8">Tapez le début d'un hadith…</span>
+            <span style="width:36px;height:36px;border-radius:12px;display:grid;place-items:center;color:#fff;font-size:14px" class="grad">✦</span>
+          </div>
+          <p style="font:800 9px 'Plus Jakarta Sans';letter-spacing:2px;text-transform:uppercase;color:#9aa39b;margin:20px 0 10px">Suggestions</p>
+          <div style="display:flex;flex-wrap:wrap;gap:7px">
+            <span style="padding:7px 12px;border-radius:999px;background:#fff;border:1px solid #ece8df;font:500 11px 'Plus Jakarta Sans';color:#3d4a42">Les actions selon les intentions</span>
+            <span style="padding:7px 12px;border-radius:999px;background:#fff;border:1px solid #ece8df;font:500 11px 'Plus Jakarta Sans';color:#3d4a42">La pudeur fait partie de la foi</span>
+            <span style="padding:7px 12px;border-radius:999px;background:#fff;border:1px solid #ece8df;font:500 11px 'Plus Jakarta Sans';color:#3d4a42">Ne te mets pas en colère</span>
+          </div>
+          <div class="hcard" style="margin-top:18px;padding:16px">
+            <div style="display:flex;justify-content:flex-end"><span style="display:inline-flex;align-items:center;gap:4px;padding:4px 9px;border-radius:999px;background:#E8F5EC;color:#25873a;font:800 8px 'Plus Jakarta Sans';letter-spacing:1px;text-transform:uppercase">✓ Base authentique</span></div>
+            <p style="font-family:'Amiri',serif;font-size:20px;line-height:1.8;color:#15703A;text-align:right;margin:8px 0 10px" dir="rtl">إِنَّمَا الْأَعْمَالُ بِالنِّيَّاتِ</p>
+            <p style="font:500 13px/1.55 'Plus Jakarta Sans';color:#333f38;margin:0">Les actions ne valent que par les intentions, et chacun n'a pour lui que ce qu'il a eu réellement l'intention de faire.</p>
+            <div style="display:flex;align-items:center;gap:9px;margin:12px 0 0;padding-top:12px;border-top:1px solid #f0ece3">
+              <span style="width:30px;height:30px;border-radius:999px;display:grid;place-items:center;color:#fff;font-size:13px" class="grad">📖</span>
+              <div style="flex:1"><p style="font:800 8px 'Plus Jakarta Sans';letter-spacing:1.5px;text-transform:uppercase;color:#9aa39b;margin:0">Sahih Bukhari</p><p style="font:500 9px 'Plus Jakarta Sans';color:#b7beb8;margin:2px 0 0">Livre de la Révélation · nº1</p></div>
+              <div style="display:flex;gap:4px;color:#9aa39b;font-size:13px"><span>⧉</span><span>↗</span><span>♡</span></div>
+              <span style="display:inline-flex;align-items:center;gap:4px;padding:6px 11px;border-radius:11px;border:1px solid rgba(46,158,68,.3);color:#2E9E44;font:700 10px 'Plus Jakarta Sans'">🎓 Expliquer</span>
+            </div>
+          </div>
+        </div>
+        <div class="navdock">
+          <div class="ni"><span>✦</span>Clips</div>
+          <div class="ni on"><span>🔍</span>Recherche</div>
+          <div class="fab grad">⚡</div>
+          <div class="ni"><span>▤</span>Biblio</div>
+          <div class="ni"><span>⚙</span>Réglages</div>
+        </div>
+      </div></div>
+    </div>
+
+    <!-- 2c Bibliothèque : Favoris -->
+    <div class="dv-opt" id="2c">
+      <div class="dv-olabel"><a class="dv-oid" href="#2c">2c</a><span class="dv-otag">Bibliothèque — Favoris</span></div>
+      <div class="phone"><div class="screen" style="background:#FBFAF7;color:#14201A">
+        <div class="abs grad" style="top:0;left:0;right:0;height:172px"></div>
+        <div class="notch"></div>
+        <div class="sbar" style="color:#fff"><span>9:41</span><span style="letter-spacing:1px">✦ ▾ ▮</span></div>
+        <div class="abs" style="top:54px;left:20px;right:20px;color:#fff;z-index:10">
+          <h1 class="htitle">Bibliothèque</h1>
+          <div style="display:flex;gap:6px;margin-top:14px;padding:4px;border-radius:14px;background:rgba(0,0,0,.16);border:1px solid rgba(255,255,255,.22);backdrop-filter:blur(10px)">
+            <div style="flex:1;text-align:center;padding:8px 0;border-radius:10px;background:#fff;color:#15703A;font:700 12px 'Plus Jakarta Sans'">♥ Favoris</div>
+            <div style="flex:1;text-align:center;padding:8px 0;border-radius:10px;color:rgba(255,255,255,.9);font:600 12px 'Plus Jakarta Sans'">▤ Collections</div>
+          </div>
+        </div>
+        <div class="sheet" style="top:158px;bottom:0;padding:22px 16px 92px;overflow:hidden">
+          <p style="font:800 9px 'Plus Jakarta Sans';letter-spacing:2px;text-transform:uppercase;color:#9aa39b;margin:0 0 12px">12 pépites enregistrées</p>
+          <div class="hcard" style="padding:15px;margin-bottom:12px">
+            <p style="font-family:'Amiri',serif;font-size:16px;color:#15703A;text-align:right;margin:0 0 7px" dir="rtl">إِنَّ مَعَ الْعُسْرِ يُسْرًا</p>
+            <p style="font:500 12.5px/1.5 'Plus Jakarta Sans';color:#333f38;margin:0">À côté de la difficulté est, certes, une facilité.</p>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-top:10px"><span style="font:800 8px 'Plus Jakarta Sans';letter-spacing:1.5px;text-transform:uppercase;color:#b96c05">Ash-Sharh 94:6</span><div style="display:flex;gap:6px;color:#c4cbc5;font-size:14px"><span>↗</span><span style="color:#ef4444">🗑</span></div></div>
+          </div>
+          <div class="hcard" style="padding:15px;margin-bottom:12px">
+            <p style="font-family:'Amiri',serif;font-size:16px;color:#15703A;text-align:right;margin:0 0 7px" dir="rtl">فَاذْكُرُونِي أَذْكُرْكُمْ</p>
+            <p style="font:500 12.5px/1.5 'Plus Jakarta Sans';color:#333f38;margin:0">Souvenez-vous de Moi, Je Me souviendrai de vous.</p>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-top:10px"><span style="font:800 8px 'Plus Jakarta Sans';letter-spacing:1.5px;text-transform:uppercase;color:#b96c05">Al-Baqara 2:152</span><div style="display:flex;gap:6px;color:#c4cbc5;font-size:14px"><span>↗</span><span style="color:#ef4444">🗑</span></div></div>
+          </div>
+          <div class="hcard" style="padding:15px">
+            <p style="font-family:'Amiri',serif;font-size:16px;color:#15703A;text-align:right;margin:0 0 7px" dir="rtl">رَبِّ زِدْنِي عِلْمًا</p>
+            <p style="font:500 12.5px/1.5 'Plus Jakarta Sans';color:#333f38;margin:0">Seigneur, accrois ma science.</p>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-top:10px"><span style="font:800 8px 'Plus Jakarta Sans';letter-spacing:1.5px;text-transform:uppercase;color:#b96c05">Ta-Ha 20:114</span><div style="display:flex;gap:6px;color:#c4cbc5;font-size:14px"><span>↗</span><span style="color:#ef4444">🗑</span></div></div>
+          </div>
+        </div>
+        <div class="navdock">
+          <div class="ni"><span>✦</span>Clips</div>
+          <div class="ni"><span>🔍</span>Recherche</div>
+          <div class="fab grad">⚡</div>
+          <div class="ni on"><span>▤</span>Biblio</div>
+          <div class="ni"><span>⚙</span>Réglages</div>
+        </div>
+      </div></div>
+    </div>
+
+    <!-- 2d Bibliothèque : Collections -->
+    <div class="dv-opt" id="2d">
+      <div class="dv-olabel"><a class="dv-oid" href="#2d">2d</a><span class="dv-otag">Bibliothèque — Collections</span></div>
+      <div class="phone"><div class="screen" style="background:#FBFAF7;color:#14201A">
+        <div class="abs grad" style="top:0;left:0;right:0;height:172px"></div>
+        <div class="notch"></div>
+        <div class="sbar" style="color:#fff"><span>9:41</span><span style="letter-spacing:1px">✦ ▾ ▮</span></div>
+        <div class="abs" style="top:54px;left:20px;right:20px;color:#fff;z-index:10">
+          <div style="display:flex;align-items:center;justify-content:space-between"><h1 class="htitle">Bibliothèque</h1><span style="display:inline-flex;align-items:center;gap:5px;height:32px;padding:0 13px;border-radius:999px;background:#fff;color:#b96c05;font:700 11px 'Plus Jakarta Sans'">＋ Nouvelle</span></div>
+          <div style="display:flex;gap:6px;margin-top:14px;padding:4px;border-radius:14px;background:rgba(0,0,0,.16);border:1px solid rgba(255,255,255,.22);backdrop-filter:blur(10px)">
+            <div style="flex:1;text-align:center;padding:8px 0;border-radius:10px;color:rgba(255,255,255,.9);font:600 12px 'Plus Jakarta Sans'">♥ Favoris</div>
+            <div style="flex:1;text-align:center;padding:8px 0;border-radius:10px;background:#fff;color:#15703A;font:700 12px 'Plus Jakarta Sans'">▤ Collections</div>
+          </div>
+        </div>
+        <div class="sheet" style="top:158px;bottom:0;padding:22px 16px 92px;overflow:hidden">
+          <div class="hcard" style="padding:14px;display:flex;align-items:center;gap:13px;margin-bottom:12px">
+            <div style="width:48px;height:48px;border-radius:15px;display:grid;place-items:center;font-size:22px;background:#E8F5EC">🌙</div>
+            <div style="flex:1"><p style="font:700 14px 'Plus Jakarta Sans';color:#14201A;margin:0">Sabr &amp; patience</p><p style="font:500 11px 'Plus Jakarta Sans';color:#9aa39b;margin:3px 0 0">8 hikmas</p></div>
+            <span style="color:#c4cbc5;font-size:16px">›</span>
+          </div>
+          <div class="hcard" style="padding:14px;display:flex;align-items:center;gap:13px;margin-bottom:12px">
+            <div style="width:48px;height:48px;border-radius:15px;display:grid;place-items:center;font-size:22px;background:#FDF0E0">🤲</div>
+            <div style="flex:1"><p style="font:700 14px 'Plus Jakarta Sans';color:#14201A;margin:0">Invocations du matin</p><p style="font:500 11px 'Plus Jakarta Sans';color:#9aa39b;margin:3px 0 0">14 hikmas</p></div>
+            <span style="color:#c4cbc5;font-size:16px">›</span>
+          </div>
+          <div class="hcard" style="padding:14px;display:flex;align-items:center;gap:13px;margin-bottom:12px">
+            <div style="width:48px;height:48px;border-radius:15px;display:grid;place-items:center;font-size:22px;background:#E8F5EC">💎</div>
+            <div style="flex:1"><p style="font:700 14px 'Plus Jakarta Sans';color:#14201A;margin:0">Gratitude</p><p style="font:500 11px 'Plus Jakarta Sans';color:#9aa39b;margin:3px 0 0">5 hikmas</p></div>
+            <span style="color:#c4cbc5;font-size:16px">›</span>
+          </div>
+          <div style="border:1.5px dashed #dcd8ce;border-radius:20px;padding:18px;text-align:center;color:#b7beb8;font:600 11px 'Plus Jakarta Sans'">＋ Créer une collection thématique</div>
+        </div>
+        <div class="navdock">
+          <div class="ni"><span>✦</span>Clips</div>
+          <div class="ni"><span>🔍</span>Recherche</div>
+          <div class="fab grad">⚡</div>
+          <div class="ni on"><span>▤</span>Biblio</div>
+          <div class="ni"><span>⚙</span>Réglages</div>
+        </div>
+      </div></div>
+    </div>
+
+    <!-- 2e Onboarding -->
+    <div class="dv-opt" id="2e">
+      <div class="dv-olabel"><a class="dv-oid" href="#2e">2e</a><span class="dv-otag">Onboarding</span></div>
+      <div class="phone"><div class="screen" style="color:#fff">
+        <div class="abs grad" style="inset:0"></div>
+        <div class="abs" style="left:50%;top:26%;width:210px;height:210px;transform:translate(-50%,-50%);border-radius:999px;background:rgba(255,255,255,.10);filter:blur(50px)"></div>
+        <div class="notch"></div>
+        <div class="sbar"><span>9:41</span><span style="letter-spacing:1px">✦ ▾ ▮</span></div>
+        <div class="abs" style="top:50px;right:20px;font:600 12px 'Plus Jakarta Sans';color:rgba(255,255,255,.8);z-index:10">Passer</div>
+        <div class="abs" style="inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 40px;text-align:center;z-index:10">
+          <div style="width:128px;height:128px;border-radius:32px;background:#fff;display:grid;place-items:center;margin-bottom:34px;box-shadow:0 22px 50px rgba(0,0,0,.28)">
+            <img src="assets/logo-hikmaclips.png" alt="HikmaClips" style="width:112px;height:112px;object-fit:contain;border-radius:24px">
+          </div>
+          <h1 style="font:700 27px/1.12 'Space Grotesk';letter-spacing:-.8px;margin:0 0 14px">Diffuse la sagesse, en un clip.</h1>
+          <p style="font:500 14px/1.6 'Plus Jakarta Sans';color:rgba(255,255,255,.85);margin:0;max-width:230px">Hadiths, versets &amp; invocations transformés en visuels prêts à publier.</p>
+        </div>
+        <div class="abs" style="left:40px;right:40px;bottom:40px;z-index:10">
+          <div style="display:flex;justify-content:center;gap:8px;margin-bottom:22px"><span style="width:26px;height:7px;border-radius:9px;background:#fff"></span><span style="width:7px;height:7px;border-radius:9px;background:rgba(255,255,255,.4)"></span><span style="width:7px;height:7px;border-radius:9px;background:rgba(255,255,255,.4)"></span><span style="width:7px;height:7px;border-radius:9px;background:rgba(255,255,255,.4)"></span></div>
+          <div style="display:flex;align-items:center;justify-content:center;gap:8px;height:54px;border-radius:18px;background:#fff;color:#15703A;font:700 15px 'Plus Jakarta Sans';box-shadow:0 14px 30px rgba(0,0,0,.25)">Commencer →</div>
+        </div>
+      </div></div>
+    </div>
+
+    <!-- 2f Réglages -->
+    <div class="dv-opt" id="2f">
+      <div class="dv-olabel"><a class="dv-oid" href="#2f">2f</a><span class="dv-otag">Réglages</span></div>
+      <div class="phone"><div class="screen" style="background:#FBFAF7;color:#14201A">
+        <div class="abs grad" style="top:0;left:0;right:0;height:196px"></div>
+        <div class="notch"></div>
+        <div class="sbar" style="color:#fff"><span>9:41</span><span style="letter-spacing:1px">✦ ▾ ▮</span></div>
+        <div class="abs" style="top:54px;left:20px;right:20px;color:#fff;z-index:10">
+          <h1 class="htitle">Réglages</h1>
+          <div style="display:flex;align-items:center;gap:12px;margin-top:16px;padding:12px;border-radius:16px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.25);backdrop-filter:blur(10px)">
+            <div style="width:42px;height:42px;border-radius:999px;background:#fff;color:#15703A;display:grid;place-items:center;font:800 17px 'Space Grotesk'">Y</div>
+            <div style="flex:1"><p style="font:700 13px 'Plus Jakarta Sans';margin:0">Yassine B.</p><p style="font:500 11px 'Plus Jakarta Sans';color:rgba(255,255,255,.8);margin:2px 0 0">yassine@email.com</p></div>
+            <span style="font:600 11px 'Plus Jakarta Sans';color:rgba(255,255,255,.85)">↪</span>
+          </div>
+        </div>
+        <div class="sheet" style="top:182px;bottom:0;padding:20px 16px 92px;overflow:hidden">
+          <div class="hcard" style="padding:15px;margin-bottom:12px">
+            <p style="font:800 9px 'Plus Jakarta Sans';letter-spacing:1.5px;text-transform:uppercase;color:#9aa39b;margin:0 0 11px">🎨 Personnalisation</p>
+            <div style="display:flex;gap:7px">
+              <span style="flex:1;text-align:center;padding:9px 0;border-radius:11px;background:#F5F1E8;color:#9aa39b;font:600 11px 'Plus Jakarta Sans'">☀ Clair</span>
+              <span style="flex:1;text-align:center;padding:9px 0;border-radius:11px;color:#fff;font:700 11px 'Plus Jakarta Sans'" class="grad">🌙 Nuit</span>
+              <span style="flex:1;text-align:center;padding:9px 0;border-radius:11px;background:#F5F1E8;color:#9aa39b;font:600 11px 'Plus Jakarta Sans'">✦ Zellige</span>
+            </div>
+          </div>
+          <div class="hcard" style="padding:15px;margin-bottom:12px;display:flex;align-items:center;gap:12px">
+            <div style="flex:1"><p style="font:700 12.5px 'Plus Jakarta Sans';margin:0">🔔 Rappels quotidiens</p><p style="font:500 10.5px 'Plus Jakarta Sans';color:#9aa39b;margin:3px 0 0">Une Hikma chaque matin, 9h00</p></div>
+            <div style="width:42px;height:24px;border-radius:999px;padding:3px;display:flex;justify-content:flex-end;align-items:center" class="grad"><span style="width:18px;height:18px;border-radius:999px;background:#fff"></span></div>
+          </div>
+          <div style="display:flex;gap:9px;margin-bottom:12px">
+            <div class="hcard" style="flex:1;padding:14px 8px;text-align:center"><p style="font:800 19px 'Space Grotesk';color:#2E9E44;margin:0">🔥 7</p><p style="font:600 8.5px 'Plus Jakarta Sans';color:#9aa39b;margin:5px 0 0">Jours</p></div>
+            <div class="hcard" style="flex:1;padding:14px 8px;text-align:center"><p style="font:800 19px 'Space Grotesk';color:#15703A;margin:0">128</p><p style="font:600 8.5px 'Plus Jakarta Sans';color:#9aa39b;margin:5px 0 0">Visites</p></div>
+            <div class="hcard" style="flex:1;padding:14px 8px;text-align:center"><p style="font:800 19px 'Space Grotesk';color:#F5960F;margin:0">♥ 12</p><p style="font:600 8.5px 'Plus Jakarta Sans';color:#9aa39b;margin:5px 0 0">Favoris</p></div>
+          </div>
+          <div class="hcard" style="overflow:hidden">
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:13px 15px;border-bottom:1px solid #f0ece3;font:600 12px 'Plus Jakarta Sans'">📄 Confidentialité <span style="color:#c4cbc5">↗</span></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:13px 15px;font:600 12px 'Plus Jakarta Sans'">ℹ À propos <span style="font:600 10px 'Plus Jakarta Sans';color:#b7beb8">v1.2.58</span></div>
+          </div>
+        </div>
+        <div class="navdock">
+          <div class="ni"><span>✦</span>Clips</div>
+          <div class="ni"><span>🔍</span>Recherche</div>
+          <div class="fab grad">⚡</div>
+          <div class="ni"><span>▤</span>Biblio</div>
+          <div class="ni on"><span>⚙</span>Réglages</div>
+        </div>
+      </div></div>
+    </div>
+
+  </div>
+  <p class="dv-next">Essayez ensuite : « ajoute l'écran Premium / paywall » · « montre le mode sombre » · « rends la Recherche plus dense » · « anime le dock » · « exporte en prototype interactif »</p>
+</section>
+<section class="dv-turn" id="t1">
+  <div class="dv-thd"><a class="dv-tid" href="#t1">1</a><span class="dv-tname">Écran clip — 3 directions visuelles</span></div>
+  <p class="dv-tsub">L'écran cœur de l'app (générateur / accueil immersif), redessiné autour de la palette du logo — vert <b>#2E9E44</b> &amp; orange <b>#F5960F</b> — pour remplacer les teintes dispersées (violet, teal, or) qui cohabitent aujourd'hui. Type : Space Grotesk (titres), Plus Jakarta Sans (corps), Amiri (arabe). Choisissez une direction, je l'étends ensuite à Recherche, Collections, Favoris, Onboarding &amp; Réglages.</p>
+  <div class="dv-opts">
+
+    <!-- 1a Immersif raffiné -->
+    <div class="dv-opt" id="1a">
+      <div class="dv-olabel"><a class="dv-oid" href="#1a">1a</a><span class="dv-otag">Immersif raffiné</span> · photo plein cadre, dock unifié</div>
+      <div class="phone">
+        <div class="screen" style="color:#fff">
+          <img class="abs" src="assets/hero-maghrib.png" alt="" style="inset:0;width:100%;height:100%;object-fit:cover">
+          <div class="abs" style="inset:0;background:linear-gradient(180deg,rgba(6,14,9,.55) 0%,rgba(6,14,9,.05) 32%,rgba(6,14,9,.15) 60%,rgba(6,14,9,.85) 100%)"></div>
+          <div class="notch"></div>
+          <div class="sbar"><span>9:41</span><span style="letter-spacing:1px">✦ ▾ ▮</span></div>
+
+          <!-- top bar -->
+          <div class="abs" style="top:48px;left:14px;right:14px;display:flex;align-items:center;gap:8px;z-index:30">
+            <div style="display:flex;align-items:center;gap:6px;height:34px;padding:0 12px;border-radius:999px;background:rgba(0,0,0,.32);backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.16)">
+              <div style="width:14px;height:14px;border-radius:4px;display:grid;place-items:center;background:linear-gradient(135deg,#2E9E44,#F5960F)"></div>
+              <span style="font:800 9px 'Plus Jakarta Sans';letter-spacing:1.5px;text-transform:uppercase">Agent</span>
+            </div>
+            <div style="flex:1"></div>
+            <div style="display:flex;align-items:center;gap:5px;height:34px;padding:0 12px;border-radius:999px;background:rgba(0,0,0,.32);backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.16);font:800 12px 'Space Grotesk'"><span style="color:#2E9E44">Hikma</span><span style="color:#F5960F">Clips</span></div>
+            <div style="flex:1"></div>
+            <div style="width:34px;height:34px;border-radius:999px;display:grid;place-items:center;background:rgba(0,0,0,.32);backdrop-filter:blur(14px);border:1px solid rgba(245,150,15,.4);color:#F5C24B;font-size:15px">♔</div>
+          </div>
+
+          <!-- hikma content -->
+          <div class="abs" style="inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 34px 40px;text-align:center">
+            <p style="font-family:'Amiri',serif;font-size:34px;line-height:1.7;margin:0 0 22px;text-shadow:0 2px 14px rgba(0,0,0,.55)" dir="rtl">إِنَّ مَعَ الْعُسْرِ يُسْرًا</p>
+            <div style="width:44px;height:3px;border-radius:9px;background:linear-gradient(90deg,#2E9E44,#F5960F);margin-bottom:22px"></div>
+            <p style="font:600 20px/1.42 'Plus Jakarta Sans';margin:0;text-shadow:0 2px 10px rgba(0,0,0,.5)">À côté de la difficulté est, certes, une facilité.</p>
+            <p style="font:800 9.5px 'Plus Jakarta Sans';letter-spacing:2.6px;text-transform:uppercase;opacity:.72;margin:18px 0 0">— Ash-Sharh 94:6 —</p>
+          </div>
+
+          <!-- right rail -->
+          <div class="abs" style="right:14px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:12px;z-index:30">
+            <div style="width:44px;height:44px;border-radius:999px;display:grid;place-items:center;background:rgba(239,68,68,.28);border:1px solid rgba(248,150,150,.55);backdrop-filter:blur(10px);color:#ff8a8a;font-size:19px">♥</div>
+            <div style="width:44px;height:44px;border-radius:999px;display:grid;place-items:center;background:rgba(0,0,0,.32);border:1px solid rgba(255,255,255,.2);backdrop-filter:blur(10px);font-size:17px">🔊</div>
+            <div style="width:44px;height:44px;border-radius:999px;display:grid;place-items:center;background:rgba(0,0,0,.32);border:1px solid rgba(255,255,255,.2);backdrop-filter:blur(10px);font-size:16px">↗</div>
+          </div>
+
+          <!-- generate pill -->
+          <div class="abs" style="left:0;right:0;bottom:94px;display:flex;justify-content:center;z-index:30">
+            <div style="display:flex;align-items:center;gap:8px;height:48px;padding:0 24px;border-radius:999px;background:#2E9E44;box-shadow:0 10px 26px rgba(46,158,68,.55);font:700 14px 'Plus Jakarta Sans'"><span style="font-size:15px">⚡</span>Agent Hikma</div>
+          </div>
+
+          <!-- unified dock nav -->
+          <div class="abs" style="left:14px;right:14px;bottom:20px;height:60px;border-radius:26px;background:rgba(10,20,14,.52);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.12);display:flex;align-items:center;justify-content:space-around;z-index:30;box-shadow:0 12px 34px rgba(0,0,0,.4)">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:3px;color:#fff"><span style="font-size:17px">✦</span><span style="font:600 8px 'Plus Jakarta Sans'">Clips</span></div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:3px;color:rgba(255,255,255,.45)"><span style="font-size:17px">🔍</span><span style="font:600 8px 'Plus Jakarta Sans'">Recherche</span></div>
+            <div style="width:40px"></div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:3px;color:rgba(255,255,255,.45)"><span style="font-size:17px">♡</span><span style="font:600 8px 'Plus Jakarta Sans'">Favoris</span></div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:3px;color:rgba(255,255,255,.45)"><span style="font-size:17px">⚙</span><span style="font:600 8px 'Plus Jakarta Sans'">Réglages</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 1b Éditorial papier -->
+    <div class="dv-opt" id="1b">
+      <div class="dv-olabel"><a class="dv-oid" href="#1b">1b</a><span class="dv-otag">Éditorial papier</span> · canvas clair, clip encadré</div>
+      <div class="phone">
+        <div class="screen" style="background:#FBFAF7;color:#14201A">
+          <div class="abs" style="right:-90px;top:-70px;width:260px;height:260px;border-radius:999px;background:radial-gradient(circle,rgba(46,158,68,.16),transparent 68%)"></div>
+          <div class="abs" style="left:-80px;bottom:60px;width:240px;height:240px;border-radius:999px;background:radial-gradient(circle,rgba(245,150,15,.14),transparent 68%)"></div>
+          <div class="notch" style="background:#eae6dd"></div>
+          <div class="sbar" style="color:#14201A"><span>9:41</span><span style="letter-spacing:1px;opacity:.6">✦ ▾ ▮</span></div>
+
+          <!-- header -->
+          <div class="abs" style="top:50px;left:20px;right:20px;display:flex;align-items:center;justify-content:space-between;z-index:20">
+            <div style="display:flex;align-items:center;gap:8px">
+              <div style="width:30px;height:30px;border-radius:9px;display:grid;place-items:center;background:linear-gradient(135deg,#2E9E44,#F5960F);color:#fff">▶</div>
+              <div style="line-height:1"><div style="font:800 14px 'Space Grotesk'"><span style="color:#2E9E44">Hikma</span><span style="color:#F5960F">Clips</span></div><div style="font:600 8px 'Plus Jakarta Sans';letter-spacing:1.5px;text-transform:uppercase;color:#9aa39b;margin-top:2px">Hadith du jour</div></div>
+            </div>
+            <div style="width:34px;height:34px;border-radius:11px;display:grid;place-items:center;background:#fff;border:1px solid #ece8df;color:#3d4a42;box-shadow:0 2px 10px rgba(16,61,36,.06)">☰</div>
+          </div>
+
+          <!-- clip card -->
+          <div class="abs" style="top:106px;left:20px;right:20px;bottom:150px;border-radius:26px;background:#fff;border:1px solid #ece8df;box-shadow:0 24px 50px -18px rgba(16,61,36,.28);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 26px;text-align:center;overflow:hidden">
+            <div class="abs" style="top:0;left:0;right:0;height:6px;background:linear-gradient(90deg,#2E9E44,#F5960F)"></div>
+            <span style="font:700 9px 'Plus Jakarta Sans';letter-spacing:2px;text-transform:uppercase;color:#2E9E44;margin-bottom:18px">Coran · Patience</span>
+            <p style="font-family:'Amiri',serif;font-size:32px;line-height:1.7;color:#15703A;margin:0 0 20px" dir="rtl">إِنَّ مَعَ الْعُسْرِ يُسْرًا</p>
+            <p style="font:600 18px/1.5 'Plus Jakarta Sans';color:#26302b;margin:0">« À côté de la difficulté est, certes, une facilité. »</p>
+            <div style="width:40px;height:3px;border-radius:9px;background:#F5960F;margin:20px 0 12px"></div>
+            <p style="font:800 9px 'Plus Jakarta Sans';letter-spacing:2px;text-transform:uppercase;color:#b96c05;margin:0">Ash-Sharh 94:6</p>
+          </div>
+
+          <!-- action row -->
+          <div class="abs" style="left:20px;right:20px;bottom:112px;display:flex;justify-content:space-between;z-index:20">
+            <div style="width:46px;height:46px;border-radius:15px;display:grid;place-items:center;background:#fff;border:1px solid #ece8df;color:#ef4444;font-size:18px;box-shadow:0 3px 12px rgba(16,61,36,.06)">♥</div>
+            <div style="width:46px;height:46px;border-radius:15px;display:grid;place-items:center;background:#fff;border:1px solid #ece8df;color:#3d4a42;font-size:17px;box-shadow:0 3px 12px rgba(16,61,36,.06)">↗</div>
+            <div style="width:46px;height:46px;border-radius:15px;display:grid;place-items:center;background:#fff;border:1px solid #ece8df;color:#3d4a42;font-size:17px;box-shadow:0 3px 12px rgba(16,61,36,.06)">⤓</div>
+            <div style="display:flex;align-items:center;gap:7px;height:46px;padding:0 22px;border-radius:15px;background:#F5960F;color:#fff;font:700 14px 'Plus Jakarta Sans';box-shadow:0 8px 20px rgba(245,150,15,.4)"><span>⚡</span>Générer</div>
+          </div>
+
+          <!-- bottom tabs -->
+          <div class="abs" style="left:0;right:0;bottom:0;height:74px;background:#fff;border-top:1px solid #ece8df;display:flex;align-items:flex-start;justify-content:space-around;padding-top:12px;z-index:20">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:4px;color:#2E9E44"><span style="font-size:17px">✦</span><span style="font:700 8.5px 'Plus Jakarta Sans'">Clips</span></div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:4px;color:#9aa39b"><span style="font-size:17px">🔍</span><span style="font:600 8.5px 'Plus Jakarta Sans'">Recherche</span></div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:4px;color:#9aa39b"><span style="font-size:17px">▤</span><span style="font:600 8.5px 'Plus Jakarta Sans'">Collections</span></div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:4px;color:#9aa39b"><span style="font-size:17px">♡</span><span style="font:600 8.5px 'Plus Jakarta Sans'">Favoris</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 1c Gradient expressif -->
+    <div class="dv-opt" id="1c">
+      <div class="dv-olabel"><a class="dv-oid" href="#1c">1c</a><span class="dv-otag">Gradient expressif</span> · marque en fond, type géante</div>
+      <div class="phone">
+        <div class="screen" style="color:#fff">
+          <div class="abs" style="inset:0;background:linear-gradient(165deg,#15703A 0%,#2E9E44 48%,#F5960F 128%)"></div>
+          <div class="abs" style="left:50%;top:32%;width:220px;height:220px;transform:translate(-50%,-50%);border-radius:999px;background:rgba(255,255,255,.16);filter:blur(46px)"></div>
+          <div class="notch"></div>
+          <div class="sbar"><span>9:41</span><span style="letter-spacing:1px">✦ ▾ ▮</span></div>
+
+          <!-- top chips -->
+          <div class="abs" style="top:50px;left:16px;right:16px;display:flex;align-items:center;justify-content:space-between;z-index:20">
+            <div style="display:flex;align-items:center;gap:6px;height:30px;padding:0 12px;border-radius:999px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.25);backdrop-filter:blur(10px)">
+              <span style="width:7px;height:7px;border-radius:999px;background:#fff;box-shadow:0 0 0 3px rgba(255,255,255,.3)"></span>
+              <span style="font:800 8.5px 'Plus Jakarta Sans';letter-spacing:1.4px;text-transform:uppercase">Agent en direct</span>
+            </div>
+            <div style="height:30px;padding:0 12px;border-radius:999px;background:rgba(0,0,0,.18);border:1px solid rgba(255,255,255,.25);backdrop-filter:blur(10px);display:flex;align-items:center;font:800 8.5px 'Plus Jakarta Sans';letter-spacing:.5px">✦ PREMIUM</div>
+          </div>
+
+          <!-- big type -->
+          <div class="abs" style="inset:0;display:flex;flex-direction:column;justify-content:center;padding:0 26px 60px;z-index:15">
+            <p style="font-family:'Amiri',serif;font-size:27px;line-height:1.6;opacity:.92;margin:0 0 18px" dir="rtl">فَاصْبِرْ صَبْرًا جَمِيلًا</p>
+            <p style="font:700 33px/1.08 'Space Grotesk';letter-spacing:-1px;margin:0;text-shadow:0 3px 18px rgba(0,0,0,.22)">Endure d'une belle patience.</p>
+            <div style="display:flex;align-items:center;gap:9px;margin-top:22px">
+              <span style="width:26px;height:2px;background:rgba(255,255,255,.7)"></span>
+              <span style="font:800 9px 'Plus Jakarta Sans';letter-spacing:2px;text-transform:uppercase;opacity:.85">Al-Ma'arij 70:5</span>
+            </div>
+          </div>
+
+          <!-- floating actions -->
+          <div class="abs" style="right:16px;top:44%;display:flex;flex-direction:column;gap:11px;z-index:20">
+            <div style="width:42px;height:42px;border-radius:999px;display:grid;place-items:center;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);backdrop-filter:blur(8px);font-size:18px">♥</div>
+            <div style="width:42px;height:42px;border-radius:999px;display:grid;place-items:center;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);backdrop-filter:blur(8px);font-size:16px">↗</div>
+            <div style="width:42px;height:42px;border-radius:999px;display:grid;place-items:center;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);backdrop-filter:blur(8px);font-size:16px">🔊</div>
+          </div>
+
+          <!-- bottom generate + dots -->
+          <div class="abs" style="left:20px;right:20px;bottom:26px;z-index:20">
+            <div style="display:flex;align-items:center;justify-content:center;gap:9px;height:54px;border-radius:18px;background:#fff;color:#15703A;font:700 15px 'Plus Jakarta Sans';box-shadow:0 14px 30px rgba(0,0,0,.28)">
+              <span style="font-size:16px">⚡</span>Nouveau clip <span style="opacity:.4;font-size:12px">·  swipe ↑</span>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:center;gap:22px;margin-top:16px;color:rgba(255,255,255,.9)">
+              <span style="font-size:17px">✦</span>
+              <span style="font-size:16px;opacity:.55">🔍</span>
+              <span style="font-size:16px;opacity:.55">♡</span>
+              <span style="font-size:16px;opacity:.55">⚙</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <p class="dv-next">Essayez ensuite : « décline <a class="dv-oid" href="#1b">1b</a> sur tous les écrans » · « mixe la photo de <a class="dv-oid" href="#1a">1a</a> avec le dock clair de <a class="dv-oid" href="#1b">1b</a> » · « une version plus sobre » · « montre l'écran Recherche »</p>
+</section>
+
+</x-dc>
+</body>
+</html>

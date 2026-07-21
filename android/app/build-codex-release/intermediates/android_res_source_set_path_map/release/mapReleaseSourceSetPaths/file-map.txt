@@ -1,0 +1,9 @@
+fr.hikmatips.app-pngs-0 C:\MES PROJETS\HIKMATIPS-main\android\app\build-codex-release\generated\res\pngs\release
+fr.hikmatips.app-resValues-1 C:\MES PROJETS\HIKMATIPS-main\android\app\build-codex-release\generated\res\resValues\release
+fr.hikmatips.app-updated_navigation_xml-2 C:\MES PROJETS\HIKMATIPS-main\android\app\build-codex-release\generated\updated_navigation_xml\release
+fr.hikmatips.app-packageReleaseResources-3 C:\MES PROJETS\HIKMATIPS-main\android\app\build-codex-release\intermediates\incremental\release\packageReleaseResources\merged.dir
+fr.hikmatips.app-packageReleaseResources-4 C:\MES PROJETS\HIKMATIPS-main\android\app\build-codex-release\intermediates\incremental\release\packageReleaseResources\stripped.dir
+fr.hikmatips.app-release-5 C:\MES PROJETS\HIKMATIPS-main\android\app\build-codex-release\intermediates\merged_res\release\mergeReleaseResources
+fr.hikmatips.app-main-6 C:\MES PROJETS\HIKMATIPS-main\android\app\src\main\res
+fr.hikmatips.app-release-7 C:\MES PROJETS\HIKMATIPS-main\android\app\src\release\res
+gradleHome-0 C:\Users\ABDER\.gradle

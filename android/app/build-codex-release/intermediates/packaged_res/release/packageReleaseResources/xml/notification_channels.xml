@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<channels>
+    <channel id="hikma_daily" name="Rappels Quotidiens" description="Rappels spirituels quotidiens" importance="default" />
+    <channel id="hikma_alerts" name="Alertes" description="Alertes importantes HikmaClips" importance="high" />
+</channels>

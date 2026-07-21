@@ -1,0 +1,408 @@
+-- Merging decision tree log ---
+provider#androidx.core.content.FileProvider
+INJECTED from C:\MES PROJETS\HIKMATIPS-main\android\app\src\main\AndroidManifest.xml:41:9-49:20
+	android:grantUriPermissions
+		ADDED from C:\MES PROJETS\HIKMATIPS-main\android\app\src\main\AndroidManifest.xml:45:13-47
+	android:authorities
+		INJECTED from C:\MES PROJETS\HIKMATIPS-main\android\app\src\main\AndroidManifest.xml
+		ADDED from C:\MES PROJETS\HIKMATIPS-main\android\app\src\main\AndroidManifest.xml:43:13-64
+	android:exported
+		ADDED from C:\MES PROJETS\HIKMATIPS-main\android\app\src\main\AndroidManifest.xml:44:13-37
+	android:name
+		ADDED from C:\MES PROJETS\HIKMATIPS-main\android\app\src\main\AndroidManifest.xml:42:13-62
+manifest
+ADDED from C:\MES PROJETS\HIKMATIPS-main\android\app\src\main\AndroidManifest.xml:2:1-61:12
+INJECTED from C:\MES PROJETS\HIKMATIPS-main\android\app\src\main\AndroidManifest.xml:2:1-61:12
+INJECTED from C:\MES PROJETS\HIKMATIPS-main\android\app\src\main\AndroidManifest.xml:2:1-61:12
+INJECTED from C:\MES PROJETS\HIKMATIPS-main\android\app\src\main\AndroidManifest.xml:2:1-61:12
+MERGED from [:capacitor-filesystem] C:\MES PROJETS\HIKMATIPS-main\node_modules\@capacitor\filesystem\android\build\intermediates\merged_manifest\release\processReleaseManifest\AndroidManifest.xml:2:1-7:12
+MERGED from [:capacitor-local-notifications] C:\MES PROJETS\HIKMATIPS-main\node_modules\@capacitor\local-notifications\android\build\intermediates\merged_manifest\release\processReleaseManifest\AndroidManifest.xml:2:1-26:12
+MERGED from [:capacitor-share] C:\MES PROJETS\HIKMATIPS-main\node_modules\@capacitor\share\android\build\intermediates\merged_manifest\release\processReleaseManifest\AndroidManifest.xml:2:1-7:12
+MERGED from [:capacitor-android] C:\MES PROJETS\HIKMATIPS-main\node_modules\@capacitor\android\capacitor\build\intermediates\merged_manifest\release\processReleaseManifest\AndroidManifest.xml:2:1-7:12
+MERGED from [:capacitor-cordova-android-plugins] C:\MES PROJETS\HIKMATIPS-main\android\capacitor-cordova-android-plugins\build\intermediates\merged_manifest\release\processReleaseManifest\AndroidManifest.xml:2:1-11:12
+MERGED from [org.apache.cordova:framework:14.0.1] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\f50bf4005c2f3d4b3085b9c4d0d91107\transformed\framework-14.0.1\AndroidManifest.xml:20:1-27:12
+MERGED from [androidx.core:core-splashscreen:1.2.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\0dcc12931bbd4f0e5b43d44e25210ae6\transformed\core-splashscreen-1.2.0\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.appcompat:appcompat-resources:1.7.1] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\27cd117ff0ac3d8c60f6d67914f851ce\transformed\appcompat-resources-1.7.1\AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.appcompat:appcompat:1.7.1] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\d78b0d1f71936b2b0d57de3345b7a902\transformed\appcompat-1.7.1\AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.coordinatorlayout:coordinatorlayout:1.3.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\b1864aa6bd9540b09f979880764e04cb\transformed\coordinatorlayout-1.3.0\AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.fragment:fragment:1.8.9] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\3ea184b4f3110f9e26b46ff6c8b4a7bf\transformed\fragment-1.8.9\AndroidManifest.xml:2:1-7:12
+MERGED from [io.ionic.libs:ionfilesystem-android:1.1.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\15c4179fe1140425f4f882e736daed36\transformed\ionfilesystem-android-1.1.0\AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.activity:activity-ktx:1.11.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\6c92b46cbb1fad949f047d84f63a75fb\transformed\activity-ktx-1.11.0\AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.activity:activity:1.11.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\d0102bd629c17ef7e890cc90aa7ce6d5\transformed\activity-1.11.0\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\341a38283e72f86a2eca368d1fd0f5c9\transformed\cursoradapter-1.0.0\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.drawerlayout:drawerlayout:1.0.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\a072251eda3d883dd2033d3a9052423b\transformed\drawerlayout-1.0.0\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.emoji2:emoji2-views-helper:1.3.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\ea512509838e262a4d288477159c49a4\transformed\emoji2-views-helper-1.3.0\AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.emoji2:emoji2:1.3.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\bf57c1bae370bb20378492ec05ef0e3a\transformed\emoji2-1.3.0\AndroidManifest.xml:17:1-35:12
+MERGED from [androidx.viewpager:viewpager:1.0.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\b6ff1ddd5ca347298384c4210c7cb2de\transformed\viewpager-1.0.0\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.customview:customview:1.0.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\8adcd180c9ce86ac3c1c20b90fe44423\transformed\customview-1.0.0\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.webkit:webkit:1.14.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\41997524ac962acf55b8ff398cc0041c\transformed\webkit-1.14.0\AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.vectordrawable:vectordrawable-animated:1.1.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\351180ca8cd2041cccbd54b867ed40e0\transformed\vectordrawable-animated-1.1.0\AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.vectordrawable:vectordrawable:1.1.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\76d3e78fe792cabc29de374a8bb50692\transformed\vectordrawable-1.1.0\AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.core:core-ktx:1.17.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\eca6d58d17938c01768f86dc24a50b72\transformed\core-ktx-1.17.0\AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.loader:loader:1.0.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\96ec6b53b5608d5421bb29f6657ae20a\transformed\loader-1.0.0\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.core:core:1.17.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\b739276017aaf82425e2a78697b54605\transformed\core-1.17.0\AndroidManifest.xml:17:1-30:12
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\b65217c7f1ef2dad2432bfff13b15d90\transformed\lifecycle-viewmodel-ktx-2.6.2\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-runtime-ktx:2.6.2] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\c4f8182102c04a7ad68368017287958f\transformed\lifecycle-runtime-ktx-2.6.2\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-livedata:2.6.2] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\79f998d5b5ccd79c3519cc35813ef943\transformed\lifecycle-livedata-2.6.2\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.6.2] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\8ebcf8dae87c091c2c430e2138088989\transformed\lifecycle-viewmodel-2.6.2\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-process:2.6.2] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\fab4a769fdedd20ebba8af618d054b28\transformed\lifecycle-process-2.6.2\AndroidManifest.xml:17:1-35:12
+MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.6.2] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\6cbd2b44d5bb9fc58a22d636060e60b0\transformed\lifecycle-livedata-core-2.6.2\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-runtime:2.6.2] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\044489c475e59a5617c7a5301bdae272\transformed\lifecycle-runtime-2.6.2\AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate:2.6.2] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\88e993c2dc65a7045a795b2d2243be32\transformed\lifecycle-viewmodel-savedstate-2.6.2\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.savedstate:savedstate-ktx:1.2.1] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\89467581401a40a8e2bc8cba3444fa6b\transformed\savedstate-ktx-1.2.1\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.savedstate:savedstate:1.2.1] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\c99d4fca9a9aa09aa7859d64ee8959fa\transformed\savedstate-1.2.1\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.arch.core:core-runtime:2.2.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\15ef5566b512ac49759d4b55e09b5f01\transformed\core-runtime-2.2.0\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\29d2fcb8a1cb32b17a6ac26018cda434\transformed\profileinstaller-1.4.0\AndroidManifest.xml:17:1-55:12
+MERGED from [androidx.startup:startup-runtime:1.1.1] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\deec094d872983af5af5716f65fe8974\transformed\startup-runtime-1.1.1\AndroidManifest.xml:17:1-33:12
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\933678d58fd489db33712c3b10fcebd6\transformed\versionedparcelable-1.1.1\AndroidManifest.xml:17:1-27:12
+MERGED from [androidx.interpolator:interpolator:1.0.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\80d24e07c55a31343578b39ec68d677f\transformed\interpolator-1.0.0\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.tracing:tracing:1.2.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\471db38e19fa12c3b78619f4762a71ab\transformed\tracing-1.2.0\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.annotation:annotation-experimental:1.4.1] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\b15356a9468ad092e6dfb84985cdf5b3\transformed\annotation-experimental-1.4.1\AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.core:core-viewtree:1.0.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\704c115d29de443fe51355baad91dc14\transformed\core-viewtree-1.0.0\AndroidManifest.xml:2:1-7:12
+	package
+		INJECTED from C:\MES PROJETS\HIKMATIPS-main\android\app\src\main\AndroidManifest.xml
+	android:versionName
+		INJECTED from C:\MES PROJETS\HIKMATIPS-main\android\app\src\main\AndroidManifest.xml
+	android:versionCode
+		INJECTED from C:\MES PROJETS\HIKMATIPS-main\android\app\src\main\AndroidManifest.xml
+	xmlns:android
+		ADDED from C:\MES PROJETS\HIKMATIPS-main\android\app\src\main\AndroidManifest.xml:2:11-69
+application
+ADDED from C:\MES PROJETS\HIKMATIPS-main\android\app\src\main\AndroidManifest.xml:4:5-50:19
+INJECTED from C:\MES PROJETS\HIKMATIPS-main\android\app\src\main\AndroidManifest.xml:4:5-50:19
+MERGED from [:capacitor-local-notifications] C:\MES PROJETS\HIKMATIPS-main\node_modules\@capacitor\local-notifications\android\build\intermediates\merged_manifest\release\processReleaseManifest\AndroidManifest.xml:11:5-24:19
+MERGED from [:capacitor-local-notifications] C:\MES PROJETS\HIKMATIPS-main\node_modules\@capacitor\local-notifications\android\build\intermediates\merged_manifest\release\processReleaseManifest\AndroidManifest.xml:11:5-24:19
+MERGED from [:capacitor-cordova-android-plugins] C:\MES PROJETS\HIKMATIPS-main\android\capacitor-cordova-android-plugins\build\intermediates\merged_manifest\release\processReleaseManifest\AndroidManifest.xml:8:5-9:19
+MERGED from [:capacitor-cordova-android-plugins] C:\MES PROJETS\HIKMATIPS-main\android\capacitor-cordova-android-plugins\build\intermediates\merged_manifest\release\processReleaseManifest\AndroidManifest.xml:8:5-9:19
+MERGED from [androidx.emoji2:emoji2:1.3.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\bf57c1bae370bb20378492ec05ef0e3a\transformed\emoji2-1.3.0\AndroidManifest.xml:23:5-33:19
+MERGED from [androidx.emoji2:emoji2:1.3.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\bf57c1bae370bb20378492ec05ef0e3a\transformed\emoji2-1.3.0\AndroidManifest.xml:23:5-33:19
+MERGED from [androidx.core:core:1.17.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\b739276017aaf82425e2a78697b54605\transformed\core-1.17.0\AndroidManifest.xml:28:5-89
+MERGED from [androidx.core:core:1.17.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\b739276017aaf82425e2a78697b54605\transformed\core-1.17.0\AndroidManifest.xml:28:5-89
+MERGED from [androidx.lifecycle:lifecycle-process:2.6.2] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\fab4a769fdedd20ebba8af618d054b28\transformed\lifecycle-process-2.6.2\AndroidManifest.xml:23:5-33:19
+MERGED from [androidx.lifecycle:lifecycle-process:2.6.2] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\fab4a769fdedd20ebba8af618d054b28\transformed\lifecycle-process-2.6.2\AndroidManifest.xml:23:5-33:19
+MERGED from [androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\29d2fcb8a1cb32b17a6ac26018cda434\transformed\profileinstaller-1.4.0\AndroidManifest.xml:23:5-53:19
+MERGED from [androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\29d2fcb8a1cb32b17a6ac26018cda434\transformed\profileinstaller-1.4.0\AndroidManifest.xml:23:5-53:19
+MERGED from [androidx.startup:startup-runtime:1.1.1] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\deec094d872983af5af5716f65fe8974\transformed\startup-runtime-1.1.1\AndroidManifest.xml:25:5-31:19
+MERGED from [androidx.startup:startup-runtime:1.1.1] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\deec094d872983af5af5716f65fe8974\transformed\startup-runtime-1.1.1\AndroidManifest.xml:25:5-31:19
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\933678d58fd489db33712c3b10fcebd6\transformed\versionedparcelable-1.1.1\AndroidManifest.xml:24:5-25:19
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\933678d58fd489db33712c3b10fcebd6\transformed\versionedparcelable-1.1.1\AndroidManifest.xml:24:5-25:19
+	android:extractNativeLibs
+		INJECTED from C:\MES PROJETS\HIKMATIPS-main\android\app\src\main\AndroidManifest.xml
+	android:appComponentFactory
+		ADDED from [androidx.core:core:1.17.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\b739276017aaf82425e2a78697b54605\transformed\core-1.17.0\AndroidManifest.xml:28:18-86
+	android:supportsRtl
+		ADDED from C:\MES PROJETS\HIKMATIPS-main\android\app\src\main\AndroidManifest.xml:9:9-35
+	android:label
+		ADDED from C:\MES PROJETS\HIKMATIPS-main\android\app\src\main\AndroidManifest.xml:7:9-41
+	android:roundIcon
+		ADDED from C:\MES PROJETS\HIKMATIPS-main\android\app\src\main\AndroidManifest.xml:8:9-54
+	android:icon
+		ADDED from C:\MES PROJETS\HIKMATIPS-main\android\app\src\main\AndroidManifest.xml:6:9-43
+	android:allowBackup
+		ADDED from C:\MES PROJETS\HIKMATIPS-main\android\app\src\main\AndroidManifest.xml:5:9-36
+	android:theme
+		ADDED from C:\MES PROJETS\HIKMATIPS-main\android\app\src\main\AndroidManifest.xml:10:9-40
+activity#fr.hikmatips.app.MainActivity
+ADDED from C:\MES PROJETS\HIKMATIPS-main\android\app\src\main\AndroidManifest.xml:12:9-39:20
+	android:label
+		ADDED from C:\MES PROJETS\HIKMATIPS-main\android\app\src\main\AndroidManifest.xml:15:13-56
+	android:launchMode
+		ADDED from C:\MES PROJETS\HIKMATIPS-main\android\app\src\main\AndroidManifest.xml:17:13-44
+	android:exported
+		ADDED from C:\MES PROJETS\HIKMATIPS-main\android\app\src\main\AndroidManifest.xml:18:13-36
+	android:configChanges
+		ADDED from C:\MES PROJETS\HIKMATIPS-main\android\app\src\main\AndroidManifest.xml:13:13-148
+	android:theme
+		ADDED from C:\MES PROJETS\HIKMATIPS-main\android\app\src\main\AndroidManifest.xml:16:13-62
+	android:name
+		ADDED from C:\MES PROJETS\HIKMATIPS-main\android\app\src\main\AndroidManifest.xml:14:13-41
+intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
+ADDED from C:\MES PROJETS\HIKMATIPS-main\android\app\src\main\AndroidManifest.xml:20:13-23:29
+action#android.intent.action.MAIN
+ADDED from C:\MES PROJETS\HIKMATIPS-main\android\app\src\main\AndroidManifest.xml:21:17-69
+	android:name
+		ADDED from C:\MES PROJETS\HIKMATIPS-main\android\app\src\main\AndroidManifest.xml:21:25-66
+category#android.intent.category.LAUNCHER
+ADDED from C:\MES PROJETS\HIKMATIPS-main\android\app\src\main\AndroidManifest.xml:22:17-77
+	android:name
+		ADDED from C:\MES PROJETS\HIKMATIPS-main\android\app\src\main\AndroidManifest.xml:22:27-74
+intent-filter#action:name:android.intent.action.VIEW+category:name:android.intent.category.BROWSABLE+category:name:android.intent.category.DEFAULT+data:scheme:hikmaclips
+ADDED from C:\MES PROJETS\HIKMATIPS-main\android\app\src\main\AndroidManifest.xml:25:13-30:29
+	android:autoVerify
+		ADDED from C:\MES PROJETS\HIKMATIPS-main\android\app\src\main\AndroidManifest.xml:25:28-53
+action#android.intent.action.VIEW
+ADDED from C:\MES PROJETS\HIKMATIPS-main\android\app\src\main\AndroidManifest.xml:26:17-69
+	android:name
+		ADDED from C:\MES PROJETS\HIKMATIPS-main\android\app\src\main\AndroidManifest.xml:26:25-66
+category#android.intent.category.DEFAULT
+ADDED from C:\MES PROJETS\HIKMATIPS-main\android\app\src\main\AndroidManifest.xml:27:17-76
+	android:name
+		ADDED from C:\MES PROJETS\HIKMATIPS-main\android\app\src\main\AndroidManifest.xml:27:27-73
+category#android.intent.category.BROWSABLE
+ADDED from C:\MES PROJETS\HIKMATIPS-main\android\app\src\main\AndroidManifest.xml:28:17-78
+	android:name
+		ADDED from C:\MES PROJETS\HIKMATIPS-main\android\app\src\main\AndroidManifest.xml:28:27-75
+data
+ADDED from C:\MES PROJETS\HIKMATIPS-main\android\app\src\main\AndroidManifest.xml:29:17-53
+	android:host
+		ADDED from C:\MES PROJETS\HIKMATIPS-main\android\app\src\main\AndroidManifest.xml:36:46-75
+	android:scheme
+		ADDED from C:\MES PROJETS\HIKMATIPS-main\android\app\src\main\AndroidManifest.xml:29:23-50
+intent-filter#action:name:android.intent.action.VIEW+category:name:android.intent.category.BROWSABLE+category:name:android.intent.category.DEFAULT+data:host:hikmaclips.com+data:scheme:https
+ADDED from C:\MES PROJETS\HIKMATIPS-main\android\app\src\main\AndroidManifest.xml:32:13-37:29
+	android:autoVerify
+		ADDED from C:\MES PROJETS\HIKMATIPS-main\android\app\src\main\AndroidManifest.xml:32:28-53
+uses-permission#android.permission.INTERNET
+ADDED from C:\MES PROJETS\HIKMATIPS-main\android\app\src\main\AndroidManifest.xml:54:5-67
+	android:name
+		ADDED from C:\MES PROJETS\HIKMATIPS-main\android\app\src\main\AndroidManifest.xml:54:22-64
+uses-permission#android.permission.POST_NOTIFICATIONS
+ADDED from C:\MES PROJETS\HIKMATIPS-main\android\app\src\main\AndroidManifest.xml:55:5-77
+MERGED from [:capacitor-local-notifications] C:\MES PROJETS\HIKMATIPS-main\node_modules\@capacitor\local-notifications\android\build\intermediates\merged_manifest\release\processReleaseManifest\AndroidManifest.xml:9:5-77
+MERGED from [:capacitor-local-notifications] C:\MES PROJETS\HIKMATIPS-main\node_modules\@capacitor\local-notifications\android\build\intermediates\merged_manifest\release\processReleaseManifest\AndroidManifest.xml:9:5-77
+	android:name
+		ADDED from C:\MES PROJETS\HIKMATIPS-main\android\app\src\main\AndroidManifest.xml:55:22-74
+uses-permission#android.permission.RECEIVE_BOOT_COMPLETED
+ADDED from C:\MES PROJETS\HIKMATIPS-main\android\app\src\main\AndroidManifest.xml:56:5-81
+MERGED from [:capacitor-local-notifications] C:\MES PROJETS\HIKMATIPS-main\node_modules\@capacitor\local-notifications\android\build\intermediates\merged_manifest\release\processReleaseManifest\AndroidManifest.xml:7:5-81
+MERGED from [:capacitor-local-notifications] C:\MES PROJETS\HIKMATIPS-main\node_modules\@capacitor\local-notifications\android\build\intermediates\merged_manifest\release\processReleaseManifest\AndroidManifest.xml:7:5-81
+	android:name
+		ADDED from C:\MES PROJETS\HIKMATIPS-main\android\app\src\main\AndroidManifest.xml:56:22-78
+uses-permission#android.permission.VIBRATE
+ADDED from C:\MES PROJETS\HIKMATIPS-main\android\app\src\main\AndroidManifest.xml:57:5-66
+	android:name
+		ADDED from C:\MES PROJETS\HIKMATIPS-main\android\app\src\main\AndroidManifest.xml:57:22-63
+uses-permission#android.permission.SCHEDULE_EXACT_ALARM
+ADDED from C:\MES PROJETS\HIKMATIPS-main\android\app\src\main\AndroidManifest.xml:58:5-106
+	android:minSdkVersion
+		ADDED from C:\MES PROJETS\HIKMATIPS-main\android\app\src\main\AndroidManifest.xml:58:77-103
+	android:name
+		ADDED from C:\MES PROJETS\HIKMATIPS-main\android\app\src\main\AndroidManifest.xml:58:22-76
+uses-sdk
+ADDED from C:\MES PROJETS\HIKMATIPS-main\android\app\src\main\AndroidManifest.xml:60:5-74
+INJECTED from C:\MES PROJETS\HIKMATIPS-main\android\app\src\main\AndroidManifest.xml:60:5-74
+INJECTED from C:\MES PROJETS\HIKMATIPS-main\android\app\src\main\AndroidManifest.xml:60:5-74
+MERGED from [:capacitor-filesystem] C:\MES PROJETS\HIKMATIPS-main\node_modules\@capacitor\filesystem\android\build\intermediates\merged_manifest\release\processReleaseManifest\AndroidManifest.xml:5:5-44
+MERGED from [:capacitor-filesystem] C:\MES PROJETS\HIKMATIPS-main\node_modules\@capacitor\filesystem\android\build\intermediates\merged_manifest\release\processReleaseManifest\AndroidManifest.xml:5:5-44
+MERGED from [:capacitor-local-notifications] C:\MES PROJETS\HIKMATIPS-main\node_modules\@capacitor\local-notifications\android\build\intermediates\merged_manifest\release\processReleaseManifest\AndroidManifest.xml:5:5-44
+MERGED from [:capacitor-local-notifications] C:\MES PROJETS\HIKMATIPS-main\node_modules\@capacitor\local-notifications\android\build\intermediates\merged_manifest\release\processReleaseManifest\AndroidManifest.xml:5:5-44
+MERGED from [:capacitor-share] C:\MES PROJETS\HIKMATIPS-main\node_modules\@capacitor\share\android\build\intermediates\merged_manifest\release\processReleaseManifest\AndroidManifest.xml:5:5-44
+MERGED from [:capacitor-share] C:\MES PROJETS\HIKMATIPS-main\node_modules\@capacitor\share\android\build\intermediates\merged_manifest\release\processReleaseManifest\AndroidManifest.xml:5:5-44
+MERGED from [:capacitor-android] C:\MES PROJETS\HIKMATIPS-main\node_modules\@capacitor\android\capacitor\build\intermediates\merged_manifest\release\processReleaseManifest\AndroidManifest.xml:5:5-44
+MERGED from [:capacitor-android] C:\MES PROJETS\HIKMATIPS-main\node_modules\@capacitor\android\capacitor\build\intermediates\merged_manifest\release\processReleaseManifest\AndroidManifest.xml:5:5-44
+MERGED from [:capacitor-cordova-android-plugins] C:\MES PROJETS\HIKMATIPS-main\android\capacitor-cordova-android-plugins\build\intermediates\merged_manifest\release\processReleaseManifest\AndroidManifest.xml:6:5-44
+MERGED from [:capacitor-cordova-android-plugins] C:\MES PROJETS\HIKMATIPS-main\android\capacitor-cordova-android-plugins\build\intermediates\merged_manifest\release\processReleaseManifest\AndroidManifest.xml:6:5-44
+MERGED from [org.apache.cordova:framework:14.0.1] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\f50bf4005c2f3d4b3085b9c4d0d91107\transformed\framework-14.0.1\AndroidManifest.xml:25:5-44
+MERGED from [org.apache.cordova:framework:14.0.1] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\f50bf4005c2f3d4b3085b9c4d0d91107\transformed\framework-14.0.1\AndroidManifest.xml:25:5-44
+MERGED from [androidx.core:core-splashscreen:1.2.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\0dcc12931bbd4f0e5b43d44e25210ae6\transformed\core-splashscreen-1.2.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.core:core-splashscreen:1.2.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\0dcc12931bbd4f0e5b43d44e25210ae6\transformed\core-splashscreen-1.2.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.appcompat:appcompat-resources:1.7.1] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\27cd117ff0ac3d8c60f6d67914f851ce\transformed\appcompat-resources-1.7.1\AndroidManifest.xml:5:5-44
+MERGED from [androidx.appcompat:appcompat-resources:1.7.1] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\27cd117ff0ac3d8c60f6d67914f851ce\transformed\appcompat-resources-1.7.1\AndroidManifest.xml:5:5-44
+MERGED from [androidx.appcompat:appcompat:1.7.1] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\d78b0d1f71936b2b0d57de3345b7a902\transformed\appcompat-1.7.1\AndroidManifest.xml:5:5-44
+MERGED from [androidx.appcompat:appcompat:1.7.1] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\d78b0d1f71936b2b0d57de3345b7a902\transformed\appcompat-1.7.1\AndroidManifest.xml:5:5-44
+MERGED from [androidx.coordinatorlayout:coordinatorlayout:1.3.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\b1864aa6bd9540b09f979880764e04cb\transformed\coordinatorlayout-1.3.0\AndroidManifest.xml:5:5-44
+MERGED from [androidx.coordinatorlayout:coordinatorlayout:1.3.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\b1864aa6bd9540b09f979880764e04cb\transformed\coordinatorlayout-1.3.0\AndroidManifest.xml:5:5-44
+MERGED from [androidx.fragment:fragment:1.8.9] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\3ea184b4f3110f9e26b46ff6c8b4a7bf\transformed\fragment-1.8.9\AndroidManifest.xml:5:5-44
+MERGED from [androidx.fragment:fragment:1.8.9] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\3ea184b4f3110f9e26b46ff6c8b4a7bf\transformed\fragment-1.8.9\AndroidManifest.xml:5:5-44
+MERGED from [io.ionic.libs:ionfilesystem-android:1.1.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\15c4179fe1140425f4f882e736daed36\transformed\ionfilesystem-android-1.1.0\AndroidManifest.xml:5:5-44
+MERGED from [io.ionic.libs:ionfilesystem-android:1.1.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\15c4179fe1140425f4f882e736daed36\transformed\ionfilesystem-android-1.1.0\AndroidManifest.xml:5:5-44
+MERGED from [androidx.activity:activity-ktx:1.11.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\6c92b46cbb1fad949f047d84f63a75fb\transformed\activity-ktx-1.11.0\AndroidManifest.xml:5:5-44
+MERGED from [androidx.activity:activity-ktx:1.11.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\6c92b46cbb1fad949f047d84f63a75fb\transformed\activity-ktx-1.11.0\AndroidManifest.xml:5:5-44
+MERGED from [androidx.activity:activity:1.11.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\d0102bd629c17ef7e890cc90aa7ce6d5\transformed\activity-1.11.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.activity:activity:1.11.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\d0102bd629c17ef7e890cc90aa7ce6d5\transformed\activity-1.11.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\341a38283e72f86a2eca368d1fd0f5c9\transformed\cursoradapter-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\341a38283e72f86a2eca368d1fd0f5c9\transformed\cursoradapter-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.drawerlayout:drawerlayout:1.0.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\a072251eda3d883dd2033d3a9052423b\transformed\drawerlayout-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.drawerlayout:drawerlayout:1.0.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\a072251eda3d883dd2033d3a9052423b\transformed\drawerlayout-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.emoji2:emoji2-views-helper:1.3.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\ea512509838e262a4d288477159c49a4\transformed\emoji2-views-helper-1.3.0\AndroidManifest.xml:5:5-44
+MERGED from [androidx.emoji2:emoji2-views-helper:1.3.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\ea512509838e262a4d288477159c49a4\transformed\emoji2-views-helper-1.3.0\AndroidManifest.xml:5:5-44
+MERGED from [androidx.emoji2:emoji2:1.3.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\bf57c1bae370bb20378492ec05ef0e3a\transformed\emoji2-1.3.0\AndroidManifest.xml:21:5-44
+MERGED from [androidx.emoji2:emoji2:1.3.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\bf57c1bae370bb20378492ec05ef0e3a\transformed\emoji2-1.3.0\AndroidManifest.xml:21:5-44
+MERGED from [androidx.viewpager:viewpager:1.0.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\b6ff1ddd5ca347298384c4210c7cb2de\transformed\viewpager-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.viewpager:viewpager:1.0.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\b6ff1ddd5ca347298384c4210c7cb2de\transformed\viewpager-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.customview:customview:1.0.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\8adcd180c9ce86ac3c1c20b90fe44423\transformed\customview-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.customview:customview:1.0.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\8adcd180c9ce86ac3c1c20b90fe44423\transformed\customview-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.webkit:webkit:1.14.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\41997524ac962acf55b8ff398cc0041c\transformed\webkit-1.14.0\AndroidManifest.xml:5:5-44
+MERGED from [androidx.webkit:webkit:1.14.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\41997524ac962acf55b8ff398cc0041c\transformed\webkit-1.14.0\AndroidManifest.xml:5:5-44
+MERGED from [androidx.vectordrawable:vectordrawable-animated:1.1.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\351180ca8cd2041cccbd54b867ed40e0\transformed\vectordrawable-animated-1.1.0\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.vectordrawable:vectordrawable-animated:1.1.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\351180ca8cd2041cccbd54b867ed40e0\transformed\vectordrawable-animated-1.1.0\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.vectordrawable:vectordrawable:1.1.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\76d3e78fe792cabc29de374a8bb50692\transformed\vectordrawable-1.1.0\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.vectordrawable:vectordrawable:1.1.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\76d3e78fe792cabc29de374a8bb50692\transformed\vectordrawable-1.1.0\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.core:core-ktx:1.17.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\eca6d58d17938c01768f86dc24a50b72\transformed\core-ktx-1.17.0\AndroidManifest.xml:5:5-44
+MERGED from [androidx.core:core-ktx:1.17.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\eca6d58d17938c01768f86dc24a50b72\transformed\core-ktx-1.17.0\AndroidManifest.xml:5:5-44
+MERGED from [androidx.loader:loader:1.0.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\96ec6b53b5608d5421bb29f6657ae20a\transformed\loader-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.loader:loader:1.0.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\96ec6b53b5608d5421bb29f6657ae20a\transformed\loader-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.core:core:1.17.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\b739276017aaf82425e2a78697b54605\transformed\core-1.17.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.core:core:1.17.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\b739276017aaf82425e2a78697b54605\transformed\core-1.17.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\b65217c7f1ef2dad2432bfff13b15d90\transformed\lifecycle-viewmodel-ktx-2.6.2\AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\b65217c7f1ef2dad2432bfff13b15d90\transformed\lifecycle-viewmodel-ktx-2.6.2\AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-runtime-ktx:2.6.2] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\c4f8182102c04a7ad68368017287958f\transformed\lifecycle-runtime-ktx-2.6.2\AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-runtime-ktx:2.6.2] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\c4f8182102c04a7ad68368017287958f\transformed\lifecycle-runtime-ktx-2.6.2\AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata:2.6.2] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\79f998d5b5ccd79c3519cc35813ef943\transformed\lifecycle-livedata-2.6.2\AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata:2.6.2] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\79f998d5b5ccd79c3519cc35813ef943\transformed\lifecycle-livedata-2.6.2\AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.6.2] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\8ebcf8dae87c091c2c430e2138088989\transformed\lifecycle-viewmodel-2.6.2\AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.6.2] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\8ebcf8dae87c091c2c430e2138088989\transformed\lifecycle-viewmodel-2.6.2\AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-process:2.6.2] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\fab4a769fdedd20ebba8af618d054b28\transformed\lifecycle-process-2.6.2\AndroidManifest.xml:21:5-44
+MERGED from [androidx.lifecycle:lifecycle-process:2.6.2] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\fab4a769fdedd20ebba8af618d054b28\transformed\lifecycle-process-2.6.2\AndroidManifest.xml:21:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.6.2] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\6cbd2b44d5bb9fc58a22d636060e60b0\transformed\lifecycle-livedata-core-2.6.2\AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.6.2] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\6cbd2b44d5bb9fc58a22d636060e60b0\transformed\lifecycle-livedata-core-2.6.2\AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-runtime:2.6.2] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\044489c475e59a5617c7a5301bdae272\transformed\lifecycle-runtime-2.6.2\AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-runtime:2.6.2] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\044489c475e59a5617c7a5301bdae272\transformed\lifecycle-runtime-2.6.2\AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate:2.6.2] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\88e993c2dc65a7045a795b2d2243be32\transformed\lifecycle-viewmodel-savedstate-2.6.2\AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate:2.6.2] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\88e993c2dc65a7045a795b2d2243be32\transformed\lifecycle-viewmodel-savedstate-2.6.2\AndroidManifest.xml:20:5-44
+MERGED from [androidx.savedstate:savedstate-ktx:1.2.1] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\89467581401a40a8e2bc8cba3444fa6b\transformed\savedstate-ktx-1.2.1\AndroidManifest.xml:20:5-44
+MERGED from [androidx.savedstate:savedstate-ktx:1.2.1] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\89467581401a40a8e2bc8cba3444fa6b\transformed\savedstate-ktx-1.2.1\AndroidManifest.xml:20:5-44
+MERGED from [androidx.savedstate:savedstate:1.2.1] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\c99d4fca9a9aa09aa7859d64ee8959fa\transformed\savedstate-1.2.1\AndroidManifest.xml:20:5-44
+MERGED from [androidx.savedstate:savedstate:1.2.1] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\c99d4fca9a9aa09aa7859d64ee8959fa\transformed\savedstate-1.2.1\AndroidManifest.xml:20:5-44
+MERGED from [androidx.arch.core:core-runtime:2.2.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\15ef5566b512ac49759d4b55e09b5f01\transformed\core-runtime-2.2.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.arch.core:core-runtime:2.2.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\15ef5566b512ac49759d4b55e09b5f01\transformed\core-runtime-2.2.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\29d2fcb8a1cb32b17a6ac26018cda434\transformed\profileinstaller-1.4.0\AndroidManifest.xml:21:5-44
+MERGED from [androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\29d2fcb8a1cb32b17a6ac26018cda434\transformed\profileinstaller-1.4.0\AndroidManifest.xml:21:5-44
+MERGED from [androidx.startup:startup-runtime:1.1.1] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\deec094d872983af5af5716f65fe8974\transformed\startup-runtime-1.1.1\AndroidManifest.xml:21:5-23:41
+MERGED from [androidx.startup:startup-runtime:1.1.1] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\deec094d872983af5af5716f65fe8974\transformed\startup-runtime-1.1.1\AndroidManifest.xml:21:5-23:41
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\933678d58fd489db33712c3b10fcebd6\transformed\versionedparcelable-1.1.1\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\933678d58fd489db33712c3b10fcebd6\transformed\versionedparcelable-1.1.1\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.interpolator:interpolator:1.0.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\80d24e07c55a31343578b39ec68d677f\transformed\interpolator-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.interpolator:interpolator:1.0.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\80d24e07c55a31343578b39ec68d677f\transformed\interpolator-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.tracing:tracing:1.2.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\471db38e19fa12c3b78619f4762a71ab\transformed\tracing-1.2.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.tracing:tracing:1.2.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\471db38e19fa12c3b78619f4762a71ab\transformed\tracing-1.2.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.annotation:annotation-experimental:1.4.1] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\b15356a9468ad092e6dfb84985cdf5b3\transformed\annotation-experimental-1.4.1\AndroidManifest.xml:5:5-44
+MERGED from [androidx.annotation:annotation-experimental:1.4.1] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\b15356a9468ad092e6dfb84985cdf5b3\transformed\annotation-experimental-1.4.1\AndroidManifest.xml:5:5-44
+MERGED from [androidx.core:core-viewtree:1.0.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\704c115d29de443fe51355baad91dc14\transformed\core-viewtree-1.0.0\AndroidManifest.xml:5:5-44
+MERGED from [androidx.core:core-viewtree:1.0.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\704c115d29de443fe51355baad91dc14\transformed\core-viewtree-1.0.0\AndroidManifest.xml:5:5-44
+	android:targetSdkVersion
+		ADDED from C:\MES PROJETS\HIKMATIPS-main\android\app\src\main\AndroidManifest.xml:60:42-71
+		INJECTED from C:\MES PROJETS\HIKMATIPS-main\android\app\src\main\AndroidManifest.xml
+	android:minSdkVersion
+		ADDED from C:\MES PROJETS\HIKMATIPS-main\android\app\src\main\AndroidManifest.xml:60:15-41
+		INJECTED from C:\MES PROJETS\HIKMATIPS-main\android\app\src\main\AndroidManifest.xml
+meta-data#android.support.FILE_PROVIDER_PATHS
+ADDED from C:\MES PROJETS\HIKMATIPS-main\android\app\src\main\AndroidManifest.xml:46:13-48:64
+	android:resource
+		ADDED from C:\MES PROJETS\HIKMATIPS-main\android\app\src\main\AndroidManifest.xml:48:17-51
+	android:name
+		ADDED from C:\MES PROJETS\HIKMATIPS-main\android\app\src\main\AndroidManifest.xml:47:17-67
+uses-permission#android.permission.WAKE_LOCK
+ADDED from [:capacitor-local-notifications] C:\MES PROJETS\HIKMATIPS-main\node_modules\@capacitor\local-notifications\android\build\intermediates\merged_manifest\release\processReleaseManifest\AndroidManifest.xml:8:5-68
+	android:name
+		ADDED from [:capacitor-local-notifications] C:\MES PROJETS\HIKMATIPS-main\node_modules\@capacitor\local-notifications\android\build\intermediates\merged_manifest\release\processReleaseManifest\AndroidManifest.xml:8:22-65
+receiver#com.capacitorjs.plugins.localnotifications.TimedNotificationPublisher
+ADDED from [:capacitor-local-notifications] C:\MES PROJETS\HIKMATIPS-main\node_modules\@capacitor\local-notifications\android\build\intermediates\merged_manifest\release\processReleaseManifest\AndroidManifest.xml:12:9-106
+	android:name
+		ADDED from [:capacitor-local-notifications] C:\MES PROJETS\HIKMATIPS-main\node_modules\@capacitor\local-notifications\android\build\intermediates\merged_manifest\release\processReleaseManifest\AndroidManifest.xml:12:19-103
+receiver#com.capacitorjs.plugins.localnotifications.NotificationDismissReceiver
+ADDED from [:capacitor-local-notifications] C:\MES PROJETS\HIKMATIPS-main\node_modules\@capacitor\local-notifications\android\build\intermediates\merged_manifest\release\processReleaseManifest\AndroidManifest.xml:13:9-107
+	android:name
+		ADDED from [:capacitor-local-notifications] C:\MES PROJETS\HIKMATIPS-main\node_modules\@capacitor\local-notifications\android\build\intermediates\merged_manifest\release\processReleaseManifest\AndroidManifest.xml:13:19-104
+receiver#com.capacitorjs.plugins.localnotifications.LocalNotificationRestoreReceiver
+ADDED from [:capacitor-local-notifications] C:\MES PROJETS\HIKMATIPS-main\node_modules\@capacitor\local-notifications\android\build\intermediates\merged_manifest\release\processReleaseManifest\AndroidManifest.xml:14:9-23:20
+	android:exported
+		ADDED from [:capacitor-local-notifications] C:\MES PROJETS\HIKMATIPS-main\node_modules\@capacitor\local-notifications\android\build\intermediates\merged_manifest\release\processReleaseManifest\AndroidManifest.xml:17:13-37
+	android:directBootAware
+		ADDED from [:capacitor-local-notifications] C:\MES PROJETS\HIKMATIPS-main\node_modules\@capacitor\local-notifications\android\build\intermediates\merged_manifest\release\processReleaseManifest\AndroidManifest.xml:16:13-43
+	android:name
+		ADDED from [:capacitor-local-notifications] C:\MES PROJETS\HIKMATIPS-main\node_modules\@capacitor\local-notifications\android\build\intermediates\merged_manifest\release\processReleaseManifest\AndroidManifest.xml:15:13-103
+intent-filter#action:name:android.intent.action.BOOT_COMPLETED+action:name:android.intent.action.LOCKED_BOOT_COMPLETED+action:name:android.intent.action.QUICKBOOT_POWERON
+ADDED from [:capacitor-local-notifications] C:\MES PROJETS\HIKMATIPS-main\node_modules\@capacitor\local-notifications\android\build\intermediates\merged_manifest\release\processReleaseManifest\AndroidManifest.xml:18:13-22:29
+action#android.intent.action.LOCKED_BOOT_COMPLETED
+ADDED from [:capacitor-local-notifications] C:\MES PROJETS\HIKMATIPS-main\node_modules\@capacitor\local-notifications\android\build\intermediates\merged_manifest\release\processReleaseManifest\AndroidManifest.xml:19:17-86
+	android:name
+		ADDED from [:capacitor-local-notifications] C:\MES PROJETS\HIKMATIPS-main\node_modules\@capacitor\local-notifications\android\build\intermediates\merged_manifest\release\processReleaseManifest\AndroidManifest.xml:19:25-83
+action#android.intent.action.BOOT_COMPLETED
+ADDED from [:capacitor-local-notifications] C:\MES PROJETS\HIKMATIPS-main\node_modules\@capacitor\local-notifications\android\build\intermediates\merged_manifest\release\processReleaseManifest\AndroidManifest.xml:20:17-79
+	android:name
+		ADDED from [:capacitor-local-notifications] C:\MES PROJETS\HIKMATIPS-main\node_modules\@capacitor\local-notifications\android\build\intermediates\merged_manifest\release\processReleaseManifest\AndroidManifest.xml:20:25-76
+action#android.intent.action.QUICKBOOT_POWERON
+ADDED from [:capacitor-local-notifications] C:\MES PROJETS\HIKMATIPS-main\node_modules\@capacitor\local-notifications\android\build\intermediates\merged_manifest\release\processReleaseManifest\AndroidManifest.xml:21:17-82
+	android:name
+		ADDED from [:capacitor-local-notifications] C:\MES PROJETS\HIKMATIPS-main\node_modules\@capacitor\local-notifications\android\build\intermediates\merged_manifest\release\processReleaseManifest\AndroidManifest.xml:21:25-79
+provider#androidx.startup.InitializationProvider
+ADDED from [androidx.emoji2:emoji2:1.3.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\bf57c1bae370bb20378492ec05ef0e3a\transformed\emoji2-1.3.0\AndroidManifest.xml:24:9-32:20
+MERGED from [androidx.lifecycle:lifecycle-process:2.6.2] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\fab4a769fdedd20ebba8af618d054b28\transformed\lifecycle-process-2.6.2\AndroidManifest.xml:24:9-32:20
+MERGED from [androidx.lifecycle:lifecycle-process:2.6.2] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\fab4a769fdedd20ebba8af618d054b28\transformed\lifecycle-process-2.6.2\AndroidManifest.xml:24:9-32:20
+MERGED from [androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\29d2fcb8a1cb32b17a6ac26018cda434\transformed\profileinstaller-1.4.0\AndroidManifest.xml:24:9-32:20
+MERGED from [androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\29d2fcb8a1cb32b17a6ac26018cda434\transformed\profileinstaller-1.4.0\AndroidManifest.xml:24:9-32:20
+MERGED from [androidx.startup:startup-runtime:1.1.1] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\deec094d872983af5af5716f65fe8974\transformed\startup-runtime-1.1.1\AndroidManifest.xml:26:9-30:34
+MERGED from [androidx.startup:startup-runtime:1.1.1] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\deec094d872983af5af5716f65fe8974\transformed\startup-runtime-1.1.1\AndroidManifest.xml:26:9-30:34
+	tools:node
+		ADDED from [androidx.emoji2:emoji2:1.3.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\bf57c1bae370bb20378492ec05ef0e3a\transformed\emoji2-1.3.0\AndroidManifest.xml:28:13-31
+	android:authorities
+		ADDED from [androidx.emoji2:emoji2:1.3.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\bf57c1bae370bb20378492ec05ef0e3a\transformed\emoji2-1.3.0\AndroidManifest.xml:26:13-68
+	android:exported
+		ADDED from [androidx.emoji2:emoji2:1.3.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\bf57c1bae370bb20378492ec05ef0e3a\transformed\emoji2-1.3.0\AndroidManifest.xml:27:13-37
+	android:name
+		ADDED from [androidx.emoji2:emoji2:1.3.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\bf57c1bae370bb20378492ec05ef0e3a\transformed\emoji2-1.3.0\AndroidManifest.xml:25:13-67
+meta-data#androidx.emoji2.text.EmojiCompatInitializer
+ADDED from [androidx.emoji2:emoji2:1.3.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\bf57c1bae370bb20378492ec05ef0e3a\transformed\emoji2-1.3.0\AndroidManifest.xml:29:13-31:52
+	android:value
+		ADDED from [androidx.emoji2:emoji2:1.3.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\bf57c1bae370bb20378492ec05ef0e3a\transformed\emoji2-1.3.0\AndroidManifest.xml:31:17-49
+	android:name
+		ADDED from [androidx.emoji2:emoji2:1.3.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\bf57c1bae370bb20378492ec05ef0e3a\transformed\emoji2-1.3.0\AndroidManifest.xml:30:17-75
+permission#${applicationId}.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
+ADDED from [androidx.core:core:1.17.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\b739276017aaf82425e2a78697b54605\transformed\core-1.17.0\AndroidManifest.xml:22:5-24:47
+	android:protectionLevel
+		ADDED from [androidx.core:core:1.17.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\b739276017aaf82425e2a78697b54605\transformed\core-1.17.0\AndroidManifest.xml:24:9-44
+	android:name
+		ADDED from [androidx.core:core:1.17.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\b739276017aaf82425e2a78697b54605\transformed\core-1.17.0\AndroidManifest.xml:23:9-81
+permission#fr.hikmatips.app.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
+ADDED from [androidx.core:core:1.17.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\b739276017aaf82425e2a78697b54605\transformed\core-1.17.0\AndroidManifest.xml:22:5-24:47
+	android:protectionLevel
+		ADDED from [androidx.core:core:1.17.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\b739276017aaf82425e2a78697b54605\transformed\core-1.17.0\AndroidManifest.xml:24:9-44
+	android:name
+		ADDED from [androidx.core:core:1.17.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\b739276017aaf82425e2a78697b54605\transformed\core-1.17.0\AndroidManifest.xml:23:9-81
+uses-permission#${applicationId}.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
+ADDED from [androidx.core:core:1.17.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\b739276017aaf82425e2a78697b54605\transformed\core-1.17.0\AndroidManifest.xml:26:5-97
+	android:name
+		ADDED from [androidx.core:core:1.17.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\b739276017aaf82425e2a78697b54605\transformed\core-1.17.0\AndroidManifest.xml:26:22-94
+uses-permission#fr.hikmatips.app.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
+ADDED from [androidx.core:core:1.17.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\b739276017aaf82425e2a78697b54605\transformed\core-1.17.0\AndroidManifest.xml:26:5-97
+	android:name
+		ADDED from [androidx.core:core:1.17.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\b739276017aaf82425e2a78697b54605\transformed\core-1.17.0\AndroidManifest.xml:26:22-94
+meta-data#androidx.lifecycle.ProcessLifecycleInitializer
+ADDED from [androidx.lifecycle:lifecycle-process:2.6.2] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\fab4a769fdedd20ebba8af618d054b28\transformed\lifecycle-process-2.6.2\AndroidManifest.xml:29:13-31:52
+	android:value
+		ADDED from [androidx.lifecycle:lifecycle-process:2.6.2] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\fab4a769fdedd20ebba8af618d054b28\transformed\lifecycle-process-2.6.2\AndroidManifest.xml:31:17-49
+	android:name
+		ADDED from [androidx.lifecycle:lifecycle-process:2.6.2] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\fab4a769fdedd20ebba8af618d054b28\transformed\lifecycle-process-2.6.2\AndroidManifest.xml:30:17-78
+meta-data#androidx.profileinstaller.ProfileInstallerInitializer
+ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\29d2fcb8a1cb32b17a6ac26018cda434\transformed\profileinstaller-1.4.0\AndroidManifest.xml:29:13-31:52
+	android:value
+		ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\29d2fcb8a1cb32b17a6ac26018cda434\transformed\profileinstaller-1.4.0\AndroidManifest.xml:31:17-49
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\29d2fcb8a1cb32b17a6ac26018cda434\transformed\profileinstaller-1.4.0\AndroidManifest.xml:30:17-85
+receiver#androidx.profileinstaller.ProfileInstallReceiver
+ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\29d2fcb8a1cb32b17a6ac26018cda434\transformed\profileinstaller-1.4.0\AndroidManifest.xml:34:9-52:20
+	android:enabled
+		ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\29d2fcb8a1cb32b17a6ac26018cda434\transformed\profileinstaller-1.4.0\AndroidManifest.xml:37:13-35
+	android:exported
+		ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\29d2fcb8a1cb32b17a6ac26018cda434\transformed\profileinstaller-1.4.0\AndroidManifest.xml:38:13-36
+	android:permission
+		ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\29d2fcb8a1cb32b17a6ac26018cda434\transformed\profileinstaller-1.4.0\AndroidManifest.xml:39:13-57
+	android:directBootAware
+		ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\29d2fcb8a1cb32b17a6ac26018cda434\transformed\profileinstaller-1.4.0\AndroidManifest.xml:36:13-44
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\29d2fcb8a1cb32b17a6ac26018cda434\transformed\profileinstaller-1.4.0\AndroidManifest.xml:35:13-76
+intent-filter#action:name:androidx.profileinstaller.action.INSTALL_PROFILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\29d2fcb8a1cb32b17a6ac26018cda434\transformed\profileinstaller-1.4.0\AndroidManifest.xml:40:13-42:29
+action#androidx.profileinstaller.action.INSTALL_PROFILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\29d2fcb8a1cb32b17a6ac26018cda434\transformed\profileinstaller-1.4.0\AndroidManifest.xml:41:17-91
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\29d2fcb8a1cb32b17a6ac26018cda434\transformed\profileinstaller-1.4.0\AndroidManifest.xml:41:25-88
+intent-filter#action:name:androidx.profileinstaller.action.SKIP_FILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\29d2fcb8a1cb32b17a6ac26018cda434\transformed\profileinstaller-1.4.0\AndroidManifest.xml:43:13-45:29
+action#androidx.profileinstaller.action.SKIP_FILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\29d2fcb8a1cb32b17a6ac26018cda434\transformed\profileinstaller-1.4.0\AndroidManifest.xml:44:17-85
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\29d2fcb8a1cb32b17a6ac26018cda434\transformed\profileinstaller-1.4.0\AndroidManifest.xml:44:25-82
+intent-filter#action:name:androidx.profileinstaller.action.SAVE_PROFILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\29d2fcb8a1cb32b17a6ac26018cda434\transformed\profileinstaller-1.4.0\AndroidManifest.xml:46:13-48:29
+action#androidx.profileinstaller.action.SAVE_PROFILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\29d2fcb8a1cb32b17a6ac26018cda434\transformed\profileinstaller-1.4.0\AndroidManifest.xml:47:17-88
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\29d2fcb8a1cb32b17a6ac26018cda434\transformed\profileinstaller-1.4.0\AndroidManifest.xml:47:25-85
+intent-filter#action:name:androidx.profileinstaller.action.BENCHMARK_OPERATION
+ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\29d2fcb8a1cb32b17a6ac26018cda434\transformed\profileinstaller-1.4.0\AndroidManifest.xml:49:13-51:29
+action#androidx.profileinstaller.action.BENCHMARK_OPERATION
+ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\29d2fcb8a1cb32b17a6ac26018cda434\transformed\profileinstaller-1.4.0\AndroidManifest.xml:50:17-95
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\ABDER\.gradle\caches\9.4.1\transforms\29d2fcb8a1cb32b17a6ac26018cda434\transformed\profileinstaller-1.4.0\AndroidManifest.xml:50:25-92

@@ -1,0 +1,38 @@
+{
+  "name": "HikmaClips",
+  "short_name": "HikmaClips",
+  "description": "Sagesse islamique quotidienne — hadiths, versets coraniques et invocations générés par IA",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f0fdf4",
+  "theme_color": "#10B981",
+  "orientation": "portrait",
+  "lang": "fr",
+  "icons": [
+    {
+      "src": "/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["lifestyle", "education", "religion"],
+  "shortcuts": [
+    {
+      "name": "Hadith du jour",
+      "url": "/?category=hadith",
+      "description": "Voir un hadith aléatoire"
+    },
+    {
+      "name": "Verset du Coran",
+      "url": "/?category=coran",
+      "description": "Voir un verset aléatoire"
+    }
+  ]
+}
