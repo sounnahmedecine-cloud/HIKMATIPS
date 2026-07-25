@@ -1,10 +1,12 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
+import { useSwipeable } from 'react-swipeable';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
+import { X, ChevronLeft, ChevronRight, Loader2, ZoomIn, ZoomOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 import { resolveAssetPath, type LibraryBook } from '@/lib/library-books';
 
 pdfjs.GlobalWorkerOptions.workerSrc = resolveAssetPath('/pdf.worker.min.mjs');
@@ -19,12 +21,23 @@ export default function PdfReader({ book, onClose }: PdfReaderProps) {
     const [pageNumber, setPageNumber] = useState(1);
     const [loadError, setLoadError] = useState<string | null>(null);
     const [pageWidth, setPageWidth] = useState(360);
+    const [zoom, setZoom] = useState(1);
+
+    const MIN_ZOOM = 1;
+    const MAX_ZOOM = 2.5;
+    const zoomIn = useCallback(() => setZoom((z) => Math.min(MAX_ZOOM, +(z + 0.25).toFixed(2))), []);
+    const zoomOut = useCallback(() => setZoom((z) => Math.max(MIN_ZOOM, +(z - 0.25).toFixed(2))), []);
 
     useEffect(() => {
         setNumPages(null);
         setPageNumber(1);
         setLoadError(null);
+        setZoom(1);
     }, [book?.id]);
+
+    useEffect(() => {
+        setZoom(1);
+    }, [pageNumber]);
 
     useEffect(() => {
         const update = () => setPageWidth(Math.min(680, window.innerWidth - 32));
@@ -34,6 +47,19 @@ export default function PdfReader({ book, onClose }: PdfReaderProps) {
     }, []);
 
     const isOpen = book !== null;
+
+    const goToPrevPage = useCallback(() => setPageNumber((p) => Math.max(1, p - 1)), []);
+    const goToNextPage = useCallback(() => {
+        setPageNumber((p) => (numPages ? Math.min(numPages, p + 1) : p));
+    }, [numPages]);
+
+    const swipeHandlers = useSwipeable({
+        onSwipedLeft: () => { if (zoom === 1) goToNextPage(); },
+        onSwipedRight: () => { if (zoom === 1) goToPrevPage(); },
+        preventScrollOnSwipe: false,
+        trackMouse: false,
+        delta: 50,
+    });
 
     return (
         <AnimatePresence>
@@ -59,18 +85,46 @@ export default function PdfReader({ book, onClose }: PdfReaderProps) {
                                     <p className="text-xs text-muted-foreground mt-0.5 truncate">{book.author}</p>
                                 )}
                             </div>
-                            <Button
-                                variant="ghost"
-                                size="icon"
-                                onClick={onClose}
-                                aria-label="Fermer le lecteur"
-                                className="rounded-full bg-muted/50 hover:bg-muted w-9 h-9 flex-shrink-0"
-                            >
-                                <X className="h-5 w-5" />
-                            </Button>
+                            <div className="flex items-center gap-1 flex-shrink-0">
+                                <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    disabled={zoom <= MIN_ZOOM}
+                                    onClick={zoomOut}
+                                    aria-label="Réduire"
+                                    className="rounded-full bg-muted/50 hover:bg-muted w-9 h-9 disabled:opacity-30"
+                                >
+                                    <ZoomOut className="h-4 w-4" />
+                                </Button>
+                                <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    disabled={zoom >= MAX_ZOOM}
+                                    onClick={zoomIn}
+                                    aria-label="Agrandir"
+                                    className="rounded-full bg-muted/50 hover:bg-muted w-9 h-9 disabled:opacity-30"
+                                >
+                                    <ZoomIn className="h-4 w-4" />
+                                </Button>
+                                <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    onClick={onClose}
+                                    aria-label="Fermer le lecteur"
+                                    className="rounded-full bg-muted/50 hover:bg-muted w-9 h-9"
+                                >
+                                    <X className="h-5 w-5" />
+                                </Button>
+                            </div>
                         </div>
 
-                        <div className="flex-1 overflow-y-auto flex items-start justify-center p-4 bg-muted/10">
+                        <div
+                            {...swipeHandlers}
+                            className={cn(
+                                'flex-1 flex p-4 bg-muted/10 overflow-y-auto',
+                                zoom > 1 ? 'overflow-x-auto justify-start items-start' : 'overflow-x-hidden justify-center items-start'
+                            )}
+                        >
                             {loadError ? (
                                 <div className="h-64 flex flex-col items-center justify-center text-muted-foreground gap-2">
                                     <p className="text-sm font-medium">Impossible de charger ce livre.</p>
@@ -89,10 +143,10 @@ export default function PdfReader({ book, onClose }: PdfReaderProps) {
                                 >
                                     <Page
                                         pageNumber={pageNumber}
-                                        width={pageWidth}
+                                        width={pageWidth * zoom}
                                         renderAnnotationLayer={false}
                                         renderTextLayer={false}
-                                        className="shadow-lg"
+                                        className="shadow-lg mx-auto"
                                     />
                                 </Document>
                             )}
@@ -103,7 +157,7 @@ export default function PdfReader({ book, onClose }: PdfReaderProps) {
                                 variant="ghost"
                                 size="icon"
                                 disabled={pageNumber <= 1}
-                                onClick={() => setPageNumber((p) => Math.max(1, p - 1))}
+                                onClick={goToPrevPage}
                                 aria-label="Page précédente"
                                 className="rounded-full disabled:opacity-30"
                             >
@@ -116,7 +170,7 @@ export default function PdfReader({ book, onClose }: PdfReaderProps) {
                                 variant="ghost"
                                 size="icon"
                                 disabled={!numPages || pageNumber >= numPages}
-                                onClick={() => setPageNumber((p) => (numPages ? Math.min(numPages, p + 1) : p))}
+                                onClick={goToNextPage}
                                 aria-label="Page suivante"
                                 className="rounded-full disabled:opacity-30"
                             >
