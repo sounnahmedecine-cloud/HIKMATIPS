@@ -31,6 +31,7 @@ import {
   Copy,
   Check,
   Zap,
+  Shuffle,
 } from 'lucide-react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -73,6 +74,7 @@ import { SwipeHintOverlay } from '@/components/SwipeHintOverlay';
 
 
 import { getFavorites, toggleFavorite, cn } from '@/lib/utils';
+import { growGarden } from '@/lib/garden';
 
 
 
@@ -326,6 +328,7 @@ export default function GeneratorPage() {
       const [next, ...rest] = contentBuffer;
       setContentBuffer(rest);
       setContent(next);
+      growGarden('generate_image');
       if (!user) setGenerationCount(prev => prev + 1);
       if (isFirstTime) { markAsGenerated(); setShowTooltipGuide(false); }
       // Recharge 1 rappel en arrière-plan pour maintenir le buffer
@@ -339,6 +342,7 @@ export default function GeneratorPage() {
       const result = await generateHadith({ category, topic });
       if (result && result.content) {
         setContent(result);
+        growGarden('generate_image');
         if (!user) {
           setGenerationCount(prev => prev + 1);
         }
@@ -1076,12 +1080,12 @@ export default function GeneratorPage() {
         <div className="pointer-events-none absolute left-0 right-0 top-0 z-40 flex items-center justify-between px-4 pb-4 pt-[max(3.25rem,calc(env(safe-area-inset-top)+1.25rem))]">
           <button
             id="tour-agent"
-            onClick={() => setIsCategoryDrawerOpen(true)}
+            onClick={() => router.push('/settings')}
             className="pointer-events-auto flex h-8 items-center gap-2 rounded-full border border-white/25 bg-white/15 px-3 text-white shadow-sm backdrop-blur-[10px] active:scale-95"
-            aria-label="Choisir une catégorie"
+            aria-label="Réglages"
           >
-            <span className="h-2 w-2 rounded-full bg-white shadow-[0_0_0_3px_rgba(255,255,255,.3)]" />
-            <span className="text-[9px] font-extrabold uppercase tracking-[0.16em]">Agent en direct</span>
+            <Settings className="h-3.5 w-3.5" />
+            <span className="text-[9px] font-extrabold uppercase tracking-[0.16em]">Réglages</span>
           </button>
           <button
             id="tour-premium"
@@ -1177,14 +1181,15 @@ export default function GeneratorPage() {
               {isGenerating ? <Loader2 className="h-5 w-5 animate-spin" /> : <Zap className="h-5 w-5" fill="currentColor" />}
             </button>
           </div>
-          <button onClick={() => router.push('/favoris')} className="flex h-full flex-1 flex-col items-center justify-center gap-1 text-[#9AA39B]">
-            <BookMarked className="h-[18px] w-[18px]" />
-            <span className="text-[8px] font-bold">Biblio</span>
+          <button onClick={() => setIsCategoryDrawerOpen(true)} className="flex h-full flex-1 flex-col items-center justify-center gap-1 text-[#9AA39B] active:scale-90 transition">
+            <LayoutGrid className="h-[18px] w-[18px]" />
+            <span className="text-[8px] font-bold">Catégs</span>
           </button>
-          <button onClick={() => router.push('/settings')} className="flex h-full flex-1 flex-col items-center justify-center gap-1 text-[#9AA39B]">
-            <Settings className="h-[18px] w-[18px]" />
-            <span className="text-[8px] font-bold">Réglages</span>
+          <button onClick={handleRandomBackground} className="flex h-full flex-1 flex-col items-center justify-center gap-1 text-[#9AA39B] active:scale-90 transition">
+            <Shuffle className="h-[18px] w-[18px]" />
+            <span className="text-[8px] font-bold">Fond</span>
           </button>
+
         </nav>
       </div>
 

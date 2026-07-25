@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
+import { growGarden } from '@/lib/garden';
 
 export default function PartagerPage() {
   const [text, setText] = useState('');
@@ -28,12 +29,14 @@ export default function PartagerPage() {
 
     if (platform === 'whatsapp') {
       window.open(`https://wa.me/?text=${encodeURIComponent(shareText)}`, '_blank');
+      growGarden('share');
       return;
     }
 
     if (navigator.share) {
       try {
         await navigator.share({ text: shareText });
+        growGarden('share');
       } catch (e) {
         // User cancelled
       }

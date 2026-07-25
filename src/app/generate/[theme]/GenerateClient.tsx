@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input"
 import { motion } from "framer-motion"
 import { Sparkles, ChevronLeft, Loader2 } from "lucide-react"
 import { generateHadith } from "@/ai/flows/generate-hadith"
+import { growGarden } from "@/lib/garden"
 
 const SUBTAGS: Record<string, string[]> = {
     foi: ["Matin", "Soir", "Avant prières", "Crise de foi", "Nouveaux convertis"],
@@ -59,6 +60,7 @@ export function GenerateClient({ params }: { params: Promise<{ theme: string }> 
             console.log("Generation result:", result);
 
             localStorage.setItem('lastGeneratedHikma', JSON.stringify(result));
+            growGarden('generate_image');
             router.push("/studio");
         } catch (error) {
             console.error("Generation failed:", error);
