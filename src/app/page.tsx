@@ -26,26 +26,36 @@ const GeneratorPage = dynamic(() => import('@/components/GeneratorPage'), {
   ssr: false,
 });
 
-// Persiste en dehors du composant : ne rejoue pas la vidéo si l'utilisateur revient
-// sur "/" plus tard dans la session (ex: bouton retour Android). Se réinitialise
-// uniquement au vrai relancement de l'app (rechargement du bundle JS).
-let hasPlayedSplash = false;
+const STARTUP_VIDEO_SEEN_KEY = 'hasSeenStartupVideo';
 
 export default function Home() {
   const [isNativeApp, setIsNativeApp] = useState<boolean | null>(null);
-  const [showSplash, setShowSplash] = useState(() => !hasPlayedSplash);
+  const [showSplash, setShowSplash] = useState(false);
 
   useEffect(() => {
     setIsNativeApp(!!(window as any).Capacitor?.isNativePlatform?.());
+    // localStorage (contrairement à une variable JS ou sessionStorage) survit à un
+    // redemarrage du processus de l'app par Android (fréquent en arrière-plan, d'autant
+    // plus que l'app pèse maintenant 200+ Mo) — donc la vidéo ne joue qu'une seule fois
+    // par installation, pas à chaque fois que le systeme relance le processus.
+    if (!localStorage.getItem(STARTUP_VIDEO_SEEN_KEY)) {
+      setShowSplash(true);
+    }
   }, []);
 
   // Sur mobile (Capacitor), on ouvre directement l'application.
   // Sur le web, "/" reste la landing page marketing.
   if (isNativeApp === null) return <LoadingScreen />;
 
-  // Vidéo de démarrage à chaque lancement de l'app mobile
   if (isNativeApp && showSplash) {
-    return <StartupVideo onComplete={() => { hasPlayedSplash = true; setShowSplash(false); }} />;
+    return (
+      <StartupVideo
+        onComplete={() => {
+          localStorage.setItem(STARTUP_VIDEO_SEEN_KEY, 'true');
+          setShowSplash(false);
+        }}
+      />
+    );
   }
 
   return isNativeApp ? <GeneratorPage /> : <LandingPage />;

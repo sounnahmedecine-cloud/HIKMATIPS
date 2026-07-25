@@ -49,7 +49,7 @@ const steps: TooltipStep[] = [
     id: 'generate',
     targetId: 'tour-generate',
     title: 'Créez un nouveau clip',
-    description: 'Appuyez sur l’éclair — ou balayez vers le haut — pour générer immédiatement une nouvelle Hikma.',
+    description: 'Balayez l’écran vers le haut pour générer immédiatement une nouvelle Hikma. Ce bouton central vous ramène toujours à l’accueil.',
     placement: 'above',
     spotlightRadius: 20,
   },

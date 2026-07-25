@@ -1210,12 +1210,11 @@ export default function GeneratorPage() {
           <div className="relative h-full flex-1">
             <button
               id="tour-generate"
-              onClick={handleGenerateAiContent}
-              disabled={isGenerating}
-              className="absolute left-1/2 top-0 grid h-[54px] w-[54px] -translate-x-1/2 -translate-y-3.5 place-items-center rounded-[18px] border-[3px] border-white bg-[linear-gradient(160deg,#15703A_0%,#2E9E44_55%,#F5960F_132%)] text-white shadow-[0_10px_22px_rgba(46,158,68,.5)] transition active:scale-90 disabled:opacity-60"
-              aria-label="Générer un nouveau clip"
+              onClick={() => router.push('/generateur')}
+              className="absolute left-1/2 top-0 grid h-[54px] w-[54px] -translate-x-1/2 -translate-y-3.5 place-items-center rounded-[18px] border-[3px] border-white bg-[linear-gradient(160deg,#15703A_0%,#2E9E44_55%,#F5960F_132%)] text-white shadow-[0_10px_22px_rgba(46,158,68,.5)] transition active:scale-90"
+              aria-label="Clips — Accueil"
             >
-              {isGenerating ? <Loader2 className="h-5 w-5 animate-spin" /> : <Zap className="h-5 w-5" fill="currentColor" />}
+              <Sparkles className="h-5 w-5" fill="currentColor" />
             </button>
           </div>
           <button onClick={() => router.push('/livres')} className="flex h-full flex-1 flex-col items-center justify-center gap-1 text-[#9AA39B] active:scale-90 transition">
