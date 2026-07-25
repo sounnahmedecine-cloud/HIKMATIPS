@@ -5,6 +5,15 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
+export function getBasePath(): string {
+  const envBase = process.env.NEXT_PUBLIC_BASE_PATH || '';
+  if (envBase) return envBase;
+  if (typeof window !== 'undefined' && window.location.pathname.startsWith('/HIKMATIPS')) {
+    return '/HIKMATIPS';
+  }
+  return '';
+}
+
 export type Hikma = {
   arabe: string;
   fr: string;

@@ -1,10 +1,10 @@
 import Link from 'next/link';
 import type { ReactNode } from 'react';
-import { FolderHeart, Heart } from 'lucide-react';
+import { BookOpen, FolderHeart, Heart } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface HikmaLibraryHeaderProps {
-  active: 'favorites' | 'collections';
+  active: 'favorites' | 'collections' | 'books';
   action?: ReactNode;
 }
 
@@ -34,6 +34,15 @@ export function HikmaLibraryHeader({ active, action }: HikmaLibraryHeaderProps) 
           )}
         >
           <FolderHeart className="h-3.5 w-3.5" /> Collections
+        </Link>
+        <Link
+          href="/livres"
+          className={cn(
+            'flex flex-1 items-center justify-center gap-1.5 rounded-[10px] py-2 text-xs font-semibold transition-colors',
+            active === 'books' ? 'bg-white text-[#15703A] shadow-sm' : 'text-white/90 hover:bg-white/10'
+          )}
+        >
+          <BookOpen className="h-3.5 w-3.5" /> Livres
         </Link>
       </div>
     </header>
