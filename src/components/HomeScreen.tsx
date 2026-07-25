@@ -36,9 +36,6 @@ import { Button } from "@/components/ui/button"
 import { CloudinaryGallery } from "@/components/studio/CloudinaryGallery"
 import { CategoryDrawer } from "@/components/CategoryDrawer"
 import { DesignToolsDrawer } from "@/components/DesignToolsDrawer"
-import { PlantWidget } from "@/components/garden/PlantWidget"
-import { GardenView } from "@/components/garden/GardenView"
-import { growGarden } from "@/lib/garden"
 import { MobileTopicInput } from "@/components/studio/MobileTopicInput"
 import OnboardingScreen from '@/components/OnboardingScreen'
 import { generateHadith, generateExplanation } from '@/ai/flows/generate-hadith'
@@ -114,7 +111,6 @@ export function HomeScreen() {
     const [isGalleryOpen, setIsGalleryOpen] = useState(false);
     const [isCategoryOpen, setIsCategoryOpen] = useState(false);
     const [isToolsOpen, setIsToolsOpen] = useState(false);
-    const [isGardenOpen, setIsGardenOpen] = useState(false);
     const [isToolsMenuOpen, setIsToolsMenuOpen] = useState(false);
     const [showOnboarding, setShowOnboarding] = useState(false);
     const [showSignInPopup, setShowSignInPopup] = useState(false);
@@ -390,7 +386,6 @@ export function HomeScreen() {
             historyIndexRef.current = nextIdx;
             setHistoryIndex(nextIdx);
             setCurrentHikma(hikmaHistory[nextIdx]);
-            growGarden('read_hikma');
             handleShuffleBackground();
         } else {
             handleFullShuffle();
@@ -445,7 +440,6 @@ export function HomeScreen() {
 
     useEffect(() => {
         updateStreak();
-        growGarden('daily_open');
         const hasSeen = localStorage.getItem('hasSeenOnboarding');
         if (!hasSeen) setShowOnboarding(true);
 
@@ -499,7 +493,6 @@ export function HomeScreen() {
         }
         const isLiked = toggleFavorite(currentHikma);
         setFavorites(prev => isLiked ? [...prev, currentHikma.fr] : prev.filter(f => f !== currentHikma.fr));
-        if (isLiked) growGarden('favorite', { hikmaId: currentHikma.fr });
     };
 
     const handleShare = async () => {
@@ -511,7 +504,6 @@ export function HomeScreen() {
             const fileName = `hikma_share_${Date.now()}.png`;
             const savedFile = await Filesystem.writeFile({ path: fileName, data: base64Data, directory: Directory.Cache });
             await Share.share({ title: 'HikmaClips', text: `${currentHikma.fr} - ${currentHikma.source}`, files: [savedFile.uri] });
-            growGarden('share');
         } catch (error) {
             toast({ title: "Erreur", description: "Le partage a échoué.", variant: "destructive" });
         } finally {
@@ -639,7 +631,7 @@ export function HomeScreen() {
             <div className="absolute top-0 left-0 right-0 z-[60]" style={{ paddingTop: 'max(env(safe-area-inset-top), 14px)' }}>
                 <div className="flex items-center gap-2 px-4 pb-2">
                     {/* Left */}
-                    <div className="flex-1 flex justify-start items-center gap-2">
+                    <div className="flex-1 flex justify-start">
                         <Button
                             variant="ghost"
                             onClick={() => setIsCategoryOpen(true)}
@@ -650,7 +642,6 @@ export function HomeScreen() {
                                 {selectedCategory === 'recherche-ia' ? "Agent" : selectedCategory}
                             </span>
                         </Button>
-                        <PlantWidget onClick={() => setIsGardenOpen(true)} />
                     </div>
 
                     {/* Center — topic input, truly centered */}
@@ -929,11 +920,6 @@ export function HomeScreen() {
                 onClose={() => setIsToolsOpen(false)}
                 filters={filters}
                 setFilters={setFilters}
-            />
-
-            <GardenView
-                isOpen={isGardenOpen}
-                onClose={() => setIsGardenOpen(false)}
             />
 
             <AnimatePresence>

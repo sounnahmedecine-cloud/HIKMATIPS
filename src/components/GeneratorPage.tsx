@@ -73,8 +73,10 @@ import { SwipeHintOverlay } from '@/components/SwipeHintOverlay';
 
 
 
-import { getFavorites, toggleFavorite, cn } from '@/lib/utils';
+import { getFavorites, toggleFavorite, cn, updateStreak } from '@/lib/utils';
 import { growGarden } from '@/lib/garden';
+import { PlantWidget } from '@/components/garden/PlantWidget';
+import { GardenView } from '@/components/garden/GardenView';
 
 
 
@@ -146,9 +148,12 @@ export default function GeneratorPage() {
   const [isShareSheetOpen, setIsShareSheetOpen] = useState(false);
   const [isPremiumSheetOpen, setIsPremiumSheetOpen] = useState(false);
   const [hasCopied, setHasCopied] = useState(false);
+  const [isGardenOpen, setIsGardenOpen] = useState(false);
 
   useEffect(() => {
     setFavorites(getFavorites().map(f => f.fr));
+    updateStreak();
+    growGarden('daily_open');
   }, []);
 
   const handleFavorite = () => {
@@ -160,6 +165,7 @@ export default function GeneratorPage() {
     };
     const isLiked = toggleFavorite(hikma);
     setFavorites(prev => isLiked ? [...prev, hikma.fr] : prev.filter(f => f !== hikma.fr));
+    if (isLiked) growGarden('favorite', { hikmaId: hikma.fr });
 
     toast({
       title: isLiked ? 'Ajouté aux favoris' : 'Retiré des favoris',
@@ -546,6 +552,7 @@ export default function GeneratorPage() {
           files: [savedFile.uri],
           dialogTitle: 'Partager avec...',
         });
+        growGarden('share');
 
         toast({
           title: 'Partage ouvert',
@@ -879,6 +886,9 @@ export default function GeneratorPage() {
 
         {/* Action buttons */}
         <div className="flex items-center gap-2 flex-shrink-0">
+          <div className="[&>button]:bg-[#F5F1E8] [&>button]:border-[#ECE8DF]">
+            <PlantWidget onClick={() => setIsGardenOpen(true)} />
+          </div>
           <button
             onClick={handleFavorite}
             className={cn("w-9 h-9 rounded-full border flex items-center justify-center transition-all hover:scale-110",
@@ -1078,15 +1088,18 @@ export default function GeneratorPage() {
       {/* MOBILE UI — port fidèle de la direction « Gradient expressif » */}
       <div className="md:hidden [font-family:var(--font-hikma-ui)]">
         <div className="pointer-events-none absolute left-0 right-0 top-0 z-40 flex items-center justify-between px-4 pb-4 pt-[max(3.25rem,calc(env(safe-area-inset-top)+1.25rem))]">
-          <button
-            id="tour-agent"
-            onClick={() => router.push('/settings')}
-            className="pointer-events-auto flex h-8 items-center gap-2 rounded-full border border-white/25 bg-white/15 px-3 text-white shadow-sm backdrop-blur-[10px] active:scale-95"
-            aria-label="Réglages"
-          >
-            <Settings className="h-3.5 w-3.5" />
-            <span className="text-[9px] font-extrabold uppercase tracking-[0.16em]">Réglages</span>
-          </button>
+          <div className="pointer-events-auto flex items-center gap-2">
+            <button
+              id="tour-agent"
+              onClick={() => router.push('/settings')}
+              className="flex h-8 items-center gap-2 rounded-full border border-white/25 bg-white/15 px-3 text-white shadow-sm backdrop-blur-[10px] active:scale-95"
+              aria-label="Réglages"
+            >
+              <Settings className="h-3.5 w-3.5" />
+              <span className="text-[9px] font-extrabold uppercase tracking-[0.16em]">Réglages</span>
+            </button>
+            <PlantWidget onClick={() => setIsGardenOpen(true)} />
+          </div>
           <button
             id="tour-premium"
             onClick={() => setIsPremiumSheetOpen(true)}
@@ -1336,6 +1349,11 @@ export default function GeneratorPage() {
           setContentBuffer([]);
           fillBuffer(cat, topic, 3);
         }}
+      />
+
+      <GardenView
+        isOpen={isGardenOpen}
+        onClose={() => setIsGardenOpen(false)}
       />
 
       {/* Tools Drawer */}
