@@ -32,6 +32,7 @@ import {
   Check,
   Zap,
   Shuffle,
+  LibraryBig,
 } from 'lucide-react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -1198,9 +1199,9 @@ export default function GeneratorPage() {
           style={{ bottom: 'max(1rem, env(safe-area-inset-bottom, 0px))' }}
           aria-label="Navigation principale"
         >
-          <button onClick={() => router.push('/generateur')} className="flex h-full flex-1 flex-col items-center justify-center gap-1 text-[#2E9E44]" aria-current="page">
-            <Sparkles className="h-[18px] w-[18px]" />
-            <span className="text-[8px] font-extrabold">Clips</span>
+          <button onClick={() => setIsCategoryDrawerOpen(true)} className="flex h-full flex-1 flex-col items-center justify-center gap-1 text-[#9AA39B] active:scale-90 transition">
+            <LayoutGrid className="h-[18px] w-[18px]" />
+            <span className="text-[8px] font-bold">Catégorie</span>
           </button>
           <button onClick={() => router.push('/recherche-hadiths')} className="flex h-full flex-1 flex-col items-center justify-center gap-1 text-[#9AA39B]">
             <Search className="h-[18px] w-[18px]" />
@@ -1217,9 +1218,9 @@ export default function GeneratorPage() {
               {isGenerating ? <Loader2 className="h-5 w-5 animate-spin" /> : <Zap className="h-5 w-5" fill="currentColor" />}
             </button>
           </div>
-          <button onClick={() => setIsCategoryDrawerOpen(true)} className="flex h-full flex-1 flex-col items-center justify-center gap-1 text-[#9AA39B] active:scale-90 transition">
-            <LayoutGrid className="h-[18px] w-[18px]" />
-            <span className="text-[8px] font-bold">Catégs</span>
+          <button onClick={() => router.push('/livres')} className="flex h-full flex-1 flex-col items-center justify-center gap-1 text-[#9AA39B] active:scale-90 transition">
+            <LibraryBig className="h-[18px] w-[18px]" />
+            <span className="text-[8px] font-bold">Biblio</span>
           </button>
           <button onClick={handleRandomBackground} className="flex h-full flex-1 flex-col items-center justify-center gap-1 text-[#9AA39B] active:scale-90 transition">
             <Shuffle className="h-[18px] w-[18px]" />
