@@ -26,9 +26,14 @@ const GeneratorPage = dynamic(() => import('@/components/GeneratorPage'), {
   ssr: false,
 });
 
+// Persiste en dehors du composant : ne rejoue pas la vidéo si l'utilisateur revient
+// sur "/" plus tard dans la session (ex: bouton retour Android). Se réinitialise
+// uniquement au vrai relancement de l'app (rechargement du bundle JS).
+let hasPlayedSplash = false;
+
 export default function Home() {
   const [isNativeApp, setIsNativeApp] = useState<boolean | null>(null);
-  const [showSplash, setShowSplash] = useState(true);
+  const [showSplash, setShowSplash] = useState(() => !hasPlayedSplash);
 
   useEffect(() => {
     setIsNativeApp(!!(window as any).Capacitor?.isNativePlatform?.());
@@ -40,7 +45,7 @@ export default function Home() {
 
   // Vidéo de démarrage à chaque lancement de l'app mobile
   if (isNativeApp && showSplash) {
-    return <StartupVideo onComplete={() => setShowSplash(false)} />;
+    return <StartupVideo onComplete={() => { hasPlayedSplash = true; setShowSplash(false); }} />;
   }
 
   return isNativeApp ? <GeneratorPage /> : <LandingPage />;
