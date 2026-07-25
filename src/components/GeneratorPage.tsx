@@ -74,9 +74,10 @@ import { SwipeHintOverlay } from '@/components/SwipeHintOverlay';
 
 
 import { getFavorites, toggleFavorite, cn, updateStreak } from '@/lib/utils';
-import { growGarden } from '@/lib/garden';
+import { growGarden, getGardenState } from '@/lib/garden';
 import { PlantWidget } from '@/components/garden/PlantWidget';
 import { GardenView } from '@/components/garden/GardenView';
+import { NameSeedModal } from '@/components/garden/NameSeedModal';
 
 
 
@@ -149,11 +150,33 @@ export default function GeneratorPage() {
   const [isPremiumSheetOpen, setIsPremiumSheetOpen] = useState(false);
   const [hasCopied, setHasCopied] = useState(false);
   const [isGardenOpen, setIsGardenOpen] = useState(false);
+  const [isNameSeedOpen, setIsNameSeedOpen] = useState(false);
 
   useEffect(() => {
     setFavorites(getFavorites().map(f => f.fr));
     updateStreak();
     growGarden('daily_open');
+
+    // Palier de lumière toutes les 5 minutes passées activement sur l'app
+    const TIME_TICK_MS = 5 * 60 * 1000;
+    const interval = setInterval(() => {
+      if (document.visibilityState === 'visible') {
+        growGarden('time_spent');
+      }
+    }, TIME_TICK_MS);
+
+    // Rituel de nommage de la graine, une seule fois. Pour un utilisateur deja
+    // familier (onboarding deja vu), on peut le proposer tout de suite ; pour un
+    // nouvel utilisateur, on attend la fin du tour de decouverte (voir plus bas).
+    const hasSeenOnboarding = localStorage.getItem('hasSeenOnboarding');
+    if (hasSeenOnboarding) maybeOpenNamePrompt();
+
+    return () => clearInterval(interval);
+  }, []);
+
+  const maybeOpenNamePrompt = useCallback(() => {
+    const gardenState = getGardenState();
+    if (!gardenState.namePromptShown) setIsNameSeedOpen(true);
   }, []);
 
   const handleFavorite = () => {
@@ -1098,7 +1121,7 @@ export default function GeneratorPage() {
               <Settings className="h-3.5 w-3.5" />
               <span className="text-[9px] font-extrabold uppercase tracking-[0.16em]">Réglages</span>
             </button>
-            <PlantWidget onClick={() => setIsGardenOpen(true)} />
+            <PlantWidget id="tour-garden" onClick={() => setIsGardenOpen(true)} />
           </div>
           <button
             id="tour-premium"
@@ -1563,9 +1586,11 @@ export default function GeneratorPage() {
       {/* Tooltip Guide for first-time users */}
       <TooltipGuide
         isActive={showTooltipGuide}
-        onComplete={() => setShowTooltipGuide(false)}
-        onSkip={() => setShowTooltipGuide(false)}
+        onComplete={() => { setShowTooltipGuide(false); maybeOpenNamePrompt(); }}
+        onSkip={() => { setShowTooltipGuide(false); maybeOpenNamePrompt(); }}
       />
+
+      <NameSeedModal isOpen={isNameSeedOpen} onDone={() => setIsNameSeedOpen(false)} />
     </div >
   );
 }

@@ -30,6 +30,14 @@ const steps: TooltipStep[] = [
     spotlightRadius: 999,
   },
   {
+    id: 'garden',
+    targetId: 'tour-garden',
+    title: 'Fais pousser ta foi intérieure',
+    description: 'Chaque hikma lue, chaque partage, chaque instant passé ici te fait gagner de la lumière — et fait grandir ta petite graine, étape par étape.',
+    placement: 'below',
+    spotlightRadius: 999,
+  },
+  {
     id: 'actions',
     targetId: 'tour-actions',
     title: 'Vos actions rapides',

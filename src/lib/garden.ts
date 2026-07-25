@@ -2,7 +2,7 @@
 // Système de croissance douce : chaque interaction bénéfique nourrit le jardin.
 // Pas de score visible, pas de régression en cas d'inactivité.
 
-export type GardenActionType = 'daily_open' | 'read_hikma' | 'generate_image' | 'share' | 'favorite';
+export type GardenActionType = 'daily_open' | 'read_hikma' | 'generate_image' | 'share' | 'favorite' | 'time_spent';
 
 export interface GardenState {
   xp: number;
@@ -12,6 +12,10 @@ export interface GardenState {
   dailyReadCount: number;
   dailyReadDate: string;
   favoritedIds: string[];
+  dailyTimeTicks: number;
+  dailyTimeDate: string;
+  name: string | null;
+  namePromptShown: boolean;
 }
 
 export interface StageInfo {
@@ -22,6 +26,7 @@ export interface StageInfo {
 
 const GARDEN_KEY = 'hikma_garden';
 const DAILY_READ_CAP = 10;
+const DAILY_TIME_TICK_CAP = 12; // 12 x 5 min = 60 min de lumière max par jour
 
 const STAGE_THRESHOLDS = [0, 20, 50, 100, 180, 300, 450];
 
@@ -41,22 +46,23 @@ const ACTION_XP: Record<GardenActionType, number> = {
   favorite: 5,
   share: 10,
   generate_image: 8,
+  time_spent: 5,
 };
 
 const STAGE_MESSAGES = [
-  'Ton jardin prend racine.',
-  'Une nouvelle feuille est apparue.',
-  'Ton arbre grandit doucement.',
-  'Une branche s’est développée.',
-  'Ton jardin s’épanouit.',
-  'Les premières fleurs sont arrivées.',
-  'Ton jardin rayonne pleinement.',
+  'Ta lumière a fait germer une racine.',
+  'Une nouvelle feuille capte la lumière.',
+  'Ton arbre grandit, nourri par ta lumière.',
+  'Une branche s’est développée grâce à ta constance.',
+  'Ton jardin rayonne d’une lumière nouvelle.',
+  'Les premières fleurs s’ouvrent à la lumière.',
+  'Ton jardin est baigné de lumière.',
 ];
 
-const DAILY_OPEN_MESSAGES = [
-  'Ton jardin a été arrosé aujourd’hui.',
-  'Un peu de lumière en plus pour ton jardin.',
-  'Ta constance nourrit ton jardin.',
+const LIGHT_GAINED_MESSAGES = [
+  'Tu as gagné de la lumière aujourd’hui.',
+  'Un peu plus de lumière pour ton jardin.',
+  'Ta constance nourrit ton jardin de lumière.',
 ];
 
 function getToday(): string {
@@ -73,8 +79,30 @@ function defaultState(): GardenState {
     dailyReadCount: 0,
     dailyReadDate: today,
     favoritedIds: [],
+    dailyTimeTicks: 0,
+    dailyTimeDate: today,
+    name: null,
+    namePromptShown: false,
   };
 }
+
+export function setGardenName(name: string): GardenState {
+  const state = getGardenState();
+  state.name = name.trim().slice(0, 24) || null;
+  state.namePromptShown = true;
+  saveGardenState(state);
+  return state;
+}
+
+export function markNamePromptShown(): GardenState {
+  const state = getGardenState();
+  state.namePromptShown = true;
+  saveGardenState(state);
+  return state;
+}
+
+export const GARDEN_GROW_EVENT = 'hikma:garden-grow';
+export type GardenGrowEvent = GrowResult;
 
 export function getGardenState(): GardenState {
   if (typeof window === 'undefined') return defaultState();
@@ -130,6 +158,10 @@ export function growGarden(action: GardenActionType, meta?: { hikmaId?: string }
     state.dailyReadDate = today;
     state.dailyReadCount = 0;
   }
+  if (state.dailyTimeDate !== today) {
+    state.dailyTimeDate = today;
+    state.dailyTimeTicks = 0;
+  }
 
   switch (action) {
     case 'daily_open': {
@@ -162,6 +194,13 @@ export function growGarden(action: GardenActionType, meta?: { hikmaId?: string }
       xpGained = ACTION_XP.generate_image;
       break;
     }
+    case 'time_spent': {
+      if (state.dailyTimeTicks < DAILY_TIME_TICK_CAP) {
+        state.dailyTimeTicks += 1;
+        xpGained = ACTION_XP.time_spent;
+      }
+      break;
+    }
   }
 
   if (xpGained > 0) {
@@ -177,15 +216,21 @@ export function growGarden(action: GardenActionType, meta?: { hikmaId?: string }
   let message: string | null = null;
   if (stageChanged) {
     message = STAGE_MESSAGES[newStage] ?? null;
-  } else if (action === 'daily_open' && xpGained > 0) {
-    message = DAILY_OPEN_MESSAGES[Math.floor(Math.random() * DAILY_OPEN_MESSAGES.length)];
+  } else if ((action === 'daily_open' || action === 'time_spent') && xpGained > 0) {
+    message = LIGHT_GAINED_MESSAGES[Math.floor(Math.random() * LIGHT_GAINED_MESSAGES.length)];
   }
 
-  return {
+  const result: GrowResult = {
     state,
     xpGained,
     grew: xpGained > 0,
     stageChanged,
     message,
   };
+
+  if (result.grew && typeof window !== 'undefined') {
+    window.dispatchEvent(new CustomEvent(GARDEN_GROW_EVENT, { detail: result }));
+  }
+
+  return result;
 }
