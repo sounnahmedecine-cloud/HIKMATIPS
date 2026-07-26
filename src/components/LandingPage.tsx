@@ -178,8 +178,8 @@ export default function LandingPage() {
   return (
     <div className="relative w-full overflow-x-hidden bg-[#FBFAF7] text-[#14201A] -m-4 md:-m-8">
       {/* ambient orbs */}
-      <div className="pointer-events-none fixed -right-52 -top-40 z-0 h-[620px] w-[620px] rounded-full" style={{ background: 'radial-gradient(circle,rgba(46,158,68,0.14),transparent 68%)' }} />
-      <div className="pointer-events-none fixed -bottom-52 -left-52 z-0 h-[560px] w-[560px] rounded-full" style={{ background: 'radial-gradient(circle,rgba(245,150,15,0.12),transparent 68%)' }} />
+      <div className="pointer-events-none absolute -right-52 -top-40 z-0 h-[620px] w-[620px] rounded-full" style={{ background: 'radial-gradient(circle,rgba(46,158,68,0.14),transparent 68%)' }} />
+      <div className="pointer-events-none absolute -bottom-52 -left-52 z-0 h-[560px] w-[560px] rounded-full" style={{ background: 'radial-gradient(circle,rgba(245,150,15,0.12),transparent 68%)' }} />
 
       {/* ═══ NAV ═══ */}
       <header className="sticky top-0 z-50 border-b border-[#EDE9E0] bg-[#FBFAF7]/80 backdrop-blur-lg">
