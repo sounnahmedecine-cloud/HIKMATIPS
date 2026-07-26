@@ -1,10 +1,10 @@
 import Link from 'next/link';
 import type { ReactNode } from 'react';
-import { BookOpen, FolderHeart, Heart } from 'lucide-react';
+import { BookOpen, FolderHeart, Heart, MoonStar } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface HikmaLibraryHeaderProps {
-  active: 'favorites' | 'collections' | 'books';
+  active: 'favorites' | 'collections' | 'books' | 'quran';
   action?: ReactNode;
 }
 
@@ -16,11 +16,11 @@ export function HikmaLibraryHeader({ active, action }: HikmaLibraryHeaderProps) 
         <h1 className="text-[26px] font-bold tracking-[-0.6px] [font-family:var(--font-display)]">Bibliothèque</h1>
         {action}
       </div>
-      <div className="relative mx-auto mt-4 flex max-w-2xl gap-1.5 rounded-[14px] border border-white/20 bg-black/15 p-1 backdrop-blur-xl">
+      <div className="relative mx-auto mt-4 flex max-w-2xl gap-1 rounded-[14px] border border-white/20 bg-black/15 p-1 backdrop-blur-xl">
         <Link
           href="/favoris"
           className={cn(
-            'flex flex-1 items-center justify-center gap-1.5 rounded-[10px] py-2 text-xs font-semibold transition-colors',
+            'flex flex-1 items-center justify-center gap-1 rounded-[10px] py-2 text-[11px] font-semibold transition-colors',
             active === 'favorites' ? 'bg-white text-[#15703A] shadow-sm' : 'text-white/90 hover:bg-white/10'
           )}
         >
@@ -29,7 +29,7 @@ export function HikmaLibraryHeader({ active, action }: HikmaLibraryHeaderProps) 
         <Link
           href="/collections"
           className={cn(
-            'flex flex-1 items-center justify-center gap-1.5 rounded-[10px] py-2 text-xs font-semibold transition-colors',
+            'flex flex-1 items-center justify-center gap-1 rounded-[10px] py-2 text-[11px] font-semibold transition-colors',
             active === 'collections' ? 'bg-white text-[#15703A] shadow-sm' : 'text-white/90 hover:bg-white/10'
           )}
         >
@@ -38,11 +38,20 @@ export function HikmaLibraryHeader({ active, action }: HikmaLibraryHeaderProps) 
         <Link
           href="/livres"
           className={cn(
-            'flex flex-1 items-center justify-center gap-1.5 rounded-[10px] py-2 text-xs font-semibold transition-colors',
+            'flex flex-1 items-center justify-center gap-1 rounded-[10px] py-2 text-[11px] font-semibold transition-colors',
             active === 'books' ? 'bg-white text-[#15703A] shadow-sm' : 'text-white/90 hover:bg-white/10'
           )}
         >
           <BookOpen className="h-3.5 w-3.5" /> Livres
+        </Link>
+        <Link
+          href="/coran"
+          className={cn(
+            'flex flex-1 items-center justify-center gap-1 rounded-[10px] py-2 text-[11px] font-semibold transition-colors',
+            active === 'quran' ? 'bg-white text-[#15703A] shadow-sm' : 'text-white/90 hover:bg-white/10'
+          )}
+        >
+          <MoonStar className="h-3.5 w-3.5" /> Coran
         </Link>
       </div>
     </header>
