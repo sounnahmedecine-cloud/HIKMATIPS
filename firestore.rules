@@ -117,5 +117,28 @@ service cloud.firestore {
       allow update: if isUpdatingOwnVideo(userId);
       allow delete: if isExistingOwner(userId);
     }
+
+    /**
+     * @description Public write-only submission form for landing page visitors who want to
+     * become beta testers. Anyone can submit their pseudo/email, but nobody can read, list,
+     * update or delete entries — this keeps submitted emails private from other clients.
+     * @path /beta_testers/{docId}
+     */
+    match /beta_testers/{docId} {
+      allow create: if request.resource.data.keys().hasAll(['pseudo', 'email', 'createdAt'])
+                    && request.resource.data.pseudo is string
+                    && request.resource.data.email is string;
+      allow get, list, update, delete: if false;
+    }
+
+    /**
+     * @description Public write-only submission form for the tester feedback questionnaire.
+     * Same privacy posture as beta_testers: anyone can submit, nobody can read others' answers.
+     * @path /tester_feedback/{docId}
+     */
+    match /tester_feedback/{docId} {
+      allow create: if true;
+      allow get, list, update, delete: if false;
+    }
   }
 }

@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   Zap,
   ArrowRight,
+  ArrowDown,
   Download,
   Heart,
   Share2,
@@ -18,7 +19,11 @@ import {
   ImageIcon,
   Plus,
   Star,
+  Gift,
 } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
+import { initializeFirebase } from '@/firebase';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 
 /* ────────────────────────────────────────────────────────────
    HikmaClips — Landing page (refonte moderne, couleurs du logo)
@@ -120,9 +125,44 @@ function Brand({ size = 20 }: { size?: number }) {
 
 export default function LandingPage() {
   const router = useRouter();
+  const { toast } = useToast();
   const [idx, setIdx] = useState(0);
   const [liked, setLiked] = useState(false);
   const [openFaq, setOpenFaq] = useState(0);
+  const [betaPseudo, setBetaPseudo] = useState('');
+  const [betaEmail, setBetaEmail] = useState('');
+  const [betaSubmitting, setBetaSubmitting] = useState(false);
+  const [betaSubmitted, setBetaSubmitted] = useState(false);
+
+  const scrollToBeta = () => {
+    document.getElementById('beta')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  };
+
+  const handleBetaSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!betaPseudo.trim() || !betaEmail.trim()) return;
+    setBetaSubmitting(true);
+    try {
+      const { firestore } = initializeFirebase();
+      await addDoc(collection(firestore, 'beta_testers'), {
+        pseudo: betaPseudo.trim(),
+        email: betaEmail.trim(),
+        createdAt: serverTimestamp(),
+      });
+      setBetaSubmitted(true);
+      setBetaPseudo('');
+      setBetaEmail('');
+    } catch (error) {
+      console.error('Error submitting beta signup:', error);
+      toast({
+        title: 'Erreur',
+        description: "Une erreur est survenue lors de l'envoi. Veuillez réessayer.",
+        variant: 'destructive',
+      });
+    } finally {
+      setBetaSubmitting(false);
+    }
+  };
 
   useEffect(() => {
     const t = setInterval(() => {
@@ -197,16 +237,14 @@ export default function LandingPage() {
               Mon hadith du jour
               <ArrowRight className="h-[18px] w-[18px]" />
             </button>
-            <a
-              href="https://drive.google.com/file/d/17rXCrMZ_JogLbVB24lXqkKUC3ompOwKz/view?usp=sharing"
-              target="_blank"
-              rel="noopener noreferrer"
+            <button
+              onClick={scrollToBeta}
               className="inline-flex items-center gap-2.5 rounded-xl border-[1.5px] border-[#F0C58A] bg-white px-6 py-3.5 text-[15.5px] font-bold text-[#B96C05] shadow-[0_8px_22px_rgba(245,150,15,0.12)] transition-colors hover:border-[#F5960F] hover:bg-[#FFF9F0]"
             >
-              <Download className="h-[18px] w-[18px] text-[#F5960F]" />
-              Télécharger l&apos;APK
-              <span className="text-[11px] font-semibold text-[#9A8B78]">Android</span>
-            </a>
+              <Gift className="h-[18px] w-[18px] text-[#F5960F]" />
+              Devenir bêta testeur
+              <ArrowDown className="h-4 w-4 text-[#9A8B78]" />
+            </button>
           </div>
 
           <div className="mt-[30px] flex gap-9 border-t border-[#EAE6DD] pt-[26px]">
@@ -491,6 +529,60 @@ export default function LandingPage() {
               </div>
             );
           })}
+        </div>
+      </section>
+
+      {/* ═══ BETA SIGNUP ═══ */}
+      <section id="beta" className="relative z-10 mx-auto mt-11 max-w-[1200px] scroll-mt-24 px-6">
+        <div className="relative overflow-hidden rounded-[28px] border border-[#ECE8DF] bg-white px-6 py-14 text-center shadow-[0_20px_50px_rgba(16,61,36,0.08)] sm:px-14">
+          <div className="pointer-events-none absolute -right-24 -top-24 h-[300px] w-[300px] rounded-full" style={{ background: 'radial-gradient(circle,rgba(46,158,68,0.12),transparent 68%)' }} />
+          <div className="pointer-events-none absolute -bottom-28 -left-20 h-[280px] w-[280px] rounded-full" style={{ background: 'radial-gradient(circle,rgba(245,150,15,0.12),transparent 68%)' }} />
+
+          <div className="relative mx-auto max-w-[560px]">
+            <div className="mx-auto mb-5 inline-flex items-center gap-2 rounded-full bg-[#E8F5EC] px-3.5 py-1.5">
+              <Gift className="h-3.5 w-3.5 text-[#2E9E44]" />
+              <span className="text-[11.5px] font-bold uppercase tracking-[1.4px] text-[#25873a]">Accès à vie pour les bêta testeurs</span>
+            </div>
+            <h2 className="mb-3.5 font-display text-[36px] font-bold leading-[1.1] tracking-[-1.2px] sm:text-[40px]">Devenez bêta testeur</h2>
+            <p className="text-[16px] leading-[1.6] text-[#5C6860]">
+              Ouvrez l&apos;app quelques minutes, explorez les nouveautés (bibliothèque, Coran, jardin de la sagesse) et revenez sur quelques jours différents. Votre aide nous permet de rendre HikmaClips encore meilleur.
+            </p>
+
+            {betaSubmitted ? (
+              <div className="mt-8 rounded-2xl border border-[#2E9E44]/30 bg-[#E8F5EC] px-6 py-5">
+                <p className="font-display text-[17px] font-bold text-[#15703A]">Merci ! C&apos;est noté 🌱</p>
+                <p className="mt-1.5 text-[14px] text-[#3D4A42]">Nous revenons vers vous très vite avec les prochaines étapes.</p>
+              </div>
+            ) : (
+              <form onSubmit={handleBetaSubmit} className="mt-8 flex flex-col gap-3 sm:flex-row">
+                <input
+                  type="text"
+                  required
+                  value={betaPseudo}
+                  onChange={(e) => setBetaPseudo(e.target.value)}
+                  placeholder="Votre pseudo"
+                  className="w-full flex-1 rounded-xl border border-[#ECE8DF] bg-[#FBFAF7] px-4 py-3.5 text-[15px] outline-none ring-[#2E9E44]/30 focus:ring-2"
+                />
+                <input
+                  type="email"
+                  required
+                  value={betaEmail}
+                  onChange={(e) => setBetaEmail(e.target.value)}
+                  placeholder="Votre email"
+                  className="w-full flex-1 rounded-xl border border-[#ECE8DF] bg-[#FBFAF7] px-4 py-3.5 text-[15px] outline-none ring-[#2E9E44]/30 focus:ring-2"
+                />
+                <button
+                  type="submit"
+                  disabled={betaSubmitting}
+                  className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl px-6 py-3.5 text-[15px] font-bold text-white shadow-[0_10px_24px_rgba(46,158,68,0.3)] transition-transform hover:-translate-y-0.5 disabled:opacity-60"
+                  style={{ background: 'linear-gradient(135deg,#2E9E44,#25873a)' }}
+                >
+                  {betaSubmitting ? 'Envoi...' : 'Je participe'}
+                </button>
+              </form>
+            )}
+            <p className="mt-4 text-[12px] text-[#9AA39B]">100% gratuit · Sans engagement · Accès à vie pour les bêta testeurs</p>
+          </div>
         </div>
       </section>
 
