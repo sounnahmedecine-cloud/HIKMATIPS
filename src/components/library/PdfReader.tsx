@@ -22,6 +22,7 @@ export default function PdfReader({ book, onClose }: PdfReaderProps) {
     const [loadError, setLoadError] = useState<string | null>(null);
     const [pageWidth, setPageWidth] = useState(360);
     const [zoom, setZoom] = useState(1);
+    const [direction, setDirection] = useState(1);
 
     const MIN_ZOOM = 1;
     const MAX_ZOOM = 2.5;
@@ -48,10 +49,20 @@ export default function PdfReader({ book, onClose }: PdfReaderProps) {
 
     const isOpen = book !== null;
 
-    const goToPrevPage = useCallback(() => setPageNumber((p) => Math.max(1, p - 1)), []);
+    const goToPrevPage = useCallback(() => {
+        setDirection(-1);
+        setPageNumber((p) => Math.max(1, p - 1));
+    }, []);
     const goToNextPage = useCallback(() => {
+        setDirection(1);
         setPageNumber((p) => (numPages ? Math.min(numPages, p + 1) : p));
     }, [numPages]);
+
+    const pageVariants = {
+        enter: (dir: number) => ({ x: dir > 0 ? 40 : -40, opacity: 0, rotateY: dir > 0 ? -14 : 14 }),
+        center: { x: 0, opacity: 1, rotateY: 0 },
+        exit: (dir: number) => ({ x: dir > 0 ? -40 : 40, opacity: 0, rotateY: dir > 0 ? 10 : -10 }),
+    };
 
     const swipeHandlers = useSwipeable({
         onSwipedLeft: () => { if (zoom === 1) goToNextPage(); },
@@ -141,13 +152,30 @@ export default function PdfReader({ book, onClose }: PdfReaderProps) {
                                         </div>
                                     }
                                 >
-                                    <Page
-                                        pageNumber={pageNumber}
-                                        width={pageWidth * zoom}
-                                        renderAnnotationLayer={false}
-                                        renderTextLayer={false}
-                                        className="shadow-lg mx-auto"
-                                    />
+                                    <div style={{ perspective: 1200 }}>
+                                        <AnimatePresence mode="wait" custom={direction} initial={false}>
+                                            <motion.div
+                                                key={pageNumber}
+                                                custom={direction}
+                                                variants={pageVariants}
+                                                initial="enter"
+                                                animate="center"
+                                                exit="exit"
+                                                transition={{ duration: 0.28, ease: 'easeOut' }}
+                                                style={{
+                                                    transformOrigin: direction > 0 ? 'left center' : 'right center',
+                                                }}
+                                            >
+                                                <Page
+                                                    pageNumber={pageNumber}
+                                                    width={pageWidth * zoom}
+                                                    renderAnnotationLayer={false}
+                                                    renderTextLayer={false}
+                                                    className="shadow-lg mx-auto"
+                                                />
+                                            </motion.div>
+                                        </AnimatePresence>
+                                    </div>
                                 </Document>
                             )}
                         </div>
