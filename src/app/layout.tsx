@@ -79,7 +79,7 @@ export default function RootLayout({
         <FirebaseClientProvider>
           <ThemeProvider
             attribute="class"
-            defaultTheme="light"
+            defaultTheme="dark"
             enableSystem
             themes={['light', 'dark', 'maroc']}
           >
