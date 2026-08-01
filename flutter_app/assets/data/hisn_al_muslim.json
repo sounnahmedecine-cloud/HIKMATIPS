@@ -1,0 +1,104 @@
+{
+    "citadelle": [
+        {
+            "id": 1,
+            "content": "La louange est à Allah qui nous a rendus à la vie après nous avoir fait mourir, et tout retourne à Lui.",
+            "source": "Al-Bukhari et Muslim",
+            "category": "reveil",
+            "phonetic": "Al-hamdu li-l-lâhi l-ladhî ahyânâ ba'da mâ amâtanâ wa ilayhi n-nushûr"
+        },
+        {
+            "id": 2,
+            "content": "Il n'y a d'autre divinité qu'Allah l'Unique sans associé, à Lui la royauté et à Lui la louange et Il est capable de toute chose. Gloire et pureté à Allah, la louange est à Allah et il n'y a de puissance ni de force qu'en Allah le Très-Haut, le Plus Grand. Ô Seigneur pardonne-moi.",
+            "source": "Al-Bukhari",
+            "category": "reveil",
+            "phonetic": "Lâ ilâha illâ l-lâhu wahdahu lâ sharîka lahu, lahu-l-mulku wa lahu lhamdu, wa huwa 'alâ kulli shay'in qadîr. Subhânallâhi, wa-l-hamdulillâhi, wa lâ ilâha illa l-lâhu, wa l-lâhu akbaru, wa lâ hawla wa lâ quwwata illa billâhi-l-'aliyyi-l-'azîm. Rabbi ghfir lî"
+        },
+        {
+            "id": 3,
+            "content": "Louange à Allah qui m'a rendu la vie, m'a préservé dans ma santé et m'a permis de Le mentionner.",
+            "source": "At-Tirmidhi",
+            "category": "reveil",
+            "phonetic": "Al hamdu li-l-lâhi l-ladhî 'âfânî fî jasadî wa radda 'alayya rûhî, wa adhina lî bi-dhikrihi"
+        },
+        {
+            "id": 4,
+            "content": "Allah ! Point de divinité à part Lui, le Vivant, Celui qui n'a besoin de rien et dont toute chose dépend « al-Qayyûm ». Ni somnolence ni sommeil ne Le saisissent. À Lui appartient tout ce qui est dans les cieux et sur la Terre.",
+            "source": "Sourate Al-Baqarah, 255",
+            "category": "protection"
+        },
+        {
+            "id": 5,
+            "content": "Dis : « Il est Allah, Unique. Allah Le Seul à être imploré pour ce que nous désirons. Il n'a jamais engendré et n'a pas été engendré non plus. Et nul n'est égal à Lui. »",
+            "source": "Sourate Al-Ikhlas",
+            "category": "protection"
+        },
+        {
+            "id": 6,
+            "content": "Dis : « Je cherche protection auprès du Seigneur de l'aube naissante, contre le mal des êtres qu'Il a créés, contre le mal de l'obscurité quand elle s'approfondit, contre le mal de celles qui soufflent sur les nœuds, et contre le mal de l'envieux quand il envie. »",
+            "source": "Sourate Al-Falaq",
+            "category": "protection"
+        },
+        {
+            "id": 7,
+            "content": "Dis : « Je cherche refuge auprès du Seigneur des hommes, le Souverain des hommes, la Divinité des hommes, contre le mal du mauvais conseiller, furtif, qui souffle le mal dans les poitrines des hommes, qu'il soit un djinn ou un être humain. »",
+            "source": "Sourate An-Nas",
+            "category": "protection"
+        },
+        {
+            "id": 8,
+            "content": "Ô Allah ! Préserve mon corps. Ô Allah ! Préserve mon ouïe. Ô Allah ! Préserve ma vue. Il n'y a aucune divinité digne d'être adorée en dehors de Toi. Ô Allah ! Je cherche refuge auprès de Toi contre la mécréance et la pauvreté. Je me mets sous Ta protection contre les tourments de la tombe.",
+            "source": "Abu Dawud",
+            "category": "matin_soir",
+            "phonetic": "Allâhumma 'âfinî fî badanî. Allâhumma 'âfinî fî sam'î. Allâhumma 'âfinî fî basarî. Lâ ilâha illâ ant. Allâhumma innî a'ûdhu bika min al-kufri wa-l-faqr. Wa a'ûdhu bika min 'adhâbi-l-qabr"
+        },
+        {
+            "id": 9,
+            "content": "Ô Allah ! Tu es mon Seigneur. Il n'y a aucune divinité digne d'être adorée en dehors de Toi. Tu m'as créé, et je suis Ton serviteur. Je me conforme à Tes engagements et à Tes promesses autant que je le peux. Je cherche refuge auprès de Toi contre le mal que j'ai commis.",
+            "source": "Al-Bukhari",
+            "category": "matin_soir",
+            "phonetic": "Allâhumma anta Rabbî, lâ ilâha illâ ant. Khalaqtanî wa ana 'abduk, wa ana 'alâ 'ahdika wa wa'dika mâ stata't. A'ûdhu bika min sharri mâ sana't"
+        },
+        {
+            "id": 10,
+            "content": "Nous voici au matin et la royauté appartient à Allah, Seigneur des mondes. Ô Allah, je Te demande le bien de ce jour : sa victoire, son secours, sa lumière, sa bénédiction et sa guidée.",
+            "source": "Abu Dawud",
+            "category": "matin",
+            "phonetic": "Asbahnâ wa asbaha-l-mulku li-llâhi Rabbi-l-'âlamîn. Allâhumma innî asaluka khayra hâdha-l-yawmi : fat-hahu, wa nasrahu, wa nûrahu, wa barakatahu, wa hudâh"
+        },
+        {
+            "id": 11,
+            "content": "Ô Allah ! Je suis Ton serviteur, fils de Ton serviteur, fils de Ta servante. Ma destinée est entre Tes mains, Ton décret s'exerce sur moi et Ta décision à mon égard est équitable. Je Te demande de faire du Coran le printemps de mon cœur, la lumière de ma poitrine, la dissipation de ma tristesse et la fin de mes soucis.",
+            "source": "Ahmad",
+            "category": "tristesse"
+        },
+        {
+            "id": 12,
+            "content": "Ô Allah, je me mets sous Ta protection contre les soucis et la tristesse, contre l'incapacité et la paresse, contre l'avarice et la lâcheté, contre le poids de la dette et la domination des hommes.",
+            "source": "Al-Bukhari",
+            "category": "tristesse",
+            "phonetic": "Allâhumma innî a'ûdhu bika mina-l-hammi wa-l-hazani, wa-l-'ajzi wa-l-kasali, wa-l-bukhli wa-l-jubni, wa dala'i d-dayni wa ghalabati r-rijâl"
+        },
+        {
+            "id": 13,
+            "content": "Au nom d'Allah, je m'en remets à Allah, il n'y a de force et de puissance que par Allah.",
+            "source": "Abu Dawud",
+            "category": "maison_sortie",
+            "phonetic": "Bismi l-lâhi, tawakkaltu 'alâ l-lâhi, wa lâ hawla wa lâ quwwata illâ bi-l-lâhi"
+        },
+        {
+            "id": 14,
+            "content": "Au nom d'Allah nous entrons et au nom d'Allah nous sortons et en Allah nous plaçons notre confiance.",
+            "source": "Abu Dawud",
+            "category": "maison_entree",
+            "phonetic": "Bismi l-lâhi walajnâ, wa bismi l-lâhi kharajnâ, wa 'alâ l-lâhi tawakkalnâ"
+        },
+        {
+            "id": 15,
+            "content": "Au nom d'Allah, avec le Nom duquel rien sur terre ni dans le ciel ne peut nuire, et Il est l'Audient, l'Omniscient.",
+            "source": "At-Tirmidhi",
+            "category": "protection",
+            "phonetic": "Bismi l-lâhi l-ladhî lâ yadurru ma 'a smihi shay'un fi-l ardi wa lâ fi s-samâ'i, wa huwa s-samî-'ul-'alîm"
+        }
+    ]
+}

@@ -62,3 +62,7 @@ build_log.txt.gradle/
 .modified
 .aidesigner/*
 !.aidesigner/.gitkeep
+
+# signed build outputs (built locally on demand, never committed)
+*.aab
+*.apk
