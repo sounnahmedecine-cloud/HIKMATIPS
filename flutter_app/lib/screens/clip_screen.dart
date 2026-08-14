@@ -1,3 +1,4 @@
+import 'dart:math' show Random;
 import 'dart:ui' as ui;
 
 import 'package:cross_file/cross_file.dart' as cross_file;
@@ -16,7 +17,7 @@ import '../theme/hikma_theme.dart';
 import '../widgets/glass_surface.dart';
 import '../widgets/server_background_sheet.dart';
 
-enum _BackgroundAction { server, phone, automatic }
+enum _BackgroundAction { server, random, phone, automatic }
 
 class ClipRequest {
   const ClipRequest({
@@ -63,6 +64,7 @@ class _ClipScreenState extends State<ClipScreen> {
   bool _sharing = false;
   Uint8List? _customBackground;
   String? _serverBackgroundUrl;
+  final Random _random = Random();
   final ImagePicker _imagePicker = ImagePicker();
   final GlobalKey _shareBoundaryKey = GlobalKey(
     debugLabel: 'hikmaclips-share-card',
@@ -244,12 +246,11 @@ class _ClipScreenState extends State<ClipScreen> {
                   const SizedBox(height: 12),
                   Expanded(
                     child: Align(
-                      alignment: Alignment.bottomCenter,
+                      alignment: Alignment.center,
                       child: SingleChildScrollView(
-                        reverse: true,
                         padding: const EdgeInsets.only(bottom: 12),
                         child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.end,
+                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Expanded(
                               child: AnimatedSwitcher(
@@ -503,6 +504,12 @@ class _ClipScreenState extends State<ClipScreen> {
                 onTap: () => Navigator.pop(context, _BackgroundAction.server),
               ),
               ListTile(
+                leading: const Icon(Icons.shuffle_rounded),
+                title: const Text('Fond aléatoire'),
+                subtitle: const Text('Une image HD tirée au hasard'),
+                onTap: () => Navigator.pop(context, _BackgroundAction.random),
+              ),
+              ListTile(
                 leading: const Icon(Icons.phone_android_rounded),
                 title: const Text('Galerie du téléphone'),
                 subtitle: const Text('Choisir une image personnelle'),
@@ -527,6 +534,8 @@ class _ClipScreenState extends State<ClipScreen> {
     switch (action) {
       case _BackgroundAction.server:
         await _pickServerBackground();
+      case _BackgroundAction.random:
+        await _pickRandomServerBackground();
       case _BackgroundAction.phone:
         await _pickPhoneBackground();
       case _BackgroundAction.automatic:
@@ -552,6 +561,30 @@ class _ClipScreenState extends State<ClipScreen> {
       _serverBackgroundUrl = background.imageUrl;
     });
     _showMessage('Le fond du serveur est appliqué au clip.');
+  }
+
+  /// Applique un fond du serveur tiré au hasard, sans ouvrir la galerie.
+  /// Évite de retomber sur celui déjà affiché.
+  Future<void> _pickRandomServerBackground() async {
+    try {
+      final backgrounds = await loadServerBackgrounds();
+      if (!mounted || backgrounds.isEmpty) return;
+
+      final candidates = backgrounds
+          .where((background) => background.imageUrl != _serverBackgroundUrl)
+          .toList();
+      final pool = candidates.isEmpty ? backgrounds : candidates;
+      final picked = pool[_random.nextInt(pool.length)];
+
+      setState(() {
+        _customBackground = null;
+        _serverBackgroundUrl = picked.imageUrl;
+      });
+      _showMessage('Fond aléatoire appliqué : ${picked.category}.');
+    } catch (_) {
+      if (!mounted) return;
+      _showMessage('La galerie du serveur est indisponible pour le moment.');
+    }
   }
 
   Future<void> _pickPhoneBackground() async {

@@ -46,7 +46,7 @@ const PHONE_GRADS = [
   'linear-gradient(165deg,#0E5C33 0%,#2E9E44 45%,#F5960F 120%)',
 ];
 
-const RECUEILS = ['Bukhari', 'Muslim', 'Tirmidhi', 'Abu Dawud', "An-Nasa'i", 'Ibn Majah'];
+const RECUEILS = ['Bukhari', 'Muslim', 'Abu Dawud', "An-Nasa'i", 'Ibn Majah', 'Malik'];
 
 const FEATURES = [
   {
@@ -90,8 +90,8 @@ const TESTIS = [
 
 const FAQS = [
   { q: "L'application est-elle vraiment gratuite ?", a: 'Oui. HikmaClips est gratuit et sans publicité intrusive. Une option Premium facultative débloque des styles et fonctionnalités avancées.' },
-  { q: 'Les sources sont-elles fiables ?', a: 'Chaque hadith provient exclusivement des recueils authentiques (Bukhari, Muslim, Tirmidhi, Abu Dawud, etc.) avec sa référence affichée.' },
-  { q: "Puis-je l'utiliser hors ligne ?", a: "Absolument. Une fois l'application Android installée, la génération et la consultation fonctionnent sans connexion." },
+  { q: 'Les sources sont-elles fiables ?', a: 'Chaque hadith provient exclusivement des recueils authentiques (Bukhari, Muslim, Abu Dawud, An-Nasa’i, Ibn Majah et le Muwatta de Malik) avec sa référence affichée.' },
+  { q: "Puis-je l'utiliser hors ligne ?", a: "Oui. L'application Android embarque 150 rappels, 25 arrière-plans et 9 livres consultables sans connexion. La recherche dans les 32 700 hadiths, la galerie de fonds HD et le Coran audio nécessitent Internet." },
   { q: 'Sur quelles plateformes puis-je publier ?', a: 'Les exports sont au format vertical 9:16, optimisés pour TikTok, Instagram Reels & Stories, et YouTube Shorts.' },
 ];
 
@@ -249,8 +249,8 @@ export default function LandingPage() {
 
           <div className="mt-[30px] flex gap-9 border-t border-[#EAE6DD] pt-[26px]">
             {[
-              ['32 400+', 'Hadiths authentiques'],
-              ['9', 'Recueils majeurs'],
+              ['32 700+', 'Hadiths authentiques'],
+              ['6', 'Recueils majeurs'],
               ['100%', 'Sources vérifiées'],
             ].map(([v, l]) => (
               <div key={l}>
@@ -496,7 +496,7 @@ export default function LandingPage() {
               </div>
             </div>
             <div className="flex flex-col gap-3">
-              {['32 400+ hadiths hors ligne', 'Export HD sans filigrane', 'Mises à jour régulières', '100 % gratuit'].map((l) => (
+              {['150 rappels et 9 livres hors ligne', 'Export HD sans filigrane', 'Mises à jour régulières', '100 % gratuit'].map((l) => (
                 <div key={l} className="flex items-center gap-2.5 text-[14.5px] font-medium text-white">
                   <Check className="h-[19px] w-[19px]" strokeWidth={2.4} /> {l}
                 </div>

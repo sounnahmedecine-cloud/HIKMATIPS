@@ -1,3 +1,5 @@
+import 'dart:math' show Random;
+
 import 'package:flutter/material.dart';
 
 import '../models/server_background.dart';
@@ -14,6 +16,20 @@ class ServerBackgroundSheet extends StatefulWidget {
 
 class _ServerBackgroundSheetState extends State<ServerBackgroundSheet> {
   String _category = 'Tout';
+  final Random _random = Random();
+
+  /// Renvoie un fond au hasard à l'écran appelant, sans quitter la galerie
+  /// par une sélection manuelle. Évite de retomber sur le fond courant.
+  Future<void> _pickRandom() async {
+    final backgrounds = await loadServerBackgrounds();
+    if (!mounted || backgrounds.isEmpty) return;
+
+    final candidates = backgrounds
+        .where((background) => background.imageUrl != widget.currentUrl)
+        .toList();
+    final pool = candidates.isEmpty ? backgrounds : candidates;
+    Navigator.pop(context, pool[_random.nextInt(pool.length)]);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,6 +71,12 @@ class _ServerBackgroundSheetState extends State<ServerBackgroundSheet> {
                       ],
                     ),
                   ),
+                  IconButton.filledTonal(
+                    tooltip: 'Fond aléatoire',
+                    onPressed: _pickRandom,
+                    icon: const Icon(Icons.shuffle_rounded),
+                  ),
+                  const SizedBox(width: 8),
                   IconButton.filledTonal(
                     tooltip: 'Fermer',
                     onPressed: () => Navigator.pop(context),
