@@ -8,6 +8,7 @@ import 'clip_screen.dart';
 import 'library_screen.dart';
 import 'search_screen.dart';
 import 'settings_screen.dart';
+import 'quran_screen.dart';
 
 class HomeShell extends StatefulWidget {
   const HomeShell({super.key});
@@ -27,7 +28,10 @@ class _HomeShellState extends State<HomeShell> {
     final pages = [
       ClipScreen(
         onOpenSearch: () => _selectTab(1),
-        onOpenSettings: () => _selectTab(3),
+        onOpenSettings: () => Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const SettingsScreen()),
+        ),
         onCreate: _showCategorySheet,
         request: _clipRequest,
         refreshToken: _refreshToken,
@@ -39,7 +43,7 @@ class _HomeShellState extends State<HomeShell> {
         onOpenCollection: _openCollection,
         refreshToken: _refreshToken,
       ),
-      const SettingsScreen(),
+      const QuranScreen(),
     ];
 
     return Scaffold(

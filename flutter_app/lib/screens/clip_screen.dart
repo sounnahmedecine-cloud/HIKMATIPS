@@ -691,7 +691,7 @@ class _TopBar extends StatelessWidget {
     return Row(
       children: [
         _TopPill(
-          icon: Icons.tune_rounded,
+          icon: Icons.settings,
           label: 'RÉGLAGES',
           onTap: onSettings,
         ),

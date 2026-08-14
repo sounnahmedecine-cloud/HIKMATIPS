@@ -259,13 +259,22 @@ class _LibraryHeader extends StatelessWidget {
             thumbColor: Colors.white,
             backgroundColor: const Color(0x2B072C1B),
             padding: const EdgeInsets.all(4),
-            children: const {
-              0: _SegmentLabel(icon: CupertinoIcons.heart, label: 'Favoris'),
+            children: {
+              0: _SegmentLabel(
+                icon: CupertinoIcons.heart,
+                label: 'Favoris',
+                selected: segment == 0,
+              ),
               1: _SegmentLabel(
                 icon: CupertinoIcons.folder,
                 label: 'Collections',
+                selected: segment == 1,
               ),
-              2: _SegmentLabel(icon: CupertinoIcons.book, label: 'Livres'),
+              2: _SegmentLabel(
+                icon: CupertinoIcons.book,
+                label: 'Livres',
+                selected: segment == 2,
+              ),
             },
             onValueChanged: (value) {
               if (value != null) onSegmentChanged(value);
@@ -522,25 +531,38 @@ class _CollectionCard extends StatelessWidget {
 }
 
 class _SegmentLabel extends StatelessWidget {
-  const _SegmentLabel({required this.icon, required this.label});
+  const _SegmentLabel({
+    required this.icon,
+    required this.label,
+    required this.selected,
+  });
 
   final IconData icon;
   final String label;
 
+  /// Le segment actif a un pouce blanc : son contenu passe en émeraude.
+  /// Les autres sont sur le dégradé sombre et doivent rester blancs.
+  final bool selected;
+
   @override
   Widget build(BuildContext context) {
+    final color = selected ? HikmaColors.emeraldDeep : Colors.white;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 9),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(icon, size: 15),
+          Icon(icon, size: 15, color: color),
           const SizedBox(width: 5),
           Flexible(
             child: Text(
               label,
               overflow: TextOverflow.ellipsis,
-              style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w800),
+              style: TextStyle(
+                fontSize: 10,
+                fontWeight: FontWeight.w800,
+                color: color,
+              ),
             ),
           ),
         ],

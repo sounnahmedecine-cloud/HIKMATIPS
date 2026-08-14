@@ -19,7 +19,7 @@ class PremiumDock extends StatelessWidget {
     (label: 'Clips', icon: Icons.auto_awesome_rounded),
     (label: 'Recherche', icon: Icons.search_rounded),
     (label: 'Biblio', icon: Icons.menu_book_rounded),
-    (label: 'Réglages', icon: Icons.tune_rounded),
+    (label: 'Coran', icon: Icons.headset_rounded),
   ];
 
   @override

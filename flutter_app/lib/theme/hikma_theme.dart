@@ -14,6 +14,10 @@ abstract final class HikmaColors {
   static const gold = Color(0xFFE8B84A);
   static const amber = Color(0xFFF28B29);
   static const rose = Color(0xFFE45C72);
+
+  /// Texte secondaire posé sur un fond émeraude profond.
+  /// `secondary` est un gris pensé pour les fonds clairs : illisible sur vert.
+  static const onEmeraldMuted = Color(0xFFC3DBCE);
 }
 
 abstract final class HikmaTheme {
@@ -21,10 +25,13 @@ abstract final class HikmaTheme {
     const scheme = ColorScheme.light(
       primary: HikmaColors.emerald,
       onPrimary: Colors.white,
+      primaryContainer: HikmaColors.emeraldDeep,
+      onPrimaryContainer: HikmaColors.ivory,
       secondary: HikmaColors.gold,
       onSecondary: HikmaColors.ink,
       surface: HikmaColors.surface,
       onSurface: HikmaColors.ink,
+      onSurfaceVariant: HikmaColors.secondary,
       outline: HikmaColors.line,
       error: HikmaColors.rose,
     );
@@ -128,6 +135,19 @@ abstract final class HikmaTheme {
         ),
         trackOutlineColor: WidgetStateProperty.all(Colors.transparent),
       ),
+      // Les SnackBars sont posées sur `emeraldDeep` : sans cette couleur
+      // explicite, le texte hérite du gris de `bodyMedium`.
+      snackBarTheme: const SnackBarThemeData(
+        backgroundColor: HikmaColors.emeraldDeep,
+        contentTextStyle: TextStyle(
+          color: HikmaColors.ivory,
+          fontSize: 14,
+          height: 1.35,
+          fontWeight: FontWeight.w600,
+        ),
+        actionTextColor: HikmaColors.gold,
+        behavior: SnackBarBehavior.floating,
+      ),
     );
   }
 
@@ -135,6 +155,8 @@ abstract final class HikmaTheme {
     const scheme = ColorScheme.dark(
       primary: Color(0xFF56D88E),
       onPrimary: Color(0xFF062517),
+      primaryContainer: Color(0xFF0E3A27),
+      onPrimaryContainer: Color(0xFFF7F5EE),
       secondary: HikmaColors.gold,
       onSecondary: Color(0xFF211A06),
       surface: Color(0xFF10251B),
