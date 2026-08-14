@@ -491,7 +491,7 @@ class _ClipScreenState extends State<ClipScreen> {
       context: context,
       showDragHandle: true,
       builder: (context) => SafeArea(
-        child: Padding(
+        child: SingleChildScrollView(
           padding: const EdgeInsets.fromLTRB(18, 0, 18, 18),
           child: Column(
             mainAxisSize: MainAxisSize.min,

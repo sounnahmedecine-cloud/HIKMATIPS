@@ -87,7 +87,16 @@ void main() {
     expect(find.text('Bibliothèque'), findsOneWidget);
     expect(find.text('50 questions-réponses sur la Aqida'), findsWidgets);
 
-    await tester.tap(find.text('Réglages'));
+    // Le quatrième onglet est désormais Coran ; les Réglages s'ouvrent
+    // depuis la pastille RÉGLAGES de l'écran Clips.
+    await tester.tap(find.text('Coran'));
+    await tester.pumpAndSettle();
+    expect(find.text('114 sourates récitées'), findsOneWidget);
+    expect(find.text('Récitateur'), findsNothing);
+
+    await tester.tap(find.text('Clips'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('RÉGLAGES'));
     await tester.pumpAndSettle();
     expect(find.text('Votre rendez-vous avec la Hikma'), findsOneWidget);
     expect(find.byType(Switch), findsWidgets);

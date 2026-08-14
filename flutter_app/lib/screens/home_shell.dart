@@ -28,9 +28,13 @@ class _HomeShellState extends State<HomeShell> {
     final pages = [
       ClipScreen(
         onOpenSearch: () => _selectTab(1),
+        // SettingsScreen renvoie un ColoredBox sans Scaffold : pousse-le
+        // dans un Scaffold, sinon il hérite de contraintes non bornées.
         onOpenSettings: () => Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => const SettingsScreen()),
+          MaterialPageRoute(
+            builder: (context) => const Scaffold(body: SettingsScreen()),
+          ),
         ),
         onCreate: _showCategorySheet,
         request: _clipRequest,

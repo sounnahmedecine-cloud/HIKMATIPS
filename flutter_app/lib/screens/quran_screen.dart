@@ -18,7 +18,7 @@ class _QuranScreenState extends State<QuranScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return ColoredBox(
+    return Material(
       color: Theme.of(context).scaffoldBackgroundColor,
       child: Column(
         children: [
