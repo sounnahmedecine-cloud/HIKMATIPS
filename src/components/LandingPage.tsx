@@ -617,7 +617,7 @@ export default function LandingPage() {
           <div className="mt-9 flex flex-wrap items-center justify-between gap-4 border-t border-[#EAE6DD] pt-[26px]">
             <p className="text-[13px] text-[#8A948C]">
               © {new Date().getFullYear()} HikmaClips · Développé par{' '}
-              <a href="http://web-linecreator.fr" target="_blank" rel="noopener noreferrer" className="font-semibold text-[#2E9E44] hover:underline">web-linecreator.fr</a> · Meknès, Maroc
+              <a href="http://web-linecreation.fr" target="_blank" rel="noopener noreferrer" className="font-semibold text-[#2E9E44] hover:underline">web-linecreation.fr</a> · Meknès, Maroc
             </p>
             <span className="text-[13px] text-[#8A948C]">v1.2.58</span>
           </div>

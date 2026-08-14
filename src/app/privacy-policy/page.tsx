@@ -57,7 +57,7 @@ export default function PrivacyPolicy() {
           </p>
           <ul>
             <li>
-              <strong>Par e-mail :</strong> Envoyez un e-mail à <a href="mailto:contact@hikmaclips.com" className="text-islamic-green hover:underline">contact@hikmaclips.com</a> avec l'objet "Demande de suppression de compte" en précisant l'adresse e-mail associée à votre compte.
+              <strong>Par e-mail :</strong> Envoyez un e-mail à <a href="mailto:weblinecreation88@gmail.com" className="text-islamic-green hover:underline">weblinecreation88@gmail.com</a> avec l'objet "Demande de suppression de compte" en précisant l'adresse e-mail associée à votre compte.
             </li>
             <li>
               <strong>Par téléphone :</strong> Contactez-nous au +212 699 24 55 42.
@@ -87,7 +87,7 @@ export default function PrivacyPolicy() {
             Si vous avez des questions ou des commentaires sur cette politique de confidentialité, veuillez nous contacter à :
           </p>
           <address className="not-italic">
-            web-linecreator.fr<br />
+            web-linecreation.fr<br />
             Meknès, Maroc<br />
             Contact : +212 699 24 55 42
           </address>

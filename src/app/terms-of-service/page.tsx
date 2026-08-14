@@ -37,7 +37,7 @@ export default function TermsOfService() {
           
           <h2>4. Propriété intellectuelle</h2>
           <p>
-            Le Service et son contenu original (à l'exception du contenu généré par les utilisateurs), ses caractéristiques et ses fonctionnalités sont et resteront la propriété exclusive de web-linecreator.fr. Le service est protégé par le droit d'auteur, la marque de commerce et d'autres lois du Maroc et des pays étrangers.
+            Le Service et son contenu original (à l'exception du contenu généré par les utilisateurs), ses caractéristiques et ses fonctionnalités sont et resteront la propriété exclusive de web-linecreation.fr. Le service est protégé par le droit d'auteur, la marque de commerce et d'autres lois du Maroc et des pays étrangers.
           </p>
 
           <h2>5. Résiliation</h2>
@@ -55,7 +55,7 @@ export default function TermsOfService() {
             Pour toute question concernant ces Conditions, veuillez contacter :
           </p>
            <address className="not-italic">
-            web-linecreator.fr<br />
+            web-linecreation.fr<br />
             Meknès, Maroc<br />
           </address>
         </div>
