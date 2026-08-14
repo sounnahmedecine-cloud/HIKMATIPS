@@ -8,6 +8,7 @@ import "./globals.css";
 
 import { ThemeProvider } from "@/components/theme-provider";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { QuranAudioProvider } from "@/components/quran/QuranAudioContext";
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
@@ -85,9 +86,11 @@ export default function RootLayout({
           >
             <ErrorBoundary>
               <ClientLayout>
-                <div className="h-full w-full p-4 safe-pb-20 safe-pt-10 md:p-8">
-                  {children}
-                </div>
+                <QuranAudioProvider>
+                  <div className="h-full w-full p-4 safe-pb-20 safe-pt-10 md:p-8">
+                    {children}
+                  </div>
+                </QuranAudioProvider>
               </ClientLayout>
             </ErrorBoundary>
             <OfflineBanner />

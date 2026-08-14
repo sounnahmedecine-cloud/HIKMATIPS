@@ -78,6 +78,9 @@ export default function PrivacyPolicy() {
           <p>
             <strong>Note :</strong> Les contenus que vous avez générés et téléchargés sur votre appareil ne sont pas stockés sur nos serveurs et ne seront donc pas affectés par la suppression de votre compte.
           </p>
+          <p>
+            La procédure complète est détaillée sur la page <a href="/delete-account" className="text-islamic-green hover:underline">Supprimer votre compte</a>.
+          </p>
 
           <h2>6. Nous contacter</h2>
           <p>

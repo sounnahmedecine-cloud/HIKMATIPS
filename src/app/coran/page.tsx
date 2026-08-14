@@ -1,28 +1,36 @@
-'use client';
-
-import { useState } from 'react';
-import dynamic from 'next/dynamic';
-import { HikmaLibraryHeader } from '@/components/HikmaLibraryHeader';
 import { HikmaAppDock } from '@/components/HikmaAppDock';
-import { SurahList } from '@/components/quran/SurahList';
-import type { Surah } from '@/lib/quran-data';
+import { QuranAudioPlayer } from '@/components/quran/QuranAudioPlayer';
 
-const QuranReader = dynamic(() => import('@/components/quran/QuranReader'), { ssr: false });
+export const metadata = {
+  title: 'Coran — HikmaClips',
+  description: 'Écoutez le Saint Coran avec les meilleurs récitateurs.',
+};
 
 export default function CoranPage() {
-  const [openSurah, setOpenSurah] = useState<Surah | null>(null);
-
   return (
-    <div className="fixed inset-0 z-10 overflow-y-auto bg-[#FBFAF7] text-[#14201A] [font-family:var(--font-hikma-ui)]">
-      <HikmaLibraryHeader active="quran" />
+    <div className="relative min-h-screen bg-[#FDFCFB] text-[#1E2922] pb-[90px]">
+      {/* Background gradients */}
+      <div className="pointer-events-none fixed inset-0 overflow-hidden">
+        <div className="absolute -top-1/4 left-1/4 h-[500px] w-[500px] rounded-full bg-gradient-to-br from-[#15703A]/5 to-[#2E9E44]/5 blur-3xl" />
+        <div className="absolute -bottom-1/4 -left-1/4 h-[500px] w-[500px] rounded-full bg-gradient-to-tr from-[#F5960F]/5 to-[#2E9E44]/5 blur-3xl" />
+      </div>
 
-      <main className="relative mx-auto -mt-4 min-h-[calc(100vh-158px)] max-w-2xl rounded-t-[30px] bg-[#FBFAF7] pb-32">
-        <SurahList onSelectSurah={setOpenSurah} />
-      </main>
+      <div className="relative z-10 mx-auto max-w-[430px] pt-8">
+        <header className="mb-6 px-6 text-center">
+          <h1 className="text-3xl font-bold tracking-tight text-[#15703A] [font-family:var(--font-display)]">
+            Coran
+          </h1>
+          <p className="mt-2 text-sm text-[#7A857D]">
+            Trouvez la paix en écoutant la parole d'Allah
+          </p>
+        </header>
 
-      <HikmaAppDock active="library" />
+        <main className="px-4">
+          <QuranAudioPlayer />
+        </main>
+      </div>
 
-      <QuranReader surah={openSurah} onClose={() => setOpenSurah(null)} />
+      <HikmaAppDock active="coran" />
     </div>
   );
 }
