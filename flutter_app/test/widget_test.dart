@@ -88,7 +88,7 @@ void main() {
     await tester.tap(find.text('Recherche'));
     await tester.pumpAndSettle();
     expect(find.text('Recherche Hadith'), findsOneWidget);
-    expect(find.text('SUGGESTIONS'), findsOneWidget);
+    expect(find.text('EXEMPLE'), findsOneWidget);
 
     await tester.enterText(find.byType(TextField), 'colère');
     await tester.tap(find.byTooltip('Rechercher'));

@@ -18,6 +18,7 @@ import '../theme/hikma_theme.dart';
 import '../widgets/coach_marks.dart';
 import '../widgets/glass_surface.dart';
 import '../widgets/server_background_sheet.dart';
+import 'sleep_screen.dart';
 
 enum _BackgroundAction { server, random, phone, automatic }
 
@@ -813,15 +814,15 @@ class _TopBar extends StatelessWidget {
         ),
         const Spacer(),
         _TopPill(
-          icon: Icons.offline_bolt_outlined,
-          label: 'HORS LIGNE',
-          onTap: () => ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('$catalogCount rappels disponibles hors ligne.'),
-              behavior: SnackBarBehavior.floating,
-              backgroundColor: HikmaColors.emeraldDeep,
-            ),
-          ),
+          icon: Icons.bedtime_outlined,
+          label: 'VEILLE',
+          onTap: () {
+            HapticsService.selection();
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const SleepScreen()),
+            );
+          },
         ),
       ],
     );

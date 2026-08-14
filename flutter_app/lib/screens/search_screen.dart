@@ -36,7 +36,9 @@ class _SearchScreenState extends State<SearchScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final suggestions = _hadiths.take(9).toList();
+    // Une seule suggestion, en exemple : la liste complète encombrait
+    // l'écran avant même la première recherche.
+    final suggestions = _hadiths.take(1).toList();
     return ColoredBox(
       color: Theme.of(context).scaffoldBackgroundColor,
       child: CustomScrollView(
@@ -51,7 +53,7 @@ class _SearchScreenState extends State<SearchScreen> {
               children: [
                 if (suggestions.isNotEmpty) ...[
                   Text(
-                    'SUGGESTIONS',
+                    'EXEMPLE',
                     style: TextStyle(
                       color: Theme.of(
                         context,
