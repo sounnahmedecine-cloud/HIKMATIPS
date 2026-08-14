@@ -2,14 +2,37 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hikmaclips/app.dart';
+import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
+import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
 
 void main() {
+  // Les slides d'accueil écrivent leur état : sans stockage en mémoire,
+  // le tap sur « Passer » lève une erreur de plateforme.
+  setUp(() {
+    SharedPreferencesAsyncPlatform.instance =
+        InMemorySharedPreferencesAsync.empty();
+  });
+
+  tearDown(() {
+    SharedPreferencesAsyncPlatform.instance = null;
+  });
+
   testWidgets('all primary screens and the real search flow work', (
     tester,
   ) async {
     await tester.pumpWidget(const HikmaClipsApp());
     await tester.pump();
     await tester.pump(const Duration(seconds: 2));
+
+    // Au premier lancement les slides d'accueil précèdent l'application.
+    expect(find.text('Diffuse la sagesse, en un clip.'), findsOneWidget);
+    await tester.tap(find.text('Passer'));
+    await tester.pumpAndSettle();
+
+    // Puis le guidage de l'écran Clips, qu'on écarte avant de continuer.
+    expect(find.text('Un nouveau rappel à chaque geste'), findsOneWidget);
+    await tester.tap(find.byKey(const ValueKey('coach-skip')));
+    await tester.pumpAndSettle();
 
     expect(find.text('GLISSEZ POUR UN NOUVEAU CLIP'), findsOneWidget);
     expect(find.text('Recherche'), findsOneWidget);

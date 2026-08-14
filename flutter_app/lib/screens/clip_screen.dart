@@ -11,9 +11,11 @@ import 'package:share_plus/share_plus.dart';
 import '../models/hikma_clip.dart';
 import '../models/hikma_feed.dart';
 import '../models/server_background.dart';
+import '../services/app_preferences_service.dart';
 import '../services/favorites_service.dart';
 import '../services/haptics_service.dart';
 import '../theme/hikma_theme.dart';
+import '../widgets/coach_marks.dart';
 import '../widgets/glass_surface.dart';
 import '../widgets/server_background_sheet.dart';
 
@@ -70,6 +72,13 @@ class _ClipScreenState extends State<ClipScreen> {
     debugLabel: 'hikmaclips-share-card',
   );
 
+  // Cibles du guidage du premier démarrage.
+  final GlobalKey _swipeHintKey = GlobalKey(debugLabel: 'coach-swipe');
+  final GlobalKey _createKey = GlobalKey(debugLabel: 'coach-create');
+  final GlobalKey _backgroundKey = GlobalKey(debugLabel: 'coach-background');
+  final GlobalKey _favoriteKey = GlobalKey(debugLabel: 'coach-favorite');
+  bool _showCoachMarks = false;
+
   @override
   void initState() {
     super.initState();
@@ -77,6 +86,21 @@ class _ClipScreenState extends State<ClipScreen> {
     _filterLabel = widget.request.label;
     _syncFavorite();
     _loadCatalog();
+    _maybeShowCoachMarks();
+  }
+
+  /// Le guidage attend la fin de la première frame : les cibles doivent
+  /// être montées pour que leur position soit mesurable.
+  void _maybeShowCoachMarks() {
+    if (AppPreferencesController.instance.coachMarksSeen) return;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) setState(() => _showCoachMarks = true);
+    });
+  }
+
+  Future<void> _finishCoachMarks() async {
+    setState(() => _showCoachMarks = false);
+    await AppPreferencesController.instance.markCoachMarksSeen();
   }
 
   @override
@@ -208,6 +232,7 @@ class _ClipScreenState extends State<ClipScreen> {
                     onSettings: widget.onOpenSettings,
                     onCreate: widget.onCreate,
                     catalogCount: _allClips.length,
+                    createKey: _createKey,
                   ),
                   const SizedBox(height: 14),
                   InkWell(
@@ -346,33 +371,39 @@ class _ClipScreenState extends State<ClipScreen> {
                             Column(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                _ActionButton(
-                                  key: const ValueKey('background-action'),
-                                  icon: Icons.photo_library_outlined,
-                                  label: 'Choisir un fond',
-                                  color:
-                                      _customBackground == null &&
-                                          _serverBackgroundUrl == null
-                                      ? Colors.white
-                                      : HikmaColors.gold,
-                                  indicatorColor:
-                                      _customBackground == null &&
-                                          _serverBackgroundUrl == null
-                                      ? HikmaColors.gold
-                                      : HikmaColors.emeraldBright,
-                                  onTap: _pickBackground,
+                                KeyedSubtree(
+                                  key: _backgroundKey,
+                                  child: _ActionButton(
+                                    key: const ValueKey('background-action'),
+                                    icon: Icons.photo_library_outlined,
+                                    label: 'Choisir un fond',
+                                    color:
+                                        _customBackground == null &&
+                                            _serverBackgroundUrl == null
+                                        ? Colors.white
+                                        : HikmaColors.gold,
+                                    indicatorColor:
+                                        _customBackground == null &&
+                                            _serverBackgroundUrl == null
+                                        ? HikmaColors.gold
+                                        : HikmaColors.emeraldBright,
+                                    onTap: _pickBackground,
+                                  ),
                                 ),
                                 const SizedBox(height: 10),
-                                _ActionButton(
-                                  key: const ValueKey('favorite-action'),
-                                  icon: _favorite
-                                      ? Icons.favorite_rounded
-                                      : Icons.favorite_border_rounded,
-                                  label: 'Favori',
-                                  color: _favorite
-                                      ? HikmaColors.rose
-                                      : Colors.white,
-                                  onTap: _toggleFavorite,
+                                KeyedSubtree(
+                                  key: _favoriteKey,
+                                  child: _ActionButton(
+                                    key: const ValueKey('favorite-action'),
+                                    icon: _favorite
+                                        ? Icons.favorite_rounded
+                                        : Icons.favorite_border_rounded,
+                                    label: 'Favori',
+                                    color: _favorite
+                                        ? HikmaColors.rose
+                                        : Colors.white,
+                                    onTap: _toggleFavorite,
+                                  ),
                                 ),
                                 const SizedBox(height: 10),
                                 _ActionButton(
@@ -392,9 +423,10 @@ class _ClipScreenState extends State<ClipScreen> {
                       ),
                     ),
                   ),
-                  const Row(
+                  Row(
+                    key: _swipeHintKey,
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
+                    children: const [
                       Icon(
                         Icons.keyboard_arrow_up_rounded,
                         color: Colors.white,
@@ -416,6 +448,43 @@ class _ClipScreenState extends State<ClipScreen> {
               ),
             ),
           ),
+          if (_showCoachMarks)
+            Positioned.fill(
+              child: CoachMarksOverlay(
+                onFinish: _finishCoachMarks,
+                steps: [
+                  CoachStep(
+                    targetKey: _swipeHintKey,
+                    title: 'Un nouveau rappel à chaque geste',
+                    message:
+                        'Glissez vers le haut pour découvrir la Hikma '
+                        'suivante. Vers le bas pour revenir en arrière.',
+                  ),
+                  CoachStep(
+                    targetKey: _createKey,
+                    title: 'Composez votre clip',
+                    message:
+                        'Choisissez un thème : hadith, Coran, Ramadan, '
+                        'invocations ou une recherche précise.',
+                    radius: 99,
+                  ),
+                  CoachStep(
+                    targetKey: _backgroundKey,
+                    title: 'Changez l’arrière-plan',
+                    message:
+                        'Piochez parmi les fonds HD du serveur, tirez-en un '
+                        'au hasard ou utilisez une photo personnelle.',
+                  ),
+                  CoachStep(
+                    targetKey: _favoriteKey,
+                    title: 'Gardez ce qui vous touche',
+                    message:
+                        'Vos favoris se retrouvent dans la Bibliothèque, '
+                        'même hors connexion.',
+                  ),
+                ],
+              ),
+            ),
         ],
       ),
     );
@@ -713,23 +782,22 @@ class _TopBar extends StatelessWidget {
     required this.onSettings,
     required this.onCreate,
     required this.catalogCount,
+    this.createKey,
   });
 
   final VoidCallback onSettings;
   final VoidCallback onCreate;
   final int catalogCount;
+  final Key? createKey;
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
-        _TopPill(
-          icon: Icons.settings,
-          label: 'RÉGLAGES',
-          onTap: onSettings,
-        ),
+        _TopPill(icon: Icons.settings, label: 'RÉGLAGES', onTap: onSettings),
         const Spacer(),
         InkWell(
+          key: createKey,
           onTap: onCreate,
           customBorder: const CircleBorder(),
           child: const GlassSurface(

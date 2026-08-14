@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'screens/home_shell.dart';
+import 'screens/onboarding_screen.dart';
 import 'services/app_preferences_service.dart';
 import 'theme/hikma_theme.dart';
 
@@ -18,7 +19,12 @@ class HikmaClipsApp extends StatelessWidget {
           theme: HikmaTheme.light,
           darkTheme: HikmaTheme.dark,
           themeMode: AppPreferencesController.instance.themeMode,
-          home: const HomeShell(),
+          home: AppPreferencesController.instance.onboardingSeen
+              ? const HomeShell()
+              : OnboardingScreen(
+                  onComplete:
+                      AppPreferencesController.instance.markOnboardingSeen,
+                ),
           builder: (context, child) {
             final width = MediaQuery.sizeOf(context).width;
             if (width < 700) return child ?? const SizedBox.shrink();
