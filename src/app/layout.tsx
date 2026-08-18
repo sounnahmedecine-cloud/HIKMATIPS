@@ -17,10 +17,13 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://studio--studio-5790524114-6339d.us-central1.hosted.app"),
+  metadataBase: new URL("https://hikmaclips.site"),
   title: "HikmaClips — Sagesse Islamique Quotidienne",
   description: "Découvrez des hadiths, versets coraniques et invocations authentiques générés par intelligence artificielle. Partagez la sagesse islamique avec de belles images.",
   keywords: ["hadith", "islam", "coran", "sagesse", "hikma", "invocation", "dua", "rappel spirituel"],
+  alternates: {
+    canonical: "/",
+  },
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
@@ -74,6 +77,34 @@ export default function RootLayout({
         <link
           href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@400;700;900&family=Amiri:wght@400;700&family=Noto+Naskh+Arabic:400;700&family=Roboto:wght@400;700&display=swap"
           rel="stylesheet"
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "WebApplication",
+              name: "HikmaClips",
+              alternateName: "Hikma Clips",
+              url: "https://hikmaclips.site",
+              description:
+                "Hadiths, versets coraniques et invocations authentiques générés par intelligence artificielle, prêts à partager en images sur TikTok, Instagram et YouTube.",
+              applicationCategory: "LifestyleApplication",
+              operatingSystem: "Android, Web",
+              offers: {
+                "@type": "Offer",
+                price: "0",
+                priceCurrency: "EUR",
+              },
+              publisher: {
+                "@type": "Organization",
+                name: "HikmaClips",
+                url: "https://hikmaclips.site",
+                logo: "https://hikmaclips.site/logo-hikmaclips.png",
+              },
+              inLanguage: "fr",
+            }),
+          }}
         />
       </head>
       <body className={`${spaceGrotesk.variable} font-body antialiased min-h-screen`}>
