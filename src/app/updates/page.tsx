@@ -1,10 +1,15 @@
-'use client';
-
+import type { Metadata } from 'next';
 import { UpdatesSection } from '@/components/UpdatesSection';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
+
+export const metadata: Metadata = {
+    title: 'Nouveautés — HikmaClips',
+    description: "Découvrez les dernières nouveautés et mises à jour de HikmaClips : bibliothèque virtuelle, jardin de la sagesse, et plus encore.",
+    alternates: { canonical: '/updates' },
+};
 
 export default function UpdatesPage() {
     return (
