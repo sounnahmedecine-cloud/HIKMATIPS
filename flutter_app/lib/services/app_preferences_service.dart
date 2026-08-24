@@ -60,10 +60,11 @@ class AppPreferencesController extends ChangeNotifier {
     await _store.setBool(_onboardingKey, true);
   }
 
+  /// Ne notifie pas : le guidage vit dans l'état local de l'écran, et un
+  /// rebuild global le remonterait aussitôt.
   Future<void> markCoachMarksSeen() async {
     if (_coachMarksSeen) return;
     _coachMarksSeen = true;
-    notifyListeners();
     await _store.setBool(_coachMarksKey, true);
   }
 

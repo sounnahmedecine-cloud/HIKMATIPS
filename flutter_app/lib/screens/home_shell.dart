@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
 
 import '../models/hikma_clip.dart';
-import '../theme/hikma_theme.dart';
-import '../widgets/category_sheet.dart';
 import '../widgets/premium_dock.dart';
 import 'clip_screen.dart';
 import 'library_screen.dart';
 import 'search_screen.dart';
 import 'settings_screen.dart';
-import 'quran_screen.dart';
 
 class HomeShell extends StatefulWidget {
   const HomeShell({super.key});
@@ -36,7 +33,6 @@ class _HomeShellState extends State<HomeShell> {
             builder: (context) => const Scaffold(body: SettingsScreen()),
           ),
         ),
-        onCreate: _showCategorySheet,
         request: _clipRequest,
         refreshToken: _refreshToken,
       ),
@@ -47,7 +43,6 @@ class _HomeShellState extends State<HomeShell> {
         onOpenCollection: _openCollection,
         refreshToken: _refreshToken,
       ),
-      const QuranScreen(),
     ];
 
     return Scaffold(
@@ -59,11 +54,7 @@ class _HomeShellState extends State<HomeShell> {
           ),
           Align(
             alignment: Alignment.bottomCenter,
-            child: PremiumDock(
-              index: _index,
-              onChanged: _selectTab,
-              onGenerate: _showCategorySheet,
-            ),
+            child: PremiumDock(index: _index, onChanged: _selectTab),
           ),
         ],
       ),
@@ -113,52 +104,5 @@ class _HomeShellState extends State<HomeShell> {
       _index = 0;
       _refreshToken += 1;
     });
-  }
-
-  Future<void> _showCategorySheet() async {
-    String? selected;
-    await showModalBottomSheet<void>(
-      context: context,
-      isScrollControlled: true,
-      useSafeArea: true,
-      backgroundColor: Theme.of(context).colorScheme.surface,
-      barrierColor: HikmaColors.ink.withValues(alpha: .42),
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
-      ),
-      builder: (context) =>
-          CategorySheet(onSelected: (category) => selected = category),
-    );
-    if (!mounted || selected == null) return;
-
-    switch (selected!) {
-      case 'Recherche':
-        _selectTab(1);
-      case 'Thématique':
-        await _showThemeSheet();
-      case 'Hadith':
-        _requestFeed(kind: 'hadith', label: 'Hadiths');
-      case 'Coran':
-        _requestFeed(kind: 'coran', label: 'Versets du Coran');
-      case 'Ramadan':
-        _requestFeed(kind: 'ramadan', label: 'Ramadan');
-      case 'Citadelle':
-        _requestFeed(kind: 'invocation', label: 'Invocations');
-    }
-  }
-
-  Future<void> _showThemeSheet() async {
-    final tag = await showModalBottomSheet<String>(
-      context: context,
-      isScrollControlled: true,
-      useSafeArea: true,
-      backgroundColor: Theme.of(context).colorScheme.surface,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
-      ),
-      builder: (context) => const ThemeSheet(),
-    );
-    if (!mounted || tag == null) return;
-    _requestFeed(tag: tag, label: tag);
   }
 }

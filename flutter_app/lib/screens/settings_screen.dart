@@ -561,7 +561,7 @@ class _LocalFirstCard extends StatelessWidget {
                 ),
                 SizedBox(height: 4),
                 Text(
-                  'Rappels, recherche et livres accessibles sans compte.',
+                  'Rappels, recherche et Coran accessibles sans compte.',
                   style: TextStyle(
                     color: Color(0xCFFFFFFF),
                     fontSize: 11,

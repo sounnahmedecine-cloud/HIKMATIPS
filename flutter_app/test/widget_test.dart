@@ -108,14 +108,14 @@ void main() {
     await tester.tap(find.text('Biblio'));
     await tester.pumpAndSettle();
     expect(find.text('Bibliothèque'), findsOneWidget);
-    expect(find.text('50 questions-réponses sur la Aqida'), findsWidgets);
+    // Deux segments seulement depuis le retrait des livres PDF.
+    expect(find.text('Favoris'), findsOneWidget);
+    expect(find.text('Collections'), findsOneWidget);
+    expect(find.text('Livres'), findsNothing);
 
-    // Le quatrième onglet est désormais Coran ; les Réglages s'ouvrent
-    // depuis la pastille RÉGLAGES de l'écran Clips.
-    await tester.tap(find.text('Coran'));
-    await tester.pumpAndSettle();
-    expect(find.text('114 sourates récitées'), findsOneWidget);
-    expect(find.text('Récitateur'), findsNothing);
+    // Trois onglets seulement : le Coran audio a été retiré. Les Réglages
+    // s'ouvrent depuis la pastille RÉGLAGES de l'écran Clips.
+    expect(find.text('Coran'), findsNothing);
 
     await tester.tap(find.text('Clips'));
     await tester.pumpAndSettle();

@@ -25,31 +25,18 @@ class HikmaClipsApp extends StatelessWidget {
                   onComplete:
                       AppPreferencesController.instance.markOnboardingSeen,
                 ),
+          // Sur tablette et web l'application occupe toute la largeur :
+          // seule la largeur du contenu est bornée pour rester lisible,
+          // au lieu d'être enfermée dans une maquette de téléphone.
           builder: (context, child) {
             final width = MediaQuery.sizeOf(context).width;
             if (width < 700) return child ?? const SizedBox.shrink();
 
             return ColoredBox(
-              color: HikmaColors.ink,
+              color: Theme.of(context).scaffoldBackgroundColor,
               child: Center(
-                child: Container(
-                  width: 460,
-                  margin: const EdgeInsets.symmetric(vertical: 18),
-                  clipBehavior: Clip.antiAlias,
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).scaffoldBackgroundColor,
-                    borderRadius: BorderRadius.circular(38),
-                    border: Border.all(
-                      color: Colors.white.withValues(alpha: .12),
-                    ),
-                    boxShadow: const [
-                      BoxShadow(
-                        color: Color(0x73000000),
-                        blurRadius: 54,
-                        offset: Offset(0, 24),
-                      ),
-                    ],
-                  ),
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 900),
                   child: child,
                 ),
               ),

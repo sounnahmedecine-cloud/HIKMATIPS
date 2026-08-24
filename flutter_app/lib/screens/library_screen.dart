@@ -1,12 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../models/hikma_book.dart';
 import '../models/hikma_clip.dart';
 import '../services/favorites_service.dart';
 import '../services/haptics_service.dart';
 import '../theme/hikma_theme.dart';
-import 'pdf_book_screen.dart';
 
 class LibraryScreen extends StatefulWidget {
   const LibraryScreen({
@@ -27,7 +25,7 @@ class LibraryScreen extends StatefulWidget {
 }
 
 class _LibraryScreenState extends State<LibraryScreen> {
-  int _segment = 2;
+  int _segment = 0;
   Set<String> _favoriteIds = <String>{};
   List<HikmaClip> _clips = fallbackHikmaClips;
 
@@ -69,19 +67,6 @@ class _LibraryScreenState extends State<LibraryScreen> {
           SliverPadding(
             padding: const EdgeInsets.fromLTRB(20, 24, 20, 120),
             sliver: switch (_segment) {
-              2 => SliverGrid.builder(
-                itemCount: hikmaBooks.length,
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  childAspectRatio: .64,
-                  mainAxisSpacing: 18,
-                  crossAxisSpacing: 16,
-                ),
-                itemBuilder: (context, index) => _BookCard(
-                  book: hikmaBooks[index],
-                  onTap: () => _openBook(hikmaBooks[index]),
-                ),
-              ),
               1 => SliverList.builder(
                 itemCount: collections.length,
                 itemBuilder: (context, index) => Padding(
@@ -184,13 +169,6 @@ class _LibraryScreenState extends State<LibraryScreen> {
     if (!mounted) return;
     setState(() => _favoriteIds.remove(clipId));
   }
-
-  void _openBook(HikmaBook book) {
-    HapticsService.selection();
-    Navigator.of(context).push(
-      MaterialPageRoute<void>(builder: (context) => PdfBookScreen(book: book)),
-    );
-  }
 }
 
 class _LibraryHeader extends StatelessWidget {
@@ -269,11 +247,6 @@ class _LibraryHeader extends StatelessWidget {
                 icon: CupertinoIcons.folder,
                 label: 'Collections',
                 selected: segment == 1,
-              ),
-              2: _SegmentLabel(
-                icon: CupertinoIcons.book,
-                label: 'Livres',
-                selected: segment == 2,
               ),
             },
             onValueChanged: (value) {
@@ -384,69 +357,6 @@ class _FavoriteClipCard extends StatelessWidget {
             ],
           ),
         ),
-      ),
-    );
-  }
-}
-
-class _BookCard extends StatelessWidget {
-  const _BookCard({required this.book, required this.onTap});
-
-  final HikmaBook book;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = Theme.of(context).colorScheme;
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(18),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(
-            child: Hero(
-              tag: book.assetPath,
-              child: Container(
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: colors.surfaceContainerHighest,
-                  borderRadius: BorderRadius.circular(16),
-                  boxShadow: const [
-                    BoxShadow(
-                      color: Color(0x2910251B),
-                      blurRadius: 18,
-                      offset: Offset(2, 11),
-                    ),
-                  ],
-                  image: DecorationImage(
-                    image: AssetImage(book.coverAsset),
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(height: 11),
-          Text(
-            book.title,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-            style: TextStyle(
-              fontSize: 12,
-              height: 1.15,
-              fontWeight: FontWeight.w800,
-              color: colors.onSurface,
-            ),
-          ),
-          const SizedBox(height: 3),
-          Text(
-            book.subtitle,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: TextStyle(fontSize: 10, color: colors.onSurfaceVariant),
-          ),
-        ],
       ),
     );
   }

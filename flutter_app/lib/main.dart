@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:just_audio_background/just_audio_background.dart';
 
 import 'app.dart';
 import 'services/app_preferences_service.dart';
@@ -8,12 +7,6 @@ import 'services/reminder_service.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
-  await JustAudioBackground.init(
-    androidNotificationChannelId: 'com.hikmaclips.audio',
-    androidNotificationChannelName: 'Lecteur Coran',
-    androidNotificationOngoing: true,
-  );
 
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
   SystemChrome.setSystemUIOverlayStyle(

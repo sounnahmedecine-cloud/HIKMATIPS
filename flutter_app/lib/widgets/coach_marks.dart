@@ -126,7 +126,9 @@ class _CoachMarksOverlayState extends State<CoachMarksOverlay> {
           Align(
             alignment: showBelow ? Alignment.bottomCenter : Alignment.topCenter,
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(22, 22, 22, 116),
+              // Dégage le dock flottant (68 px + marge), rendu par-dessus
+              // cet overlay : sans cela il intercepte les taps de la bulle.
+              padding: const EdgeInsets.fromLTRB(22, 22, 22, 104),
               child: _CoachBubble(
                 title: step.title,
                 message: step.message,

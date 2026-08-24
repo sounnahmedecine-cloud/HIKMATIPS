@@ -17,6 +17,7 @@ import '../services/haptics_service.dart';
 import '../theme/hikma_theme.dart';
 import '../widgets/coach_marks.dart';
 import '../widgets/glass_surface.dart';
+import '../widgets/heart_burst.dart';
 import '../widgets/server_background_sheet.dart';
 import 'sleep_screen.dart';
 
@@ -42,7 +43,6 @@ class ClipScreen extends StatefulWidget {
   const ClipScreen({
     required this.onOpenSearch,
     required this.onOpenSettings,
-    required this.onCreate,
     required this.request,
     required this.refreshToken,
     super.key,
@@ -50,7 +50,6 @@ class ClipScreen extends StatefulWidget {
 
   final VoidCallback onOpenSearch;
   final VoidCallback onOpenSettings;
-  final VoidCallback onCreate;
   final ClipRequest request;
   final int refreshToken;
 
@@ -75,10 +74,10 @@ class _ClipScreenState extends State<ClipScreen> {
 
   // Cibles du guidage du premier démarrage.
   final GlobalKey _swipeHintKey = GlobalKey(debugLabel: 'coach-swipe');
-  final GlobalKey _createKey = GlobalKey(debugLabel: 'coach-create');
   final GlobalKey _backgroundKey = GlobalKey(debugLabel: 'coach-background');
   final GlobalKey _favoriteKey = GlobalKey(debugLabel: 'coach-favorite');
   bool _showCoachMarks = false;
+  int _heartBurst = 0;
 
   @override
   void initState() {
@@ -101,6 +100,8 @@ class _ClipScreenState extends State<ClipScreen> {
 
   Future<void> _finishCoachMarks() async {
     setState(() => _showCoachMarks = false);
+    // Persiste avant de notifier : notifyListeners reconstruit l'app et
+    // recrée cet écran, qui relirait sinon un drapeau encore à faux.
     await AppPreferencesController.instance.markCoachMarksSeen();
   }
 
@@ -223,6 +224,14 @@ class _ClipScreenState extends State<ClipScreen> {
               ),
             ),
           ),
+          // Double tap sur le fond du clip : ajoute aux favoris. Placé
+          // sous les boutons pour ne pas retarder leurs taps simples.
+          Positioned.fill(
+            child: GestureDetector(
+              behavior: HitTestBehavior.translucent,
+              onDoubleTap: _favoriteFromDoubleTap,
+            ),
+          ),
           SafeArea(
             bottom: false,
             child: Padding(
@@ -231,9 +240,7 @@ class _ClipScreenState extends State<ClipScreen> {
                 children: [
                   _TopBar(
                     onSettings: widget.onOpenSettings,
-                    onCreate: widget.onCreate,
                     catalogCount: _allClips.length,
-                    createKey: _createKey,
                   ),
                   const SizedBox(height: 14),
                   InkWell(
@@ -449,6 +456,15 @@ class _ClipScreenState extends State<ClipScreen> {
               ),
             ),
           ),
+          if (_heartBurst > 0)
+            Positioned.fill(
+              child: HeartBurst(
+                key: ValueKey(_heartBurst),
+                onCompleted: () {
+                  if (mounted) setState(() => _heartBurst = 0);
+                },
+              ),
+            ),
           if (_showCoachMarks)
             Positioned.fill(
               child: CoachMarksOverlay(
@@ -462,14 +478,6 @@ class _ClipScreenState extends State<ClipScreen> {
                         'suivante. Vers le bas pour revenir en arrière.',
                   ),
                   CoachStep(
-                    targetKey: _createKey,
-                    title: 'Composez votre clip',
-                    message:
-                        'Choisissez un thème : hadith, Coran, Ramadan, '
-                        'invocations ou une recherche précise.',
-                    radius: 99,
-                  ),
-                  CoachStep(
                     targetKey: _backgroundKey,
                     title: 'Changez l’arrière-plan',
                     message:
@@ -480,8 +488,8 @@ class _ClipScreenState extends State<ClipScreen> {
                     targetKey: _favoriteKey,
                     title: 'Gardez ce qui vous touche',
                     message:
-                        'Vos favoris se retrouvent dans la Bibliothèque, '
-                        'même hors connexion.',
+                        'Touchez deux fois l’écran pour ajouter un rappel à '
+                        'vos favoris. Vous les retrouvez dans la Bibliothèque.',
                   ),
                 ],
               ),
@@ -682,6 +690,23 @@ class _ClipScreenState extends State<ClipScreen> {
     }
   }
 
+  /// Double tap : ajoute aux favoris et lance le cœur. Un rappel deja
+  /// favori le reste — on ne le retire pas par megarde.
+  Future<void> _favoriteFromDoubleTap() async {
+    final clip = _currentClip;
+    setState(() => _heartBurst++);
+    HapticsService.light();
+
+    if (_favorite) return;
+    try {
+      await FavoritesService.instance.toggle(clip.id);
+      if (!mounted || clip.id != _currentClip.id) return;
+      setState(() => _favorite = true);
+    } on Object {
+      if (mounted) _showMessage('Le favori n’a pas pu être enregistré.');
+    }
+  }
+
   Future<void> _toggleFavorite() async {
     HapticsService.light();
     final clip = _currentClip;
@@ -779,39 +804,16 @@ class _ClipScreenState extends State<ClipScreen> {
 }
 
 class _TopBar extends StatelessWidget {
-  const _TopBar({
-    required this.onSettings,
-    required this.onCreate,
-    required this.catalogCount,
-    this.createKey,
-  });
+  const _TopBar({required this.onSettings, required this.catalogCount});
 
   final VoidCallback onSettings;
-  final VoidCallback onCreate;
   final int catalogCount;
-  final Key? createKey;
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
         _TopPill(icon: Icons.settings, label: 'RÉGLAGES', onTap: onSettings),
-        const Spacer(),
-        InkWell(
-          key: createKey,
-          onTap: onCreate,
-          customBorder: const CircleBorder(),
-          child: const GlassSurface(
-            borderRadius: 99,
-            padding: EdgeInsets.all(12),
-            opacity: .14,
-            child: Icon(
-              Icons.auto_awesome_rounded,
-              size: 20,
-              color: HikmaColors.gold,
-            ),
-          ),
-        ),
         const Spacer(),
         _TopPill(
           icon: Icons.bedtime_outlined,

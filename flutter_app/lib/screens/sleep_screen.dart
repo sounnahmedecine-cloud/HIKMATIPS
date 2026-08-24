@@ -3,17 +3,16 @@ import 'dart:math' show Random;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:just_audio/just_audio.dart';
 
-import '../data/surah_names.dart';
 import '../models/hikma_clip.dart';
+import '../models/server_background.dart';
+import '../services/ambience_service.dart';
 import '../services/haptics_service.dart';
-import '../services/quran_audio_service.dart';
 import '../theme/hikma_theme.dart';
 
 /// Écran de veille : l'heure en grand sur un fond qui change tout seul,
-/// avec la récitation du Coran. Pensé pour poser le téléphone à côté de
-/// soi, l'écran restant allumé.
+/// avec une ambiance sonore apaisante. Pensé pour poser le téléphone à
+/// côté de soi, l'écran restant allumé.
 class SleepScreen extends StatefulWidget {
   const SleepScreen({super.key});
 
@@ -24,7 +23,6 @@ class SleepScreen extends StatefulWidget {
 class _SleepScreenState extends State<SleepScreen> {
   static const _screenChannel = MethodChannel('com.hikmatips.app/screen');
 
-  final QuranAudioService _audio = QuranAudioService();
   final Random _random = Random();
 
   late int _backgroundIndex;
@@ -32,10 +30,15 @@ class _SleepScreenState extends State<SleepScreen> {
   late Timer _backgroundTimer;
   DateTime _now = DateTime.now();
 
+  /// Fonds HD du serveur, bien plus beaux que les images embarquées.
+  /// Vides tant qu'ils ne sont pas chargés : on affiche alors le local.
+  List<String> _serverUrls = const [];
+
   @override
   void initState() {
     super.initState();
     _backgroundIndex = _random.nextInt(hikmaBackgrounds.length);
+    _loadServerBackgrounds();
 
     // L'horloge se cale sur la seconde suivante pour éviter de sauter
     // une minute d'affichage.
@@ -47,10 +50,11 @@ class _SleepScreenState extends State<SleepScreen> {
     _backgroundTimer = Timer.periodic(const Duration(seconds: 45), (_) {
       if (!mounted) return;
       setState(() {
-        var next = _random.nextInt(hikmaBackgrounds.length);
-        if (hikmaBackgrounds.length > 1) {
+        final count = _backgroundCount;
+        var next = _random.nextInt(count);
+        if (count > 1) {
           while (next == _backgroundIndex) {
-            next = _random.nextInt(hikmaBackgrounds.length);
+            next = _random.nextInt(count);
           }
         }
         _backgroundIndex = next;
@@ -63,6 +67,24 @@ class _SleepScreenState extends State<SleepScreen> {
     );
     unawaited(_setKeepAwake(true));
   }
+
+  /// Sans réseau la veille garde les fonds embarqués : elle doit rester
+  /// utilisable hors ligne.
+  Future<void> _loadServerBackgrounds() async {
+    try {
+      final backgrounds = await loadServerBackgrounds();
+      if (!mounted || backgrounds.isEmpty) return;
+      setState(() {
+        _serverUrls = backgrounds.map((b) => b.imageUrl).toList();
+        _backgroundIndex = _random.nextInt(_serverUrls.length);
+      });
+    } on Object {
+      // On conserve les images locales.
+    }
+  }
+
+  int get _backgroundCount =>
+      _serverUrls.isEmpty ? hikmaBackgrounds.length : _serverUrls.length;
 
   /// Le canal natif est absent sur les autres plateformes : l'échec est
   /// sans conséquence, l'écran s'éteindra simplement comme d'habitude.
@@ -82,6 +104,8 @@ class _SleepScreenState extends State<SleepScreen> {
   void dispose() {
     _clock.cancel();
     _backgroundTimer.cancel();
+    // L'ambiance appartient à la veille : elle s'arrête en sortant.
+    unawaited(AmbienceService.instance.stop());
     unawaited(_setKeepAwake(false));
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
     super.dispose();
@@ -100,12 +124,28 @@ class _SleepScreenState extends State<SleepScreen> {
         children: [
           AnimatedSwitcher(
             duration: const Duration(milliseconds: 900),
-            child: Image.asset(
-              hikmaBackgrounds[_backgroundIndex],
-              key: ValueKey(_backgroundIndex),
-              fit: BoxFit.cover,
-              gaplessPlayback: true,
-            ),
+            child: _serverUrls.isEmpty
+                ? Image.asset(
+                    hikmaBackgrounds[_backgroundIndex %
+                        hikmaBackgrounds.length],
+                    key: ValueKey('local-$_backgroundIndex'),
+                    fit: BoxFit.cover,
+                    gaplessPlayback: true,
+                  )
+                : Image.network(
+                    _serverUrls[_backgroundIndex % _serverUrls.length],
+                    key: ValueKey('server-$_backgroundIndex'),
+                    fit: BoxFit.cover,
+                    filterQuality: FilterQuality.high,
+                    gaplessPlayback: true,
+                    // Une image HD qui ne charge pas ne doit pas laisser
+                    // un écran noir : on retombe sur le fond local.
+                    errorBuilder: (_, _, _) => Image.asset(
+                      hikmaBackgrounds[_backgroundIndex %
+                          hikmaBackgrounds.length],
+                      fit: BoxFit.cover,
+                    ),
+                  ),
           ),
           // Assombrit le fond : de nuit, une photo claire éblouit et
           // l'heure devient illisible.
@@ -168,7 +208,8 @@ class _SleepScreenState extends State<SleepScreen> {
                   ),
                 ),
                 const Spacer(),
-                _SleepPlayer(audio: _audio),
+                const _AmbienceBar(),
+                const SizedBox(height: 14),
                 const SizedBox(height: 28),
               ],
             ),
@@ -206,119 +247,66 @@ class _SleepScreenState extends State<SleepScreen> {
   }
 }
 
-/// Commandes de récitation réduites à l'essentiel : sourate en cours,
-/// précédent, lecture/pause, suivant.
-class _SleepPlayer extends StatelessWidget {
-  const _SleepPlayer({required this.audio});
-
-  final QuranAudioService audio;
+/// Ambiances apaisantes, jouables seules ou sous la récitation.
+class _AmbienceBar extends StatelessWidget {
+  const _AmbienceBar();
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 24),
-      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
-      decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: .12),
-        borderRadius: BorderRadius.circular(28),
-        border: Border.all(color: Colors.white.withValues(alpha: .16)),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          StreamBuilder<int>(
-            stream: audio.currentSurahStream,
-            initialData: audio.currentSurah,
-            builder: (context, snapshot) {
-              final surah = snapshot.data ?? audio.currentSurah;
-              final entry = surahData[surah - 1];
-              return Column(
-                children: [
-                  Text(
-                    entry['arabic']!,
-                    textDirection: TextDirection.rtl,
-                    style: const TextStyle(
-                      color: HikmaColors.gold,
-                      fontSize: 19,
-                      fontWeight: FontWeight.w700,
+    return ValueListenableBuilder<String?>(
+      valueListenable: AmbienceService.instance.current,
+      builder: (context, activeId, _) {
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: ambiences.map((ambience) {
+            final active = ambience.id == activeId;
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 5),
+              child: Material(
+                color: active
+                    ? HikmaColors.gold.withValues(alpha: .9)
+                    : Colors.white.withValues(alpha: .12),
+                borderRadius: BorderRadius.circular(99),
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(99),
+                  onTap: () {
+                    HapticsService.selection();
+                    AmbienceService.instance.toggle(ambience);
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 15,
+                      vertical: 9,
                     ),
-                  ),
-                  const SizedBox(height: 2),
-                  Text(
-                    'Sourate $surah · ${entry['french']}',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.white.withValues(alpha: .82),
-                      fontSize: 12.5,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ],
-              );
-            },
-          ),
-          const SizedBox(height: 8),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              IconButton(
-                iconSize: 30,
-                color: Colors.white,
-                onPressed: audio.previousSurah,
-                icon: const Icon(Icons.skip_previous_rounded),
-              ),
-              StreamBuilder<PlayerState>(
-                stream: audio.player.playerStateStream,
-                builder: (context, snapshot) {
-                  final state = snapshot.data;
-                  final playing = state?.playing ?? false;
-                  final loading =
-                      state?.processingState == ProcessingState.loading ||
-                      state?.processingState == ProcessingState.buffering;
-
-                  if (loading) {
-                    return const SizedBox(
-                      width: 52,
-                      height: 52,
-                      child: Padding(
-                        padding: EdgeInsets.all(10),
-                        child: CircularProgressIndicator(
-                          color: HikmaColors.gold,
-                          strokeWidth: 2.4,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          ambience.icon,
+                          size: 16,
+                          color: active ? HikmaColors.ink : Colors.white,
                         ),
-                      ),
-                    );
-                  }
-
-                  return IconButton(
-                    iconSize: 52,
-                    color: HikmaColors.gold,
-                    onPressed: () {
-                      HapticsService.selection();
-                      if (playing) {
-                        audio.player.pause();
-                      } else {
-                        audio.playSurah(audio.currentSurah);
-                      }
-                    },
-                    icon: Icon(
-                      playing
-                          ? Icons.pause_circle_filled_rounded
-                          : Icons.play_circle_fill_rounded,
+                        const SizedBox(width: 6),
+                        Text(
+                          ambience.label,
+                          style: TextStyle(
+                            color: active ? HikmaColors.ink : Colors.white,
+                            fontSize: 12.5,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ],
                     ),
-                  );
-                },
+                  ),
+                ),
               ),
-              IconButton(
-                iconSize: 30,
-                color: Colors.white,
-                onPressed: audio.nextSurah,
-                icon: const Icon(Icons.skip_next_rounded),
-              ),
-            ],
-          ),
-        ],
-      ),
+            );
+          }).toList(),
+        );
+      },
     );
   }
 }
+
+/// Commandes de récitation réduites à l'essentiel : sourate en cours,
+/// précédent, lecture/pause, suivant.

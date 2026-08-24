@@ -1,11 +1,11 @@
 package com.hikmatips.app
 
 import android.view.WindowManager
-import com.ryanheise.audioservice.AudioServiceActivity
+import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
 
-class MainActivity : AudioServiceActivity() {
+class MainActivity : FlutterActivity() {
     private val channelName = "com.hikmatips.app/screen"
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {

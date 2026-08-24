@@ -1,25 +1,17 @@
 import 'package:flutter/material.dart';
 
 import '../services/haptics_service.dart';
-import '../theme/hikma_theme.dart';
 
 class PremiumDock extends StatelessWidget {
-  const PremiumDock({
-    required this.index,
-    required this.onChanged,
-    required this.onGenerate,
-    super.key,
-  });
+  const PremiumDock({required this.index, required this.onChanged, super.key});
 
   final int index;
   final ValueChanged<int> onChanged;
-  final VoidCallback onGenerate;
 
   static const _items = <({String label, IconData icon})>[
     (label: 'Clips', icon: Icons.auto_awesome_rounded),
     (label: 'Recherche', icon: Icons.search_rounded),
     (label: 'Biblio', icon: Icons.menu_book_rounded),
-    (label: 'Coran', icon: Icons.headset_rounded),
   ];
 
   @override
@@ -27,94 +19,31 @@ class PremiumDock extends StatelessWidget {
     return SafeArea(
       minimum: const EdgeInsets.fromLTRB(16, 0, 16, 12),
       top: false,
-      child: SizedBox(
-        height: 82,
-        child: Stack(
-          alignment: Alignment.bottomCenter,
-          clipBehavior: Clip.none,
-          children: [
-            Container(
-              height: 68,
-              decoration: BoxDecoration(
-                color: Theme.of(
-                  context,
-                ).colorScheme.surface.withValues(alpha: .96),
-                borderRadius: BorderRadius.circular(28),
-                border: Border.all(
-                  color: Theme.of(context).colorScheme.outlineVariant,
-                ),
-                boxShadow: const [
-                  BoxShadow(
-                    color: Color(0x2410251B),
-                    blurRadius: 30,
-                    offset: Offset(0, 12),
-                  ),
-                ],
-              ),
-              child: Row(
-                children: [
-                  ...List.generate(
-                    2,
-                    (i) => _DockItem(
-                      item: _items[i],
-                      active: index == i,
-                      onTap: () => _select(i),
-                    ),
-                  ),
-                  const SizedBox(width: 68),
-                  ...List.generate(2, (i) {
-                    final actual = i + 2;
-                    return _DockItem(
-                      item: _items[actual],
-                      active: index == actual,
-                      onTap: () => _select(actual),
-                    );
-                  }),
-                ],
-              ),
-            ),
-            Positioned(
-              top: 0,
-              child: Semantics(
-                button: true,
-                label: 'Créer un nouveau rappel',
-                child: GestureDetector(
-                  onTap: () {
-                    HapticsService.medium();
-                    onGenerate();
-                  },
-                  child: Container(
-                    width: 64,
-                    height: 64,
-                    decoration: BoxDecoration(
-                      gradient: const LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: [
-                          HikmaColors.emeraldDeep,
-                          HikmaColors.emeraldBright,
-                        ],
-                      ),
-                      borderRadius: BorderRadius.circular(21),
-                      border: Border.all(color: Colors.white, width: 3),
-                      boxShadow: const [
-                        BoxShadow(
-                          color: Color(0x6640C878),
-                          blurRadius: 24,
-                          offset: Offset(0, 10),
-                        ),
-                      ],
-                    ),
-                    child: const Icon(
-                      Icons.bolt_rounded,
-                      color: Colors.white,
-                      size: 32,
-                    ),
-                  ),
-                ),
-              ),
+      child: Container(
+        height: 68,
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.surface.withValues(alpha: .96),
+          borderRadius: BorderRadius.circular(28),
+          border: Border.all(
+            color: Theme.of(context).colorScheme.outlineVariant,
+          ),
+          boxShadow: const [
+            BoxShadow(
+              color: Color(0x2410251B),
+              blurRadius: 30,
+              offset: Offset(0, 12),
             ),
           ],
+        ),
+        child: Row(
+          children: List.generate(
+            _items.length,
+            (i) => _DockItem(
+              item: _items[i],
+              active: index == i,
+              onTap: () => _select(i),
+            ),
+          ),
         ),
       ),
     );
