@@ -11,17 +11,20 @@ import 'package:share_plus/share_plus.dart';
 import '../models/hikma_clip.dart';
 import '../models/hikma_feed.dart';
 import '../models/server_background.dart';
+import '../models/solid_background.dart';
 import '../services/app_preferences_service.dart';
 import '../services/favorites_service.dart';
 import '../services/haptics_service.dart';
+import '../services/premium_gate.dart';
 import '../theme/hikma_theme.dart';
-import '../widgets/coach_marks.dart';
+import '../widgets/swipe_hint_overlay.dart';
 import '../widgets/glass_surface.dart';
 import '../widgets/heart_burst.dart';
 import '../widgets/server_background_sheet.dart';
+import 'premium_screen.dart';
 import 'sleep_screen.dart';
 
-enum _BackgroundAction { server, random, phone, automatic }
+enum _BackgroundAction { solid, server, random, phone, automatic }
 
 class ClipRequest {
   const ClipRequest({
@@ -42,6 +45,7 @@ class ClipRequest {
 class ClipScreen extends StatefulWidget {
   const ClipScreen({
     required this.onOpenSearch,
+    required this.onOpenLibrary,
     required this.onOpenSettings,
     required this.request,
     required this.refreshToken,
@@ -49,6 +53,7 @@ class ClipScreen extends StatefulWidget {
   });
 
   final VoidCallback onOpenSearch;
+  final VoidCallback onOpenLibrary;
   final VoidCallback onOpenSettings;
   final ClipRequest request;
   final int refreshToken;
@@ -66,6 +71,7 @@ class _ClipScreenState extends State<ClipScreen> {
   bool _sharing = false;
   Uint8List? _customBackground;
   String? _serverBackgroundUrl;
+  SolidBackground? _solidBackground;
   final Random _random = Random();
   final ImagePicker _imagePicker = ImagePicker();
   final GlobalKey _shareBoundaryKey = GlobalKey(
@@ -145,6 +151,7 @@ class _ClipScreenState extends State<ClipScreen> {
                         backgroundAsset: backgroundAsset,
                         customBackground: _customBackground,
                         serverBackgroundUrl: _serverBackgroundUrl,
+                        solidBackground: _solidBackground,
                       ),
                     ),
                   ),
@@ -161,11 +168,18 @@ class _ClipScreenState extends State<ClipScreen> {
             ),
             child: KeyedSubtree(
               key: ValueKey<Object>(
-                _serverBackgroundUrl ??
+                _solidBackground?.id ??
+                    _serverBackgroundUrl ??
                     _customBackground ??
                     '${clip.id}:$backgroundAsset',
               ),
-              child: _serverBackgroundUrl != null
+              child: _solidBackground != null
+                  ? DecoratedBox(
+                      decoration: BoxDecoration(
+                        gradient: _solidBackground!.gradient,
+                      ),
+                    )
+                  : _serverBackgroundUrl != null
                   ? Image.network(
                       _serverBackgroundUrl!,
                       fit: BoxFit.cover,
@@ -240,6 +254,9 @@ class _ClipScreenState extends State<ClipScreen> {
                 children: [
                   _TopBar(
                     onSettings: widget.onOpenSettings,
+                    onLibrary: widget.onOpenLibrary,
+                    onPickBackground: _pickBackground,
+                    backgroundKey: _backgroundKey,
                     catalogCount: _allClips.length,
                   ),
                   const SizedBox(height: 14),
@@ -375,62 +392,41 @@ class _ClipScreenState extends State<ClipScreen> {
                                 ),
                               ),
                             ),
-                            const SizedBox(width: 12),
-                            Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                KeyedSubtree(
-                                  key: _backgroundKey,
-                                  child: _ActionButton(
-                                    key: const ValueKey('background-action'),
-                                    icon: Icons.photo_library_outlined,
-                                    label: 'Choisir un fond',
-                                    color:
-                                        _customBackground == null &&
-                                            _serverBackgroundUrl == null
-                                        ? Colors.white
-                                        : HikmaColors.gold,
-                                    indicatorColor:
-                                        _customBackground == null &&
-                                            _serverBackgroundUrl == null
-                                        ? HikmaColors.gold
-                                        : HikmaColors.emeraldBright,
-                                    onTap: _pickBackground,
-                                  ),
-                                ),
-                                const SizedBox(height: 10),
-                                KeyedSubtree(
-                                  key: _favoriteKey,
-                                  child: _ActionButton(
-                                    key: const ValueKey('favorite-action'),
-                                    icon: _favorite
-                                        ? Icons.favorite_rounded
-                                        : Icons.favorite_border_rounded,
-                                    label: 'Favori',
-                                    color: _favorite
-                                        ? HikmaColors.rose
-                                        : Colors.white,
-                                    onTap: _toggleFavorite,
-                                  ),
-                                ),
-                                const SizedBox(height: 10),
-                                _ActionButton(
-                                  icon: _sharing
-                                      ? Icons.hourglass_top_rounded
-                                      : Icons.ios_share_rounded,
-                                  label: _sharing
-                                      ? 'Préparation du partage'
-                                      : 'Partager l’image',
-                                  filled: true,
-                                  onTap: _sharing ? () {} : _shareReminder,
-                                ),
-                              ],
-                            ),
                           ],
                         ),
                       ),
                     ),
                   ),
+                  // Actions centrees sous la citation : partage et favori
+                  // seulement, le reste vit dans l'en-tete.
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      _RoundAction(
+                        icon: _sharing
+                            ? Icons.hourglass_top_rounded
+                            : Icons.ios_share_rounded,
+                        tooltip: _sharing
+                            ? 'Préparation du partage'
+                            : 'Partager l’image',
+                        onTap: _sharing ? () {} : _shareReminder,
+                      ),
+                      const SizedBox(width: 18),
+                      KeyedSubtree(
+                        key: _favoriteKey,
+                        child: _RoundAction(
+                          key: const ValueKey('favorite-action'),
+                          icon: _favorite
+                              ? Icons.favorite_rounded
+                              : Icons.favorite_border_rounded,
+                          tooltip: 'Favori',
+                          color: _favorite ? HikmaColors.rose : null,
+                          onTap: _toggleFavorite,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 14),
                   Row(
                     key: _swipeHintKey,
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -465,34 +461,56 @@ class _ClipScreenState extends State<ClipScreen> {
                 },
               ),
             ),
+          // Premium discret en bas a droite, au-dessus du dock flottant.
+          Positioned(
+            right: 16,
+            bottom: 104,
+            child: SafeArea(
+              child: Material(
+                color: Colors.white.withValues(alpha: .94),
+                borderRadius: BorderRadius.circular(99),
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(99),
+                  onTap: () {
+                    HapticsService.selection();
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => PremiumScreen(
+                          onClose: () => Navigator.pop(context),
+                        ),
+                      ),
+                    );
+                  },
+                  child: const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 14, vertical: 9),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.workspace_premium_rounded,
+                          size: 16,
+                          color: HikmaColors.amber,
+                        ),
+                        SizedBox(width: 6),
+                        Text(
+                          'Premium',
+                          style: TextStyle(
+                            color: HikmaColors.ink,
+                            fontSize: 13,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
           if (_showCoachMarks)
             Positioned.fill(
-              child: CoachMarksOverlay(
-                onFinish: _finishCoachMarks,
-                steps: [
-                  CoachStep(
-                    targetKey: _swipeHintKey,
-                    title: 'Un nouveau rappel à chaque geste',
-                    message:
-                        'Glissez vers le haut pour découvrir la Hikma '
-                        'suivante. Vers le bas pour revenir en arrière.',
-                  ),
-                  CoachStep(
-                    targetKey: _backgroundKey,
-                    title: 'Changez l’arrière-plan',
-                    message:
-                        'Piochez parmi les fonds HD du serveur, tirez-en un '
-                        'au hasard ou utilisez une photo personnelle.',
-                  ),
-                  CoachStep(
-                    targetKey: _favoriteKey,
-                    title: 'Gardez ce qui vous touche',
-                    message:
-                        'Touchez deux fois l’écran pour ajouter un rappel à '
-                        'vos favoris. Vous les retrouvez dans la Bibliothèque.',
-                  ),
-                ],
-              ),
+              child: SwipeHintOverlay(onDismiss: _finishCoachMarks),
             ),
         ],
       ),
@@ -515,7 +533,8 @@ class _ClipScreenState extends State<ClipScreen> {
   Future<void> _loadCatalog() async {
     final clips = await loadHikmaClips();
     if (!mounted) return;
-    _allClips = clips;
+    // Sans abonnement, Ramadan et Invocations sortent du flux.
+    _allClips = PremiumGate.filter(clips);
     _applyRequest(widget.request);
   }
 
@@ -588,13 +607,22 @@ class _ClipScreenState extends State<ClipScreen> {
                 onTap: () => Navigator.pop(context, _BackgroundAction.random),
               ),
               ListTile(
+                leading: const Icon(Icons.gradient_rounded),
+                title: const Text('Couleurs unies'),
+                subtitle: const Text('8 fonds sobres, toujours gratuits'),
+                trailing: const Icon(Icons.chevron_right_rounded),
+                onTap: () => Navigator.pop(context, _BackgroundAction.solid),
+              ),
+              ListTile(
                 leading: const Icon(Icons.phone_android_rounded),
                 title: const Text('Galerie du téléphone'),
                 subtitle: const Text('Choisir une image personnelle'),
                 trailing: const Icon(Icons.chevron_right_rounded),
                 onTap: () => Navigator.pop(context, _BackgroundAction.phone),
               ),
-              if (_customBackground != null || _serverBackgroundUrl != null)
+              if (_customBackground != null ||
+                  _serverBackgroundUrl != null ||
+                  _solidBackground != null)
                 ListTile(
                   leading: const Icon(Icons.auto_awesome_rounded),
                   title: const Text('Fonds automatiques HikmaClips'),
@@ -610,6 +638,8 @@ class _ClipScreenState extends State<ClipScreen> {
     if (!mounted || action == null) return;
 
     switch (action) {
+      case _BackgroundAction.solid:
+        await _pickSolidBackground();
       case _BackgroundAction.server:
         await _pickServerBackground();
       case _BackgroundAction.random:
@@ -620,9 +650,108 @@ class _ClipScreenState extends State<ClipScreen> {
         setState(() {
           _customBackground = null;
           _serverBackgroundUrl = null;
+          _solidBackground = null;
         });
         _showMessage('Les fonds automatiques HikmaClips sont rétablis.');
     }
+  }
+
+  /// Feuille des fonds unis : gratuits, dessines en code, donc toujours
+  /// disponibles meme sans reseau ni abonnement.
+  Future<void> _pickSolidBackground() async {
+    final picked = await showModalBottomSheet<SolidBackground>(
+      context: context,
+      useSafeArea: true,
+      backgroundColor: Theme.of(context).colorScheme.surface,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
+      ),
+      builder: (context) => SafeArea(
+        top: false,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(20, 18, 20, 24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Couleurs unies',
+                style: Theme.of(context).textTheme.headlineMedium,
+              ),
+              const SizedBox(height: 3),
+              Text(
+                'Sobres et lisibles, incluses dans la version gratuite',
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+              const SizedBox(height: 18),
+              GridView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: solidBackgrounds.length,
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 4,
+                  childAspectRatio: .72,
+                  mainAxisSpacing: 12,
+                  crossAxisSpacing: 12,
+                ),
+                itemBuilder: (context, index) {
+                  final background = solidBackgrounds[index];
+                  final selected = background.id == _solidBackground?.id;
+                  return InkWell(
+                    borderRadius: BorderRadius.circular(18),
+                    onTap: () => Navigator.pop(context, background),
+                    child: Column(
+                      children: [
+                        Expanded(
+                          child: Container(
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                              gradient: background.gradient,
+                              borderRadius: BorderRadius.circular(18),
+                              border: Border.all(
+                                color: selected
+                                    ? HikmaColors.emeraldBright
+                                    : Colors.transparent,
+                                width: 2.4,
+                              ),
+                            ),
+                            child: selected
+                                ? const Icon(
+                                    Icons.check_rounded,
+                                    color: Colors.white,
+                                    size: 20,
+                                  )
+                                : null,
+                          ),
+                        ),
+                        const SizedBox(height: 6),
+                        Text(
+                          background.label,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+
+    if (!mounted || picked == null) return;
+    setState(() {
+      _customBackground = null;
+      _serverBackgroundUrl = null;
+      _solidBackground = picked;
+    });
+    _showMessage('Fond ${picked.label} appliqué.');
   }
 
   Future<void> _pickServerBackground() async {
@@ -804,9 +933,18 @@ class _ClipScreenState extends State<ClipScreen> {
 }
 
 class _TopBar extends StatelessWidget {
-  const _TopBar({required this.onSettings, required this.catalogCount});
+  const _TopBar({
+    required this.onSettings,
+    required this.onLibrary,
+    required this.onPickBackground,
+    required this.backgroundKey,
+    required this.catalogCount,
+  });
 
   final VoidCallback onSettings;
+  final VoidCallback onLibrary;
+  final VoidCallback onPickBackground;
+  final Key backgroundKey;
   final int catalogCount;
 
   @override
@@ -814,19 +952,79 @@ class _TopBar extends StatelessWidget {
     return Row(
       children: [
         _TopPill(icon: Icons.settings, label: 'RÉGLAGES', onTap: onSettings),
+        const SizedBox(width: 8),
+        _TopPill(
+          icon: Icons.bookmark_border_rounded,
+          label: 'BIBLIO',
+          onTap: onLibrary,
+        ),
         const Spacer(),
+        KeyedSubtree(
+          key: backgroundKey,
+          child: _RoundAction(
+            key: const ValueKey('background-action'),
+            icon: Icons.palette_outlined,
+            tooltip: 'Choisir un fond',
+            onTap: onPickBackground,
+          ),
+        ),
+        const SizedBox(width: 10),
         _TopPill(
           icon: Icons.bedtime_outlined,
           label: 'VEILLE',
+          locked: PremiumGate.sleepModeLocked,
           onTap: () {
             HapticsService.selection();
+            // Le mode veille est reserve : on presente l'offre plutot que
+            // d'ouvrir un ecran vide.
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => const SleepScreen()),
+              MaterialPageRoute(
+                builder: (context) => PremiumGate.sleepModeLocked
+                    ? PremiumScreen(onClose: () => Navigator.pop(context))
+                    : const SleepScreen(),
+              ),
             );
           },
         ),
       ],
+    );
+  }
+}
+
+/// Bouton rond translucide, aligne sous la citation.
+class _RoundAction extends StatelessWidget {
+  const _RoundAction({
+    required this.icon,
+    required this.tooltip,
+    required this.onTap,
+    this.color,
+    super.key,
+  });
+
+  final IconData icon;
+  final String tooltip;
+  final VoidCallback onTap;
+  final Color? color;
+
+  @override
+  Widget build(BuildContext context) {
+    return Tooltip(
+      message: tooltip,
+      child: Semantics(
+        button: true,
+        label: tooltip,
+        child: InkWell(
+          onTap: onTap,
+          customBorder: const CircleBorder(),
+          child: GlassSurface(
+            borderRadius: 99,
+            padding: const EdgeInsets.all(14),
+            opacity: .16,
+            child: Icon(icon, size: 22, color: color ?? Colors.white),
+          ),
+        ),
+      ),
     );
   }
 }
@@ -836,11 +1034,13 @@ class _TopPill extends StatelessWidget {
     required this.icon,
     required this.label,
     required this.onTap,
+    this.locked = false,
   });
 
   final IconData icon;
   final String label;
   final VoidCallback onTap;
+  final bool locked;
 
   @override
   Widget build(BuildContext context) {
@@ -865,81 +1065,11 @@ class _TopPill extends StatelessWidget {
                 letterSpacing: 1.15,
               ),
             ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _ActionButton extends StatelessWidget {
-  const _ActionButton({
-    required this.icon,
-    required this.label,
-    required this.onTap,
-    this.color = Colors.white,
-    this.filled = false,
-    this.indicatorColor,
-    super.key,
-  });
-
-  final IconData icon;
-  final String label;
-  final VoidCallback onTap;
-  final Color color;
-  final bool filled;
-  final Color? indicatorColor;
-
-  @override
-  Widget build(BuildContext context) {
-    return Semantics(
-      button: true,
-      label: label,
-      child: Tooltip(
-        message: label,
-        child: InkWell(
-          onTap: onTap,
-          customBorder: const CircleBorder(),
-          child: Stack(
-            clipBehavior: Clip.none,
-            children: [
-              Container(
-                width: 50,
-                height: 50,
-                decoration: BoxDecoration(
-                  color: filled ? Colors.white : const Color(0x3DFFFFFF),
-                  shape: BoxShape.circle,
-                  border: Border.all(color: const Color(0x66FFFFFF)),
-                  boxShadow: const [
-                    BoxShadow(
-                      color: Color(0x24000000),
-                      blurRadius: 14,
-                      offset: Offset(0, 7),
-                    ),
-                  ],
-                ),
-                child: Icon(
-                  icon,
-                  size: 23,
-                  color: filled ? HikmaColors.emerald : color,
-                ),
-              ),
-              if (indicatorColor case final indicatorColor?)
-                Positioned(
-                  top: 1,
-                  right: 1,
-                  child: Container(
-                    width: 10,
-                    height: 10,
-                    decoration: BoxDecoration(
-                      color: indicatorColor,
-                      shape: BoxShape.circle,
-                      border: Border.all(color: Colors.white, width: 1.5),
-                    ),
-                  ),
-                ),
+            if (locked) ...[
+              const SizedBox(width: 5),
+              const Icon(Icons.lock_rounded, size: 11, color: HikmaColors.gold),
             ],
-          ),
+          ],
         ),
       ),
     );
@@ -952,6 +1082,7 @@ class _ShareCard extends StatelessWidget {
     required this.backgroundAsset,
     required this.customBackground,
     required this.serverBackgroundUrl,
+    required this.solidBackground,
     super.key,
   });
 
@@ -959,6 +1090,7 @@ class _ShareCard extends StatelessWidget {
   final String backgroundAsset;
   final Uint8List? customBackground;
   final String? serverBackgroundUrl;
+  final SolidBackground? solidBackground;
 
   @override
   Widget build(BuildContext context) {
@@ -1130,6 +1262,10 @@ class _ShareCard extends StatelessWidget {
   }
 
   Widget _buildBackground() {
+    final solid = solidBackground;
+    if (solid != null) {
+      return DecoratedBox(decoration: BoxDecoration(gradient: solid.gradient));
+    }
     if (serverBackgroundUrl != null) {
       return Image.network(
         serverBackgroundUrl!,

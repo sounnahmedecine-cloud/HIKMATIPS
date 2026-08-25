@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'screens/home_shell.dart';
-import 'screens/onboarding_screen.dart';
+import 'screens/onboarding_flow.dart';
 import 'services/app_preferences_service.dart';
 import 'theme/hikma_theme.dart';
 
@@ -21,7 +21,7 @@ class HikmaClipsApp extends StatelessWidget {
           themeMode: AppPreferencesController.instance.themeMode,
           home: AppPreferencesController.instance.onboardingSeen
               ? const HomeShell()
-              : OnboardingScreen(
+              : OnboardingFlow(
                   onComplete:
                       AppPreferencesController.instance.markOnboardingSeen,
                 ),

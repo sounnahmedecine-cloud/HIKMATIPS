@@ -15,22 +15,42 @@ class ServerBackground {
   final String imageUrl;
   final String imageHint;
 
+  /// Categorie affichee dans la galerie. Les tags bruts sont bruyants et
+  /// se recoupent : on les ramene a quatre familles lisibles, en testant
+  /// du plus specifique au plus general.
   String get category {
     final hint = imageHint.toLowerCase();
-    if (hint.contains('ramadan')) return 'Ramadan';
+    if (hint.contains('ramadan') || hint.contains('lantern')) {
+      return 'Ramadan';
+    }
     if (hint.contains('islam') ||
         hint.contains('mosque') ||
         hint.contains('coran') ||
+        hint.contains('quran') ||
         hint.contains('kaaba') ||
-        hint.contains('calligraphy')) {
+        hint.contains('calligraphy') ||
+        hint.contains('musulman')) {
       return 'Islamique';
     }
-    if (hint.contains('nature') ||
+    // Le ciel avant la nature : « night stars » et « astronomy » sont plus
+    // proches du firmament que d'un paysage.
+    if (hint.contains('night') ||
+        hint.contains('star') ||
+        hint.contains('galaxy') ||
         hint.contains('astronomy') ||
-        hint.contains('mountain')) {
+        hint.contains('sky') ||
+        hint.contains('moon')) {
+      return 'Ciel';
+    }
+    if (hint.contains('nature') ||
+        hint.contains('mountain') ||
+        hint.contains('forest') ||
+        hint.contains('sea') ||
+        hint.contains('ocean') ||
+        hint.contains('desert')) {
       return 'Nature';
     }
-    return 'Autres';
+    return 'Sobres';
   }
 }
 

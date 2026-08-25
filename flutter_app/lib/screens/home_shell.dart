@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../models/hikma_clip.dart';
-import '../widgets/premium_dock.dart';
 import 'clip_screen.dart';
 import 'library_screen.dart';
 import 'search_screen.dart';
@@ -15,7 +14,6 @@ class HomeShell extends StatefulWidget {
 }
 
 class _HomeShellState extends State<HomeShell> {
-  int _index = 0;
   int _refreshToken = 0;
   int _requestId = 0;
   ClipRequest _clipRequest = const ClipRequest(id: 0);
@@ -24,9 +22,10 @@ class _HomeShellState extends State<HomeShell> {
   Widget build(BuildContext context) {
     final pages = [
       ClipScreen(
-        onOpenSearch: () => _selectTab(1),
+        onOpenSearch: _openSearch,
+        onOpenLibrary: _openLibrary,
         // SettingsScreen renvoie un ColoredBox sans Scaffold : pousse-le
-        // dans un Scaffold, sinon il hérite de contraintes non bornées.
+        // dans un Scaffold, sinon il herite de contraintes non bornees.
         onOpenSettings: () => Navigator.push(
           context,
           MaterialPageRoute(
@@ -36,36 +35,54 @@ class _HomeShellState extends State<HomeShell> {
         request: _clipRequest,
         refreshToken: _refreshToken,
       ),
-      SearchScreen(onOpenClip: _openClip),
-      LibraryScreen(
-        onOpenClip: _openClip,
-        onOpenSearch: () => _selectTab(1),
-        onOpenCollection: _openCollection,
-        refreshToken: _refreshToken,
-      ),
     ];
 
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      body: Stack(
-        children: [
-          Positioned.fill(
-            child: IndexedStack(index: _index, children: pages),
-          ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: PremiumDock(index: _index, onChanged: _selectTab),
-          ),
-        ],
-      ),
-    );
+    // Plus de barre de navigation : l'accueil est le seul ecran de base,
+    // Recherche et Bibliotheque s'ouvrent depuis son en-tete.
+    return Scaffold(resizeToAvoidBottomInset: false, body: pages.first);
   }
 
-  void _selectTab(int value) {
-    setState(() {
-      _index = value;
-      _refreshToken += 1;
-    });
+  Future<void> _openSearch() async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => Scaffold(
+          body: SearchScreen(
+            onOpenClip: (clip) {
+              Navigator.pop(context);
+              _openClip(clip);
+            },
+          ),
+        ),
+      ),
+    );
+    if (mounted) setState(() => _refreshToken += 1);
+  }
+
+  Future<void> _openLibrary() async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => Scaffold(
+          body: LibraryScreen(
+            onOpenClip: (clip) {
+              Navigator.pop(context);
+              _openClip(clip);
+            },
+            onOpenSearch: () {
+              Navigator.pop(context);
+              _openSearch();
+            },
+            onOpenCollection: (kind) {
+              Navigator.pop(context);
+              _openCollection(kind);
+            },
+            refreshToken: _refreshToken,
+          ),
+        ),
+      ),
+    );
+    if (mounted) setState(() => _refreshToken += 1);
   }
 
   void _openClip(HikmaClip clip) {
@@ -101,7 +118,6 @@ class _HomeShellState extends State<HomeShell> {
         clipId: clipId,
         label: label,
       );
-      _index = 0;
       _refreshToken += 1;
     });
   }

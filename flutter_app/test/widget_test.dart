@@ -24,18 +24,31 @@ void main() {
     await tester.pump();
     await tester.pump(const Duration(seconds: 2));
 
-    // Au premier lancement les slides d'accueil précèdent l'application.
+    // Le premier lancement enchaine slides, rappels, widgets et Premium.
     expect(find.text('Diffuse la sagesse, en un clip.'), findsOneWidget);
     await tester.tap(find.text('Passer'));
     await tester.pumpAndSettle();
 
-    // Puis le guidage de l'écran Clips, qu'on écarte avant de continuer.
-    expect(find.text('Un nouveau rappel à chaque geste'), findsOneWidget);
-    await tester.tap(find.byKey(const ValueKey('coach-skip')));
+    expect(find.text('Laissez-vous inspirer'), findsOneWidget);
+    await tester.tap(find.text('Passer'));
     await tester.pumpAndSettle();
 
+    expect(find.text('Widgets pratiques'), findsOneWidget);
+    await tester.tap(find.text('Passer'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Toutes les Hikma'), findsOneWidget);
+    await tester.tap(find.byTooltip('Fermer'));
+    await tester.pump(const Duration(milliseconds: 400));
+
+    // Puis le voile qui montre le geste de balayage. Sa main tourne en
+    // boucle : pumpAndSettle n'y converge jamais, on avance par frames.
+    await tester.pump(const Duration(milliseconds: 400));
+    expect(find.textContaining('Balayez vers le haut'), findsOneWidget);
+    await tester.tap(find.textContaining('Balayez vers le haut'));
+    await tester.pump(const Duration(milliseconds: 400));
+
     expect(find.text('GLISSEZ POUR UN NOUVEAU CLIP'), findsOneWidget);
-    expect(find.text('Recherche'), findsOneWidget);
     expect(find.bySemanticsLabel('Partager l’image'), findsOneWidget);
 
     final shareCard = find.byKey(const ValueKey('share-card-boundary'));
@@ -85,7 +98,8 @@ void main() {
     await tester.tap(find.byTooltip('Fermer'));
     await tester.pumpAndSettle();
 
-    await tester.tap(find.text('Recherche'));
+    // La recherche s'ouvre depuis la barre de filtre de l'accueil.
+    await tester.tap(find.textContaining('Filtre :'));
     await tester.pumpAndSettle();
     expect(find.text('Recherche Hadith'), findsOneWidget);
     expect(find.text('EXEMPLE'), findsOneWidget);
@@ -105,22 +119,33 @@ void main() {
     expect(find.text('Filtre : Hadith sélectionné'), findsOneWidget);
     expect(find.textContaining('colère'), findsWidgets);
 
-    await tester.tap(find.text('Biblio'));
+    // Le clip demande depuis la recherche a ramene sur l'accueil : le
+    // voile de balayage peut reapparaitre, on laisse retomber les frames.
+    await tester.pump(const Duration(milliseconds: 400));
+
+    // Plus de barre de navigation : Biblio et Reglages vivent dans
+    // l'en-tete de l'accueil.
+    await tester.tap(find.text('BIBLIO'));
     await tester.pumpAndSettle();
     expect(find.text('Bibliothèque'), findsOneWidget);
-    // Deux segments seulement depuis le retrait des livres PDF.
     expect(find.text('Favoris'), findsOneWidget);
     expect(find.text('Collections'), findsOneWidget);
     expect(find.text('Livres'), findsNothing);
 
-    // Trois onglets seulement : le Coran audio a été retiré. Les Réglages
-    // s'ouvrent depuis la pastille RÉGLAGES de l'écran Clips.
-    expect(find.text('Coran'), findsNothing);
+    // Les ecrans pousses n'ont pas d'AppBar : on revient par le geste
+    // systeme plutot que par un bouton retour.
+    final navigator = tester.state<NavigatorState>(find.byType(Navigator).first);
+    navigator.pop();
+    // La transition de sortie doit s'achever : sinon l'en-tete est encore
+    // hors ecran et le tap tombe sur un offset negatif.
+    for (var i = 0; i < 8; i++) {
+      await tester.pump(const Duration(milliseconds: 120));
+    }
 
-    await tester.tap(find.text('Clips'));
-    await tester.pumpAndSettle();
     await tester.tap(find.text('RÉGLAGES'));
-    await tester.pumpAndSettle();
+    for (var i = 0; i < 8; i++) {
+      await tester.pump(const Duration(milliseconds: 120));
+    }
     expect(find.text('Votre rendez-vous avec la Hikma'), findsOneWidget);
     expect(find.byType(Switch), findsWidgets);
   });

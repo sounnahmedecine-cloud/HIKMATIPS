@@ -199,6 +199,10 @@ class ReminderService {
     await _preferenceStore.setInt(slot.minuteKey, time.minute);
   }
 
+  /// Exposee pour l'accueil, qui demande l'autorisation avant de
+  /// programmer les rappels quotidiens.
+  Future<bool> requestPermissions() => _requestPermissions();
+
   Future<bool> _requestPermissions() async {
     if (defaultTargetPlatform == TargetPlatform.android) {
       return await _notifications
