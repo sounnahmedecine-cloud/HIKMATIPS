@@ -24,6 +24,7 @@ import {
 import { useToast } from '@/hooks/use-toast';
 import { initializeFirebase } from '@/firebase';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { logEvent } from '@/lib/analytics';
 
 /* ────────────────────────────────────────────────────────────
    HikmaClips — Landing page (refonte moderne, couleurs du logo)
@@ -150,6 +151,7 @@ export default function LandingPage() {
         createdAt: serverTimestamp(),
       });
       setBetaSubmitted(true);
+      logEvent('beta_signup');
       setBetaPseudo('');
       setBetaEmail('');
     } catch (error) {

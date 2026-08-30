@@ -76,6 +76,7 @@ import { SwipeHintOverlay } from '@/components/SwipeHintOverlay';
 
 import { getFavorites, toggleFavorite, cn, updateStreak } from '@/lib/utils';
 import { growGarden, getGardenState } from '@/lib/garden';
+import { logEvent } from '@/lib/analytics';
 import { PlantWidget } from '@/components/garden/PlantWidget';
 import { GardenView } from '@/components/garden/GardenView';
 import { NameSeedModal } from '@/components/garden/NameSeedModal';
@@ -189,7 +190,10 @@ export default function GeneratorPage() {
     };
     const isLiked = toggleFavorite(hikma);
     setFavorites(prev => isLiked ? [...prev, hikma.fr] : prev.filter(f => f !== hikma.fr));
-    if (isLiked) growGarden('favorite', { hikmaId: hikma.fr });
+    if (isLiked) {
+      growGarden('favorite', { hikmaId: hikma.fr });
+      logEvent('favorite_add');
+    }
 
     toast({
       title: isLiked ? 'Ajouté aux favoris' : 'Retiré des favoris',
@@ -359,6 +363,7 @@ export default function GeneratorPage() {
       setContentBuffer(rest);
       setContent(next);
       growGarden('generate_image');
+      logEvent('generate_hikma');
       if (!user) setGenerationCount(prev => prev + 1);
       if (isFirstTime) { markAsGenerated(); setShowTooltipGuide(false); }
       // Recharge 1 rappel en arrière-plan pour maintenir le buffer
@@ -373,6 +378,7 @@ export default function GeneratorPage() {
       if (result && result.content) {
         setContent(result);
         growGarden('generate_image');
+        logEvent('generate_hikma');
         if (!user) {
           setGenerationCount(prev => prev + 1);
         }
@@ -577,6 +583,7 @@ export default function GeneratorPage() {
           dialogTitle: 'Partager avec...',
         });
         growGarden('share');
+        logEvent('share_clip');
 
         toast({
           title: 'Partage ouvert',

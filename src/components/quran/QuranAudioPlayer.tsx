@@ -5,6 +5,7 @@ import { Play, Pause, SkipForward, SkipBack, Volume2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { SurahList } from './SurahList';
 import { type Surah, SURAHS } from '@/lib/quran-data';
+import { logEvent } from '@/lib/analytics';
 
 const RECITERS = [
   { id: 'maher', name: 'Al-Muaiqly', urlPrefix: 'https://server12.mp3quran.net/maher' },
@@ -196,6 +197,7 @@ export function QuranAudioPlayer() {
             <SurahList onSelectSurah={(surah) => {
               setSelectedSurah(surah);
               setIsPlaying(true);
+              logEvent('play_surah', { surahId: surah.id, reciter: selectedReciter.id });
             }} />
           </div>
         )}
